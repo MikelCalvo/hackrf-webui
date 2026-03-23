@@ -1,0 +1,22 @@
+[
+  {
+    "id": "oceania",
+    "name": "Oceania",
+    "sortOrder": 10
+  },
+  {
+    "id": "europe",
+    "name": "Europe",
+    "sortOrder": 20
+  },
+  {
+    "id": "asia",
+    "name": "Asia",
+    "sortOrder": 30
+  },
+  {
+    "id": "north-america",
+    "name": "North America",
+    "sortOrder": 40
+  }
+]

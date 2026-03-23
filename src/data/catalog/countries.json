@@ -1,0 +1,56 @@
+[
+  {
+    "id": "australia",
+    "code": "AU",
+    "name": "Australia",
+    "regionId": "oceania"
+  },
+  {
+    "id": "france",
+    "code": "FR",
+    "name": "France",
+    "regionId": "europe"
+  },
+  {
+    "id": "germany",
+    "code": "DE",
+    "name": "Germany",
+    "regionId": "europe"
+  },
+  {
+    "id": "japan",
+    "code": "JP",
+    "name": "Japan",
+    "regionId": "asia"
+  },
+  {
+    "id": "mexico",
+    "code": "MX",
+    "name": "Mexico",
+    "regionId": "north-america"
+  },
+  {
+    "id": "spain",
+    "code": "ES",
+    "name": "Spain",
+    "regionId": "europe"
+  },
+  {
+    "id": "south-korea",
+    "code": "KR",
+    "name": "South Korea",
+    "regionId": "asia"
+  },
+  {
+    "id": "united-kingdom",
+    "code": "GB",
+    "name": "United Kingdom",
+    "regionId": "europe"
+  },
+  {
+    "id": "united-states",
+    "code": "US",
+    "name": "United States",
+    "regionId": "north-america"
+  }
+]
