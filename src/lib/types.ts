@@ -202,3 +202,90 @@ export type CustomStationDraft = {
   city: string;
   description: string;
 };
+
+export type AisBounds = {
+  west: number;
+  south: number;
+  east: number;
+  north: number;
+};
+
+export type AisPoint = {
+  latitude: number;
+  longitude: number;
+};
+
+export type AisRuntimeState = "stopped" | "starting" | "running" | "error";
+
+export type AisRuntimeStatus = {
+  state: AisRuntimeState;
+  message: string;
+  binaryAvailable: boolean;
+  binaryPath: string;
+  startedAt: string | null;
+  lastFrameAt: string | null;
+  centerFreqHz: number;
+  sampleRate: number;
+};
+
+export type AisChannelStatus = {
+  id: string;
+  label: string;
+  freqHz: number;
+  frameCount: number;
+  messageCount: number;
+  lastSeenAt: string | null;
+  lastMessageType: string | null;
+  lastPhase: number | null;
+};
+
+export type AisTilePackSummary = {
+  available: boolean;
+  mode: "remote-live" | "local-pack";
+  kind: "raster" | "pmtiles";
+  name: string;
+  tileUrlTemplate: string | null;
+  pmtilesUrl: string | null;
+  flavor: "light" | "dark" | "white" | "grayscale" | "black" | null;
+  lang: string | null;
+  attribution: string;
+  bounds: AisBounds | null;
+  minZoom: number;
+  maxZoom: number;
+  installedAt: string | null;
+  manifestPath: string | null;
+};
+
+export type AisVesselContact = {
+  mmsi: string;
+  name: string;
+  callsign: string;
+  imo: string;
+  shipType: string;
+  destination: string;
+  latitude: number;
+  longitude: number;
+  speedKnots: number | null;
+  courseDeg: number | null;
+  navStatus: string;
+  lastSeenAt: string;
+  lastPositionAt: string;
+  lastStaticAt: string | null;
+  messageType: string;
+  sourceLabel: string;
+  isMoving: boolean;
+};
+
+export type AisFeedSnapshot = {
+  generatedAt: string;
+  vesselCount: number;
+  movingCount: number;
+  latestPositionAt: string | null;
+  center: AisPoint | null;
+  bounds: AisBounds | null;
+  vessels: AisVesselContact[];
+  channels: AisChannelStatus[];
+  warnings: string[];
+  tilePack: AisTilePackSummary;
+  runtime: AisRuntimeStatus;
+};

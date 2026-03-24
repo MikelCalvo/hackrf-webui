@@ -192,3 +192,157 @@ select option:hover {
 .border-l-accent { border-left: 2px solid var(--accent); }
 .border-l-clear  { border-left: 2px solid transparent; }
 .border-r-accent { border-right: 2px solid var(--accent); }
+
+.ais-map {
+  background:
+    radial-gradient(circle at 20% 20%, rgba(87, 215, 255, 0.08), transparent 28%),
+    radial-gradient(circle at 80% 12%, rgba(61, 217, 184, 0.08), transparent 24%),
+    linear-gradient(180deg, #07111d 0%, #091624 55%, #0a1828 100%);
+}
+
+.ais-map.leaflet-container {
+  font-family: inherit;
+  touch-action: none;
+  overscroll-behavior: none;
+  -webkit-user-select: none;
+  user-select: none;
+  background:
+    radial-gradient(circle at 20% 20%, rgba(87, 215, 255, 0.08), transparent 28%),
+    radial-gradient(circle at 80% 12%, rgba(61, 217, 184, 0.08), transparent 24%),
+    linear-gradient(180deg, #07111d 0%, #091624 55%, #0a1828 100%);
+}
+
+.ais-map--blue-dark.leaflet-container {
+  background:
+    radial-gradient(circle at 18% 18%, rgba(88, 176, 255, 0.14), transparent 26%),
+    radial-gradient(circle at 82% 14%, rgba(72, 221, 255, 0.12), transparent 24%),
+    linear-gradient(180deg, #071321 0%, #0a1b2d 52%, #0c2237 100%);
+}
+
+.ais-map--blue-dark .leaflet-tile {
+  filter: hue-rotate(8deg) saturate(1.14) brightness(0.96) contrast(1.02);
+}
+
+.ais-map .leaflet-control-zoom {
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 14px;
+  overflow: hidden;
+  box-shadow: 0 14px 32px rgba(0, 0, 0, 0.28);
+}
+
+.ais-map .leaflet-control-zoom a {
+  width: 32px;
+  height: 32px;
+  line-height: 30px;
+  border: 0;
+  background: rgba(7, 14, 24, 0.9);
+  color: var(--foreground);
+}
+
+.ais-map .leaflet-control-zoom a:hover {
+  background: rgba(10, 19, 31, 0.98);
+}
+
+.ais-map .leaflet-control-attribution {
+  display: none;
+}
+
+.ais-tooltip {
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 9999px;
+  background: rgba(6, 11, 20, 0.94);
+  color: var(--foreground);
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.22);
+}
+
+.ais-tooltip::before {
+  display: none;
+}
+
+.ais-vessel-icon-shell {
+  background: transparent;
+  border: 0;
+}
+
+.ais-vessel-icon {
+  position: relative;
+  display: block;
+  width: 28px;
+  height: 28px;
+}
+
+.ais-vessel-icon__pulse,
+.ais-vessel-icon__dot,
+.ais-vessel-icon__arrow {
+  position: absolute;
+}
+
+.ais-vessel-icon__pulse {
+  inset: 4px;
+  border-radius: 9999px;
+  border: 1px solid rgba(87, 215, 255, 0.28);
+  background: rgba(87, 215, 255, 0.08);
+  animation: ais-pulse 2.6s ease-out infinite;
+}
+
+.ais-vessel-icon__dot {
+  top: 50%;
+  left: 50%;
+  width: 11px;
+  height: 11px;
+  transform: translate(-50%, -50%);
+  border-radius: 9999px;
+  border: 2px solid rgba(4, 10, 18, 0.94);
+  background: var(--accent);
+  box-shadow: 0 0 12px rgba(87, 215, 255, 0.35);
+}
+
+.ais-vessel-icon__arrow {
+  top: -1px;
+  left: 10px;
+  width: 0;
+  height: 0;
+  border-left: 4px solid transparent;
+  border-right: 4px solid transparent;
+  border-bottom: 11px solid rgba(87, 215, 255, 0.96);
+  transform-origin: 50% 15px;
+  transform: rotate(var(--ais-heading, 0deg));
+  opacity: var(--ais-arrow-opacity, 1);
+  filter: drop-shadow(0 0 8px rgba(87, 215, 255, 0.35));
+}
+
+.ais-vessel-icon.is-moving .ais-vessel-icon__dot {
+  background: var(--highlight);
+  box-shadow: 0 0 12px rgba(61, 217, 184, 0.34);
+}
+
+.ais-vessel-icon.is-moving .ais-vessel-icon__pulse {
+  border-color: rgba(61, 217, 184, 0.36);
+  background: rgba(61, 217, 184, 0.1);
+}
+
+.ais-vessel-icon.is-moving .ais-vessel-icon__arrow {
+  border-bottom-color: rgba(61, 217, 184, 0.96);
+}
+
+.ais-vessel-icon.is-selected .ais-vessel-icon__pulse {
+  inset: 1px;
+  border-width: 2px;
+}
+
+@keyframes ais-pulse {
+  0% {
+    transform: scale(0.9);
+    opacity: 0.72;
+  }
+
+  70% {
+    transform: scale(1.15);
+    opacity: 0.12;
+  }
+
+  100% {
+    transform: scale(1.15);
+    opacity: 0.02;
+  }
+}

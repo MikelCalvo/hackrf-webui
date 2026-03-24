@@ -2,14 +2,7 @@
 set -euo pipefail
 
 ROOT="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/.." && pwd)"
-SRC="$ROOT/native/hackrf_audio_stream.c"
 OUT_DIR="$ROOT/bin"
-OUT="$OUT_DIR/hackrf_audio_stream"
-
-if [[ ! -f "$SRC" ]]; then
-  echo "Native source file not found: $SRC" >&2
-  exit 1
-fi
 
 if ! command -v pkg-config >/dev/null 2>&1; then
   echo "pkg-config is not available on this system." >&2
@@ -24,7 +17,19 @@ fi
 
 mkdir -p "$OUT_DIR"
 
-# shellcheck disable=SC2086
-cc -O3 -std=c11 -Wall -Wextra "$SRC" -o "$OUT" $PKG_FLAGS -lm
+build_binary() {
+  local src="$1"
+  local out="$2"
 
-echo "Binary generated at: $OUT"
+  if [[ ! -f "$src" ]]; then
+    echo "Native source file not found: $src" >&2
+    exit 1
+  fi
+
+  # shellcheck disable=SC2086
+  cc -O3 -std=c11 -Wall -Wextra "$src" -o "$out" $PKG_FLAGS -lm
+  echo "Binary generated at: $out"
+}
+
+build_binary "$ROOT/native/hackrf_audio_stream.c" "$OUT_DIR/hackrf_audio_stream"
+build_binary "$ROOT/native/hackrf_ais_stream.c" "$OUT_DIR/hackrf_ais_stream"

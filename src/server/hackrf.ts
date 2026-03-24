@@ -9,6 +9,7 @@ import type {
   StreamRequest,
   StreamSessionSnapshot,
 } from "@/lib/types";
+import { aisRuntime } from "@/server/ais-runtime";
 
 const LEVEL_RE = /LEVEL rms=([0-9.]+) peak=([0-9.]+) rf=([0-9.]+)/;
 
@@ -69,6 +70,8 @@ class HackRFService {
     const binaryPath = nativeBinaryPath();
     const binaryAvailable = existsSync(binaryPath);
     const ffmpegAvailable = commandAvailable("ffmpeg");
+    const aisStatus = aisRuntime.getStatus();
+    const aisActive = aisStatus.state === "running" || aisStatus.state === "starting";
     const info = spawnSync("hackrf_info", [], {
       encoding: "utf8",
       stdio: ["ignore", "pipe", "pipe"],
@@ -155,7 +158,9 @@ class HackRFService {
       serial,
       message: activeStream
         ? `HackRF ready with an active stream on ${activeStream.label}.`
-        : "HackRF ready to tune.",
+        : aisActive
+          ? "HackRF dedicated to the live AIS decoder."
+          : "HackRF ready to tune.",
       activeStream,
     };
   }
@@ -188,6 +193,8 @@ class HackRFService {
     sampleRate: string,
     signal: AbortSignal,
   ): Promise<ReadableStream<Uint8Array>> {
+    await aisRuntime.stop();
+
     // Wait for the previous hackrf process to exit and release the USB device before
     // spawning a new one — avoids the race where hackrf_open() fails on a busy device.
     await this.stopAndWait();

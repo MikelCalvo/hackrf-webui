@@ -20,7 +20,13 @@ PORT="${PORT:-$DEFAULT_PORT}"
 SKIP_SYSTEM_DEPS="${SKIP_SYSTEM_DEPS:-0}"
 SKIP_NPM="${SKIP_NPM:-0}"
 SKIP_BUILD="${SKIP_BUILD:-0}"
+SKIP_AIS_MAPS="${SKIP_AIS_MAPS:-0}"
 FORCE_REBUILD="${REBUILD:-0}"
+AIS_TILE_PACK_URL="${AIS_TILE_PACK_URL:-}"
+AIS_TILE_PACK_FILE="${AIS_TILE_PACK_FILE:-}"
+AIS_TILE_PACK_REINSTALL="${AIS_TILE_PACK_REINSTALL:-0}"
+MAP_PACK_PROFILE="${MAP_PACK_PROFILE:-${AIS_TILE_PACK_PROFILE:-}}"
+MAP_PACK_MAX_ZOOM="${MAP_PACK_MAX_ZOOM:-${AIS_TILE_PACK_MAX_ZOOM:-}}"
 CHECK_ONLY=0
 DRY_RUN="${DRY_RUN:-0}"
 NEXT_TELEMETRY_DISABLED="${NEXT_TELEMETRY_DISABLED:-1}"
@@ -49,12 +55,28 @@ Options:
   --skip-system-deps   Do not install system packages.
   --skip-npm           Do not run npm ci.
   --skip-build         Do not run the production build.
+  --skip-ais-maps      Do not install or update the offline map pack.
+  --ais-tile-pack-url <url>
+                       Download and install a map pack (.zip or .pmtiles source).
+  --ais-tile-pack-file <path>
+                       Install a map pack from a local .zip or .pmtiles file.
+  --reinstall-ais-maps Replace an existing offline map pack.
+  --map-profile <name> Select a default offline basemap profile when no source is provided.
+  --map-zoom <z>       Force a custom max zoom for the default offline basemap extract.
   --rebuild            Force npm ci and a fresh production build.
   --dry-run            Print the actions without executing them.
   -h, --help           Show this help text.
 
 Environment overrides:
-  HOST, PORT, SKIP_SYSTEM_DEPS, SKIP_NPM, SKIP_BUILD, REBUILD, DRY_RUN
+  HOST, PORT, SKIP_SYSTEM_DEPS, SKIP_NPM, SKIP_BUILD, SKIP_AIS_MAPS, REBUILD,
+  AIS_TILE_PACK_URL, AIS_TILE_PACK_FILE, AIS_TILE_PACK_REINSTALL,
+  AIS_TILE_PACK_MAX_ZOOM, MAP_PACK_MAX_ZOOM, MAP_PACK_PROFILE, DRY_RUN
+
+Default map behavior:
+  If no map pack URL or file is provided, start.sh installs a dark offline world
+  basemap extracted from the latest Protomaps world archive. In an interactive
+  terminal it lets you choose a profile first; otherwise it defaults to the
+  "balanced" profile (~1.5 GB, z9).
 EOF
 }
 
@@ -137,8 +159,136 @@ prod_bundle_ready() {
   [[ -f "$ROOT_DIR/.next/BUILD_ID" ]]
 }
 
+ais_tile_pack_manifest_path() {
+  printf '%s\n' "$ROOT_DIR/public/tiles/osm/manifest.json"
+}
+
+ais_tile_pack_ready() {
+  [[ -f "$(ais_tile_pack_manifest_path)" ]]
+}
+
 node_modules_ready() {
   [[ -d "$ROOT_DIR/node_modules" && -f "$ROOT_DIR/node_modules/.package-lock.json" ]]
+}
+
+interactive_terminal() {
+  [[ -t 0 && -t 1 ]]
+}
+
+map_profile_zoom() {
+  case "$1" in
+    compact) printf '%s\n' 8 ;;
+    balanced) printf '%s\n' 9 ;;
+    detailed) printf '%s\n' 10 ;;
+    xdetail) printf '%s\n' 11 ;;
+    ultra) printf '%s\n' 12 ;;
+    max) printf '%s\n' 13 ;;
+    *)
+      return 1
+      ;;
+  esac
+}
+
+map_profile_size() {
+  case "$1" in
+    compact) printf '%s\n' "~526 MB" ;;
+    balanced) printf '%s\n' "~1.5 GB" ;;
+    detailed) printf '%s\n' "~3.5 GB" ;;
+    xdetail) printf '%s\n' "~7.4 GB" ;;
+    ultra) printf '%s\n' "~16 GB" ;;
+    max) printf '%s\n' "~33 GB" ;;
+    *)
+      return 1
+      ;;
+  esac
+}
+
+validate_map_zoom() {
+  [[ "$1" =~ ^[0-9]+$ ]] || return 1
+  (( "$1" >= 0 && "$1" <= 14 ))
+}
+
+choose_map_profile_interactive() {
+  local choice=""
+  local custom_zoom=""
+
+  echo
+  log "Choose the default offline basemap profile:"
+  printf '  1) compact   %s  world up to z%s\n' "$(map_profile_size compact)" "$(map_profile_zoom compact)"
+  printf '  2) balanced  %s  world up to z%s  [default]\n' "$(map_profile_size balanced)" "$(map_profile_zoom balanced)"
+  printf '  3) detailed  %s  world up to z%s\n' "$(map_profile_size detailed)" "$(map_profile_zoom detailed)"
+  printf '  4) xdetail   %s  world up to z%s\n' "$(map_profile_size xdetail)" "$(map_profile_zoom xdetail)"
+  printf '  5) ultra     %s  world up to z%s\n' "$(map_profile_size ultra)" "$(map_profile_zoom ultra)"
+  printf '  6) max       %s  world up to z%s\n' "$(map_profile_size max)" "$(map_profile_zoom max)"
+  printf '  7) custom    choose your own max zoom\n'
+  printf 'Select profile [2]: '
+  read -r choice || choice=""
+
+  case "${choice:-2}" in
+    1|compact)
+      MAP_PACK_PROFILE="compact"
+      ;;
+    2|balanced|"")
+      MAP_PACK_PROFILE="balanced"
+      ;;
+    3|detailed)
+      MAP_PACK_PROFILE="detailed"
+      ;;
+    4|xdetail)
+      MAP_PACK_PROFILE="xdetail"
+      ;;
+    5|ultra)
+      MAP_PACK_PROFILE="ultra"
+      ;;
+    6|max)
+      MAP_PACK_PROFILE="max"
+      ;;
+    7|custom)
+      while true; do
+        printf 'Custom max zoom [0-14]: '
+        read -r custom_zoom || custom_zoom=""
+        if validate_map_zoom "$custom_zoom"; then
+          MAP_PACK_PROFILE="custom"
+          MAP_PACK_MAX_ZOOM="$custom_zoom"
+          break
+        fi
+        warn "Invalid custom zoom '${custom_zoom}'. Enter a number between 0 and 14."
+      done
+      ;;
+    *)
+      warn "Unknown profile selection '${choice}'. Falling back to balanced."
+      MAP_PACK_PROFILE="balanced"
+      ;;
+  esac
+}
+
+resolve_map_pack_profile() {
+  if [[ -n "$MAP_PACK_MAX_ZOOM" || -n "$AIS_TILE_PACK_URL" || -n "$AIS_TILE_PACK_FILE" ]]; then
+    return
+  fi
+
+  if [[ -z "$MAP_PACK_PROFILE" ]]; then
+    if interactive_terminal; then
+      choose_map_profile_interactive
+    else
+      MAP_PACK_PROFILE="balanced"
+    fi
+  fi
+
+  if [[ -z "$MAP_PACK_MAX_ZOOM" ]]; then
+    MAP_PACK_MAX_ZOOM="$(map_profile_zoom "$MAP_PACK_PROFILE")" \
+      || fail "Unknown map profile: $MAP_PACK_PROFILE"
+  fi
+
+  validate_map_zoom "$MAP_PACK_MAX_ZOOM" \
+    || fail "Invalid MAP_PACK_MAX_ZOOM: $MAP_PACK_MAX_ZOOM"
+
+  if [[ "$MAP_PACK_PROFILE" == "custom" ]]; then
+    log "Selected offline basemap profile: custom (z${MAP_PACK_MAX_ZOOM})."
+    return
+  fi
+
+  log "Selected offline basemap profile: $MAP_PACK_PROFILE ($(map_profile_size "$MAP_PACK_PROFILE"), z${MAP_PACK_MAX_ZOOM})."
 }
 
 needs_system_deps() {
@@ -159,6 +309,46 @@ parse_args() {
         ;;
       --skip-build)
         SKIP_BUILD=1
+        ;;
+      --skip-ais-maps)
+        SKIP_AIS_MAPS=1
+        ;;
+      --ais-tile-pack-url)
+        shift
+        [[ $# -gt 0 ]] || fail "--ais-tile-pack-url requires a value."
+        AIS_TILE_PACK_URL="$1"
+        ;;
+      --ais-tile-pack-url=*)
+        AIS_TILE_PACK_URL="${1#*=}"
+        ;;
+      --ais-tile-pack-file)
+        shift
+        [[ $# -gt 0 ]] || fail "--ais-tile-pack-file requires a value."
+        AIS_TILE_PACK_FILE="$1"
+        ;;
+      --ais-tile-pack-file=*)
+        AIS_TILE_PACK_FILE="${1#*=}"
+        ;;
+      --reinstall-ais-maps)
+        AIS_TILE_PACK_REINSTALL=1
+        ;;
+      --map-profile)
+        shift
+        [[ $# -gt 0 ]] || fail "--map-profile requires a value."
+        MAP_PACK_PROFILE="$1"
+        ;;
+      --map-profile=*)
+        MAP_PACK_PROFILE="${1#*=}"
+        ;;
+      --map-zoom)
+        shift
+        [[ $# -gt 0 ]] || fail "--map-zoom requires a value."
+        MAP_PACK_MAX_ZOOM="$1"
+        MAP_PACK_PROFILE="custom"
+        ;;
+      --map-zoom=*)
+        MAP_PACK_MAX_ZOOM="${1#*=}"
+        MAP_PACK_PROFILE="custom"
         ;;
       --rebuild)
         FORCE_REBUILD=1
@@ -437,6 +627,12 @@ print_status_report() {
     report_line "Prod bundle" "missing"
   fi
 
+  if ais_tile_pack_ready; then
+    report_line "Offline map pack" "$(ais_tile_pack_manifest_path)"
+  else
+    report_line "Offline map pack" "not installed"
+  fi
+
   if node_ok; then
     if port_available "$HOST" "$PORT"; then
       port_status="available at ${HOST}:${PORT}"
@@ -508,6 +704,35 @@ install_node_modules() {
   fi
 }
 
+install_ais_maps() {
+  cd "$ROOT_DIR"
+
+  if [[ "$SKIP_AIS_MAPS" == "1" || "$CHECK_ONLY" == "1" ]]; then
+    if [[ "$CHECK_ONLY" == "1" ]]; then
+      log "Check mode: offline map-pack installation skipped."
+    else
+      log "Skipping offline map-pack installation because --skip-ais-maps was requested."
+    fi
+    return
+  fi
+
+  if ais_tile_pack_ready && [[ "$AIS_TILE_PACK_REINSTALL" != "1" ]]; then
+    log "Offline map pack already present."
+    return
+  fi
+
+  resolve_map_pack_profile
+
+  log "Installing offline map pack."
+  run env \
+    AIS_TILE_PACK_URL="$AIS_TILE_PACK_URL" \
+    AIS_TILE_PACK_FILE="$AIS_TILE_PACK_FILE" \
+    AIS_TILE_PACK_REINSTALL="$AIS_TILE_PACK_REINSTALL" \
+    AIS_TILE_PACK_MAX_ZOOM="$MAP_PACK_MAX_ZOOM" \
+    MAP_PACK_PROFILE="$MAP_PACK_PROFILE" \
+    node ./scripts/install-ais-map-pack.mjs
+}
+
 build_app() {
   cd "$ROOT_DIR"
 
@@ -535,6 +760,11 @@ print_start_summary() {
   report_line "npm" "$(npm_version)"
   report_line "Native binary" "$(native_binary_path)"
   report_line "Prod bundle" ".next/BUILD_ID present"
+  if ais_tile_pack_ready; then
+    report_line "Offline map pack" "$(ais_tile_pack_manifest_path)"
+  else
+    report_line "Offline map pack" "not installed"
+  fi
 
   case "$(hackrf_probe_status)" in
     device-detected)
@@ -585,6 +815,7 @@ main() {
   verify_runtime
   resolve_port
   install_node_modules
+  install_ais_maps
   build_app
   print_start_summary
   start_app

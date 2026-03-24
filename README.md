@@ -2,10 +2,11 @@
 
 `hackrf-webui` is a local-first web interface for `HackRF`.
 
-It runs on the user's own machine, works offline at runtime, exposes radio controls in a browser UI, and currently ships with two real modules:
+It runs on the user's own machine, works offline at runtime, exposes radio controls in a browser UI, and currently ships with three real modules:
 
 - `FM`: browser listening with a large country-sharded station catalog
 - `PMR`: narrowband channel presets with manual listen and automatic scanning
+- `AIS`: native dual-channel HackRF decoding with a live vessel map and offline-capable basemaps
 
 There is no cloud layer, no account system, and no remote device bridge.
 
@@ -36,10 +37,16 @@ There is no cloud layer, no account system, and no remote device bridge.
   - activity log
 - in-place retune of the active PMR stream without restarting the browser audio pipeline
 
+### AIS
+
+- live AIS decoding from the HackRF across channels A and B at `161.975 MHz` / `162.025 MHz`
+- native demodulation and message parsing inside `hackrf-webui`, without `SDRangel`
+- vessel map with offline-capable dark basemaps
+- local raster packs or PMTiles, plus a default worldwide Protomaps dark extract served from `public/tiles/osm`
+
 ### Planned / Not Landed Yet
 
 - `ADS-B`
-- `AIS`
 - `Airband`
 
 Those modules already exist in the dashboard structure, but they are not implemented yet.
@@ -56,7 +63,9 @@ By default, `start.sh`:
 
 - installs missing system dependencies on common Linux distributions
 - installs Node dependencies
-- builds the native `HackRF` streaming binary
+- offers an offline basemap profile selector in interactive terminals when no map source is provided
+- installs a dark offline world basemap unless `--skip-ais-maps` is used
+- builds the native `HackRF` receiver binaries
 - builds the Next.js app
 - starts the web UI in production mode
 
@@ -71,6 +80,9 @@ Useful options:
 ./start.sh --host 0.0.0.0 --port 4000
 ./start.sh --skip-system-deps
 ./start.sh --skip-npm --skip-build
+./start.sh --map-profile detailed
+./start.sh --map-zoom 12
+./start.sh --ais-tile-pack-file /path/to/custom-ais.pmtiles
 ./start.sh --rebuild
 ```
 
@@ -80,15 +92,34 @@ What they do:
 - `--host` and `--port` override the bind address
 - `--skip-system-deps` avoids package-manager changes
 - `--skip-npm` and `--skip-build` reuse existing local artifacts
+- `--map-profile` selects one of the built-in world basemap profiles when using the default Protomaps source
+- `--map-zoom` forces a custom `maxZoom` for the default world extract
+- `--ais-tile-pack-url` and `--ais-tile-pack-file` install an offline AIS pack from a `.zip` raster pack or a `.pmtiles` source archive
+- `--skip-ais-maps` keeps AIS in live-tile mode
 - `--rebuild` forces a fresh `npm ci` and production rebuild
 
 Environment overrides also work:
 
 ```bash
 HOST=0.0.0.0 PORT=4000 ./start.sh
+MAP_PACK_PROFILE=ultra ./start.sh
+MAP_PACK_MAX_ZOOM=12 ./start.sh
+AIS_TILE_PACK_FILE=/path/to/custom-ais.pmtiles ./start.sh
 ```
 
 If the default port is busy and you did not explicitly force a port, the script automatically falls forward to the next free one it can find.
+
+Built-in map profiles:
+
+- `compact`: world up to `z8`, about `526 MB`
+- `balanced`: world up to `z9`, about `1.5 GB`
+- `detailed`: world up to `z10`, about `3.5 GB`
+- `xdetail`: world up to `z11`, about `7.4 GB`
+- `ultra`: world up to `z12`, about `16 GB`
+- `max`: world up to `z13`, about `33 GB`
+- `custom`: choose your own `maxZoom`
+
+If `start.sh` runs without an interactive terminal and no map source is provided, it defaults to `balanced`.
 
 ## Supported Package Managers In `start.sh`
 
@@ -127,7 +158,44 @@ For normal usage, the app needs:
 - `Node.js` `20+`
 - `npm`
 
-The bundled native receiver binary is built from [`native/hackrf_audio_stream.c`](native/hackrf_audio_stream.c).
+The bundled native receivers are built from:
+
+- [`native/hackrf_audio_stream.c`](native/hackrf_audio_stream.c)
+- [`native/hackrf_ais_stream.c`](native/hackrf_ais_stream.c)
+
+## AIS Runtime Notes
+
+The AIS module tunes the HackRF directly, demodulates AIS in the native binary, validates frames, parses AIS messages in the backend and renders decoded vessels on the map in real time.
+
+Offline basemaps are served from `public/tiles/osm`. By default, `./start.sh` extracts a dark worldwide PMTiles basemap from the latest Protomaps world archive, using the selected profile or `--map-zoom` override.
+
+The AIS map behavior is:
+
+- if FM already has a saved city in browser local storage, AIS starts centered near that city
+- otherwise it falls back to decoded AIS bounds when traffic exists
+- if there is still no traffic, it falls back to the installed basemap bounds
+
+You can override the source during startup:
+
+```bash
+./start.sh --ais-tile-pack-file /path/to/ais-pack.zip
+./start.sh --ais-tile-pack-file /path/to/custom-world.pmtiles
+AIS_TILE_PACK_URL=https://example.org/custom-world.pmtiles ./start.sh
+```
+
+Raster pack archives must contain:
+
+- `manifest.json`
+- `z/x/y.png` tiles under the same root
+
+PMTiles sources are re-extracted locally into `public/tiles/osm/world.pmtiles`.
+
+To remove downloaded map data and local map-cache artifacts:
+
+```bash
+./delete_maps.sh
+./delete_maps.sh --dry-run
+```
 
 ## Development
 
@@ -226,5 +294,5 @@ At the moment, those docs are FM-specific. PMR does not need the same coverage-t
 - Runtime use is local and offline-friendly.
 - The app does not depend on remote frontend assets.
 - The current radio runtime is focused on `HackRF`.
-- FM and PMR are the only landed listening modules today.
+- FM, PMR and AIS are the landed modules today.
 - The catalog and band modules are intended to keep growing through importer work and targeted PRs.
