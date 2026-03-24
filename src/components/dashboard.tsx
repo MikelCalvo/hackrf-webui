@@ -10,6 +10,7 @@ import {
 } from "react";
 
 import { buildCustomStation, compareText, sortStations } from "@/lib/catalog";
+import { PmrModule } from "@/components/pmr";
 import type {
   CatalogData,
   CustomStationDraft,
@@ -40,9 +41,9 @@ type LocationOption = { id: string; label: string; count: number };
 
 const MODULES = [
   { id: "fm",      label: "FM",      band: "87.5–108", live: true  },
+  { id: "pmr",     label: "PMR",     band: "446 MHz",  live: true  },
   { id: "ads-b",   label: "ADS-B",   band: "1090 MHz", live: false },
   { id: "ais",     label: "AIS",     band: "162 MHz",  live: false },
-  { id: "pmr",     label: "PMR",     band: "446 MHz",  live: false },
   { id: "airband", label: "Airband", band: "118–137",  live: false },
 ];
 
@@ -294,9 +295,18 @@ function WelcomeModal({
 const CLS_INPUT =
   "w-full rounded-lg border border-white/10 bg-white/[0.04] px-3 py-2 text-sm text-[var(--foreground)] outline-none transition placeholder:text-[var(--muted)] focus:border-[var(--accent)]/50 focus:bg-white/[0.06]";
 const CLS_BTN_PRIMARY =
-  "inline-flex items-center justify-center rounded-full border border-[var(--accent)]/40 bg-[var(--accent)]/12 px-4 py-2 text-sm font-semibold transition hover:border-[var(--accent)]/70 hover:bg-[var(--accent)]/20 disabled:cursor-not-allowed disabled:opacity-40";
+  "inline-flex items-center justify-center gap-2 rounded-full border border-[var(--accent)]/40 bg-[var(--accent)]/12 px-4 py-2 text-sm font-semibold transition hover:border-[var(--accent)]/70 hover:bg-[var(--accent)]/20 disabled:cursor-not-allowed disabled:opacity-40";
 const CLS_BTN_GHOST =
   "inline-flex items-center justify-center rounded-full border border-white/10 bg-white/[0.04] px-4 py-2 text-sm font-semibold text-[var(--muted-strong)] transition hover:border-white/18 hover:bg-white/[0.07]";
+
+function Spinner() {
+  return (
+    <svg className="h-3.5 w-3.5 animate-spin" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="3" strokeOpacity="0.25" />
+      <path fill="currentColor" d="M12 2a10 10 0 0 1 10 10h-3a7 7 0 0 0-7-7V2z" />
+    </svg>
+  );
+}
 
 export function Dashboard({ catalog }: { catalog: CatalogData }) {
   const audioRef = useRef<HTMLAudioElement>(null);
@@ -310,17 +320,16 @@ export function Dashboard({ catalog }: { catalog: CatalogData }) {
       return Array.isArray(parsed) ? sortStations(parsed) : [];
     } catch { return []; }
   });
-  const [showWelcome, setShowWelcome] = useState<boolean>(() => {
-    if (typeof window === "undefined") return false;
-    return !window.localStorage.getItem(LOCATION_KEY);
-  });
-  const [savedLocation] = useState<SavedLocation | null>(readSavedLocation);
+  const [activeModule, setActiveModule] = useState<"fm" | "pmr">("fm");
+
+  const [showWelcome, setShowWelcome] = useState(false);
+  const [savedLocation, setSavedLocation] = useState<SavedLocation | null>(null);
 
   const [query, setQuery] = useState("");
   const deferred = useDeferredValue(query.trim().toLowerCase());
-  const [regionFilter, setRegionFilter] = useState<string>(() => readSavedLocation()?.regionId ?? "all");
-  const [countryFilter, setCountryFilter] = useState<string>(() => readSavedLocation()?.countryId ?? "all");
-  const [cityFilter, setCityFilter] = useState<string>(() => readSavedLocation()?.cityId ?? "all");
+  const [regionFilter, setRegionFilter] = useState("all");
+  const [countryFilter, setCountryFilter] = useState("all");
+  const [cityFilter, setCityFilter] = useState("all");
   const [selectedId, setSelectedId] = useState<string>(catalog.stations[0]?.id || "");
   const [playingId, setPlayingId] = useState<string | null>(null);
   const [hardware, setHardware] = useState<HardwareStatus | null>(null);
@@ -330,6 +339,21 @@ export function Dashboard({ catalog }: { catalog: CatalogData }) {
   const [showAdd, setShowAdd] = useState(false);
   const [controls, setControls] = useState({ lna: 24, vga: 20, audioGain: 1.0 });
   const [volume, setVolume] = useState(1);
+  const [streamStarting, setStreamStarting] = useState(false);
+
+  // Restore location filter from localStorage after mount (avoids SSR/client hydration mismatch)
+  useEffect(() => {
+    const raw = window.localStorage.getItem(LOCATION_KEY);
+    if (!raw) { setShowWelcome(true); return; }
+    if (raw === "skipped") return;
+    try {
+      const loc = JSON.parse(raw) as SavedLocation;
+      setSavedLocation(loc);
+      setRegionFilter(loc.regionId);
+      setCountryFilter(loc.countryId);
+      setCityFilter(loc.cityId);
+    } catch { /* corrupt data — ignore */ }
+  }, []);
 
   useEffect(() => {
     window.localStorage.setItem(STORAGE_KEY, JSON.stringify(customStations));
@@ -355,6 +379,7 @@ export function Dashboard({ catalog }: { catalog: CatalogData }) {
     audio.removeAttribute("src");
     audio.load();
     setPlayingId(null);
+    setStreamStarting(false);
   }
 
   function resetFilters(): void {
@@ -392,6 +417,7 @@ export function Dashboard({ catalog }: { catalog: CatalogData }) {
 
   function handleLocationSelect(loc: SavedLocation): void {
     window.localStorage.setItem(LOCATION_KEY, JSON.stringify(loc));
+    setSavedLocation(loc);
     startTransition(() => {
       setRegionFilter(loc.regionId);
       setCountryFilter(loc.countryId);
@@ -456,6 +482,7 @@ export function Dashboard({ catalog }: { catalog: CatalogData }) {
   async function startListening(station: FmStation | null): Promise<void> {
     if (!station || !audioRef.current) return;
     setStreamError("");
+    setStreamStarting(true);
     const audio = audioRef.current;
     audio.pause();
     audio.src = buildStreamUrl(station, controls);
@@ -464,10 +491,14 @@ export function Dashboard({ catalog }: { catalog: CatalogData }) {
       setPlayingId(station.id);
       void refreshHardware();
     } catch (err) {
+      // AbortError = play() interrupted by a rapid pause()/src-change — safe to ignore
+      if (err instanceof DOMException && err.name === "AbortError") return;
       audio.removeAttribute("src");
       audio.load();
       setPlayingId(null);
       setStreamError(err instanceof Error ? err.message : "Browser could not start audio playback.");
+    } finally {
+      setStreamStarting(false);
     }
   }
 
@@ -577,29 +608,51 @@ export function Dashboard({ catalog }: { catalog: CatalogData }) {
 
         {/* ── Module sidebar ──────────────────────────────────── */}
         <nav className="flex w-[70px] shrink-0 flex-col border-r border-white/8 bg-black/20 py-2">
-          {MODULES.map(mod => (
-            <button
-              key={mod.id}
-              className={cx(
-                "flex flex-col items-center gap-1 px-2 py-3 text-center transition-colors",
-                mod.live
-                  ? "bg-[var(--accent)]/6 text-[var(--accent)]"
-                  : "cursor-not-allowed text-[var(--muted)] opacity-30",
-              )}
-              style={mod.live ? { borderRight: "2px solid var(--accent)" } : undefined}
-              disabled={!mod.live}
-              type="button"
-              title={mod.live ? `${mod.label} · ${mod.band}` : `${mod.label} · coming soon`}
-            >
-              <span className="font-mono text-[11px] font-bold uppercase tracking-[0.1em]">{mod.label}</span>
-              <span className="font-mono text-[8px] leading-none text-current opacity-70">{mod.band}</span>
-              {!mod.live ? <span className="font-mono text-[7px] uppercase tracking-wide opacity-60">soon</span> : null}
-            </button>
-          ))}
+          {MODULES.map(mod => {
+            const isActive = mod.live && activeModule === mod.id;
+            return (
+              <button
+                key={mod.id}
+                className={cx(
+                  "flex flex-col items-center gap-1 px-2 py-3 text-center transition-colors",
+                  isActive
+                    ? "bg-[var(--accent)]/6 text-[var(--accent)] border-r-accent"
+                    : mod.live
+                      ? "text-[var(--muted-strong)] hover:bg-white/[0.03] hover:text-[var(--foreground)]"
+                      : "cursor-not-allowed text-[var(--muted)] opacity-30",
+                )}
+                disabled={!mod.live}
+                type="button"
+                title={mod.live ? `${mod.label} · ${mod.band}` : `${mod.label} · coming soon`}
+                onClick={() => {
+                  if (!mod.live) return;
+                  if (activeModule !== mod.id) {
+                    stopListening();
+                    setActiveModule(mod.id as "fm" | "pmr");
+                  }
+                }}
+              >
+                <span className="font-mono text-[11px] font-bold uppercase tracking-[0.1em]">{mod.label}</span>
+                <span className="font-mono text-[8px] leading-none text-current opacity-70">{mod.band}</span>
+                {!mod.live ? <span className="font-mono text-[7px] uppercase tracking-wide opacity-60">soon</span> : null}
+              </button>
+            );
+          })}
         </nav>
 
+        {/* ── PMR module ──────────────────────────────────────── */}
+        {activeModule === "pmr" ? (
+          <PmrModule
+            audioRef={audioRef}
+            hardware={hardware}
+            onRefreshHardware={refreshHardware}
+            controls={controls}
+            onControlsChange={setControls}
+          />
+        ) : null}
+
         {/* ── FM content ──────────────────────────────────────── */}
-        <div className="flex flex-1 overflow-hidden">
+        <div className={cx("flex flex-1 overflow-hidden", activeModule !== "fm" && "hidden")}>
 
           {/* ── Filters ─────────────────────────────────────── */}
           <aside className="flex w-56 shrink-0 flex-col overflow-y-auto border-r border-white/8 bg-black/10">
@@ -770,11 +823,10 @@ export function Dashboard({ catalog }: { catalog: CatalogData }) {
                       className={cx(
                         "group flex cursor-pointer items-center gap-3 border-b border-white/[0.045] px-4 py-3 transition-colors",
                         isSel
-                          ? "bg-[var(--accent)]/7"
-                          : "hover:bg-white/[0.025]",
+                          ? "bg-[var(--accent)]/7 border-l-accent"
+                          : "hover:bg-white/[0.025] border-l-clear",
                       )}
                       data-station-id={station.id}
-                      style={isSel ? { borderLeft: "2px solid var(--accent)" } : { borderLeft: "2px solid transparent" }}
                       onClick={() => setSelectedId(station.id)}
                     >
                       {/* Frequency */}
@@ -934,10 +986,13 @@ export function Dashboard({ catalog }: { catalog: CatalogData }) {
                   <div className="flex gap-2">
                     <button
                       className={cx("flex-1 justify-center", CLS_BTN_PRIMARY)}
+                      disabled={streamStarting}
                       onClick={() => void startListening(selected)}
                       type="button"
                     >
-                      {playingId === selected.id ? "▶ Retune" : "▶ Listen"}
+                      {streamStarting ? (
+                        <><Spinner />Starting…</>
+                      ) : playingId === selected.id ? "▶ Retune" : "▶ Listen"}
                     </button>
                     <button className={CLS_BTN_GHOST} onClick={stopListening} type="button">■</button>
                   </div>
