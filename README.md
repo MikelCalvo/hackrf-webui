@@ -81,6 +81,15 @@ Default address:
 
 - `http://127.0.0.1:3000`
 
+Module routes:
+
+- `/fm`
+- `/pmr`
+- `/ais`
+- `/adsb`
+
+The root route `/` redirects to the last module used in the browser when available, and otherwise falls back to `/fm`.
+
 Useful options:
 
 ```bash

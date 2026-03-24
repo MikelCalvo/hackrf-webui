@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import dynamic from "next/dynamic";
 import {
   startTransition,
   useDeferredValue,
@@ -12,15 +13,18 @@ import {
   type FormEvent,
 } from "react";
 
-import { AdsbModule } from "@/components/adsb";
-import { AisModule } from "@/components/ais";
-import { PmrModule } from "@/components/pmr";
 import {
   buildCustomStation,
   compareText,
   hydrateCountryShard,
   sortStations,
 } from "@/lib/catalog";
+import {
+  APP_MODULES,
+  getCookieHeaderForModule,
+  LAST_MODULE_STORAGE_KEY,
+  type AppModuleId,
+} from "@/lib/modules";
 import type {
   CatalogCountryShard,
   CatalogCountrySummary,
@@ -60,15 +64,44 @@ const DEFAULT_DRAFT: CustomStationDraft = {
   description: "",
 };
 
-const MODULES = [
-  { id: "fm", label: "FM", band: "87.5-108", live: true },
-  { id: "pmr", label: "PMR", band: "446 MHz", live: true },
-  { id: "ads-b", label: "ADS-B", band: "1090 MHz", live: true },
-  { id: "ais", label: "AIS", band: "162 MHz", live: true },
-  { id: "airband", label: "Airband", band: "118-137", live: false },
-] as const;
-
 const numberFormatter = new Intl.NumberFormat("en");
+
+function ModulePanelLoading({ label }: { label: string }) {
+  return (
+    <div className="flex flex-1 items-center justify-center p-8 text-center">
+      <div className="space-y-3">
+        <div className="mx-auto flex h-10 w-10 items-center justify-center rounded-full border border-white/10 bg-white/[0.03]">
+          <Spinner />
+        </div>
+        <p className="text-sm text-[var(--muted)]">Loading {label}...</p>
+      </div>
+    </div>
+  );
+}
+
+const PmrModule = dynamic(
+  () => import("@/components/pmr").then((mod) => mod.PmrModule),
+  {
+    ssr: false,
+    loading: () => <ModulePanelLoading label="PMR" />,
+  },
+);
+
+const AisModule = dynamic(
+  () => import("@/components/ais").then((mod) => mod.AisModule),
+  {
+    ssr: false,
+    loading: () => <ModulePanelLoading label="AIS" />,
+  },
+);
+
+const AdsbModule = dynamic(
+  () => import("@/components/adsb").then((mod) => mod.AdsbModule),
+  {
+    ssr: false,
+    loading: () => <ModulePanelLoading label="ADS-B" />,
+  },
+);
 
 function cx(...args: Array<string | false | null | undefined>): string {
   return args.filter(Boolean).join(" ");
@@ -699,7 +732,13 @@ function Spinner() {
   );
 }
 
-export function Dashboard({ manifest }: { manifest: CatalogManifest }) {
+export function Dashboard({
+  activeModule,
+  manifest,
+}: {
+  activeModule: AppModuleId;
+  manifest: CatalogManifest;
+}) {
   const audioRef = useRef<HTMLAudioElement>(null);
   const listRef = useRef<HTMLDivElement>(null);
   const cacheRef = useRef<Record<string, LoadedCountryCatalog>>({});
@@ -708,6 +747,10 @@ export function Dashboard({ manifest }: { manifest: CatalogManifest }) {
   );
 
   const [customStations, setCustomStations] = useState<FmStation[]>(() => {
+    if (activeModule !== "fm") {
+      return [];
+    }
+
     if (typeof window === "undefined") {
       return [];
     }
@@ -727,7 +770,6 @@ export function Dashboard({ manifest }: { manifest: CatalogManifest }) {
   const [loadedCountries, setLoadedCountries] = useState<Record<string, LoadedCountryCatalog>>(
     {},
   );
-  const [activeModule, setActiveModule] = useState<"fm" | "pmr" | "ads-b" | "ais">("fm");
   const [showWelcome, setShowWelcome] = useState(false);
   const [savedLocation, setSavedLocation] = useState<SavedLocation | null>(null);
   const [query, setQuery] = useState("");
@@ -746,10 +788,11 @@ export function Dashboard({ manifest }: { manifest: CatalogManifest }) {
   const [showAdd, setShowAdd] = useState(false);
   const [controls, setControls] = useState({ lna: 24, vga: 20, audioGain: 1.0 });
   const [volume, setVolume] = useState(1);
-  const [streamStarting, setStreamStarting] = useState(false);
+  const [startingStationId, setStartingStationId] = useState<string | null>(null);
   const [loadingCountryId, setLoadingCountryId] = useState<string | null>(null);
   const [listHeight, setListHeight] = useState(0);
   const [scrollTop, setScrollTop] = useState(0);
+  const isFmModule = activeModule === "fm";
 
   const countriesById = useMemo(
     () => new Map(manifest.countries.map((country) => [country.id, country])),
@@ -773,6 +816,21 @@ export function Dashboard({ manifest }: { manifest: CatalogManifest }) {
   }
 
   useEffect(() => {
+    try {
+      window.localStorage.setItem(LAST_MODULE_STORAGE_KEY, activeModule);
+    } catch {
+      // Ignore local persistence failures.
+    }
+
+    document.cookie = getCookieHeaderForModule(activeModule);
+  }, [activeModule]);
+
+  useEffect(() => {
+    if (!isFmModule) {
+      setShowWelcome(false);
+      return;
+    }
+
     const raw = window.localStorage.getItem(LOCATION_KEY);
     if (!raw) {
       setShowWelcome(true);
@@ -814,7 +872,7 @@ export function Dashboard({ manifest }: { manifest: CatalogManifest }) {
     } catch {
       setShowWelcome(true);
     }
-  }, [countriesById]);
+  }, [countriesById, isFmModule]);
 
   useEffect(() => {
     window.localStorage.setItem(STORAGE_KEY, JSON.stringify(customStations));
@@ -847,7 +905,7 @@ export function Dashboard({ manifest }: { manifest: CatalogManifest }) {
     audio.removeAttribute("src");
     audio.load();
     setPlayingId(null);
-    setStreamStarting(false);
+    setStartingStationId(null);
   }
 
   function resetFilters(): void {
@@ -914,12 +972,16 @@ export function Dashboard({ manifest }: { manifest: CatalogManifest }) {
   );
 
   useEffect(() => {
+    if (!isFmModule) {
+      return;
+    }
+
     if (countryFilter === "all") {
       return;
     }
 
     void ensureCountryLoaded(countryFilter);
-  }, [countryFilter]);
+  }, [countryFilter, isFmModule]);
 
   useEffect(() => {
     let dead = false;
@@ -956,6 +1018,10 @@ export function Dashboard({ manifest }: { manifest: CatalogManifest }) {
   }, []);
 
   useEffect(() => {
+    if (!isFmModule) {
+      return;
+    }
+
     const listNode = listRef.current;
     if (!listNode) {
       return;
@@ -981,7 +1047,7 @@ export function Dashboard({ manifest }: { manifest: CatalogManifest }) {
       resizeObserver?.disconnect();
       window.removeEventListener("resize", syncMetrics);
     };
-  }, []);
+  }, [isFmModule]);
 
   const regionOptions = useMemo(
     () => buildRegionOptions(manifest, customStations),
@@ -1172,7 +1238,7 @@ export function Dashboard({ manifest }: { manifest: CatalogManifest }) {
     }
 
     setStreamError("");
-    setStreamStarting(true);
+    setStartingStationId(station.id);
 
     const audio = audioRef.current;
     audio.pause();
@@ -1196,7 +1262,7 @@ export function Dashboard({ manifest }: { manifest: CatalogManifest }) {
           : "Browser could not start audio playback.",
       );
     } finally {
-      setStreamStarting(false);
+      setStartingStationId(null);
     }
   }
 
@@ -1227,7 +1293,7 @@ export function Dashboard({ manifest }: { manifest: CatalogManifest }) {
   }
 
   function removeCustom(id: string): void {
-    if (playingId === id) {
+    if (playingId === id || startingStationId === id) {
       stopListening();
     }
 
@@ -1325,11 +1391,11 @@ export function Dashboard({ manifest }: { manifest: CatalogManifest }) {
   const activeCountryLoading =
     activeCountry !== "all" && !activeCountryData && loadingCountryId === activeCountry;
   const shouldShowSelectCountryState =
-    activeCountry === "all" && customStations.length === 0;
+    isFmModule && activeCountry === "all" && customStations.length === 0;
 
   return (
     <div className="flex h-screen flex-col overflow-hidden">
-      {showWelcome ? (
+      {isFmModule && showWelcome ? (
         <WelcomeModal
           manifest={manifest}
           onLoadCountry={async (countryId) => {
@@ -1377,9 +1443,14 @@ export function Dashboard({ manifest }: { manifest: CatalogManifest }) {
 
         {hardware?.activeStream ? (
           <button
-            className="flex items-center gap-2 rounded-full border border-[var(--accent)]/20 bg-[var(--accent)]/6 px-3 py-1 transition hover:border-[var(--accent)]/40 hover:bg-[var(--accent)]/10"
-            onClick={focusPlayingStation}
-            title="Show in station list"
+            className={cx(
+              "flex items-center gap-2 rounded-full border border-[var(--accent)]/20 bg-[var(--accent)]/6 px-3 py-1",
+              isFmModule && playingId
+                ? "transition hover:border-[var(--accent)]/40 hover:bg-[var(--accent)]/10"
+                : "cursor-default",
+            )}
+            onClick={isFmModule && playingId ? focusPlayingStation : undefined}
+            title={isFmModule && playingId ? "Show in station list" : undefined}
             type="button"
           >
             <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-[var(--accent)]" />
@@ -1392,7 +1463,7 @@ export function Dashboard({ manifest }: { manifest: CatalogManifest }) {
           </button>
         ) : null}
 
-        {playingId ? (
+        {isFmModule && playingId ? (
           <>
             <VolumeControl volume={volume} onChange={setVolume} />
             <button className={CLS_BTN_GHOST} onClick={stopListening} type="button">
@@ -1413,37 +1484,45 @@ export function Dashboard({ manifest }: { manifest: CatalogManifest }) {
 
       <div className="flex flex-1 overflow-hidden">
         <nav className="flex w-[70px] shrink-0 flex-col border-r border-white/8 bg-black/20 py-2">
-          {MODULES.map((module) => {
+          {APP_MODULES.map((module) => {
             const isActive = module.live && activeModule === module.id;
 
+            if (!module.live) {
+              return (
+                <button
+                  key={module.id}
+                  className={cx(
+                    "flex flex-col items-center gap-1 px-2 py-3 text-center",
+                    "cursor-not-allowed text-[var(--muted)] opacity-30",
+                  )}
+                  disabled
+                  title={`${module.label} · coming soon`}
+                  type="button"
+                >
+                  <span className="font-mono text-[11px] font-bold uppercase tracking-[0.1em]">
+                    {module.label}
+                  </span>
+                  <span className="font-mono text-[8px] leading-none text-current opacity-70">
+                    {module.band}
+                  </span>
+                  <span className="font-mono text-[7px] uppercase tracking-wide opacity-60">
+                    soon
+                  </span>
+                </button>
+              );
+            }
+
             return (
-              <button
+              <Link
                 key={module.id}
                 className={cx(
                   "flex flex-col items-center gap-1 px-2 py-3 text-center transition-colors",
                   isActive
                     ? "border-r-accent bg-[var(--accent)]/6 text-[var(--accent)]"
-                    : module.live
-                      ? "text-[var(--muted-strong)] hover:bg-white/[0.03] hover:text-[var(--foreground)]"
-                      : "cursor-not-allowed text-[var(--muted)] opacity-30",
+                    : "text-[var(--muted-strong)] hover:bg-white/[0.03] hover:text-[var(--foreground)]",
                 )}
-                disabled={!module.live}
-                onClick={() => {
-                  if (!module.live) {
-                    return;
-                  }
-
-                  if (activeModule !== module.id) {
-                    stopListening();
-                    setActiveModule(module.id);
-                  }
-                }}
-                title={
-                  module.live
-                    ? `${module.label} · ${module.band}`
-                    : `${module.label} · coming soon`
-                }
-                type="button"
+                href={module.path}
+                title={`${module.label} · ${module.band}`}
               >
                 <span className="font-mono text-[11px] font-bold uppercase tracking-[0.1em]">
                   {module.label}
@@ -1451,12 +1530,7 @@ export function Dashboard({ manifest }: { manifest: CatalogManifest }) {
                 <span className="font-mono text-[8px] leading-none text-current opacity-70">
                   {module.band}
                 </span>
-                {!module.live ? (
-                  <span className="font-mono text-[7px] uppercase tracking-wide opacity-60">
-                    soon
-                  </span>
-                ) : null}
-              </button>
+              </Link>
             );
           })}
         </nav>
@@ -1471,7 +1545,7 @@ export function Dashboard({ manifest }: { manifest: CatalogManifest }) {
           />
         ) : null}
 
-        {activeModule === "ads-b" ? (
+        {activeModule === "adsb" ? (
           <AdsbModule hardware={hardware} onRefreshHardware={refreshHardware} />
         ) : null}
 
@@ -1479,7 +1553,8 @@ export function Dashboard({ manifest }: { manifest: CatalogManifest }) {
           <AisModule hardware={hardware} onRefreshHardware={refreshHardware} />
         ) : null}
 
-        <div className={cx("flex flex-1 overflow-hidden", activeModule !== "fm" && "hidden")}>
+        {isFmModule ? (
+        <div className="flex flex-1 overflow-hidden">
           <aside className="flex w-56 shrink-0 flex-col overflow-y-auto border-r border-white/8 bg-black/10">
             <div className="space-y-3 p-4">
               <div className="flex items-center justify-between">
@@ -1730,6 +1805,7 @@ export function Dashboard({ manifest }: { manifest: CatalogManifest }) {
                 {windowedStations.map((station) => {
                   const isSelected = selected?.id === station.id;
                   const isPlaying = playingId === station.id;
+                  const isStarting = startingStationId === station.id;
 
                   return (
                     <div
@@ -1778,22 +1854,32 @@ export function Dashboard({ manifest }: { manifest: CatalogManifest }) {
                           <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-[var(--accent)]" />
                           on air
                         </span>
+                      ) : isStarting ? (
+                        <span className="flex shrink-0 items-center gap-1 font-mono text-[9px] uppercase tracking-[0.2em] text-amber-200">
+                          <Spinner />
+                          starting
+                        </span>
                       ) : null}
 
                       <button
                         className={cx(
                           "shrink-0 rounded-full border px-2.5 py-1 font-mono text-[10px] font-semibold transition",
-                          isPlaying
+                          isPlaying || isStarting
                             ? "border-[var(--accent)]/35 bg-[var(--accent)]/10 text-[var(--accent)]"
                             : "border-white/10 bg-white/[0.03] text-[var(--muted)] opacity-0 group-hover:opacity-100",
                         )}
                         onClick={(event) => {
                           event.stopPropagation();
+                          if (isPlaying) {
+                            stopListening();
+                            return;
+                          }
+
                           void startListening(station);
                         }}
                         type="button"
                       >
-                        ▶
+                        {isStarting ? <Spinner /> : isPlaying ? "■" : "▶"}
                       </button>
 
                       {!station.curated ? (
@@ -1953,22 +2039,34 @@ export function Dashboard({ manifest }: { manifest: CatalogManifest }) {
                   <div className="flex gap-2">
                     <button
                       className={cx("flex-1 justify-center", CLS_BTN_PRIMARY)}
-                      disabled={streamStarting}
-                      onClick={() => void startListening(selected)}
+                      disabled={startingStationId !== null && startingStationId !== selected.id}
+                      onClick={() => {
+                        if (playingId === selected.id) {
+                          stopListening();
+                          return;
+                        }
+
+                        void startListening(selected);
+                      }}
                       type="button"
                     >
-                      {streamStarting ? (
+                      {startingStationId === selected.id ? (
                         <>
                           <Spinner />
                           Starting...
                         </>
                       ) : playingId === selected.id ? (
-                        "▶ Retune"
+                        "■ Stop"
                       ) : (
                         "▶ Listen"
                       )}
                     </button>
-                    <button className={CLS_BTN_GHOST} onClick={stopListening} type="button">
+                    <button
+                      className={CLS_BTN_GHOST}
+                      disabled={!playingId && startingStationId === null}
+                      onClick={stopListening}
+                      type="button"
+                    >
                       ■
                     </button>
                   </div>
@@ -1976,9 +2074,13 @@ export function Dashboard({ manifest }: { manifest: CatalogManifest }) {
                   <audio
                     className="w-full rounded-lg opacity-90"
                     controls
-                    onEnded={() => setPlayingId(null)}
+                    onEnded={() => {
+                      setPlayingId(null);
+                      setStartingStationId(null);
+                    }}
                     onError={() => {
                       setPlayingId(null);
+                      setStartingStationId(null);
                       setStreamError(
                         "Could not open stream. Check HackRF status, ffmpeg, and the native binary.",
                       );
@@ -2042,6 +2144,7 @@ export function Dashboard({ manifest }: { manifest: CatalogManifest }) {
             )}
           </aside>
         </div>
+        ) : null}
       </div>
     </div>
   );

@@ -7,26 +7,26 @@ import type {
   AdsbAircraftContact,
   AdsbFeedSnapshot,
   AdsbRuntimeState,
-  CatalogCountryShard,
-  GeoBounds,
   HardwareStatus,
 } from "@/lib/types";
+import {
+  buildBoundsPairs,
+  buildPointBounds,
+  isPointBounds,
+  syncLeafletBasemap,
+  useManagedRuntimeFeed,
+  useSavedCityView,
+} from "@/components/live-map";
 
 const EMPTY_TILE_DATA_URL =
   "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=";
 const DEFAULT_CENTER: [number, number] = [0, 0];
 const DEFAULT_ZOOM = 2;
 const DEFAULT_CITY_ZOOM = 9;
-const LOCATION_KEY = "hackrf-webui.location.v1";
 
 type AdsbModuleProps = {
   hardware: HardwareStatus | null;
   onRefreshHardware: () => Promise<void>;
-};
-
-type SavedLocation = {
-  cityId?: string;
-  countryId?: string;
 };
 
 function cx(...args: Array<string | false | null | undefined>): string {
@@ -108,26 +108,6 @@ function runtimeLabel(state: AdsbRuntimeState | null): string {
   }
 }
 
-function buildBoundsPairs(bounds: GeoBounds): [[number, number], [number, number]] {
-  return [
-    [bounds.south, bounds.west],
-    [bounds.north, bounds.east],
-  ];
-}
-
-function isPointBounds(bounds: GeoBounds): boolean {
-  return bounds.west === bounds.east && bounds.south === bounds.north;
-}
-
-function buildPointBounds(latitude: number, longitude: number): GeoBounds {
-  return {
-    west: longitude,
-    east: longitude,
-    south: latitude,
-    north: latitude,
-  };
-}
-
 async function fetchAdsbFeed(): Promise<AdsbFeedSnapshot> {
   const response = await fetch("/api/adsb", { cache: "no-store" });
   if (!response.ok) {
@@ -195,18 +175,28 @@ export function AdsbModule({ hardware, onRefreshHardware }: AdsbModuleProps) {
   const markerLayerRef = useRef<LayerGroup | null>(null);
   const basemapLayerRef = useRef<Layer | null>(null);
   const didFitBoundsRef = useRef(false);
-  const onRefreshHardwareRef = useRef(onRefreshHardware);
-  const refreshHardwareRef = useRef<() => Promise<void>>(async () => undefined);
-  const refreshSnapshotRef = useRef<() => Promise<void>>(async () => undefined);
-
-  const [snapshot, setSnapshot] = useState<AdsbFeedSnapshot | null>(null);
   const [selectedHex, setSelectedHex] = useState("");
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
-  const [runtimeBusy, setRuntimeBusy] = useState(false);
-  const [savedCityView, setSavedCityView] = useState<{ latitude: number; longitude: number } | null>(null);
-  const [savedCityResolved, setSavedCityResolved] = useState(false);
   const basemapSignatureRef = useRef("");
+
+  const { savedCityResolved, savedCityView } = useSavedCityView();
+  const {
+    controlRuntime,
+    error,
+    loading,
+    runtimeBusy,
+    setError,
+    snapshot,
+  } = useManagedRuntimeFeed<AdsbFeedSnapshot>({
+    fetchSnapshot: fetchAdsbFeed,
+    messages: {
+      refresh: "Could not refresh the ADS-B feed.",
+      start: "Could not start the ADS-B decoder.",
+      stop: "Could not stop the ADS-B decoder.",
+    },
+    onRefreshHardware,
+    startRuntime: () => requestAdsbRuntime("POST"),
+    stopRuntime: () => requestAdsbRuntime("DELETE"),
+  });
   const tilePackKind = snapshot?.tilePack.kind ?? null;
   const tilePackTileUrlTemplate = snapshot?.tilePack.tileUrlTemplate ?? null;
   const tilePackPmtilesUrl = snapshot?.tilePack.pmtilesUrl ?? null;
@@ -215,53 +205,6 @@ export function AdsbModule({ hardware, onRefreshHardware }: AdsbModuleProps) {
   const tilePackMinZoom = snapshot?.tilePack.minZoom ?? null;
   const tilePackMaxZoom = snapshot?.tilePack.maxZoom ?? null;
   const tilePackAttribution = snapshot?.tilePack.attribution ?? null;
-
-  useEffect(() => {
-    onRefreshHardwareRef.current = onRefreshHardware;
-  }, [onRefreshHardware]);
-
-  refreshHardwareRef.current = async () => {
-    try {
-      await onRefreshHardwareRef.current();
-    } catch {
-      // The dashboard already renders hardware refresh failures globally.
-    }
-  };
-
-  refreshSnapshotRef.current = async () => {
-    try {
-      const nextSnapshot = await fetchAdsbFeed();
-      setSnapshot(nextSnapshot);
-      setError("");
-    } catch (pollError) {
-      setError(
-        pollError instanceof Error ? pollError.message : "Could not refresh the ADS-B feed.",
-      );
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  async function controlRuntime(method: "POST" | "DELETE"): Promise<void> {
-    setRuntimeBusy(true);
-
-    try {
-      await requestAdsbRuntime(method);
-      setError("");
-    } catch (runtimeError) {
-      setError(
-        runtimeError instanceof Error
-          ? runtimeError.message
-          : method === "POST"
-            ? "Could not start the ADS-B decoder."
-            : "Could not stop the ADS-B decoder.",
-      );
-    } finally {
-      setRuntimeBusy(false);
-      await refreshHardwareRef.current();
-      await refreshSnapshotRef.current();
-    }
-  }
 
   function focusAircraft(aircraft: AdsbAircraftContact): void {
     if (aircraft.latitude === null || aircraft.longitude === null) {
@@ -273,112 +216,6 @@ export function AdsbModule({ hardware, onRefreshHardware }: AdsbModuleProps) {
       duration: 0.7,
     });
   }
-
-  useEffect(() => {
-    let cancelled = false;
-
-    const boot = async () => {
-      setRuntimeBusy(true);
-
-      try {
-        await requestAdsbRuntime("POST");
-        if (!cancelled) {
-          setError("");
-        }
-      } catch (runtimeError) {
-        if (!cancelled) {
-          setError(
-            runtimeError instanceof Error
-              ? runtimeError.message
-              : "Could not start the ADS-B decoder.",
-          );
-        }
-      } finally {
-        if (!cancelled) {
-          setRuntimeBusy(false);
-        }
-        await refreshHardwareRef.current();
-        if (!cancelled) {
-          await refreshSnapshotRef.current();
-        }
-      }
-    };
-
-    void boot();
-
-    return () => {
-      cancelled = true;
-      void fetch("/api/adsb-runtime", {
-        method: "DELETE",
-        cache: "no-store",
-        keepalive: true,
-      }).catch(() => undefined);
-      void refreshHardwareRef.current();
-    };
-  }, []);
-
-  useEffect(() => {
-    let cancelled = false;
-
-    const loadSavedCityView = async () => {
-      if (typeof window === "undefined") {
-        setSavedCityResolved(true);
-        return;
-      }
-
-      const raw = window.localStorage.getItem(LOCATION_KEY);
-      if (!raw || raw === "skipped") {
-        setSavedCityResolved(true);
-        return;
-      }
-
-      try {
-        const saved = JSON.parse(raw) as SavedLocation;
-        if (
-          typeof saved.countryId !== "string"
-          || typeof saved.cityId !== "string"
-          || saved.cityId === "all"
-        ) {
-          return;
-        }
-
-        const response = await fetch(`/catalog/countries/${saved.countryId}.json`, {
-          cache: "force-cache",
-        });
-        if (!response.ok) {
-          return;
-        }
-
-        const shard = (await response.json()) as CatalogCountryShard;
-        const city = shard.cities.find((entry) => entry.id === saved.cityId);
-        if (!city || cancelled) {
-          return;
-        }
-
-        setSavedCityView({
-          latitude: city.latitude,
-          longitude: city.longitude,
-        });
-      } catch {
-        // Ignore broken saved-location payloads and fall back to the standard map view.
-      } finally {
-        if (!cancelled) {
-          setSavedCityResolved(true);
-        }
-      }
-    };
-
-    void loadSavedCityView();
-
-    return () => {
-      cancelled = true;
-    };
-  }, []);
-
-  useEffect(() => {
-    const timer = window.setInterval(() => void refreshSnapshotRef.current(), 3_000);
-    return () => clearInterval(timer);
-  }, []);
 
   useEffect(() => {
     if (!snapshot?.aircraft.length) {
@@ -454,103 +291,45 @@ export function AdsbModule({ hardware, onRefreshHardware }: AdsbModuleProps) {
   useEffect(() => {
     const leaflet = leafletRef.current;
     const map = mapRef.current;
-    if (
-      !leaflet
-      || !map
-      || !tilePackKind
-      || tilePackMinZoom === null
-      || tilePackMaxZoom === null
-      || !tilePackAttribution
-    ) {
+    if (!leaflet || !map) {
       return;
     }
 
     let cancelled = false;
-    const nextSignature = [
-      tilePackKind,
-      tilePackTileUrlTemplate ?? "",
-      tilePackPmtilesUrl ?? "",
-      tilePackFlavor ?? "",
-      tilePackLang ?? "",
-      tilePackMinZoom,
-      tilePackMaxZoom,
-      tilePackAttribution,
-    ].join("|");
-
-    if (basemapSignatureRef.current === nextSignature) {
-      return;
-    }
-
-    basemapSignatureRef.current = nextSignature;
-    map.setMinZoom(tilePackMinZoom);
-    map.setMaxZoom(tilePackMaxZoom);
-
-    const currentZoom = map.getZoom();
-    if (Number.isFinite(currentZoom)) {
-      const clampedZoom = Math.min(Math.max(currentZoom, tilePackMinZoom), tilePackMaxZoom);
-      if (clampedZoom !== currentZoom) {
-        map.setZoom(clampedZoom, { animate: false });
-      }
-    }
-
-    basemapLayerRef.current?.remove();
-    basemapLayerRef.current = null;
-
-    const setupBasemap = async () => {
-      if (tilePackKind === "pmtiles" && tilePackPmtilesUrl) {
-        try {
-          const protomapsModule = await import("protomaps-leaflet");
-          if (cancelled || !mapRef.current) {
-            return;
-          }
-
-          basemapLayerRef.current = protomapsModule.leafletLayer({
-            url: tilePackPmtilesUrl,
-            flavor: tilePackFlavor ?? "dark",
-            lang: tilePackLang ?? "en",
-            noWrap: true,
-          }) as unknown as Layer;
-          basemapLayerRef.current.addTo(mapRef.current);
-        } catch (layerError) {
-          if (!cancelled) {
-            setError(
-              layerError instanceof Error
-                ? layerError.message
-                : "Could not load the offline PMTiles basemap.",
-            );
-          }
-        }
-        return;
-      }
-
-      if (!tilePackTileUrlTemplate) {
-        return;
-      }
-
-      basemapLayerRef.current = leaflet.tileLayer(tilePackTileUrlTemplate, {
+    void syncLeafletBasemap({
+      cancelled: () => cancelled,
+      emptyTileDataUrl: EMPTY_TILE_DATA_URL,
+      errorMessage: "Could not load the offline PMTiles basemap.",
+      leaflet,
+      layerRef: basemapLayerRef,
+      map,
+      onError: setError,
+      signatureRef: basemapSignatureRef,
+      source: {
+        kind: tilePackKind,
+        tileUrlTemplate: tilePackTileUrlTemplate,
+        pmtilesUrl: tilePackPmtilesUrl,
+        flavor: tilePackFlavor,
+        lang: tilePackLang,
         minZoom: tilePackMinZoom,
         maxZoom: tilePackMaxZoom,
-        maxNativeZoom: tilePackMaxZoom,
-        errorTileUrl: EMPTY_TILE_DATA_URL,
         attribution: tilePackAttribution,
-      });
-      basemapLayerRef.current.addTo(map);
-    };
-
-    void setupBasemap();
+      },
+    });
 
     return () => {
       cancelled = true;
     };
   }, [
-    tilePackKind,
-    tilePackTileUrlTemplate,
-    tilePackPmtilesUrl,
-    tilePackFlavor,
-    tilePackLang,
-    tilePackMinZoom,
-    tilePackMaxZoom,
+    setError,
     tilePackAttribution,
+    tilePackFlavor,
+    tilePackKind,
+    tilePackLang,
+    tilePackMaxZoom,
+    tilePackMinZoom,
+    tilePackPmtilesUrl,
+    tilePackTileUrlTemplate,
   ]);
 
   const selected =
