@@ -1,0 +1,2845 @@
+{
+  "country": {
+    "id": "puerto-rico",
+    "code": "PR",
+    "name": "Puerto Rico",
+    "regionId": "north-america",
+    "cityCount": 47,
+    "stationCount": 133,
+    "sourceCount": 1,
+    "sources": [
+      {
+        "name": "FCC LMS Public Database",
+        "url": "https://enterpriseefiling.fcc.gov/dataentry/public/tv/lmsDatabase.html"
+      }
+    ],
+    "lastImportedAt": "2026-03-24",
+    "coverageStatus": "active",
+    "coverageTier": "official-substantial",
+    "coverageScope": "national",
+    "sourceQuality": "official-regulator",
+    "hasOfficialImporter": true,
+    "coverageScore": 88
+  },
+  "cities": [
+    {
+      "id": "pr-aguada",
+      "name": "Aguada",
+      "countryId": "puerto-rico",
+      "timezone": "America/Puerto_Rico",
+      "latitude": 18.37939,
+      "longitude": -67.18824,
+      "stationCount": 1
+    },
+    {
+      "id": "pr-aguadilla",
+      "name": "Aguadilla",
+      "countryId": "puerto-rico",
+      "timezone": "America/Puerto_Rico",
+      "latitude": 18.42745,
+      "longitude": -67.15407,
+      "stationCount": 5
+    },
+    {
+      "id": "pr-aguadilla-2",
+      "name": "Aguadilla",
+      "countryId": "puerto-rico",
+      "timezone": "America/Puerto_Rico",
+      "latitude": 18.42745,
+      "longitude": -67.15407,
+      "stationCount": 1
+    },
+    {
+      "id": "pr-anasco",
+      "name": "Añasco",
+      "countryId": "puerto-rico",
+      "timezone": "America/Puerto_Rico",
+      "latitude": 18.28273,
+      "longitude": -67.13962,
+      "stationCount": 1
+    },
+    {
+      "id": "pr-arecibo",
+      "name": "Arecibo",
+      "countryId": "puerto-rico",
+      "timezone": "America/Puerto_Rico",
+      "latitude": 18.47245,
+      "longitude": -66.71573,
+      "stationCount": 5
+    },
+    {
+      "id": "pr-barranquitas",
+      "name": "Barranquitas",
+      "countryId": "puerto-rico",
+      "timezone": "America/Puerto_Rico",
+      "latitude": 18.18662,
+      "longitude": -66.30628,
+      "stationCount": 1
+    },
+    {
+      "id": "pr-bayamon",
+      "name": "Bayamón",
+      "countryId": "puerto-rico",
+      "timezone": "America/Puerto_Rico",
+      "latitude": 18.39856,
+      "longitude": -66.15572,
+      "stationCount": 4
+    },
+    {
+      "id": "pr-cabo-rojo",
+      "name": "Cabo Rojo",
+      "countryId": "puerto-rico",
+      "timezone": "America/Puerto_Rico",
+      "latitude": 18.08663,
+      "longitude": -67.14573,
+      "stationCount": 1
+    },
+    {
+      "id": "pr-caguas",
+      "name": "Caguas",
+      "countryId": "puerto-rico",
+      "timezone": "America/Puerto_Rico",
+      "latitude": 18.23412,
+      "longitude": -66.0485,
+      "stationCount": 8
+    },
+    {
+      "id": "pr-camuy",
+      "name": "Camuy",
+      "countryId": "puerto-rico",
+      "timezone": "America/Puerto_Rico",
+      "latitude": 18.48383,
+      "longitude": -66.8449,
+      "stationCount": 1
+    },
+    {
+      "id": "pr-carolina",
+      "name": "Carolina",
+      "countryId": "puerto-rico",
+      "timezone": "America/Puerto_Rico",
+      "latitude": 18.38078,
+      "longitude": -65.95739,
+      "stationCount": 2
+    },
+    {
+      "id": "pr-cayey",
+      "name": "Cayey",
+      "countryId": "puerto-rico",
+      "timezone": "America/Puerto_Rico",
+      "latitude": 18.11191,
+      "longitude": -66.166,
+      "stationCount": 1
+    },
+    {
+      "id": "pr-ceiba",
+      "name": "Ceiba",
+      "countryId": "puerto-rico",
+      "timezone": "America/Puerto_Rico",
+      "latitude": 18.44634,
+      "longitude": -66.35073,
+      "stationCount": 7
+    },
+    {
+      "id": "pr-cidra",
+      "name": "Cidra",
+      "countryId": "puerto-rico",
+      "timezone": "America/Puerto_Rico",
+      "latitude": 18.17579,
+      "longitude": -66.16128,
+      "stationCount": 1
+    },
+    {
+      "id": "pr-corozal",
+      "name": "Corozal",
+      "countryId": "puerto-rico",
+      "timezone": "America/Puerto_Rico",
+      "latitude": 18.34106,
+      "longitude": -66.31684,
+      "stationCount": 2
+    },
+    {
+      "id": "pr-culebra",
+      "name": "Culebra",
+      "countryId": "puerto-rico",
+      "timezone": "America/Puerto_Rico",
+      "latitude": 18.30301,
+      "longitude": -65.30099,
+      "stationCount": 2
+    },
+    {
+      "id": "pr-fajardo",
+      "name": "Fajardo",
+      "countryId": "puerto-rico",
+      "timezone": "America/Puerto_Rico",
+      "latitude": 18.32579,
+      "longitude": -65.65238,
+      "stationCount": 5
+    },
+    {
+      "id": "pr-guanica",
+      "name": "Guánica",
+      "countryId": "puerto-rico",
+      "timezone": "America/Puerto_Rico",
+      "latitude": 17.97163,
+      "longitude": -66.90795,
+      "stationCount": 1
+    },
+    {
+      "id": "pr-guayama",
+      "name": "Guayama",
+      "countryId": "puerto-rico",
+      "timezone": "America/Puerto_Rico",
+      "latitude": 17.98413,
+      "longitude": -66.11378,
+      "stationCount": 5
+    },
+    {
+      "id": "pr-guayanilla",
+      "name": "Guayanilla",
+      "countryId": "puerto-rico",
+      "timezone": "America/Puerto_Rico",
+      "latitude": 18.01913,
+      "longitude": -66.79184,
+      "stationCount": 1
+    },
+    {
+      "id": "pr-hormigueros",
+      "name": "Hormigueros",
+      "countryId": "puerto-rico",
+      "timezone": "America/Puerto_Rico",
+      "latitude": 18.13968,
+      "longitude": -67.1274,
+      "stationCount": 2
+    },
+    {
+      "id": "pr-isabel-segunda",
+      "name": "Isabel Segunda",
+      "countryId": "puerto-rico",
+      "timezone": "America/Puerto_Rico",
+      "latitude": 18.14913,
+      "longitude": -65.44266,
+      "stationCount": 1
+    },
+    {
+      "id": "pr-isabela",
+      "name": "Isabela",
+      "countryId": "puerto-rico",
+      "timezone": "America/Puerto_Rico",
+      "latitude": 18.50078,
+      "longitude": -67.02435,
+      "stationCount": 1
+    },
+    {
+      "id": "pr-juana-diaz",
+      "name": "Juana Díaz",
+      "countryId": "puerto-rico",
+      "timezone": "America/Puerto_Rico",
+      "latitude": 18.05246,
+      "longitude": -66.50656,
+      "stationCount": 4
+    },
+    {
+      "id": "pr-lajas",
+      "name": "Lajas",
+      "countryId": "puerto-rico",
+      "timezone": "America/Puerto_Rico",
+      "latitude": 18.04996,
+      "longitude": -67.05934,
+      "stationCount": 1
+    },
+    {
+      "id": "pr-las-piedras",
+      "name": "Las Piedras",
+      "countryId": "puerto-rico",
+      "timezone": "America/Puerto_Rico",
+      "latitude": 18.18301,
+      "longitude": -65.86627,
+      "stationCount": 1
+    },
+    {
+      "id": "pr-levittown",
+      "name": "Levittown",
+      "countryId": "puerto-rico",
+      "timezone": "America/Puerto_Rico",
+      "latitude": 18.44995,
+      "longitude": -66.18156,
+      "stationCount": 1
+    },
+    {
+      "id": "pr-luquillo",
+      "name": "Luquillo",
+      "countryId": "puerto-rico",
+      "timezone": "America/Puerto_Rico",
+      "latitude": 18.37245,
+      "longitude": -65.71655,
+      "stationCount": 2
+    },
+    {
+      "id": "pr-manati",
+      "name": "Manatí",
+      "countryId": "puerto-rico",
+      "timezone": "America/Puerto_Rico",
+      "latitude": 18.42745,
+      "longitude": -66.49212,
+      "stationCount": 1
+    },
+    {
+      "id": "pr-maricao",
+      "name": "Maricao",
+      "countryId": "puerto-rico",
+      "timezone": "America/Puerto_Rico",
+      "latitude": 18.18079,
+      "longitude": -66.9799,
+      "stationCount": 1
+    },
+    {
+      "id": "pr-mayaguez",
+      "name": "Mayagüez",
+      "countryId": "puerto-rico",
+      "timezone": "America/Puerto_Rico",
+      "latitude": 18.20107,
+      "longitude": -67.13962,
+      "stationCount": 13
+    },
+    {
+      "id": "pr-mayaguez-2",
+      "name": "Mayagüez",
+      "countryId": "puerto-rico",
+      "timezone": "America/Puerto_Rico",
+      "latitude": 18.20107,
+      "longitude": -67.13962,
+      "stationCount": 4
+    },
+    {
+      "id": "pr-moca",
+      "name": "Moca",
+      "countryId": "puerto-rico",
+      "timezone": "America/Puerto_Rico",
+      "latitude": 18.39467,
+      "longitude": -67.11324,
+      "stationCount": 2
+    },
+    {
+      "id": "pr-naguabo",
+      "name": "Naguabo",
+      "countryId": "puerto-rico",
+      "timezone": "America/Puerto_Rico",
+      "latitude": 18.21162,
+      "longitude": -65.73488,
+      "stationCount": 1
+    },
+    {
+      "id": "pr-patillas",
+      "name": "Patillas",
+      "countryId": "puerto-rico",
+      "timezone": "America/Puerto_Rico",
+      "latitude": 18.00635,
+      "longitude": -66.01572,
+      "stationCount": 1
+    },
+    {
+      "id": "pr-ponce",
+      "name": "Ponce",
+      "countryId": "puerto-rico",
+      "timezone": "America/Puerto_Rico",
+      "latitude": 18.01031,
+      "longitude": -66.62398,
+      "stationCount": 11
+    },
+    {
+      "id": "pr-quebradillas",
+      "name": "Quebradillas",
+      "countryId": "puerto-rico",
+      "timezone": "America/Puerto_Rico",
+      "latitude": 18.47383,
+      "longitude": -66.93851,
+      "stationCount": 2
+    },
+    {
+      "id": "pr-rio-grande",
+      "name": "Río Grande",
+      "countryId": "puerto-rico",
+      "timezone": "America/Puerto_Rico",
+      "latitude": 18.38023,
+      "longitude": -65.83127,
+      "stationCount": 1
+    },
+    {
+      "id": "pr-san-german",
+      "name": "San Germán",
+      "countryId": "puerto-rico",
+      "timezone": "America/Puerto_Rico",
+      "latitude": 18.08163,
+      "longitude": -67.0449,
+      "stationCount": 1
+    },
+    {
+      "id": "pr-san-german-2",
+      "name": "San Germán",
+      "countryId": "puerto-rico",
+      "timezone": "America/Puerto_Rico",
+      "latitude": 18.08163,
+      "longitude": -67.0449,
+      "stationCount": 2
+    },
+    {
+      "id": "pr-san-juan",
+      "name": "San Juan",
+      "countryId": "puerto-rico",
+      "timezone": "America/Puerto_Rico",
+      "latitude": 18.46633,
+      "longitude": -66.10572,
+      "stationCount": 14
+    },
+    {
+      "id": "pr-san-lorenzo",
+      "name": "San Lorenzo",
+      "countryId": "puerto-rico",
+      "timezone": "America/Puerto_Rico",
+      "latitude": 18.1894,
+      "longitude": -65.961,
+      "stationCount": 1
+    },
+    {
+      "id": "pr-santa-isabel",
+      "name": "Santa Isabel",
+      "countryId": "puerto-rico",
+      "timezone": "America/Puerto_Rico",
+      "latitude": 17.96608,
+      "longitude": -66.40489,
+      "stationCount": 1
+    },
+    {
+      "id": "pr-utuado",
+      "name": "Utuado",
+      "countryId": "puerto-rico",
+      "timezone": "America/Puerto_Rico",
+      "latitude": 18.26551,
+      "longitude": -66.70045,
+      "stationCount": 3
+    },
+    {
+      "id": "pr-vega-alta",
+      "name": "Vega Alta",
+      "countryId": "puerto-rico",
+      "timezone": "America/Puerto_Rico",
+      "latitude": 18.41217,
+      "longitude": -66.33128,
+      "stationCount": 1
+    },
+    {
+      "id": "pr-vega-baja",
+      "name": "Vega Baja",
+      "countryId": "puerto-rico",
+      "timezone": "America/Puerto_Rico",
+      "latitude": 18.44439,
+      "longitude": -66.38767,
+      "stationCount": 3
+    },
+    {
+      "id": "pr-yauco",
+      "name": "Yauco",
+      "countryId": "puerto-rico",
+      "timezone": "America/Puerto_Rico",
+      "latitude": 18.03496,
+      "longitude": -66.8499,
+      "stationCount": 2
+    }
+  ],
+  "stations": [
+    {
+      "id": "pr-aguada-wfdt-105-5",
+      "name": "WFDT",
+      "freqMhz": 105.5,
+      "cityId": "pr-aguada",
+      "description": "Full Power FM service listed by FCC for AGUADA, Puerto Rico. Callsign: WFDT.",
+      "tags": [
+        "fm",
+        "official",
+        "fcc",
+        "puerto-rico",
+        "full-power"
+      ],
+      "source": "FCC LMS Public Database",
+      "sourceUrl": "https://enterpriseefiling.fcc.gov/dataentry/public/tv/lmsDatabase.html",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "pr-aguadilla-wtpm-92-9",
+      "name": "WTPM",
+      "freqMhz": 92.9,
+      "cityId": "pr-aguadilla",
+      "description": "Full Power FM service listed by FCC for AGUADILLA, Puerto Rico. Callsign: WTPM.",
+      "tags": [
+        "fm",
+        "official",
+        "fcc",
+        "puerto-rico",
+        "full-power"
+      ],
+      "source": "FCC LMS Public Database",
+      "sourceUrl": "https://enterpriseefiling.fcc.gov/dataentry/public/tv/lmsDatabase.html",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "pr-aguadilla-w227dr-93-3",
+      "name": "W227DR",
+      "freqMhz": 93.3,
+      "cityId": "pr-aguadilla",
+      "description": "FM translator service listed by FCC for AGUADILLA, Puerto Rico. Callsign: W227DR.",
+      "tags": [
+        "fm",
+        "official",
+        "fcc",
+        "puerto-rico",
+        "translator"
+      ],
+      "source": "FCC LMS Public Database",
+      "sourceUrl": "https://enterpriseefiling.fcc.gov/dataentry/public/tv/lmsDatabase.html",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "pr-aguadilla-wiva-fm-100-3",
+      "name": "WIVA-FM",
+      "freqMhz": 100.3,
+      "cityId": "pr-aguadilla",
+      "description": "Full Power FM service listed by FCC for AGUADILLA, Puerto Rico. Callsign: WIVA-FM.",
+      "tags": [
+        "fm",
+        "official",
+        "fcc",
+        "puerto-rico",
+        "full-power"
+      ],
+      "source": "FCC LMS Public Database",
+      "sourceUrl": "https://enterpriseefiling.fcc.gov/dataentry/public/tv/lmsDatabase.html",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "pr-aguadilla-w283dr-104-5",
+      "name": "W283DR",
+      "freqMhz": 104.5,
+      "cityId": "pr-aguadilla",
+      "description": "FM translator service listed by FCC for AGUADILLA, Puerto Rico. Callsign: W283DR.",
+      "tags": [
+        "fm",
+        "official",
+        "fcc",
+        "puerto-rico",
+        "translator"
+      ],
+      "source": "FCC LMS Public Database",
+      "sourceUrl": "https://enterpriseefiling.fcc.gov/dataentry/public/tv/lmsDatabase.html",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "pr-aguadilla-w286dl-105-1",
+      "name": "W286DL",
+      "freqMhz": 105.1,
+      "cityId": "pr-aguadilla",
+      "description": "FM translator service listed by FCC for AGUADILLA, Puerto Rico. Callsign: W286DL.",
+      "tags": [
+        "fm",
+        "official",
+        "fcc",
+        "puerto-rico",
+        "translator"
+      ],
+      "source": "FCC LMS Public Database",
+      "sourceUrl": "https://enterpriseefiling.fcc.gov/dataentry/public/tv/lmsDatabase.html",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "pr-aguadilla-2-wsxq-lp-90-9",
+      "name": "WSXQ-LP",
+      "freqMhz": 90.9,
+      "cityId": "pr-aguadilla-2",
+      "description": "Low Power FM service listed by FCC for AGUADILLA - RINCON, Puerto Rico. Callsign: WSXQ-LP.",
+      "tags": [
+        "fm",
+        "official",
+        "fcc",
+        "puerto-rico",
+        "low-power"
+      ],
+      "source": "FCC LMS Public Database",
+      "sourceUrl": "https://enterpriseefiling.fcc.gov/dataentry/public/tv/lmsDatabase.html",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "pr-anasco-wvid-90-3",
+      "name": "WVID",
+      "freqMhz": 90.3,
+      "cityId": "pr-anasco",
+      "description": "Full Power FM service listed by FCC for ANASCO, Puerto Rico. Callsign: WVID.",
+      "tags": [
+        "fm",
+        "official",
+        "fcc",
+        "puerto-rico",
+        "full-power"
+      ],
+      "source": "FCC LMS Public Database",
+      "sourceUrl": "https://enterpriseefiling.fcc.gov/dataentry/public/tv/lmsDatabase.html",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "pr-arecibo-w227dy-93-3",
+      "name": "W227DY",
+      "freqMhz": 93.3,
+      "cityId": "pr-arecibo",
+      "description": "FM translator service listed by FCC for ARECIBO, Puerto Rico. Callsign: W227DY.",
+      "tags": [
+        "fm",
+        "official",
+        "fcc",
+        "puerto-rico",
+        "translator"
+      ],
+      "source": "FCC LMS Public Database",
+      "sourceUrl": "https://enterpriseefiling.fcc.gov/dataentry/public/tv/lmsDatabase.html",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "pr-arecibo-w250cf-97-9",
+      "name": "W250CF",
+      "freqMhz": 97.9,
+      "cityId": "pr-arecibo",
+      "description": "FM translator service listed by FCC for ARECIBO, Puerto Rico. Callsign: W250CF.",
+      "tags": [
+        "fm",
+        "official",
+        "fcc",
+        "puerto-rico",
+        "translator"
+      ],
+      "source": "FCC LMS Public Database",
+      "sourceUrl": "https://enterpriseefiling.fcc.gov/dataentry/public/tv/lmsDatabase.html",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "pr-arecibo-wnik-fm-106-5",
+      "name": "WNIK-FM",
+      "freqMhz": 106.5,
+      "cityId": "pr-arecibo",
+      "description": "Full Power FM service listed by FCC for ARECIBO, Puerto Rico. Callsign: WNIK-FM.",
+      "tags": [
+        "fm",
+        "official",
+        "fcc",
+        "puerto-rico",
+        "full-power"
+      ],
+      "source": "FCC LMS Public Database",
+      "sourceUrl": "https://enterpriseefiling.fcc.gov/dataentry/public/tv/lmsDatabase.html",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "pr-arecibo-wcmn-fm-107-3",
+      "name": "WCMN-FM",
+      "freqMhz": 107.3,
+      "cityId": "pr-arecibo",
+      "description": "Full Power FM service listed by FCC for ARECIBO, Puerto Rico. Callsign: WCMN-FM.",
+      "tags": [
+        "fm",
+        "official",
+        "fcc",
+        "puerto-rico",
+        "full-power"
+      ],
+      "source": "FCC LMS Public Database",
+      "sourceUrl": "https://enterpriseefiling.fcc.gov/dataentry/public/tv/lmsDatabase.html",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "pr-arecibo-w221er-107-9",
+      "name": "W221ER",
+      "freqMhz": 107.9,
+      "cityId": "pr-arecibo",
+      "description": "FM translator service listed by FCC for ARECIBO, Puerto Rico. Callsign: W221ER.",
+      "tags": [
+        "fm",
+        "official",
+        "fcc",
+        "puerto-rico",
+        "translator"
+      ],
+      "source": "FCC LMS Public Database",
+      "sourceUrl": "https://enterpriseefiling.fcc.gov/dataentry/public/tv/lmsDatabase.html",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "pr-barranquitas-w253db-98-5",
+      "name": "W253DB",
+      "freqMhz": 98.5,
+      "cityId": "pr-barranquitas",
+      "description": "FM translator service listed by FCC for BARRANQUITAS, Puerto Rico. Callsign: W253DB.",
+      "tags": [
+        "fm",
+        "official",
+        "fcc",
+        "puerto-rico",
+        "translator"
+      ],
+      "source": "FCC LMS Public Database",
+      "sourceUrl": "https://enterpriseefiling.fcc.gov/dataentry/public/tv/lmsDatabase.html",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "pr-bayamon-w226cs-93-1",
+      "name": "W226CS",
+      "freqMhz": 93.1,
+      "cityId": "pr-bayamon",
+      "description": "FM translator service listed by FCC for BAYAMON, Puerto Rico. Callsign: W226CS.",
+      "tags": [
+        "fm",
+        "official",
+        "fcc",
+        "puerto-rico",
+        "translator"
+      ],
+      "source": "FCC LMS Public Database",
+      "sourceUrl": "https://enterpriseefiling.fcc.gov/dataentry/public/tv/lmsDatabase.html",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "pr-bayamon-woda-94-7",
+      "name": "WODA",
+      "freqMhz": 94.7,
+      "cityId": "pr-bayamon",
+      "description": "Full Power FM service listed by FCC for BAYAMON, Puerto Rico. Callsign: WODA.",
+      "tags": [
+        "fm",
+        "official",
+        "fcc",
+        "puerto-rico",
+        "full-power"
+      ],
+      "source": "FCC LMS Public Database",
+      "sourceUrl": "https://enterpriseefiling.fcc.gov/dataentry/public/tv/lmsDatabase.html",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "pr-bayamon-w241de-96-1",
+      "name": "W241DE",
+      "freqMhz": 96.1,
+      "cityId": "pr-bayamon",
+      "description": "FM translator service listed by FCC for BAYAMON, Puerto Rico. Callsign: W241DE.",
+      "tags": [
+        "fm",
+        "official",
+        "fcc",
+        "puerto-rico",
+        "translator"
+      ],
+      "source": "FCC LMS Public Database",
+      "sourceUrl": "https://enterpriseefiling.fcc.gov/dataentry/public/tv/lmsDatabase.html",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "pr-bayamon-wxyx-100-7",
+      "name": "WXYX",
+      "freqMhz": 100.7,
+      "cityId": "pr-bayamon",
+      "description": "Full Power FM service listed by FCC for BAYAMON, Puerto Rico. Callsign: WXYX.",
+      "tags": [
+        "fm",
+        "official",
+        "fcc",
+        "puerto-rico",
+        "full-power"
+      ],
+      "source": "FCC LMS Public Database",
+      "sourceUrl": "https://enterpriseefiling.fcc.gov/dataentry/public/tv/lmsDatabase.html",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "pr-cabo-rojo-wmio-102-3",
+      "name": "WMIO",
+      "freqMhz": 102.3,
+      "cityId": "pr-cabo-rojo",
+      "description": "Full Power FM service listed by FCC for CABO ROJO, Puerto Rico. Callsign: WMIO.",
+      "tags": [
+        "fm",
+        "official",
+        "fcc",
+        "puerto-rico",
+        "full-power"
+      ],
+      "source": "FCC LMS Public Database",
+      "sourceUrl": "https://enterpriseefiling.fcc.gov/dataentry/public/tv/lmsDatabase.html",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "pr-caguas-wpuc-fm1-88-9",
+      "name": "WPUC-FM1",
+      "freqMhz": 88.9,
+      "cityId": "pr-caguas",
+      "description": "FM booster service listed by FCC for CAGUAS, Puerto Rico. Callsign: WPUC-FM1.",
+      "tags": [
+        "fm",
+        "official",
+        "fcc",
+        "puerto-rico",
+        "booster"
+      ],
+      "source": "FCC LMS Public Database",
+      "sourceUrl": "https://enterpriseefiling.fcc.gov/dataentry/public/tv/lmsDatabase.html",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "pr-caguas-wodb-lp-90-9",
+      "name": "WODB-LP",
+      "freqMhz": 90.9,
+      "cityId": "pr-caguas",
+      "description": "Low Power FM service listed by FCC for CAGUAS, Puerto Rico. Callsign: WODB-LP.",
+      "tags": [
+        "fm",
+        "official",
+        "fcc",
+        "puerto-rico",
+        "low-power"
+      ],
+      "source": "FCC LMS Public Database",
+      "sourceUrl": "https://enterpriseefiling.fcc.gov/dataentry/public/tv/lmsDatabase.html",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "pr-caguas-w241cw-96-1",
+      "name": "W241CW",
+      "freqMhz": 96.1,
+      "cityId": "pr-caguas",
+      "description": "FM translator service listed by FCC for CAGUAS, Puerto Rico. Callsign: W241CW.",
+      "tags": [
+        "fm",
+        "official",
+        "fcc",
+        "puerto-rico",
+        "translator"
+      ],
+      "source": "FCC LMS Public Database",
+      "sourceUrl": "https://enterpriseefiling.fcc.gov/dataentry/public/tv/lmsDatabase.html",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "pr-caguas-wnrt-fm1-96-9",
+      "name": "WNRT-FM1",
+      "freqMhz": 96.9,
+      "cityId": "pr-caguas",
+      "description": "FM booster service listed by FCC for CAGUAS, Puerto Rico. Callsign: WNRT-FM1.",
+      "tags": [
+        "fm",
+        "official",
+        "fcc",
+        "puerto-rico",
+        "booster"
+      ],
+      "source": "FCC LMS Public Database",
+      "sourceUrl": "https://enterpriseefiling.fcc.gov/dataentry/public/tv/lmsDatabase.html",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "pr-caguas-wdin-fm1-102-9",
+      "name": "WDIN-FM1",
+      "freqMhz": 102.9,
+      "cityId": "pr-caguas",
+      "description": "FM booster service listed by FCC for CAGUAS, Puerto Rico. Callsign: WDIN-FM1.",
+      "tags": [
+        "fm",
+        "official",
+        "fcc",
+        "puerto-rico",
+        "booster"
+      ],
+      "source": "FCC LMS Public Database",
+      "sourceUrl": "https://enterpriseefiling.fcc.gov/dataentry/public/tv/lmsDatabase.html",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "pr-caguas-wvjp-fm-103-3",
+      "name": "WVJP-FM",
+      "freqMhz": 103.3,
+      "cityId": "pr-caguas",
+      "description": "Full Power FM service listed by FCC for CAGUAS, Puerto Rico. Callsign: WVJP-FM.",
+      "tags": [
+        "fm",
+        "official",
+        "fcc",
+        "puerto-rico",
+        "full-power"
+      ],
+      "source": "FCC LMS Public Database",
+      "sourceUrl": "https://enterpriseefiling.fcc.gov/dataentry/public/tv/lmsDatabase.html",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "pr-caguas-werr-fm1-104-1",
+      "name": "WERR-FM1",
+      "freqMhz": 104.1,
+      "cityId": "pr-caguas",
+      "description": "FM booster service listed by FCC for CAGUAS, Puerto Rico. Callsign: WERR-FM1.",
+      "tags": [
+        "fm",
+        "official",
+        "fcc",
+        "puerto-rico",
+        "booster"
+      ],
+      "source": "FCC LMS Public Database",
+      "sourceUrl": "https://enterpriseefiling.fcc.gov/dataentry/public/tv/lmsDatabase.html",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "pr-caguas-w286dh-105-1",
+      "name": "W286DH",
+      "freqMhz": 105.1,
+      "cityId": "pr-caguas",
+      "description": "FM translator service listed by FCC for CAGUAS, Puerto Rico. Callsign: W286DH.",
+      "tags": [
+        "fm",
+        "official",
+        "fcc",
+        "puerto-rico",
+        "translator"
+      ],
+      "source": "FCC LMS Public Database",
+      "sourceUrl": "https://enterpriseefiling.fcc.gov/dataentry/public/tv/lmsDatabase.html",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "pr-camuy-wdin-102-9",
+      "name": "WDIN",
+      "freqMhz": 102.9,
+      "cityId": "pr-camuy",
+      "description": "Full Power FM service listed by FCC for CAMUY, Puerto Rico. Callsign: WDIN.",
+      "tags": [
+        "fm",
+        "official",
+        "fcc",
+        "puerto-rico",
+        "full-power"
+      ],
+      "source": "FCC LMS Public Database",
+      "sourceUrl": "https://enterpriseefiling.fcc.gov/dataentry/public/tv/lmsDatabase.html",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "pr-carolina-wida-fm-90-5",
+      "name": "WIDA-FM",
+      "freqMhz": 90.5,
+      "cityId": "pr-carolina",
+      "description": "Full Power FM service listed by FCC for CAROLINA, Puerto Rico. Callsign: WIDA-FM.",
+      "tags": [
+        "fm",
+        "official",
+        "fcc",
+        "puerto-rico",
+        "full-power"
+      ],
+      "source": "FCC LMS Public Database",
+      "sourceUrl": "https://enterpriseefiling.fcc.gov/dataentry/public/tv/lmsDatabase.html",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "pr-carolina-wqbs-fm-107-7",
+      "name": "WQBS-FM",
+      "freqMhz": 107.7,
+      "cityId": "pr-carolina",
+      "description": "Full Power FM service listed by FCC for CAROLINA, Puerto Rico. Callsign: WQBS-FM.",
+      "tags": [
+        "fm",
+        "official",
+        "fcc",
+        "puerto-rico",
+        "full-power"
+      ],
+      "source": "FCC LMS Public Database",
+      "sourceUrl": "https://enterpriseefiling.fcc.gov/dataentry/public/tv/lmsDatabase.html",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "pr-cayey-wnvm-fm1-97-7",
+      "name": "WNVM-FM1",
+      "freqMhz": 97.7,
+      "cityId": "pr-cayey",
+      "description": "FM booster service listed by FCC for CAYEY/AIBONITO, Puerto Rico. Callsign: WNVM-FM1.",
+      "tags": [
+        "fm",
+        "official",
+        "fcc",
+        "puerto-rico",
+        "booster"
+      ],
+      "source": "FCC LMS Public Database",
+      "sourceUrl": "https://enterpriseefiling.fcc.gov/dataentry/public/tv/lmsDatabase.html",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "pr-ceiba-wznt-fm1-93-7",
+      "name": "WZNT-FM1",
+      "freqMhz": 93.7,
+      "cityId": "pr-ceiba",
+      "description": "FM booster service listed by FCC for CEIBA, Puerto Rico. Callsign: WZNT-FM1.",
+      "tags": [
+        "fm",
+        "official",
+        "fcc",
+        "puerto-rico",
+        "booster"
+      ],
+      "source": "FCC LMS Public Database",
+      "sourceUrl": "https://enterpriseefiling.fcc.gov/dataentry/public/tv/lmsDatabase.html",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "pr-ceiba-woda-fm1-94-7",
+      "name": "WODA-FM1",
+      "freqMhz": 94.7,
+      "cityId": "pr-ceiba",
+      "description": "FM booster service listed by FCC for CEIBA, Puerto Rico. Callsign: WODA-FM1.",
+      "tags": [
+        "fm",
+        "official",
+        "fcc",
+        "puerto-rico",
+        "booster"
+      ],
+      "source": "FCC LMS Public Database",
+      "sourceUrl": "https://enterpriseefiling.fcc.gov/dataentry/public/tv/lmsDatabase.html",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "pr-ceiba-wioa-fm1-99-9",
+      "name": "WIOA-FM1",
+      "freqMhz": 99.9,
+      "cityId": "pr-ceiba",
+      "description": "FM booster service listed by FCC for CEIBA, Puerto Rico. Callsign: WIOA-FM1.",
+      "tags": [
+        "fm",
+        "official",
+        "fcc",
+        "puerto-rico",
+        "booster"
+      ],
+      "source": "FCC LMS Public Database",
+      "sourceUrl": "https://enterpriseefiling.fcc.gov/dataentry/public/tv/lmsDatabase.html",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "pr-ceiba-wxyx-fm2-100-7",
+      "name": "WXYX-FM2",
+      "freqMhz": 100.7,
+      "cityId": "pr-ceiba",
+      "description": "FM booster service listed by FCC for CEIBA, Puerto Rico. Callsign: WXYX-FM2.",
+      "tags": [
+        "fm",
+        "official",
+        "fcc",
+        "puerto-rico",
+        "booster"
+      ],
+      "source": "FCC LMS Public Database",
+      "sourceUrl": "https://enterpriseefiling.fcc.gov/dataentry/public/tv/lmsDatabase.html",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "pr-ceiba-wqml-101-5",
+      "name": "WQML",
+      "freqMhz": 101.5,
+      "cityId": "pr-ceiba",
+      "description": "Full Power FM service listed by FCC for CEIBA, Puerto Rico. Callsign: WQML.",
+      "tags": [
+        "fm",
+        "official",
+        "fcc",
+        "puerto-rico",
+        "full-power"
+      ],
+      "source": "FCC LMS Public Database",
+      "sourceUrl": "https://enterpriseefiling.fcc.gov/dataentry/public/tv/lmsDatabase.html",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "pr-ceiba-wtok-fm2-102-5",
+      "name": "WTOK-FM2",
+      "freqMhz": 102.5,
+      "cityId": "pr-ceiba",
+      "description": "FM booster service listed by FCC for CEIBA, Puerto Rico. Callsign: WTOK-FM2.",
+      "tags": [
+        "fm",
+        "official",
+        "fcc",
+        "puerto-rico",
+        "booster"
+      ],
+      "source": "FCC LMS Public Database",
+      "sourceUrl": "https://enterpriseefiling.fcc.gov/dataentry/public/tv/lmsDatabase.html",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "pr-ceiba-wmeg-fm1-106-9",
+      "name": "WMEG-FM1",
+      "freqMhz": 106.9,
+      "cityId": "pr-ceiba",
+      "description": "FM booster service listed by FCC for CEIBA, Puerto Rico. Callsign: WMEG-FM1.",
+      "tags": [
+        "fm",
+        "official",
+        "fcc",
+        "puerto-rico",
+        "booster"
+      ],
+      "source": "FCC LMS Public Database",
+      "sourceUrl": "https://enterpriseefiling.fcc.gov/dataentry/public/tv/lmsDatabase.html",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "pr-cidra-wnvm-97-7",
+      "name": "WNVM",
+      "freqMhz": 97.7,
+      "cityId": "pr-cidra",
+      "description": "Full Power FM service listed by FCC for CIDRA, Puerto Rico. Callsign: WNVM.",
+      "tags": [
+        "fm",
+        "official",
+        "fcc",
+        "puerto-rico",
+        "full-power"
+      ],
+      "source": "FCC LMS Public Database",
+      "sourceUrl": "https://enterpriseefiling.fcc.gov/dataentry/public/tv/lmsDatabase.html",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "pr-corozal-woro-92-5",
+      "name": "WORO",
+      "freqMhz": 92.5,
+      "cityId": "pr-corozal",
+      "description": "Full Power FM service listed by FCC for COROZAL, Puerto Rico. Callsign: WORO.",
+      "tags": [
+        "fm",
+        "official",
+        "fcc",
+        "puerto-rico",
+        "full-power"
+      ],
+      "source": "FCC LMS Public Database",
+      "sourceUrl": "https://enterpriseefiling.fcc.gov/dataentry/public/tv/lmsDatabase.html",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "pr-corozal-w292gc-106-3",
+      "name": "W292GC",
+      "freqMhz": 106.3,
+      "cityId": "pr-corozal",
+      "description": "FM translator service listed by FCC for COROZAL, Puerto Rico. Callsign: W292GC.",
+      "tags": [
+        "fm",
+        "official",
+        "fcc",
+        "puerto-rico",
+        "translator"
+      ],
+      "source": "FCC LMS Public Database",
+      "sourceUrl": "https://enterpriseefiling.fcc.gov/dataentry/public/tv/lmsDatabase.html",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "pr-culebra-wjvp-89-3",
+      "name": "WJVP",
+      "freqMhz": 89.3,
+      "cityId": "pr-culebra",
+      "description": "Full Power FM service listed by FCC for CULEBRA, Puerto Rico. Callsign: WJVP.",
+      "tags": [
+        "fm",
+        "official",
+        "fcc",
+        "puerto-rico",
+        "full-power"
+      ],
+      "source": "FCC LMS Public Database",
+      "sourceUrl": "https://enterpriseefiling.fcc.gov/dataentry/public/tv/lmsDatabase.html",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "pr-culebra-wnve-98-7",
+      "name": "WNVE",
+      "freqMhz": 98.7,
+      "cityId": "pr-culebra",
+      "description": "Full Power FM service listed by FCC for CULEBRA, Puerto Rico. Callsign: WNVE.",
+      "tags": [
+        "fm",
+        "official",
+        "fcc",
+        "puerto-rico",
+        "full-power"
+      ],
+      "source": "FCC LMS Public Database",
+      "sourceUrl": "https://enterpriseefiling.fcc.gov/dataentry/public/tv/lmsDatabase.html",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "pr-fajardo-wrxd-96-5",
+      "name": "WRXD",
+      "freqMhz": 96.5,
+      "cityId": "pr-fajardo",
+      "description": "Full Power FM service listed by FCC for FAJARDO, Puerto Rico. Callsign: WRXD.",
+      "tags": [
+        "fm",
+        "official",
+        "fcc",
+        "puerto-rico",
+        "full-power"
+      ],
+      "source": "FCC LMS Public Database",
+      "sourceUrl": "https://enterpriseefiling.fcc.gov/dataentry/public/tv/lmsDatabase.html",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "pr-fajardo-woye-fm2-97-3",
+      "name": "WOYE-FM2",
+      "freqMhz": 97.3,
+      "cityId": "pr-fajardo",
+      "description": "FM booster service listed by FCC for FAJARDO, Puerto Rico. Callsign: WOYE-FM2.",
+      "tags": [
+        "fm",
+        "official",
+        "fcc",
+        "puerto-rico",
+        "booster"
+      ],
+      "source": "FCC LMS Public Database",
+      "sourceUrl": "https://enterpriseefiling.fcc.gov/dataentry/public/tv/lmsDatabase.html",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "pr-fajardo-wzol-fm3-98-3",
+      "name": "WZOL-FM3",
+      "freqMhz": 98.3,
+      "cityId": "pr-fajardo",
+      "description": "FM booster service listed by FCC for FAJARDO, Puerto Rico. Callsign: WZOL-FM3.",
+      "tags": [
+        "fm",
+        "official",
+        "fcc",
+        "puerto-rico",
+        "booster"
+      ],
+      "source": "FCC LMS Public Database",
+      "sourceUrl": "https://enterpriseefiling.fcc.gov/dataentry/public/tv/lmsDatabase.html",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "pr-fajardo-wkaq-fm2-104-7",
+      "name": "WKAQ-FM2",
+      "freqMhz": 104.7,
+      "cityId": "pr-fajardo",
+      "description": "FM booster service listed by FCC for FAJARDO, Puerto Rico. Callsign: WKAQ-FM2.",
+      "tags": [
+        "fm",
+        "official",
+        "fcc",
+        "puerto-rico",
+        "booster"
+      ],
+      "source": "FCC LMS Public Database",
+      "sourceUrl": "https://enterpriseefiling.fcc.gov/dataentry/public/tv/lmsDatabase.html",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "pr-fajardo-w293du-106-5",
+      "name": "W293DU",
+      "freqMhz": 106.5,
+      "cityId": "pr-fajardo",
+      "description": "FM translator service listed by FCC for FAJARDO, Puerto Rico. Callsign: W293DU.",
+      "tags": [
+        "fm",
+        "official",
+        "fcc",
+        "puerto-rico",
+        "translator"
+      ],
+      "source": "FCC LMS Public Database",
+      "sourceUrl": "https://enterpriseefiling.fcc.gov/dataentry/public/tv/lmsDatabase.html",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "pr-guanica-wjed-lp-107-9",
+      "name": "WJED-LP",
+      "freqMhz": 107.9,
+      "cityId": "pr-guanica",
+      "description": "Low Power FM service listed by FCC for GUANICA, Puerto Rico. Callsign: WJED-LP.",
+      "tags": [
+        "fm",
+        "official",
+        "fcc",
+        "puerto-rico",
+        "low-power"
+      ],
+      "source": "FCC LMS Public Database",
+      "sourceUrl": "https://enterpriseefiling.fcc.gov/dataentry/public/tv/lmsDatabase.html",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "pr-guayama-wcrp-88-1",
+      "name": "WCRP",
+      "freqMhz": 88.1,
+      "cityId": "pr-guayama",
+      "description": "Full Power FM service listed by FCC for GUAYAMA, Puerto Rico. Callsign: WCRP.",
+      "tags": [
+        "fm",
+        "official",
+        "fcc",
+        "puerto-rico",
+        "full-power"
+      ],
+      "source": "FCC LMS Public Database",
+      "sourceUrl": "https://enterpriseefiling.fcc.gov/dataentry/public/tv/lmsDatabase.html",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "pr-guayama-wluz-fm1-88-5",
+      "name": "WLUZ-FM1",
+      "freqMhz": 88.5,
+      "cityId": "pr-guayama",
+      "description": "FM booster service listed by FCC for GUAYAMA, Puerto Rico. Callsign: WLUZ-FM1.",
+      "tags": [
+        "fm",
+        "official",
+        "fcc",
+        "puerto-rico",
+        "booster"
+      ],
+      "source": "FCC LMS Public Database",
+      "sourceUrl": "https://enterpriseefiling.fcc.gov/dataentry/public/tv/lmsDatabase.html",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "pr-guayama-w280fs-103-9",
+      "name": "W280FS",
+      "freqMhz": 103.9,
+      "cityId": "pr-guayama",
+      "description": "FM translator service listed by FCC for GUAYAMA, Puerto Rico. Callsign: W280FS.",
+      "tags": [
+        "fm",
+        "official",
+        "fcc",
+        "puerto-rico",
+        "translator"
+      ],
+      "source": "FCC LMS Public Database",
+      "sourceUrl": "https://enterpriseefiling.fcc.gov/dataentry/public/tv/lmsDatabase.html",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "pr-guayama-w293de-106-5",
+      "name": "W293DE",
+      "freqMhz": 106.5,
+      "cityId": "pr-guayama",
+      "description": "FM translator service listed by FCC for GUAYAMA, Puerto Rico. Callsign: W293DE.",
+      "tags": [
+        "fm",
+        "official",
+        "fcc",
+        "puerto-rico",
+        "translator"
+      ],
+      "source": "FCC LMS Public Database",
+      "sourceUrl": "https://enterpriseefiling.fcc.gov/dataentry/public/tv/lmsDatabase.html",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "pr-guayama-wmeg-106-9",
+      "name": "WMEG",
+      "freqMhz": 106.9,
+      "cityId": "pr-guayama",
+      "description": "Full Power FM service listed by FCC for GUAYAMA, Puerto Rico. Callsign: WMEG.",
+      "tags": [
+        "fm",
+        "official",
+        "fcc",
+        "puerto-rico",
+        "full-power"
+      ],
+      "source": "FCC LMS Public Database",
+      "sourceUrl": "https://enterpriseefiling.fcc.gov/dataentry/public/tv/lmsDatabase.html",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "pr-guayanilla-wmlg-89-9",
+      "name": "WMLG",
+      "freqMhz": 89.9,
+      "cityId": "pr-guayanilla",
+      "description": "Full Power FM service listed by FCC for GUAYANILLA, Puerto Rico. Callsign: WMLG.",
+      "tags": [
+        "fm",
+        "official",
+        "fcc",
+        "puerto-rico",
+        "full-power"
+      ],
+      "source": "FCC LMS Public Database",
+      "sourceUrl": "https://enterpriseefiling.fcc.gov/dataentry/public/tv/lmsDatabase.html",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "pr-hormigueros-wzet-92-1",
+      "name": "WZET",
+      "freqMhz": 92.1,
+      "cityId": "pr-hormigueros",
+      "description": "Full Power FM service listed by FCC for HORMIGUEROS, Puerto Rico. Callsign: WZET.",
+      "tags": [
+        "fm",
+        "official",
+        "fcc",
+        "puerto-rico",
+        "full-power"
+      ],
+      "source": "FCC LMS Public Database",
+      "sourceUrl": "https://enterpriseefiling.fcc.gov/dataentry/public/tv/lmsDatabase.html",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "pr-hormigueros-wrrh-106-1",
+      "name": "WRRH",
+      "freqMhz": 106.1,
+      "cityId": "pr-hormigueros",
+      "description": "Full Power FM service listed by FCC for HORMIGUEROS, Puerto Rico. Callsign: WRRH.",
+      "tags": [
+        "fm",
+        "official",
+        "fcc",
+        "puerto-rico",
+        "full-power"
+      ],
+      "source": "FCC LMS Public Database",
+      "sourceUrl": "https://enterpriseefiling.fcc.gov/dataentry/public/tv/lmsDatabase.html",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "pr-isabel-segunda-wvis-106-1",
+      "name": "WVIS",
+      "freqMhz": 106.1,
+      "cityId": "pr-isabel-segunda",
+      "description": "Full Power FM service listed by FCC for VIEQUES, Puerto Rico. Callsign: WVIS.",
+      "tags": [
+        "fm",
+        "official",
+        "fcc",
+        "puerto-rico",
+        "full-power"
+      ],
+      "source": "FCC LMS Public Database",
+      "sourceUrl": "https://enterpriseefiling.fcc.gov/dataentry/public/tv/lmsDatabase.html",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "pr-isabela-welx-101-5",
+      "name": "WELX",
+      "freqMhz": 101.5,
+      "cityId": "pr-isabela",
+      "description": "Full Power FM service listed by FCC for ISABELA, Puerto Rico. Callsign: WELX.",
+      "tags": [
+        "fm",
+        "official",
+        "fcc",
+        "puerto-rico",
+        "full-power"
+      ],
+      "source": "FCC LMS Public Database",
+      "sourceUrl": "https://enterpriseefiling.fcc.gov/dataentry/public/tv/lmsDatabase.html",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "pr-juana-diaz-wxyx-fm1-100-7",
+      "name": "WXYX-FM1",
+      "freqMhz": 100.7,
+      "cityId": "pr-juana-diaz",
+      "description": "FM booster service listed by FCC for JUANA DIAZ, Puerto Rico. Callsign: WXYX-FM1.",
+      "tags": [
+        "fm",
+        "official",
+        "fcc",
+        "puerto-rico",
+        "booster"
+      ],
+      "source": "FCC LMS Public Database",
+      "sourceUrl": "https://enterpriseefiling.fcc.gov/dataentry/public/tv/lmsDatabase.html",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "pr-juana-diaz-wkaq-fm1-104-7",
+      "name": "WKAQ-FM1",
+      "freqMhz": 104.7,
+      "cityId": "pr-juana-diaz",
+      "description": "FM booster service listed by FCC for JUANA DIAZ, Puerto Rico. Callsign: WKAQ-FM1.",
+      "tags": [
+        "fm",
+        "official",
+        "fcc",
+        "puerto-rico",
+        "booster"
+      ],
+      "source": "FCC LMS Public Database",
+      "sourceUrl": "https://enterpriseefiling.fcc.gov/dataentry/public/tv/lmsDatabase.html",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "pr-juana-diaz-w293dp-106-5",
+      "name": "W293DP",
+      "freqMhz": 106.5,
+      "cityId": "pr-juana-diaz",
+      "description": "FM translator service listed by FCC for JUANA DIAZ, Puerto Rico. Callsign: W293DP.",
+      "tags": [
+        "fm",
+        "official",
+        "fcc",
+        "puerto-rico",
+        "translator"
+      ],
+      "source": "FCC LMS Public Database",
+      "sourceUrl": "https://enterpriseefiling.fcc.gov/dataentry/public/tv/lmsDatabase.html",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "pr-juana-diaz-wqbs-fm1-107-7",
+      "name": "WQBS-FM1",
+      "freqMhz": 107.7,
+      "cityId": "pr-juana-diaz",
+      "description": "FM booster service listed by FCC for JUANA DIAZ, Puerto Rico. Callsign: WQBS-FM1.",
+      "tags": [
+        "fm",
+        "official",
+        "fcc",
+        "puerto-rico",
+        "booster"
+      ],
+      "source": "FCC LMS Public Database",
+      "sourceUrl": "https://enterpriseefiling.fcc.gov/dataentry/public/tv/lmsDatabase.html",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "pr-lajas-wxlx-103-7",
+      "name": "WXLX",
+      "freqMhz": 103.7,
+      "cityId": "pr-lajas",
+      "description": "Full Power FM service listed by FCC for LAJAS, Puerto Rico. Callsign: WXLX.",
+      "tags": [
+        "fm",
+        "official",
+        "fcc",
+        "puerto-rico",
+        "full-power"
+      ],
+      "source": "FCC LMS Public Database",
+      "sourceUrl": "https://enterpriseefiling.fcc.gov/dataentry/public/tv/lmsDatabase.html",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "pr-las-piedras-wzol-98-3",
+      "name": "WZOL",
+      "freqMhz": 98.3,
+      "cityId": "pr-las-piedras",
+      "description": "Full Power FM service listed by FCC for LAS PIEDRAS, Puerto Rico. Callsign: WZOL.",
+      "tags": [
+        "fm",
+        "official",
+        "fcc",
+        "puerto-rico",
+        "full-power"
+      ],
+      "source": "FCC LMS Public Database",
+      "sourceUrl": "https://enterpriseefiling.fcc.gov/dataentry/public/tv/lmsDatabase.html",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "pr-levittown-wluz-88-5",
+      "name": "WLUZ",
+      "freqMhz": 88.5,
+      "cityId": "pr-levittown",
+      "description": "Full Power FM service listed by FCC for LEVITTOWN, Puerto Rico. Callsign: WLUZ.",
+      "tags": [
+        "fm",
+        "official",
+        "fcc",
+        "puerto-rico",
+        "full-power"
+      ],
+      "source": "FCC LMS Public Database",
+      "sourceUrl": "https://enterpriseefiling.fcc.gov/dataentry/public/tv/lmsDatabase.html",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "pr-luquillo-wyas-92-1",
+      "name": "WYAS",
+      "freqMhz": 92.1,
+      "cityId": "pr-luquillo",
+      "description": "Full Power FM service listed by FCC for LUQUILLO, Puerto Rico. Callsign: WYAS.",
+      "tags": [
+        "fm",
+        "official",
+        "fcc",
+        "puerto-rico",
+        "full-power"
+      ],
+      "source": "FCC LMS Public Database",
+      "sourceUrl": "https://enterpriseefiling.fcc.gov/dataentry/public/tv/lmsDatabase.html",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "pr-luquillo-wyas-fm2-92-1",
+      "name": "WYAS-FM2",
+      "freqMhz": 92.1,
+      "cityId": "pr-luquillo",
+      "description": "FM booster service listed by FCC for LUQUILLO, Puerto Rico. Callsign: WYAS-FM2.",
+      "tags": [
+        "fm",
+        "official",
+        "fcc",
+        "puerto-rico",
+        "booster"
+      ],
+      "source": "FCC LMS Public Database",
+      "sourceUrl": "https://enterpriseefiling.fcc.gov/dataentry/public/tv/lmsDatabase.html",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "pr-manati-wnrt-96-9",
+      "name": "WNRT",
+      "freqMhz": 96.9,
+      "cityId": "pr-manati",
+      "description": "Full Power FM service listed by FCC for MANATI, Puerto Rico. Callsign: WNRT.",
+      "tags": [
+        "fm",
+        "official",
+        "fcc",
+        "puerto-rico",
+        "full-power"
+      ],
+      "source": "FCC LMS Public Database",
+      "sourceUrl": "https://enterpriseefiling.fcc.gov/dataentry/public/tv/lmsDatabase.html",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "pr-maricao-wael-fm-96-1",
+      "name": "WAEL-FM",
+      "freqMhz": 96.1,
+      "cityId": "pr-maricao",
+      "description": "Full Power FM service listed by FCC for MARICAO, Puerto Rico. Callsign: WAEL-FM.",
+      "tags": [
+        "fm",
+        "official",
+        "fcc",
+        "puerto-rico",
+        "full-power"
+      ],
+      "source": "FCC LMS Public Database",
+      "sourceUrl": "https://enterpriseefiling.fcc.gov/dataentry/public/tv/lmsDatabase.html",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "pr-mayaguez-wruo-88-3",
+      "name": "WRUO",
+      "freqMhz": 88.3,
+      "cityId": "pr-mayaguez",
+      "description": "Full Power FM service listed by FCC for MAYAGUEZ, Puerto Rico. Callsign: WRUO.",
+      "tags": [
+        "fm",
+        "official",
+        "fcc",
+        "puerto-rico",
+        "full-power"
+      ],
+      "source": "FCC LMS Public Database",
+      "sourceUrl": "https://enterpriseefiling.fcc.gov/dataentry/public/tv/lmsDatabase.html",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "pr-mayaguez-w206af-89-1",
+      "name": "W206AF",
+      "freqMhz": 89.1,
+      "cityId": "pr-mayaguez",
+      "description": "FM translator service listed by FCC for MAYAGUEZ, Puerto Rico. Callsign: W206AF.",
+      "tags": [
+        "fm",
+        "official",
+        "fcc",
+        "puerto-rico",
+        "translator"
+      ],
+      "source": "FCC LMS Public Database",
+      "sourceUrl": "https://enterpriseefiling.fcc.gov/dataentry/public/tv/lmsDatabase.html",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "pr-mayaguez-w208ae-89-5",
+      "name": "W208AE",
+      "freqMhz": 89.5,
+      "cityId": "pr-mayaguez",
+      "description": "FM translator service listed by FCC for MAYAGUEZ, Puerto Rico. Callsign: W208AE.",
+      "tags": [
+        "fm",
+        "official",
+        "fcc",
+        "puerto-rico",
+        "translator"
+      ],
+      "source": "FCC LMS Public Database",
+      "sourceUrl": "https://enterpriseefiling.fcc.gov/dataentry/public/tv/lmsDatabase.html",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "pr-mayaguez-wnod-94-1",
+      "name": "WNOD",
+      "freqMhz": 94.1,
+      "cityId": "pr-mayaguez",
+      "description": "Full Power FM service listed by FCC for MAYAGUEZ, Puerto Rico. Callsign: WNOD.",
+      "tags": [
+        "fm",
+        "official",
+        "fcc",
+        "puerto-rico",
+        "full-power"
+      ],
+      "source": "FCC LMS Public Database",
+      "sourceUrl": "https://enterpriseefiling.fcc.gov/dataentry/public/tv/lmsDatabase.html",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "pr-mayaguez-w238cr-95-5",
+      "name": "W238CR",
+      "freqMhz": 95.5,
+      "cityId": "pr-mayaguez",
+      "description": "FM translator service listed by FCC for MAYAGUEZ, Puerto Rico. Callsign: W238CR.",
+      "tags": [
+        "fm",
+        "official",
+        "fcc",
+        "puerto-rico",
+        "translator"
+      ],
+      "source": "FCC LMS Public Database",
+      "sourceUrl": "https://enterpriseefiling.fcc.gov/dataentry/public/tv/lmsDatabase.html",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "pr-mayaguez-wnrt-fm2-96-9",
+      "name": "WNRT-FM2",
+      "freqMhz": 96.9,
+      "cityId": "pr-mayaguez",
+      "description": "FM booster service listed by FCC for MAYAGUEZ, Puerto Rico. Callsign: WNRT-FM2.",
+      "tags": [
+        "fm",
+        "official",
+        "fcc",
+        "puerto-rico",
+        "booster"
+      ],
+      "source": "FCC LMS Public Database",
+      "sourceUrl": "https://enterpriseefiling.fcc.gov/dataentry/public/tv/lmsDatabase.html",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "pr-mayaguez-wiob-97-5",
+      "name": "WIOB",
+      "freqMhz": 97.5,
+      "cityId": "pr-mayaguez",
+      "description": "Full Power FM service listed by FCC for MAYAGUEZ, Puerto Rico. Callsign: WIOB.",
+      "tags": [
+        "fm",
+        "official",
+        "fcc",
+        "puerto-rico",
+        "full-power"
+      ],
+      "source": "FCC LMS Public Database",
+      "sourceUrl": "https://enterpriseefiling.fcc.gov/dataentry/public/tv/lmsDatabase.html",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "pr-mayaguez-wukq-fm-98-7",
+      "name": "WUKQ-FM",
+      "freqMhz": 98.7,
+      "cityId": "pr-mayaguez",
+      "description": "Full Power FM service listed by FCC for MAYAGUEZ, Puerto Rico. Callsign: WUKQ-FM.",
+      "tags": [
+        "fm",
+        "official",
+        "fcc",
+        "puerto-rico",
+        "full-power"
+      ],
+      "source": "FCC LMS Public Database",
+      "sourceUrl": "https://enterpriseefiling.fcc.gov/dataentry/public/tv/lmsDatabase.html",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "pr-mayaguez-wdin-fm2-102-9",
+      "name": "WDIN-FM2",
+      "freqMhz": 102.9,
+      "cityId": "pr-mayaguez",
+      "description": "FM booster service listed by FCC for MAYAGUEZ, Puerto Rico. Callsign: WDIN-FM2.",
+      "tags": [
+        "fm",
+        "official",
+        "fcc",
+        "puerto-rico",
+        "booster"
+      ],
+      "source": "FCC LMS Public Database",
+      "sourceUrl": "https://enterpriseefiling.fcc.gov/dataentry/public/tv/lmsDatabase.html",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "pr-mayaguez-werr-fm3-104-1",
+      "name": "WERR-FM3",
+      "freqMhz": 104.1,
+      "cityId": "pr-mayaguez",
+      "description": "FM booster service listed by FCC for MAYAGUEZ, Puerto Rico. Callsign: WERR-FM3.",
+      "tags": [
+        "fm",
+        "official",
+        "fcc",
+        "puerto-rico",
+        "booster"
+      ],
+      "source": "FCC LMS Public Database",
+      "sourceUrl": "https://enterpriseefiling.fcc.gov/dataentry/public/tv/lmsDatabase.html",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "pr-mayaguez-w295bu-106-9",
+      "name": "W295BU",
+      "freqMhz": 106.9,
+      "cityId": "pr-mayaguez",
+      "description": "FM translator service listed by FCC for MAYAGUEZ, Puerto Rico. Callsign: W295BU.",
+      "tags": [
+        "fm",
+        "official",
+        "fcc",
+        "puerto-rico",
+        "translator"
+      ],
+      "source": "FCC LMS Public Database",
+      "sourceUrl": "https://enterpriseefiling.fcc.gov/dataentry/public/tv/lmsDatabase.html",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "pr-mayaguez-wcmn-fm6-107-3",
+      "name": "WCMN-FM6",
+      "freqMhz": 107.3,
+      "cityId": "pr-mayaguez",
+      "description": "FM booster service listed by FCC for MAYAGUEZ, Puerto Rico. Callsign: WCMN-FM6.",
+      "tags": [
+        "fm",
+        "official",
+        "fcc",
+        "puerto-rico",
+        "booster"
+      ],
+      "source": "FCC LMS Public Database",
+      "sourceUrl": "https://enterpriseefiling.fcc.gov/dataentry/public/tv/lmsDatabase.html",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "pr-mayaguez-wvpj-lp-107-9",
+      "name": "WVPJ-LP",
+      "freqMhz": 107.9,
+      "cityId": "pr-mayaguez",
+      "description": "Low Power FM service listed by FCC for MAYAGUEZ, Puerto Rico. Callsign: WVPJ-LP.",
+      "tags": [
+        "fm",
+        "official",
+        "fcc",
+        "puerto-rico",
+        "low-power"
+      ],
+      "source": "FCC LMS Public Database",
+      "sourceUrl": "https://enterpriseefiling.fcc.gov/dataentry/public/tv/lmsDatabase.html",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "pr-mayaguez-2-w228ef-93-5",
+      "name": "W228EF",
+      "freqMhz": 93.5,
+      "cityId": "pr-mayaguez-2",
+      "description": "FM translator service listed by FCC for MAYAGUEZ, Puerto Rico. Callsign: W228EF.",
+      "tags": [
+        "fm",
+        "official",
+        "fcc",
+        "puerto-rico",
+        "translator"
+      ],
+      "source": "FCC LMS Public Database",
+      "sourceUrl": "https://enterpriseefiling.fcc.gov/dataentry/public/tv/lmsDatabase.html",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "pr-mayaguez-2-w233cw-94-5",
+      "name": "W233CW",
+      "freqMhz": 94.5,
+      "cityId": "pr-mayaguez-2",
+      "description": "FM translator service listed by FCC for MAYAGUEZ/YAUCO, Puerto Rico. Callsign: W233CW.",
+      "tags": [
+        "fm",
+        "official",
+        "fcc",
+        "puerto-rico",
+        "translator"
+      ],
+      "source": "FCC LMS Public Database",
+      "sourceUrl": "https://enterpriseefiling.fcc.gov/dataentry/public/tv/lmsDatabase.html",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "pr-mayaguez-2-w260dr-99-9",
+      "name": "W260DR",
+      "freqMhz": 99.9,
+      "cityId": "pr-mayaguez-2",
+      "description": "FM translator service listed by FCC for MAYAGUEZ, Puerto Rico. Callsign: W260DR.",
+      "tags": [
+        "fm",
+        "official",
+        "fcc",
+        "puerto-rico",
+        "translator"
+      ],
+      "source": "FCC LMS Public Database",
+      "sourceUrl": "https://enterpriseefiling.fcc.gov/dataentry/public/tv/lmsDatabase.html",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "pr-mayaguez-2-w265ec-100-9",
+      "name": "W265EC",
+      "freqMhz": 100.9,
+      "cityId": "pr-mayaguez-2",
+      "description": "FM translator service listed by FCC for MAYAGUEZ, Puerto Rico. Callsign: W265EC.",
+      "tags": [
+        "fm",
+        "official",
+        "fcc",
+        "puerto-rico",
+        "translator"
+      ],
+      "source": "FCC LMS Public Database",
+      "sourceUrl": "https://enterpriseefiling.fcc.gov/dataentry/public/tv/lmsDatabase.html",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "pr-moca-wmaa-lp-93-7",
+      "name": "WMAA-LP",
+      "freqMhz": 93.7,
+      "cityId": "pr-moca",
+      "description": "Low Power FM service listed by FCC for MOCA, Puerto Rico. Callsign: WMAA-LP.",
+      "tags": [
+        "fm",
+        "official",
+        "fcc",
+        "puerto-rico",
+        "low-power"
+      ],
+      "source": "FCC LMS Public Database",
+      "sourceUrl": "https://enterpriseefiling.fcc.gov/dataentry/public/tv/lmsDatabase.html",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "pr-moca-wzfe-lp-98-3",
+      "name": "WZFE-LP",
+      "freqMhz": 98.3,
+      "cityId": "pr-moca",
+      "description": "Low Power FM service listed by FCC for MOCA, Puerto Rico. Callsign: WZFE-LP.",
+      "tags": [
+        "fm",
+        "official",
+        "fcc",
+        "puerto-rico",
+        "low-power"
+      ],
+      "source": "FCC LMS Public Database",
+      "sourceUrl": "https://enterpriseefiling.fcc.gov/dataentry/public/tv/lmsDatabase.html",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "pr-naguabo-wyqe-92-9",
+      "name": "WYQE",
+      "freqMhz": 92.9,
+      "cityId": "pr-naguabo",
+      "description": "Full Power FM service listed by FCC for NAGUABO, Puerto Rico. Callsign: WYQE.",
+      "tags": [
+        "fm",
+        "official",
+        "fcc",
+        "puerto-rico",
+        "full-power"
+      ],
+      "source": "FCC LMS Public Database",
+      "sourceUrl": "https://enterpriseefiling.fcc.gov/dataentry/public/tv/lmsDatabase.html",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "pr-patillas-w232dr-94-3",
+      "name": "W232DR",
+      "freqMhz": 94.3,
+      "cityId": "pr-patillas",
+      "description": "FM translator service listed by FCC for PATILLAS, Puerto Rico. Callsign: W232DR.",
+      "tags": [
+        "fm",
+        "official",
+        "fcc",
+        "puerto-rico",
+        "translator"
+      ],
+      "source": "FCC LMS Public Database",
+      "sourceUrl": "https://enterpriseefiling.fcc.gov/dataentry/public/tv/lmsDatabase.html",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "pr-ponce-wpuc-fm-88-9",
+      "name": "WPUC-FM",
+      "freqMhz": 88.9,
+      "cityId": "pr-ponce",
+      "description": "Full Power FM service listed by FCC for PONCE, Puerto Rico. Callsign: WPUC-FM.",
+      "tags": [
+        "fm",
+        "official",
+        "fcc",
+        "puerto-rico",
+        "full-power"
+      ],
+      "source": "FCC LMS Public Database",
+      "sourceUrl": "https://enterpriseefiling.fcc.gov/dataentry/public/tv/lmsDatabase.html",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "pr-ponce-w221eb-92-1",
+      "name": "W221EB",
+      "freqMhz": 92.1,
+      "cityId": "pr-ponce",
+      "description": "FM translator service listed by FCC for PONCE, Puerto Rico. Callsign: W221EB.",
+      "tags": [
+        "fm",
+        "official",
+        "fcc",
+        "puerto-rico",
+        "translator"
+      ],
+      "source": "FCC LMS Public Database",
+      "sourceUrl": "https://enterpriseefiling.fcc.gov/dataentry/public/tv/lmsDatabase.html",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "pr-ponce-wtpm-fm1-92-9",
+      "name": "WTPM-FM1",
+      "freqMhz": 92.9,
+      "cityId": "pr-ponce",
+      "description": "FM booster service listed by FCC for PONCE, Puerto Rico. Callsign: WTPM-FM1.",
+      "tags": [
+        "fm",
+        "official",
+        "fcc",
+        "puerto-rico",
+        "booster"
+      ],
+      "source": "FCC LMS Public Database",
+      "sourceUrl": "https://enterpriseefiling.fcc.gov/dataentry/public/tv/lmsDatabase.html",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "pr-ponce-wzmt-93-3",
+      "name": "WZMT",
+      "freqMhz": 93.3,
+      "cityId": "pr-ponce",
+      "description": "Full Power FM service listed by FCC for PONCE, Puerto Rico. Callsign: WZMT.",
+      "tags": [
+        "fm",
+        "official",
+        "fcc",
+        "puerto-rico",
+        "full-power"
+      ],
+      "source": "FCC LMS Public Database",
+      "sourceUrl": "https://enterpriseefiling.fcc.gov/dataentry/public/tv/lmsDatabase.html",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "pr-ponce-w238dh-95-5",
+      "name": "W238DH",
+      "freqMhz": 95.5,
+      "cityId": "pr-ponce",
+      "description": "FM translator service listed by FCC for PONCE, Puerto Rico. Callsign: W238DH.",
+      "tags": [
+        "fm",
+        "official",
+        "fcc",
+        "puerto-rico",
+        "translator"
+      ],
+      "source": "FCC LMS Public Database",
+      "sourceUrl": "https://enterpriseefiling.fcc.gov/dataentry/public/tv/lmsDatabase.html",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "pr-ponce-wrio-101-1",
+      "name": "WRIO",
+      "freqMhz": 101.1,
+      "cityId": "pr-ponce",
+      "description": "Full Power FM service listed by FCC for PONCE, Puerto Rico. Callsign: WRIO.",
+      "tags": [
+        "fm",
+        "official",
+        "fcc",
+        "puerto-rico",
+        "full-power"
+      ],
+      "source": "FCC LMS Public Database",
+      "sourceUrl": "https://enterpriseefiling.fcc.gov/dataentry/public/tv/lmsDatabase.html",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "pr-ponce-w268dj-101-5",
+      "name": "W268DJ",
+      "freqMhz": 101.5,
+      "cityId": "pr-ponce",
+      "description": "FM translator service listed by FCC for PONCE, Puerto Rico. Callsign: W268DJ.",
+      "tags": [
+        "fm",
+        "official",
+        "fcc",
+        "puerto-rico",
+        "translator"
+      ],
+      "source": "FCC LMS Public Database",
+      "sourceUrl": "https://enterpriseefiling.fcc.gov/dataentry/public/tv/lmsDatabase.html",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "pr-ponce-wzar-101-9",
+      "name": "WZAR",
+      "freqMhz": 101.9,
+      "cityId": "pr-ponce",
+      "description": "Full Power FM service listed by FCC for PONCE, Puerto Rico. Callsign: WZAR.",
+      "tags": [
+        "fm",
+        "official",
+        "fcc",
+        "puerto-rico",
+        "full-power"
+      ],
+      "source": "FCC LMS Public Database",
+      "sourceUrl": "https://enterpriseefiling.fcc.gov/dataentry/public/tv/lmsDatabase.html",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "pr-ponce-w276ai-103-1",
+      "name": "W276AI",
+      "freqMhz": 103.1,
+      "cityId": "pr-ponce",
+      "description": "FM translator service listed by FCC for PONCE, Puerto Rico. Callsign: W276AI.",
+      "tags": [
+        "fm",
+        "official",
+        "fcc",
+        "puerto-rico",
+        "translator"
+      ],
+      "source": "FCC LMS Public Database",
+      "sourceUrl": "https://enterpriseefiling.fcc.gov/dataentry/public/tv/lmsDatabase.html",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "pr-ponce-wioc-105-1",
+      "name": "WIOC",
+      "freqMhz": 105.1,
+      "cityId": "pr-ponce",
+      "description": "Full Power FM service listed by FCC for PONCE, Puerto Rico. Callsign: WIOC.",
+      "tags": [
+        "fm",
+        "official",
+        "fcc",
+        "puerto-rico",
+        "full-power"
+      ],
+      "source": "FCC LMS Public Database",
+      "sourceUrl": "https://enterpriseefiling.fcc.gov/dataentry/public/tv/lmsDatabase.html",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "pr-ponce-wcmn-fm3-107-3",
+      "name": "WCMN-FM3",
+      "freqMhz": 107.3,
+      "cityId": "pr-ponce",
+      "description": "FM booster service listed by FCC for PONCE, Puerto Rico. Callsign: WCMN-FM3.",
+      "tags": [
+        "fm",
+        "official",
+        "fcc",
+        "puerto-rico",
+        "booster"
+      ],
+      "source": "FCC LMS Public Database",
+      "sourceUrl": "https://enterpriseefiling.fcc.gov/dataentry/public/tv/lmsDatabase.html",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "pr-quebradillas-wzca-91-7",
+      "name": "WZCA",
+      "freqMhz": 91.7,
+      "cityId": "pr-quebradillas",
+      "description": "Full Power FM service listed by FCC for QUEBRADILLAS, Puerto Rico. Callsign: WZCA.",
+      "tags": [
+        "fm",
+        "official",
+        "fcc",
+        "puerto-rico",
+        "full-power"
+      ],
+      "source": "FCC LMS Public Database",
+      "sourceUrl": "https://enterpriseefiling.fcc.gov/dataentry/public/tv/lmsDatabase.html",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "pr-quebradillas-widi-99-5",
+      "name": "WIDI",
+      "freqMhz": 99.5,
+      "cityId": "pr-quebradillas",
+      "description": "Full Power FM service listed by FCC for QUEBRADILLAS, Puerto Rico. Callsign: WIDI.",
+      "tags": [
+        "fm",
+        "official",
+        "fcc",
+        "puerto-rico",
+        "full-power"
+      ],
+      "source": "FCC LMS Public Database",
+      "sourceUrl": "https://enterpriseefiling.fcc.gov/dataentry/public/tv/lmsDatabase.html",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "pr-rio-grande-woye-97-3",
+      "name": "WOYE",
+      "freqMhz": 97.3,
+      "cityId": "pr-rio-grande",
+      "description": "Full Power FM service listed by FCC for RIO GRANDE, Puerto Rico. Callsign: WOYE.",
+      "tags": [
+        "fm",
+        "official",
+        "fcc",
+        "puerto-rico",
+        "full-power"
+      ],
+      "source": "FCC LMS Public Database",
+      "sourceUrl": "https://enterpriseefiling.fcc.gov/dataentry/public/tv/lmsDatabase.html",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "pr-san-german-wegm-95-1",
+      "name": "WEGM",
+      "freqMhz": 95.1,
+      "cityId": "pr-san-german",
+      "description": "Full Power FM service listed by FCC for SAN GERMAN, Puerto Rico. Callsign: WEGM.",
+      "tags": [
+        "fm",
+        "official",
+        "fcc",
+        "puerto-rico",
+        "full-power"
+      ],
+      "source": "FCC LMS Public Database",
+      "sourceUrl": "https://enterpriseefiling.fcc.gov/dataentry/public/tv/lmsDatabase.html",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "pr-san-german-2-wnnv-91-7",
+      "name": "WNNV",
+      "freqMhz": 91.7,
+      "cityId": "pr-san-german-2",
+      "description": "Full Power FM service listed by FCC for SAN GERMAN, Puerto Rico. Callsign: WNNV.",
+      "tags": [
+        "fm",
+        "official",
+        "fcc",
+        "puerto-rico",
+        "full-power"
+      ],
+      "source": "FCC LMS Public Database",
+      "sourceUrl": "https://enterpriseefiling.fcc.gov/dataentry/public/tv/lmsDatabase.html",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "pr-san-german-2-wiob-fm1-97-5",
+      "name": "WIOB-FM1",
+      "freqMhz": 97.5,
+      "cityId": "pr-san-german-2",
+      "description": "FM booster service listed by FCC for SAN GERMAN, ETC., Puerto Rico. Callsign: WIOB-FM1.",
+      "tags": [
+        "fm",
+        "official",
+        "fcc",
+        "puerto-rico",
+        "booster"
+      ],
+      "source": "FCC LMS Public Database",
+      "sourceUrl": "https://enterpriseefiling.fcc.gov/dataentry/public/tv/lmsDatabase.html",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "pr-san-juan-wrtu-89-7",
+      "name": "WRTU",
+      "freqMhz": 89.7,
+      "cityId": "pr-san-juan",
+      "description": "Full Power FM service listed by FCC for SAN JUAN, Puerto Rico. Callsign: WRTU.",
+      "tags": [
+        "fm",
+        "official",
+        "fcc",
+        "puerto-rico",
+        "full-power"
+      ],
+      "source": "FCC LMS Public Database",
+      "sourceUrl": "https://enterpriseefiling.fcc.gov/dataentry/public/tv/lmsDatabase.html",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "pr-san-juan-wipr-fm-91-3",
+      "name": "WIPR-FM",
+      "freqMhz": 91.3,
+      "cityId": "pr-san-juan",
+      "description": "Full Power FM service listed by FCC for SAN JUAN, Puerto Rico. Callsign: WIPR-FM.",
+      "tags": [
+        "fm",
+        "official",
+        "fcc",
+        "puerto-rico",
+        "full-power"
+      ],
+      "source": "FCC LMS Public Database",
+      "sourceUrl": "https://enterpriseefiling.fcc.gov/dataentry/public/tv/lmsDatabase.html",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "pr-san-juan-wznt-93-7",
+      "name": "WZNT",
+      "freqMhz": 93.7,
+      "cityId": "pr-san-juan",
+      "description": "Full Power FM service listed by FCC for SAN JUAN, Puerto Rico. Callsign: WZNT.",
+      "tags": [
+        "fm",
+        "official",
+        "fcc",
+        "puerto-rico",
+        "full-power"
+      ],
+      "source": "FCC LMS Public Database",
+      "sourceUrl": "https://enterpriseefiling.fcc.gov/dataentry/public/tv/lmsDatabase.html",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "pr-san-juan-w232dh-94-3",
+      "name": "W232DH",
+      "freqMhz": 94.3,
+      "cityId": "pr-san-juan",
+      "description": "FM translator service listed by FCC for SAN JUAN, Puerto Rico. Callsign: W232DH.",
+      "tags": [
+        "fm",
+        "official",
+        "fcc",
+        "puerto-rico",
+        "translator"
+      ],
+      "source": "FCC LMS Public Database",
+      "sourceUrl": "https://enterpriseefiling.fcc.gov/dataentry/public/tv/lmsDatabase.html",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "pr-san-juan-w237ff-95-3",
+      "name": "W237FF",
+      "freqMhz": 95.3,
+      "cityId": "pr-san-juan",
+      "description": "FM translator service listed by FCC for SAN JUAN, Puerto Rico. Callsign: W237FF.",
+      "tags": [
+        "fm",
+        "official",
+        "fcc",
+        "puerto-rico",
+        "translator"
+      ],
+      "source": "FCC LMS Public Database",
+      "sourceUrl": "https://enterpriseefiling.fcc.gov/dataentry/public/tv/lmsDatabase.html",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "pr-san-juan-wprm-fm-99-1",
+      "name": "WPRM-FM",
+      "freqMhz": 99.1,
+      "cityId": "pr-san-juan",
+      "description": "Full Power FM service listed by FCC for SAN JUAN, Puerto Rico. Callsign: WPRM-FM.",
+      "tags": [
+        "fm",
+        "official",
+        "fcc",
+        "puerto-rico",
+        "full-power"
+      ],
+      "source": "FCC LMS Public Database",
+      "sourceUrl": "https://enterpriseefiling.fcc.gov/dataentry/public/tv/lmsDatabase.html",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "pr-san-juan-w258dt-99-5",
+      "name": "W258DT",
+      "freqMhz": 99.5,
+      "cityId": "pr-san-juan",
+      "description": "FM translator service listed by FCC for SAN JUAN, Puerto Rico. Callsign: W258DT.",
+      "tags": [
+        "fm",
+        "official",
+        "fcc",
+        "puerto-rico",
+        "translator"
+      ],
+      "source": "FCC LMS Public Database",
+      "sourceUrl": "https://enterpriseefiling.fcc.gov/dataentry/public/tv/lmsDatabase.html",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "pr-san-juan-wioa-99-9",
+      "name": "WIOA",
+      "freqMhz": 99.9,
+      "cityId": "pr-san-juan",
+      "description": "Full Power FM service listed by FCC for SAN JUAN, Puerto Rico. Callsign: WIOA.",
+      "tags": [
+        "fm",
+        "official",
+        "fcc",
+        "puerto-rico",
+        "full-power"
+      ],
+      "source": "FCC LMS Public Database",
+      "sourceUrl": "https://enterpriseefiling.fcc.gov/dataentry/public/tv/lmsDatabase.html",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "pr-san-juan-w266cf-101-1",
+      "name": "W266CF",
+      "freqMhz": 101.1,
+      "cityId": "pr-san-juan",
+      "description": "FM translator service listed by FCC for SAN JUAN, Puerto Rico. Callsign: W266CF.",
+      "tags": [
+        "fm",
+        "official",
+        "fcc",
+        "puerto-rico",
+        "translator"
+      ],
+      "source": "FCC LMS Public Database",
+      "sourceUrl": "https://enterpriseefiling.fcc.gov/dataentry/public/tv/lmsDatabase.html",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "pr-san-juan-w268bk-101-5",
+      "name": "W268BK",
+      "freqMhz": 101.5,
+      "cityId": "pr-san-juan",
+      "description": "FM translator service listed by FCC for SAN JUAN, Puerto Rico. Callsign: W268BK.",
+      "tags": [
+        "fm",
+        "official",
+        "fcc",
+        "puerto-rico",
+        "translator"
+      ],
+      "source": "FCC LMS Public Database",
+      "sourceUrl": "https://enterpriseefiling.fcc.gov/dataentry/public/tv/lmsDatabase.html",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "pr-san-juan-wtok-fm-102-5",
+      "name": "WTOK-FM",
+      "freqMhz": 102.5,
+      "cityId": "pr-san-juan",
+      "description": "Full Power FM service listed by FCC for SAN JUAN, Puerto Rico. Callsign: WTOK-FM.",
+      "tags": [
+        "fm",
+        "official",
+        "fcc",
+        "puerto-rico",
+        "full-power"
+      ],
+      "source": "FCC LMS Public Database",
+      "sourceUrl": "https://enterpriseefiling.fcc.gov/dataentry/public/tv/lmsDatabase.html",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "pr-san-juan-w279bu-103-7",
+      "name": "W279BU",
+      "freqMhz": 103.7,
+      "cityId": "pr-san-juan",
+      "description": "FM translator service listed by FCC for SAN JUAN, Puerto Rico. Callsign: W279BU.",
+      "tags": [
+        "fm",
+        "official",
+        "fcc",
+        "puerto-rico",
+        "translator"
+      ],
+      "source": "FCC LMS Public Database",
+      "sourceUrl": "https://enterpriseefiling.fcc.gov/dataentry/public/tv/lmsDatabase.html",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "pr-san-juan-wkaq-fm-104-7",
+      "name": "WKAQ-FM",
+      "freqMhz": 104.7,
+      "cityId": "pr-san-juan",
+      "description": "Full Power FM service listed by FCC for SAN JUAN, Puerto Rico. Callsign: WKAQ-FM.",
+      "tags": [
+        "fm",
+        "official",
+        "fcc",
+        "puerto-rico",
+        "full-power"
+      ],
+      "source": "FCC LMS Public Database",
+      "sourceUrl": "https://enterpriseefiling.fcc.gov/dataentry/public/tv/lmsDatabase.html",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "pr-san-juan-wjkl-105-7",
+      "name": "WJKL",
+      "freqMhz": 105.7,
+      "cityId": "pr-san-juan",
+      "description": "Full Power FM service listed by FCC for SAN JUAN, Puerto Rico. Callsign: WJKL.",
+      "tags": [
+        "fm",
+        "official",
+        "fcc",
+        "puerto-rico",
+        "full-power"
+      ],
+      "source": "FCC LMS Public Database",
+      "sourceUrl": "https://enterpriseefiling.fcc.gov/dataentry/public/tv/lmsDatabase.html",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "pr-san-lorenzo-w227cv-93-3",
+      "name": "W227CV",
+      "freqMhz": 93.3,
+      "cityId": "pr-san-lorenzo",
+      "description": "FM translator service listed by FCC for SAN LORENZO, Puerto Rico. Callsign: W227CV.",
+      "tags": [
+        "fm",
+        "official",
+        "fcc",
+        "puerto-rico",
+        "translator"
+      ],
+      "source": "FCC LMS Public Database",
+      "sourceUrl": "https://enterpriseefiling.fcc.gov/dataentry/public/tv/lmsDatabase.html",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "pr-santa-isabel-wxhd-98-1",
+      "name": "WXHD",
+      "freqMhz": 98.1,
+      "cityId": "pr-santa-isabel",
+      "description": "Full Power FM service listed by FCC for SANTA ISABEL, Puerto Rico. Callsign: WXHD.",
+      "tags": [
+        "fm",
+        "official",
+        "fcc",
+        "puerto-rico",
+        "full-power"
+      ],
+      "source": "FCC LMS Public Database",
+      "sourceUrl": "https://enterpriseefiling.fcc.gov/dataentry/public/tv/lmsDatabase.html",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "pr-utuado-wutd-fm-89-9",
+      "name": "WUTD-FM",
+      "freqMhz": 89.9,
+      "cityId": "pr-utuado",
+      "description": "Full Power FM service listed by FCC for UTUADO, Puerto Rico. Callsign: WUTD-FM.",
+      "tags": [
+        "fm",
+        "official",
+        "fcc",
+        "puerto-rico",
+        "full-power"
+      ],
+      "source": "FCC LMS Public Database",
+      "sourceUrl": "https://enterpriseefiling.fcc.gov/dataentry/public/tv/lmsDatabase.html",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "pr-utuado-wutl-lp-90-9",
+      "name": "WUTL-LP",
+      "freqMhz": 90.9,
+      "cityId": "pr-utuado",
+      "description": "Low Power FM service listed by FCC for UTUADO, Puerto Rico. Callsign: WUTL-LP.",
+      "tags": [
+        "fm",
+        "official",
+        "fcc",
+        "puerto-rico",
+        "low-power"
+      ],
+      "source": "FCC LMS Public Database",
+      "sourceUrl": "https://enterpriseefiling.fcc.gov/dataentry/public/tv/lmsDatabase.html",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "pr-utuado-w252eg-98-3",
+      "name": "W252EG",
+      "freqMhz": 98.3,
+      "cityId": "pr-utuado",
+      "description": "FM translator service listed by FCC for UTUADO, Puerto Rico. Callsign: W252EG.",
+      "tags": [
+        "fm",
+        "official",
+        "fcc",
+        "puerto-rico",
+        "translator"
+      ],
+      "source": "FCC LMS Public Database",
+      "sourceUrl": "https://enterpriseefiling.fcc.gov/dataentry/public/tv/lmsDatabase.html",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "pr-vega-alta-werr-104-1",
+      "name": "WERR",
+      "freqMhz": 104.1,
+      "cityId": "pr-vega-alta",
+      "description": "Full Power FM service listed by FCC for VEGA ALTA, Puerto Rico. Callsign: WERR.",
+      "tags": [
+        "fm",
+        "official",
+        "fcc",
+        "puerto-rico",
+        "full-power"
+      ],
+      "source": "FCC LMS Public Database",
+      "sourceUrl": "https://enterpriseefiling.fcc.gov/dataentry/public/tv/lmsDatabase.html",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "pr-vega-baja-wvbm-lp-92-1",
+      "name": "WVBM-LP",
+      "freqMhz": 92.1,
+      "cityId": "pr-vega-baja",
+      "description": "Low Power FM service listed by FCC for VEGA BAJA, Puerto Rico. Callsign: WVBM-LP.",
+      "tags": [
+        "fm",
+        "official",
+        "fcc",
+        "puerto-rico",
+        "low-power"
+      ],
+      "source": "FCC LMS Public Database",
+      "sourceUrl": "https://enterpriseefiling.fcc.gov/dataentry/public/tv/lmsDatabase.html",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "pr-vega-baja-w251da-98-1",
+      "name": "W251DA",
+      "freqMhz": 98.1,
+      "cityId": "pr-vega-baja",
+      "description": "FM translator service listed by FCC for VEGA BAJA, Puerto Rico. Callsign: W251DA.",
+      "tags": [
+        "fm",
+        "official",
+        "fcc",
+        "puerto-rico",
+        "translator"
+      ],
+      "source": "FCC LMS Public Database",
+      "sourceUrl": "https://enterpriseefiling.fcc.gov/dataentry/public/tv/lmsDatabase.html",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "pr-vega-baja-w267dd-101-3",
+      "name": "W267DD",
+      "freqMhz": 101.3,
+      "cityId": "pr-vega-baja",
+      "description": "FM translator service listed by FCC for VEGA BAJA, Puerto Rico. Callsign: W267DD.",
+      "tags": [
+        "fm",
+        "official",
+        "fcc",
+        "puerto-rico",
+        "translator"
+      ],
+      "source": "FCC LMS Public Database",
+      "sourceUrl": "https://enterpriseefiling.fcc.gov/dataentry/public/tv/lmsDatabase.html",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "pr-yauco-wdin-fm3-102-9",
+      "name": "WDIN-FM3",
+      "freqMhz": 102.9,
+      "cityId": "pr-yauco",
+      "description": "FM booster service listed by FCC for YAUCO, Puerto Rico. Callsign: WDIN-FM3.",
+      "tags": [
+        "fm",
+        "official",
+        "fcc",
+        "puerto-rico",
+        "booster"
+      ],
+      "source": "FCC LMS Public Database",
+      "sourceUrl": "https://enterpriseefiling.fcc.gov/dataentry/public/tv/lmsDatabase.html",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "pr-yauco-werr-fm2-104-1",
+      "name": "WERR-FM2",
+      "freqMhz": 104.1,
+      "cityId": "pr-yauco",
+      "description": "FM booster service listed by FCC for YAUCO, Puerto Rico. Callsign: WERR-FM2.",
+      "tags": [
+        "fm",
+        "official",
+        "fcc",
+        "puerto-rico",
+        "booster"
+      ],
+      "source": "FCC LMS Public Database",
+      "sourceUrl": "https://enterpriseefiling.fcc.gov/dataentry/public/tv/lmsDatabase.html",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    }
+  ]
+}

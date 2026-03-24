@@ -1,0 +1,80 @@
+{
+  "country": {
+    "id": "south-korea",
+    "code": "KR",
+    "name": "South Korea",
+    "regionId": "asia",
+    "cityCount": 1,
+    "stationCount": 3,
+    "sourceCount": 1,
+    "sources": [
+      {
+        "name": "Community seed",
+        "kind": "manual"
+      }
+    ],
+    "lastImportedAt": "2026-03-23",
+    "coverageStatus": "manual",
+    "coverageTier": "manual-seed",
+    "coverageScope": "city-seed",
+    "sourceQuality": "manual-curated",
+    "hasOfficialImporter": false,
+    "coverageNotes": "South Korea currently ships only a small manual seed because the best official path is API-limited.",
+    "coverageScore": 14
+  },
+  "cities": [
+    {
+      "id": "kr-seoul",
+      "name": "Seoul",
+      "countryId": "south-korea",
+      "timezone": "Asia/Seoul",
+      "latitude": 37.5665,
+      "longitude": 126.978,
+      "stationCount": 3
+    }
+  ],
+  "stations": [
+    {
+      "id": "kr-seoul-kbs-cool-fm",
+      "name": "KBS Cool FM",
+      "freqMhz": 89.1,
+      "cityId": "kr-seoul",
+      "description": "KBS pop and entertainment station.",
+      "tags": [
+        "public",
+        "pop"
+      ],
+      "source": "Community seed",
+      "verifiedAt": "2026-03-23",
+      "curated": true
+    },
+    {
+      "id": "kr-seoul-mbc-fm4u",
+      "name": "MBC FM4U",
+      "freqMhz": 91.9,
+      "cityId": "kr-seoul",
+      "description": "MBC music and magazine programming.",
+      "tags": [
+        "music",
+        "entertainment"
+      ],
+      "source": "Community seed",
+      "verifiedAt": "2026-03-23",
+      "curated": true
+    },
+    {
+      "id": "kr-seoul-sbs-power-fm",
+      "name": "SBS Power FM",
+      "freqMhz": 107.7,
+      "cityId": "kr-seoul",
+      "description": "Pop, shows, and morning radio.",
+      "tags": [
+        "pop",
+        "talk"
+      ],
+      "source": "Community seed",
+      "verifiedAt": "2026-03-23",
+      "curated": true
+    }
+  ]
+}

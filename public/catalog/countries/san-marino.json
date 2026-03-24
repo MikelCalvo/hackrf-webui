@@ -1,0 +1,73 @@
+{
+  "country": {
+    "id": "san-marino",
+    "code": "SM",
+    "name": "San Marino",
+    "regionId": "europe",
+    "cityCount": 1,
+    "stationCount": 2,
+    "sourceCount": 1,
+    "sources": [
+      {
+        "name": "San Marino RTV official radio page",
+        "url": "https://www.sanmarinortv.sm/radio"
+      }
+    ],
+    "lastImportedAt": "2026-03-24",
+    "coverageStatus": "active",
+    "coverageTier": "official-substantial",
+    "coverageScope": "national",
+    "sourceQuality": "official-regulator",
+    "hasOfficialImporter": true,
+    "coverageScore": 88
+  },
+  "cities": [
+    {
+      "id": "sm-san-marino",
+      "name": "San Marino",
+      "countryId": "san-marino",
+      "timezone": "Europe/San_Marino",
+      "latitude": 43.93667,
+      "longitude": 12.44639,
+      "stationCount": 2
+    }
+  ],
+  "stations": [
+    {
+      "id": "sm-san-marino-radio-san-marino-102-7",
+      "name": "Radio San Marino",
+      "freqMhz": 102.7,
+      "cityId": "sm-san-marino",
+      "description": "San Marino FM service listed by the official San Marino RTV radio page for San Marino Città. Licensee: San Marino RTV. Frequency: 102.7 MHz. Address: Viale J.F.Kennedy, 13 - 47890, San Marino Città, Repubblica di San Marino. Contact: radio@sanmarinortv.sm.",
+      "tags": [
+        "fm",
+        "official",
+        "san-marino",
+        "san-marino-rtv",
+        "radio-san-marino"
+      ],
+      "source": "San Marino RTV official radio page",
+      "sourceUrl": "https://www.sanmarinortv.sm/radio",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "sm-san-marino-radio-san-marino-classic-103-2",
+      "name": "Radio San Marino Classic",
+      "freqMhz": 103.2,
+      "cityId": "sm-san-marino",
+      "description": "San Marino FM service listed by the official San Marino RTV radio page for San Marino Città. Licensee: San Marino RTV. Frequency: 103.2 MHz. Address: Viale J.F.Kennedy, 13 - 47890, San Marino Città, Repubblica di San Marino. Contact: radiosanmarinoclassic@sanmarinortv.sm.",
+      "tags": [
+        "fm",
+        "official",
+        "san-marino",
+        "san-marino-rtv",
+        "radio-san-marino-classic"
+      ],
+      "source": "San Marino RTV official radio page",
+      "sourceUrl": "https://www.sanmarinortv.sm/radio",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    }
+  ]
+}

@@ -1,6 +1,7 @@
 import { Dashboard } from "@/components/dashboard";
-import { seedCatalog } from "@/lib/catalog";
+import manifest from "@/data/catalog/manifest.json";
+import type { CatalogManifest } from "@/lib/types";
 
 export default function Home() {
-  return <Dashboard catalog={seedCatalog} />;
+  return <Dashboard manifest={manifest as CatalogManifest} />;
 }

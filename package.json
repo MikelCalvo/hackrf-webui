@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
+    "catalog:build": "node ./scripts/catalog/build.mjs",
     "clean": "node -e \"require('fs').rmSync('.next', { recursive: true, force: true })\"",
     "dev": "next dev --webpack",
     "dev:turbo": "next dev --turbopack",
@@ -21,9 +22,12 @@
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "adm-zip": "^0.5.16",
+    "dbffile": "^1.12.0",
     "eslint": "^9",
     "eslint-config-next": "16.2.1",
     "tailwindcss": "^4",
-    "typescript": "^5"
+    "typescript": "^5",
+    "xlsx": "^0.18.5"
   }
 }

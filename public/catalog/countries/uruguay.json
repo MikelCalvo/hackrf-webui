@@ -1,0 +1,4144 @@
+{
+  "country": {
+    "id": "uruguay",
+    "code": "UY",
+    "name": "Uruguay",
+    "regionId": "south-america",
+    "cityCount": 71,
+    "stationCount": 183,
+    "sourceCount": 1,
+    "sources": [
+      {
+        "name": "URSEC technical data list",
+        "url": "https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/datos-y-estadisticas/datos/listado-datos-tecnicos"
+      }
+    ],
+    "lastImportedAt": "2026-03-24",
+    "coverageStatus": "active",
+    "coverageTier": "official-substantial",
+    "coverageScope": "national",
+    "sourceQuality": "official-regulator",
+    "hasOfficialImporter": true,
+    "coverageScore": 88
+  },
+  "cities": [
+    {
+      "id": "uy-acegua",
+      "name": "Aceguá",
+      "countryId": "uruguay",
+      "timezone": "America/Montevideo",
+      "latitude": -31.87178,
+      "longitude": -54.16351,
+      "stationCount": 1
+    },
+    {
+      "id": "uy-albisu",
+      "name": "Albisu",
+      "countryId": "uruguay",
+      "timezone": "America/Montevideo",
+      "latitude": -31.38411,
+      "longitude": -57.81469,
+      "stationCount": 1
+    },
+    {
+      "id": "uy-artigas",
+      "name": "Artigas",
+      "countryId": "uruguay",
+      "timezone": "America/Montevideo",
+      "latitude": -30.40431,
+      "longitude": -56.46926,
+      "stationCount": 4
+    },
+    {
+      "id": "uy-atlantida",
+      "name": "Atlántida",
+      "countryId": "uruguay",
+      "timezone": "America/Montevideo",
+      "latitude": -34.7719,
+      "longitude": -55.7584,
+      "stationCount": 1
+    },
+    {
+      "id": "uy-barra-de-carrasco",
+      "name": "Barra de Carrasco",
+      "countryId": "uruguay",
+      "timezone": "America/Montevideo",
+      "latitude": -34.87722,
+      "longitude": -56.02972,
+      "stationCount": 1
+    },
+    {
+      "id": "uy-barros-blancos",
+      "name": "Barros Blancos",
+      "countryId": "uruguay",
+      "timezone": "America/Montevideo",
+      "latitude": -34.7524,
+      "longitude": -56.00259,
+      "stationCount": 1
+    },
+    {
+      "id": "uy-bella-union",
+      "name": "Bella Unión",
+      "countryId": "uruguay",
+      "timezone": "America/Montevideo",
+      "latitude": -30.25966,
+      "longitude": -57.59919,
+      "stationCount": 5
+    },
+    {
+      "id": "uy-cardona",
+      "name": "Cardona",
+      "countryId": "uruguay",
+      "timezone": "America/Montevideo",
+      "latitude": -33.87049,
+      "longitude": -57.36954,
+      "stationCount": 1
+    },
+    {
+      "id": "uy-castillos",
+      "name": "Castillos",
+      "countryId": "uruguay",
+      "timezone": "America/Montevideo",
+      "latitude": -34.19871,
+      "longitude": -53.85919,
+      "stationCount": 1
+    },
+    {
+      "id": "uy-casupa",
+      "name": "Casupá",
+      "countryId": "uruguay",
+      "timezone": "America/Montevideo",
+      "latitude": -34.09994,
+      "longitude": -55.64811,
+      "stationCount": 1
+    },
+    {
+      "id": "uy-chui",
+      "name": "Chui",
+      "countryId": "uruguay",
+      "timezone": "America/Montevideo",
+      "latitude": -33.69792,
+      "longitude": -53.45926,
+      "stationCount": 2
+    },
+    {
+      "id": "uy-colonia-del-sacramento",
+      "name": "Colonia del Sacramento",
+      "countryId": "uruguay",
+      "timezone": "America/Montevideo",
+      "latitude": -34.46262,
+      "longitude": -57.83976,
+      "stationCount": 8
+    },
+    {
+      "id": "uy-colonia-del-sacramento-2",
+      "name": "Colonia del Sacramento",
+      "countryId": "uruguay",
+      "timezone": "America/Montevideo",
+      "latitude": -34.46262,
+      "longitude": -57.83976,
+      "stationCount": 1
+    },
+    {
+      "id": "uy-colonia-nicolich",
+      "name": "Colonia Nicolich",
+      "countryId": "uruguay",
+      "timezone": "America/Montevideo",
+      "latitude": -34.81516,
+      "longitude": -56.02435,
+      "stationCount": 1
+    },
+    {
+      "id": "uy-costa-azul",
+      "name": "Costa Azul",
+      "countryId": "uruguay",
+      "timezone": "America/Montevideo",
+      "latitude": -34.62925,
+      "longitude": -54.15307,
+      "stationCount": 1
+    },
+    {
+      "id": "uy-dolores",
+      "name": "Dolores",
+      "countryId": "uruguay",
+      "timezone": "America/Montevideo",
+      "latitude": -33.53009,
+      "longitude": -58.21701,
+      "stationCount": 2
+    },
+    {
+      "id": "uy-durazno",
+      "name": "Durazno",
+      "countryId": "uruguay",
+      "timezone": "America/Montevideo",
+      "latitude": -33.38063,
+      "longitude": -56.52312,
+      "stationCount": 4
+    },
+    {
+      "id": "uy-florida",
+      "name": "Florida",
+      "countryId": "uruguay",
+      "timezone": "America/Montevideo",
+      "latitude": -34.10032,
+      "longitude": -56.21477,
+      "stationCount": 5
+    },
+    {
+      "id": "uy-fraile-muerto",
+      "name": "Fraile Muerto",
+      "countryId": "uruguay",
+      "timezone": "America/Montevideo",
+      "latitude": -32.51667,
+      "longitude": -54.53333,
+      "stationCount": 1
+    },
+    {
+      "id": "uy-fray-bentos",
+      "name": "Fray Bentos",
+      "countryId": "uruguay",
+      "timezone": "America/Montevideo",
+      "latitude": -33.11651,
+      "longitude": -58.31067,
+      "stationCount": 4
+    },
+    {
+      "id": "uy-general-enrique-martinez",
+      "name": "General Enrique Martínez",
+      "countryId": "uruguay",
+      "timezone": "America/Montevideo",
+      "latitude": -33.20388,
+      "longitude": -53.80524,
+      "stationCount": 1
+    },
+    {
+      "id": "uy-guichon",
+      "name": "Guichón",
+      "countryId": "uruguay",
+      "timezone": "America/Montevideo",
+      "latitude": -32.35846,
+      "longitude": -57.19778,
+      "stationCount": 1
+    },
+    {
+      "id": "uy-ituzaingo",
+      "name": "Ituzaingó",
+      "countryId": "uruguay",
+      "timezone": "America/Montevideo",
+      "latitude": -34.42028,
+      "longitude": -56.42488,
+      "stationCount": 1
+    },
+    {
+      "id": "uy-jose-batlle-y-ordonez",
+      "name": "José Batlle y Ordóñez",
+      "countryId": "uruguay",
+      "timezone": "America/Montevideo",
+      "latitude": -33.46667,
+      "longitude": -55.11667,
+      "stationCount": 1
+    },
+    {
+      "id": "uy-jose-pedro-varela",
+      "name": "José Pedro Varela",
+      "countryId": "uruguay",
+      "timezone": "America/Montevideo",
+      "latitude": -33.45451,
+      "longitude": -54.53586,
+      "stationCount": 1
+    },
+    {
+      "id": "uy-juan-l-lacaze",
+      "name": "Juan L. Lacaze",
+      "countryId": "uruguay",
+      "timezone": "America/Montevideo",
+      "latitude": -34.41888,
+      "longitude": -57.45285,
+      "stationCount": 1
+    },
+    {
+      "id": "uy-la-coronilla",
+      "name": "La Coronilla",
+      "countryId": "uruguay",
+      "timezone": "America/Montevideo",
+      "latitude": -33.55791,
+      "longitude": -53.85803,
+      "stationCount": 1
+    },
+    {
+      "id": "uy-la-paloma",
+      "name": "La Paloma",
+      "countryId": "uruguay",
+      "timezone": "America/Montevideo",
+      "latitude": -34.66268,
+      "longitude": -54.16452,
+      "stationCount": 6
+    },
+    {
+      "id": "uy-la-paz",
+      "name": "La Paz",
+      "countryId": "uruguay",
+      "timezone": "America/Montevideo",
+      "latitude": -34.76031,
+      "longitude": -56.2259,
+      "stationCount": 2
+    },
+    {
+      "id": "uy-las-piedras",
+      "name": "Las Piedras",
+      "countryId": "uruguay",
+      "timezone": "America/Montevideo",
+      "latitude": -34.7302,
+      "longitude": -56.21915,
+      "stationCount": 1
+    },
+    {
+      "id": "uy-las-piedras-2",
+      "name": "Las Piedras",
+      "countryId": "uruguay",
+      "timezone": "America/Montevideo",
+      "latitude": -34.7302,
+      "longitude": -56.21915,
+      "stationCount": 1
+    },
+    {
+      "id": "uy-lascano",
+      "name": "Lascano",
+      "countryId": "uruguay",
+      "timezone": "America/Montevideo",
+      "latitude": -33.67235,
+      "longitude": -54.2065,
+      "stationCount": 1
+    },
+    {
+      "id": "uy-libertad",
+      "name": "Libertad",
+      "countryId": "uruguay",
+      "timezone": "America/Montevideo",
+      "latitude": -34.63459,
+      "longitude": -56.61739,
+      "stationCount": 2
+    },
+    {
+      "id": "uy-maldonado",
+      "name": "Maldonado",
+      "countryId": "uruguay",
+      "timezone": "America/Montevideo",
+      "latitude": -34.89791,
+      "longitude": -54.95021,
+      "stationCount": 6
+    },
+    {
+      "id": "uy-melo",
+      "name": "Melo",
+      "countryId": "uruguay",
+      "timezone": "America/Montevideo",
+      "latitude": -32.3682,
+      "longitude": -54.16409,
+      "stationCount": 3
+    },
+    {
+      "id": "uy-mercedes",
+      "name": "Mercedes",
+      "countryId": "uruguay",
+      "timezone": "America/Montevideo",
+      "latitude": -33.2524,
+      "longitude": -58.03047,
+      "stationCount": 5
+    },
+    {
+      "id": "uy-minas",
+      "name": "Minas",
+      "countryId": "uruguay",
+      "timezone": "America/Montevideo",
+      "latitude": -34.37589,
+      "longitude": -55.23771,
+      "stationCount": 5
+    },
+    {
+      "id": "uy-montevideo",
+      "name": "Montevideo",
+      "countryId": "uruguay",
+      "timezone": "America/Montevideo",
+      "latitude": -34.90328,
+      "longitude": -56.18816,
+      "stationCount": 20
+    },
+    {
+      "id": "uy-nueva-helvecia",
+      "name": "Nueva Helvecia",
+      "countryId": "uruguay",
+      "timezone": "America/Montevideo",
+      "latitude": -34.3,
+      "longitude": -57.23333,
+      "stationCount": 1
+    },
+    {
+      "id": "uy-nueva-palmira",
+      "name": "Nueva Palmira",
+      "countryId": "uruguay",
+      "timezone": "America/Montevideo",
+      "latitude": -33.87031,
+      "longitude": -58.41176,
+      "stationCount": 1
+    },
+    {
+      "id": "uy-pan-de-azucar",
+      "name": "Pan de Azúcar",
+      "countryId": "uruguay",
+      "timezone": "America/Montevideo",
+      "latitude": -34.7787,
+      "longitude": -55.23582,
+      "stationCount": 1
+    },
+    {
+      "id": "uy-pan-de-azucar-2",
+      "name": "Pan de Azúcar",
+      "countryId": "uruguay",
+      "timezone": "America/Montevideo",
+      "latitude": -34.7787,
+      "longitude": -55.23582,
+      "stationCount": 1
+    },
+    {
+      "id": "uy-pando",
+      "name": "Pando",
+      "countryId": "uruguay",
+      "timezone": "America/Montevideo",
+      "latitude": -34.71716,
+      "longitude": -55.9584,
+      "stationCount": 1
+    },
+    {
+      "id": "uy-paso-de-los-toros",
+      "name": "Paso de los Toros",
+      "countryId": "uruguay",
+      "timezone": "America/Montevideo",
+      "latitude": -32.81667,
+      "longitude": -56.51667,
+      "stationCount": 3
+    },
+    {
+      "id": "uy-paysandu",
+      "name": "Paysandú",
+      "countryId": "uruguay",
+      "timezone": "America/Montevideo",
+      "latitude": -32.3171,
+      "longitude": -58.08072,
+      "stationCount": 7
+    },
+    {
+      "id": "uy-punta-del-este",
+      "name": "Punta del Este",
+      "countryId": "uruguay",
+      "timezone": "America/Montevideo",
+      "latitude": -34.94747,
+      "longitude": -54.93382,
+      "stationCount": 1
+    },
+    {
+      "id": "uy-punta-del-este-2",
+      "name": "Punta del Este",
+      "countryId": "uruguay",
+      "timezone": "America/Montevideo",
+      "latitude": -34.94747,
+      "longitude": -54.93382,
+      "stationCount": 7
+    },
+    {
+      "id": "uy-rio-branco",
+      "name": "Río Branco",
+      "countryId": "uruguay",
+      "timezone": "America/Montevideo",
+      "latitude": -32.59802,
+      "longitude": -53.38583,
+      "stationCount": 1
+    },
+    {
+      "id": "uy-rivera",
+      "name": "Rivera",
+      "countryId": "uruguay",
+      "timezone": "America/Montevideo",
+      "latitude": -30.90534,
+      "longitude": -55.55076,
+      "stationCount": 5
+    },
+    {
+      "id": "uy-rocha",
+      "name": "Rocha",
+      "countryId": "uruguay",
+      "timezone": "America/Montevideo",
+      "latitude": -34.47995,
+      "longitude": -54.33064,
+      "stationCount": 3
+    },
+    {
+      "id": "uy-rocha-2",
+      "name": "Rocha",
+      "countryId": "uruguay",
+      "timezone": "America/Montevideo",
+      "latitude": -34.47995,
+      "longitude": -54.33064,
+      "stationCount": 3
+    },
+    {
+      "id": "uy-rosario",
+      "name": "Rosario",
+      "countryId": "uruguay",
+      "timezone": "America/Montevideo",
+      "latitude": -34.31667,
+      "longitude": -57.35,
+      "stationCount": 1
+    },
+    {
+      "id": "uy-salto",
+      "name": "Salto",
+      "countryId": "uruguay",
+      "timezone": "America/Montevideo",
+      "latitude": -31.38811,
+      "longitude": -57.95983,
+      "stationCount": 7
+    },
+    {
+      "id": "uy-san-carlos",
+      "name": "San Carlos",
+      "countryId": "uruguay",
+      "timezone": "America/Montevideo",
+      "latitude": -34.79123,
+      "longitude": -54.91824,
+      "stationCount": 1
+    },
+    {
+      "id": "uy-san-gregorio-de-polanco",
+      "name": "San Gregorio de Polanco",
+      "countryId": "uruguay",
+      "timezone": "America/Montevideo",
+      "latitude": -32.61667,
+      "longitude": -55.83333,
+      "stationCount": 1
+    },
+    {
+      "id": "uy-san-jose-de-mayo",
+      "name": "San José de Mayo",
+      "countryId": "uruguay",
+      "timezone": "America/Montevideo",
+      "latitude": -34.33898,
+      "longitude": -56.71339,
+      "stationCount": 1
+    },
+    {
+      "id": "uy-san-jose-de-mayo-2",
+      "name": "San José de Mayo",
+      "countryId": "uruguay",
+      "timezone": "America/Montevideo",
+      "latitude": -34.33898,
+      "longitude": -56.71339,
+      "stationCount": 5
+    },
+    {
+      "id": "uy-san-ramon",
+      "name": "San Ramón",
+      "countryId": "uruguay",
+      "timezone": "America/Montevideo",
+      "latitude": -34.29155,
+      "longitude": -55.95571,
+      "stationCount": 1
+    },
+    {
+      "id": "uy-santa-clara-de-olimar",
+      "name": "Santa Clara de Olimar",
+      "countryId": "uruguay",
+      "timezone": "America/Montevideo",
+      "latitude": -32.92254,
+      "longitude": -54.94447,
+      "stationCount": 1
+    },
+    {
+      "id": "uy-santa-lucia",
+      "name": "Santa Lucía",
+      "countryId": "uruguay",
+      "timezone": "America/Montevideo",
+      "latitude": -34.45333,
+      "longitude": -56.39056,
+      "stationCount": 1
+    },
+    {
+      "id": "uy-sarandi-del-yi",
+      "name": "Sarandí del Yi",
+      "countryId": "uruguay",
+      "timezone": "America/Montevideo",
+      "latitude": -33.35,
+      "longitude": -55.63333,
+      "stationCount": 1
+    },
+    {
+      "id": "uy-sarandi-grande",
+      "name": "Sarandí Grande",
+      "countryId": "uruguay",
+      "timezone": "America/Montevideo",
+      "latitude": -33.73333,
+      "longitude": -56.33333,
+      "stationCount": 1
+    },
+    {
+      "id": "uy-tacuarembo",
+      "name": "Tacuarembó",
+      "countryId": "uruguay",
+      "timezone": "America/Montevideo",
+      "latitude": -31.71882,
+      "longitude": -55.97925,
+      "stationCount": 4
+    },
+    {
+      "id": "uy-tacuarembo-2",
+      "name": "Tacuarembó",
+      "countryId": "uruguay",
+      "timezone": "America/Montevideo",
+      "latitude": -31.71882,
+      "longitude": -55.97925,
+      "stationCount": 1
+    },
+    {
+      "id": "uy-tala",
+      "name": "Tala",
+      "countryId": "uruguay",
+      "timezone": "America/Montevideo",
+      "latitude": -34.34349,
+      "longitude": -55.76375,
+      "stationCount": 2
+    },
+    {
+      "id": "uy-tranqueras",
+      "name": "Tranqueras",
+      "countryId": "uruguay",
+      "timezone": "America/Montevideo",
+      "latitude": -31.2,
+      "longitude": -55.75,
+      "stationCount": 2
+    },
+    {
+      "id": "uy-treinta-y-tres",
+      "name": "Treinta y Tres",
+      "countryId": "uruguay",
+      "timezone": "America/Montevideo",
+      "latitude": -33.231,
+      "longitude": -54.38577,
+      "stationCount": 4
+    },
+    {
+      "id": "uy-trinidad",
+      "name": "Trinidad",
+      "countryId": "uruguay",
+      "timezone": "America/Montevideo",
+      "latitude": -33.5165,
+      "longitude": -56.89957,
+      "stationCount": 4
+    },
+    {
+      "id": "uy-vichadero",
+      "name": "Vichadero",
+      "countryId": "uruguay",
+      "timezone": "America/Montevideo",
+      "latitude": -31.77794,
+      "longitude": -54.69183,
+      "stationCount": 1
+    },
+    {
+      "id": "uy-villa-del-carmen",
+      "name": "Villa del Carmen",
+      "countryId": "uruguay",
+      "timezone": "America/Montevideo",
+      "latitude": -33.23943,
+      "longitude": -56.00936,
+      "stationCount": 1
+    },
+    {
+      "id": "uy-young",
+      "name": "Young",
+      "countryId": "uruguay",
+      "timezone": "America/Montevideo",
+      "latitude": -32.69844,
+      "longitude": -57.62693,
+      "stationCount": 3
+    }
+  ],
+  "stations": [
+    {
+      "id": "uy-acegua-radio-integracion-101-5",
+      "name": "RADIO INTEGRACION",
+      "freqMhz": 101.5,
+      "cityId": "uy-acegua",
+      "description": "Uruguay FM service listed by URSEC for ACEGUÁ, CERRO LARGO. Callsign: CX-268. Type: FM. ERP: 10.00. Antenna height: 75. Page: https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/listados-de-operadores-de-radiodifusion.",
+      "tags": [
+        "fm",
+        "official",
+        "uruguay",
+        "ursec",
+        "cerro-largo",
+        "fm"
+      ],
+      "source": "URSEC technical data list",
+      "sourceUrl": "https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/datos-y-estadisticas/datos/listado-datos-tecnicos",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "uy-albisu-preferencia-fm-951-95-1",
+      "name": "PREFERENCIA FM 95.1",
+      "freqMhz": 95.1,
+      "cityId": "uy-albisu",
+      "description": "Uruguay FM service listed by URSEC for ZONA RURAL SALTO, SALTO. Callsign: CX-236. Type: FM. ERP: 5.00. Antenna height: 30. Page: https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/listados-de-operadores-de-radiodifusion.",
+      "tags": [
+        "fm",
+        "official",
+        "uruguay",
+        "ursec",
+        "salto",
+        "fm"
+      ],
+      "source": "URSEC technical data list",
+      "sourceUrl": "https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/datos-y-estadisticas/datos/listado-datos-tecnicos",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "uy-artigas-frontera-fm-88-3",
+      "name": "FRONTERA FM",
+      "freqMhz": 88.3,
+      "cityId": "uy-artigas",
+      "description": "Uruguay FM service listed by URSEC for ARTIGAS, ARTIGAS. Callsign: CX-202. Type: FM. ERP: 1.00. Antenna height: 30. Page: https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/listados-de-operadores-de-radiodifusion.",
+      "tags": [
+        "fm",
+        "official",
+        "uruguay",
+        "ursec",
+        "artigas",
+        "fm"
+      ],
+      "source": "URSEC technical data list",
+      "sourceUrl": "https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/datos-y-estadisticas/datos/listado-datos-tecnicos",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "uy-artigas-viva-fm-89-5",
+      "name": "VIVA FM",
+      "freqMhz": 89.5,
+      "cityId": "uy-artigas",
+      "description": "Uruguay FM service listed by URSEC for ARTIGAS, ARTIGAS. Callsign: CX-208D. Type: FM. ERP: 0.5kW. Antenna height: 35. Page: https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/listados-de-operadores-de-radiodifusion.",
+      "tags": [
+        "fm",
+        "official",
+        "uruguay",
+        "ursec",
+        "artigas",
+        "fm"
+      ],
+      "source": "URSEC technical data list",
+      "sourceUrl": "https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/datos-y-estadisticas/datos/listado-datos-tecnicos",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "uy-artigas-amatista-fm-90-7",
+      "name": "AMATISTA FM",
+      "freqMhz": 90.7,
+      "cityId": "uy-artigas",
+      "description": "Uruguay FM service listed by URSEC for ARTIGAS, ARTIGAS. Callsign: CX-214. Type: FM. ERP: 0.50. Antenna height: 35. Page: https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/listados-de-operadores-de-radiodifusion.",
+      "tags": [
+        "fm",
+        "official",
+        "uruguay",
+        "ursec",
+        "artigas",
+        "fm"
+      ],
+      "source": "URSEC technical data list",
+      "sourceUrl": "https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/datos-y-estadisticas/datos/listado-datos-tecnicos",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "uy-artigas-sodre-98-7",
+      "name": "SODRE",
+      "freqMhz": 98.7,
+      "cityId": "uy-artigas",
+      "description": "Uruguay FM service listed by URSEC for ARTIGAS, ARTIGAS. Callsign: CX-254. Type: FM. ERP: 50.00. Antenna height: 100. Page: https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/listados-de-operadores-de-radiodifusion.",
+      "tags": [
+        "fm",
+        "official",
+        "uruguay",
+        "ursec",
+        "artigas",
+        "fm"
+      ],
+      "source": "URSEC technical data list",
+      "sourceUrl": "https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/datos-y-estadisticas/datos/listado-datos-tecnicos",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "uy-atlantida-atlantida-fm-89-9",
+      "name": "ATLANTIDA FM",
+      "freqMhz": 89.9,
+      "cityId": "uy-atlantida",
+      "description": "Uruguay FM service listed by URSEC for ATLÁNTIDA, CANELONES. Callsign: CX-210B. Type: FM. ERP: 500W. Antenna height: 30. Page: https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/listados-de-operadores-de-radiodifusion.",
+      "tags": [
+        "fm",
+        "official",
+        "uruguay",
+        "ursec",
+        "canelones",
+        "fm"
+      ],
+      "source": "URSEC technical data list",
+      "sourceUrl": "https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/datos-y-estadisticas/datos/listado-datos-tecnicos",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "uy-barra-de-carrasco-lacosta-fm-88-88-3",
+      "name": "LACOSTA FM-88",
+      "freqMhz": 88.3,
+      "cityId": "uy-barra-de-carrasco",
+      "description": "Uruguay FM service listed by URSEC for C. DE LA COSTA, CANELONES. Callsign: CX-202F. Type: FM. ERP: 5.00. Antenna height: 100. Page: https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/listados-de-operadores-de-radiodifusion.",
+      "tags": [
+        "fm",
+        "official",
+        "uruguay",
+        "ursec",
+        "canelones",
+        "fm"
+      ],
+      "source": "URSEC technical data list",
+      "sourceUrl": "https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/datos-y-estadisticas/datos/listado-datos-tecnicos",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "uy-barros-blancos-cx222-oro-fm-92-3",
+      "name": "CX222-ORO FM",
+      "freqMhz": 92.3,
+      "cityId": "uy-barros-blancos",
+      "description": "Uruguay FM service listed by URSEC for EL PINAR, CANELONES. Callsign: CX-222A. Type: FM. ERP: .1kW. Antenna height: 30. Page: https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/listados-de-operadores-de-radiodifusion.",
+      "tags": [
+        "fm",
+        "official",
+        "uruguay",
+        "ursec",
+        "canelones",
+        "fm"
+      ],
+      "source": "URSEC technical data list",
+      "sourceUrl": "https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/datos-y-estadisticas/datos/listado-datos-tecnicos",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "uy-bella-union-santa-rosa-fm-90-5",
+      "name": "SANTA ROSA FM",
+      "freqMhz": 90.5,
+      "cityId": "uy-bella-union",
+      "description": "Uruguay FM service listed by URSEC for SANTA ROSA, CANELONES. Callsign: CX-213. Type: FM. ERP: 1.00. Antenna height: 30. Page: https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/listados-de-operadores-de-radiodifusion.",
+      "tags": [
+        "fm",
+        "official",
+        "uruguay",
+        "ursec",
+        "canelones",
+        "fm"
+      ],
+      "source": "URSEC technical data list",
+      "sourceUrl": "https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/datos-y-estadisticas/datos/listado-datos-tecnicos",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "uy-bella-union-milenio-fm-92-1",
+      "name": "MILENIO FM",
+      "freqMhz": 92.1,
+      "cityId": "uy-bella-union",
+      "description": "Uruguay FM service listed by URSEC for BELLA UNIÓN, ARTIGAS. Callsign: CX-221A. Type: FM. ERP: 0.1kW. Antenna height: 30. Page: https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/listados-de-operadores-de-radiodifusion.",
+      "tags": [
+        "fm",
+        "official",
+        "uruguay",
+        "ursec",
+        "artigas",
+        "fm"
+      ],
+      "source": "URSEC technical data list",
+      "sourceUrl": "https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/datos-y-estadisticas/datos/listado-datos-tecnicos",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "uy-bella-union-sodre-100-1",
+      "name": "SODRE",
+      "freqMhz": 100.1,
+      "cityId": "uy-bella-union",
+      "description": "Uruguay FM service listed by URSEC for BELLA UNIÓN, ARTIGAS. Callsign: CX-261B. Type: FM. Page: https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/listados-de-operadores-de-radiodifusion.",
+      "tags": [
+        "fm",
+        "official",
+        "uruguay",
+        "ursec",
+        "artigas",
+        "fm"
+      ],
+      "source": "URSEC technical data list",
+      "sourceUrl": "https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/datos-y-estadisticas/datos/listado-datos-tecnicos",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "uy-bella-union-universo-uruguay-103-7",
+      "name": "UNIVERSO URUGUAY",
+      "freqMhz": 103.7,
+      "cityId": "uy-bella-union",
+      "description": "Uruguay FM service listed by URSEC for BELLA UNIÓN, ARTIGAS. Callsign: CX-279 A. Type: FM. ERP: 1. Antenna height: 75. Page: https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/listados-de-operadores-de-radiodifusion.",
+      "tags": [
+        "fm",
+        "official",
+        "uruguay",
+        "ursec",
+        "artigas",
+        "fm"
+      ],
+      "source": "URSEC technical data list",
+      "sourceUrl": "https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/datos-y-estadisticas/datos/listado-datos-tecnicos",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "uy-bella-union-stereo-norte-fm-105-5",
+      "name": "STEREO NORTE FM",
+      "freqMhz": 105.5,
+      "cityId": "uy-bella-union",
+      "description": "Uruguay FM service listed by URSEC for BELLA UNIÓN, ARTIGAS. Callsign: CX-288. Type: FM. ERP: 25.00. Antenna height: 75. Page: https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/listados-de-operadores-de-radiodifusion.",
+      "tags": [
+        "fm",
+        "official",
+        "uruguay",
+        "ursec",
+        "artigas",
+        "fm"
+      ],
+      "source": "URSEC technical data list",
+      "sourceUrl": "https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/datos-y-estadisticas/datos/listado-datos-tecnicos",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "uy-cardona-emisora-color-90-3",
+      "name": "EMISORA COLOR",
+      "freqMhz": 90.3,
+      "cityId": "uy-cardona",
+      "description": "Uruguay FM service listed by URSEC for CARDONA, SORIANO. Callsign: CX-212. Type: FM. ERP: 1.00. Antenna height: 30. Page: https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/listados-de-operadores-de-radiodifusion.",
+      "tags": [
+        "fm",
+        "official",
+        "uruguay",
+        "ursec",
+        "soriano",
+        "fm"
+      ],
+      "source": "URSEC technical data list",
+      "sourceUrl": "https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/datos-y-estadisticas/datos/listado-datos-tecnicos",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "uy-castillos-estena-fm-103-1",
+      "name": "ESTEÑA FM",
+      "freqMhz": 103.1,
+      "cityId": "uy-castillos",
+      "description": "Uruguay FM service listed by URSEC for CASTILLOS, ROCHA. Callsign: CX-276. Type: FM. ERP: 25.00. Antenna height: 75. Page: https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/listados-de-operadores-de-radiodifusion.",
+      "tags": [
+        "fm",
+        "official",
+        "uruguay",
+        "ursec",
+        "rocha",
+        "fm"
+      ],
+      "source": "URSEC technical data list",
+      "sourceUrl": "https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/datos-y-estadisticas/datos/listado-datos-tecnicos",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "uy-casupa-babilonia-fm-90-3",
+      "name": "BABILONIA FM",
+      "freqMhz": 90.3,
+      "cityId": "uy-casupa",
+      "description": "Uruguay FM service listed by URSEC for CASUPÁ, FLORIDA. Callsign: CX-212B. Type: FM. ERP: 0.10. Antenna height: 30. Page: https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/listados-de-operadores-de-radiodifusion.",
+      "tags": [
+        "fm",
+        "official",
+        "uruguay",
+        "ursec",
+        "florida",
+        "fm"
+      ],
+      "source": "URSEC technical data list",
+      "sourceUrl": "https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/datos-y-estadisticas/datos/listado-datos-tecnicos",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "uy-chui-oceanica-89-3",
+      "name": "OCEANICA",
+      "freqMhz": 89.3,
+      "cityId": "uy-chui",
+      "description": "Uruguay FM service listed by URSEC for CHUY, ROCHA. Callsign: CX-207. Type: FM. ERP: 1. Antenna height: 30. Page: https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/listados-de-operadores-de-radiodifusion.",
+      "tags": [
+        "fm",
+        "official",
+        "uruguay",
+        "ursec",
+        "rocha",
+        "fm"
+      ],
+      "source": "URSEC technical data list",
+      "sourceUrl": "https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/datos-y-estadisticas/datos/listado-datos-tecnicos",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "uy-chui-sodre-93-5",
+      "name": "SODRE",
+      "freqMhz": 93.5,
+      "cityId": "uy-chui",
+      "description": "Uruguay FM service listed by URSEC for CHUY, ROCHA. Callsign: CX-228. Type: FM. ERP: 25.00. Antenna height: 75. Page: https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/listados-de-operadores-de-radiodifusion.",
+      "tags": [
+        "fm",
+        "official",
+        "uruguay",
+        "ursec",
+        "rocha",
+        "fm"
+      ],
+      "source": "URSEC technical data list",
+      "sourceUrl": "https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/datos-y-estadisticas/datos/listado-datos-tecnicos",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "uy-colonia-del-sacramento-claridad-colonia-90-9",
+      "name": "CLARIDAD COLONIA",
+      "freqMhz": 90.9,
+      "cityId": "uy-colonia-del-sacramento",
+      "description": "Uruguay FM service listed by URSEC for COLONIA, COLONIA. Callsign: CX-215B. Type: FM. ERP: 1 kW. Antenna height: 30. Page: https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/listados-de-operadores-de-radiodifusion.",
+      "tags": [
+        "fm",
+        "official",
+        "uruguay",
+        "ursec",
+        "colonia",
+        "fm"
+      ],
+      "source": "URSEC technical data list",
+      "sourceUrl": "https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/datos-y-estadisticas/datos/listado-datos-tecnicos",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "uy-colonia-del-sacramento-amanecer-fm-voz-srl-91-9",
+      "name": "AMANECER FM / VOZ SRL",
+      "freqMhz": 91.9,
+      "cityId": "uy-colonia-del-sacramento",
+      "description": "Uruguay FM service listed by URSEC for COLONIA, COLONIA. Callsign: CX-220. Type: FM. ERP: 0.1 kW. Antenna height: 30. Page: https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/listados-de-operadores-de-radiodifusion.",
+      "tags": [
+        "fm",
+        "official",
+        "uruguay",
+        "ursec",
+        "colonia",
+        "fm"
+      ],
+      "source": "URSEC technical data list",
+      "sourceUrl": "https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/datos-y-estadisticas/datos/listado-datos-tecnicos",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "uy-colonia-del-sacramento-ser-96-3",
+      "name": "SER",
+      "freqMhz": 96.3,
+      "cityId": "uy-colonia-del-sacramento",
+      "description": "Uruguay FM service listed by URSEC for COLONIA, COLONIA. Callsign: CX-242A. Type: FM. ERP: 2 Kw.. Antenna height: 100. Page: https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/listados-de-operadores-de-radiodifusion.",
+      "tags": [
+        "fm",
+        "official",
+        "uruguay",
+        "ursec",
+        "colonia",
+        "fm"
+      ],
+      "source": "URSEC technical data list",
+      "sourceUrl": "https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/datos-y-estadisticas/datos/listado-datos-tecnicos",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "uy-colonia-del-sacramento-caminos-97-9",
+      "name": "CAMINOS",
+      "freqMhz": 97.9,
+      "cityId": "uy-colonia-del-sacramento",
+      "description": "Uruguay FM service listed by URSEC for COLONIA, COLONIA. Callsign: CX-250. Type: FM. ERP: 2 Kw. Antenna height: 100. Page: https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/listados-de-operadores-de-radiodifusion.",
+      "tags": [
+        "fm",
+        "official",
+        "uruguay",
+        "ursec",
+        "colonia",
+        "fm"
+      ],
+      "source": "URSEC technical data list",
+      "sourceUrl": "https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/datos-y-estadisticas/datos/listado-datos-tecnicos",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "uy-colonia-del-sacramento-fm-sacramento-101-9",
+      "name": "FM SACRAMENTO",
+      "freqMhz": 101.9,
+      "cityId": "uy-colonia-del-sacramento",
+      "description": "Uruguay FM service listed by URSEC for COLONIA, COLONIA. Callsign: CX-270. Type: FM. ERP: 2 Kw.. Antenna height: 100. Page: https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/listados-de-operadores-de-radiodifusion.",
+      "tags": [
+        "fm",
+        "official",
+        "uruguay",
+        "ursec",
+        "colonia",
+        "fm"
+      ],
+      "source": "URSEC technical data list",
+      "sourceUrl": "https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/datos-y-estadisticas/datos/listado-datos-tecnicos",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "uy-colonia-del-sacramento-sodre-103-9",
+      "name": "SODRE",
+      "freqMhz": 103.9,
+      "cityId": "uy-colonia-del-sacramento",
+      "description": "Uruguay FM service listed by URSEC for COLONIA, COLONIA. Callsign: CX-280. Type: FM. ERP: 100.00. Antenna height: 150. Page: https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/listados-de-operadores-de-radiodifusion.",
+      "tags": [
+        "fm",
+        "official",
+        "uruguay",
+        "ursec",
+        "colonia",
+        "fm"
+      ],
+      "source": "URSEC technical data list",
+      "sourceUrl": "https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/datos-y-estadisticas/datos/listado-datos-tecnicos",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "uy-colonia-del-sacramento-cadena-latina-104-7",
+      "name": "CADENA LATINA",
+      "freqMhz": 104.7,
+      "cityId": "uy-colonia-del-sacramento",
+      "description": "Uruguay FM service listed by URSEC for COLONIA, COLONIA. Callsign: CX-284. Type: FM. ERP: 100.00. Antenna height: 150. Page: https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/listados-de-operadores-de-radiodifusion.",
+      "tags": [
+        "fm",
+        "official",
+        "uruguay",
+        "ursec",
+        "colonia",
+        "fm"
+      ],
+      "source": "URSEC technical data list",
+      "sourceUrl": "https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/datos-y-estadisticas/datos/listado-datos-tecnicos",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "uy-colonia-del-sacramento-radio-del-rio-106-9",
+      "name": "RADIO DEL RIO",
+      "freqMhz": 106.9,
+      "cityId": "uy-colonia-del-sacramento",
+      "description": "Uruguay FM service listed by URSEC for COLONIA, COLONIA. Callsign: CX-295A. Type: FM. ERP: 1 kW. Antenna height: 75. Page: https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/listados-de-operadores-de-radiodifusion.",
+      "tags": [
+        "fm",
+        "official",
+        "uruguay",
+        "ursec",
+        "colonia",
+        "fm"
+      ],
+      "source": "URSEC technical data list",
+      "sourceUrl": "https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/datos-y-estadisticas/datos/listado-datos-tecnicos",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "uy-colonia-del-sacramento-2-fm-magica-93-5",
+      "name": "FM MAGICA",
+      "freqMhz": 93.5,
+      "cityId": "uy-colonia-del-sacramento-2",
+      "description": "Uruguay FM service listed by URSEC for CONCHILLAS/COLONIA, COLONIA. Callsign: CX-228A. Type: FM. ERP: 100.00. Antenna height: 150. Page: https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/listados-de-operadores-de-radiodifusion.",
+      "tags": [
+        "fm",
+        "official",
+        "uruguay",
+        "ursec",
+        "colonia",
+        "fm"
+      ],
+      "source": "URSEC technical data list",
+      "sourceUrl": "https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/datos-y-estadisticas/datos/listado-datos-tecnicos",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "uy-colonia-nicolich-zoe-gospel-music-91-5",
+      "name": "ZOE Gospel Music",
+      "freqMhz": 91.5,
+      "cityId": "uy-colonia-nicolich",
+      "description": "Uruguay FM service listed by URSEC for STA.ANA DE CARRASCO, CANELONES. Callsign: CX-218. Type: FM. ERP: 5.00. Antenna height: 60. Page: https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/listados-de-operadores-de-radiodifusion.",
+      "tags": [
+        "fm",
+        "official",
+        "uruguay",
+        "ursec",
+        "canelones",
+        "fm"
+      ],
+      "source": "URSEC technical data list",
+      "sourceUrl": "https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/datos-y-estadisticas/datos/listado-datos-tecnicos",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "uy-costa-azul-la-pedrera-fm-96-1",
+      "name": "LA PEDRERA FM",
+      "freqMhz": 96.1,
+      "cityId": "uy-costa-azul",
+      "description": "Uruguay FM service listed by URSEC for LA PEDRERA, ROCHA. Callsign: CX-241. Type: FM. ERP: 1 kW.. Antenna height: 75. Page: https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/listados-de-operadores-de-radiodifusion.",
+      "tags": [
+        "fm",
+        "official",
+        "uruguay",
+        "ursec",
+        "rocha",
+        "fm"
+      ],
+      "source": "URSEC technical data list",
+      "sourceUrl": "https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/datos-y-estadisticas/datos/listado-datos-tecnicos",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "uy-dolores-skorpio-89-7",
+      "name": "SKORPIO",
+      "freqMhz": 89.7,
+      "cityId": "uy-dolores",
+      "description": "Uruguay FM service listed by URSEC for DOLORES, SORIANO. Callsign: CX-209. Type: FM. ERP: 1.00. Antenna height: 60. Page: https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/listados-de-operadores-de-radiodifusion.",
+      "tags": [
+        "fm",
+        "official",
+        "uruguay",
+        "ursec",
+        "soriano",
+        "fm"
+      ],
+      "source": "URSEC technical data list",
+      "sourceUrl": "https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/datos-y-estadisticas/datos/listado-datos-tecnicos",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "uy-dolores-emisora-fm-dolores-95-7",
+      "name": "EMISORA FM DOLORES",
+      "freqMhz": 95.7,
+      "cityId": "uy-dolores",
+      "description": "Uruguay FM service listed by URSEC for DOLORES, SORIANO. Callsign: CX-239A. Type: FM. ERP: 1 kW. Antenna height: 60. Page: https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/listados-de-operadores-de-radiodifusion.",
+      "tags": [
+        "fm",
+        "official",
+        "uruguay",
+        "ursec",
+        "soriano",
+        "fm"
+      ],
+      "source": "URSEC technical data list",
+      "sourceUrl": "https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/datos-y-estadisticas/datos/listado-datos-tecnicos",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "uy-durazno-emisora-del-yi-90-1",
+      "name": "EMISORA DEL YI",
+      "freqMhz": 90.1,
+      "cityId": "uy-durazno",
+      "description": "Uruguay FM service listed by URSEC for DURAZNO, DURAZNO. Callsign: CX-211. Type: FM. ERP: 1.00. Antenna height: 30. Page: https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/listados-de-operadores-de-radiodifusion.",
+      "tags": [
+        "fm",
+        "official",
+        "uruguay",
+        "ursec",
+        "durazno",
+        "fm"
+      ],
+      "source": "URSEC technical data list",
+      "sourceUrl": "https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/datos-y-estadisticas/datos/listado-datos-tecnicos",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "uy-durazno-fm-951-radio-city-95-1",
+      "name": "FM 95.1 RADIO CITY",
+      "freqMhz": 95.1,
+      "cityId": "uy-durazno",
+      "description": "Uruguay FM service listed by URSEC for DURAZNO, DURAZNO. Callsign: CX-236B. Type: FM. ERP: 2.kW.. Antenna height: 60. Page: https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/listados-de-operadores-de-radiodifusion.",
+      "tags": [
+        "fm",
+        "official",
+        "uruguay",
+        "ursec",
+        "durazno",
+        "fm"
+      ],
+      "source": "URSEC technical data list",
+      "sourceUrl": "https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/datos-y-estadisticas/datos/listado-datos-tecnicos",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "uy-durazno-fm-centro-102-7",
+      "name": "FM CENTRO",
+      "freqMhz": 102.7,
+      "cityId": "uy-durazno",
+      "description": "Uruguay FM service listed by URSEC for DURAZNO, DURAZNO. Callsign: CX-274. Type: FM. ERP: 5.00. Antenna height: 30. Page: https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/listados-de-operadores-de-radiodifusion.",
+      "tags": [
+        "fm",
+        "official",
+        "uruguay",
+        "ursec",
+        "durazno",
+        "fm"
+      ],
+      "source": "URSEC technical data list",
+      "sourceUrl": "https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/datos-y-estadisticas/datos/listado-datos-tecnicos",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "uy-durazno-sodre-105-1",
+      "name": "SODRE",
+      "freqMhz": 105.1,
+      "cityId": "uy-durazno",
+      "description": "Uruguay FM service listed by URSEC for DURAZNO, DURAZNO. Callsign: CX-286. Type: FM. ERP: 25.00. Antenna height: 75. Page: https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/listados-de-operadores-de-radiodifusion.",
+      "tags": [
+        "fm",
+        "official",
+        "uruguay",
+        "ursec",
+        "durazno",
+        "fm"
+      ],
+      "source": "URSEC technical data list",
+      "sourceUrl": "https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/datos-y-estadisticas/datos/listado-datos-tecnicos",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "uy-florida-claridad-88-7",
+      "name": "CLARIDAD",
+      "freqMhz": 88.7,
+      "cityId": "uy-florida",
+      "description": "Uruguay FM service listed by URSEC for FLORIDA, FLORIDA. Callsign: CX-204. Type: FM. ERP: 1 KW. Antenna height: 30. Page: https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/listados-de-operadores-de-radiodifusion.",
+      "tags": [
+        "fm",
+        "official",
+        "uruguay",
+        "ursec",
+        "florida",
+        "fm"
+      ],
+      "source": "URSEC technical data list",
+      "sourceUrl": "https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/datos-y-estadisticas/datos/listado-datos-tecnicos",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "uy-florida-emisora-libertador-92-3",
+      "name": "EMISORA LIBERTADOR",
+      "freqMhz": 92.3,
+      "cityId": "uy-florida",
+      "description": "Uruguay FM service listed by URSEC for FLORIDA, FLORIDA. Callsign: CX-222. Type: FM. ERP: 25.00. Antenna height: 75. Page: https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/listados-de-operadores-de-radiodifusion.",
+      "tags": [
+        "fm",
+        "official",
+        "uruguay",
+        "ursec",
+        "florida",
+        "fm"
+      ],
+      "source": "URSEC technical data list",
+      "sourceUrl": "https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/datos-y-estadisticas/datos/listado-datos-tecnicos",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "uy-florida-sodre-96-1",
+      "name": "SODRE",
+      "freqMhz": 96.1,
+      "cityId": "uy-florida",
+      "description": "Uruguay FM service listed by URSEC for FLORIDA, FLORIDA. Callsign: CX-241A. Type: FM. ERP: 1 .. Antenna height: 75. Page: https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/listados-de-operadores-de-radiodifusion.",
+      "tags": [
+        "fm",
+        "official",
+        "uruguay",
+        "ursec",
+        "florida",
+        "fm"
+      ],
+      "source": "URSEC technical data list",
+      "sourceUrl": "https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/datos-y-estadisticas/datos/listado-datos-tecnicos",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "uy-florida-radio-maria-104-5",
+      "name": "RADIO MARIA",
+      "freqMhz": 104.5,
+      "cityId": "uy-florida",
+      "description": "Uruguay FM service listed by URSEC for FLORIDA, FLORIDA. Callsign: CX-283A. Type: FM. ERP: 3 Kw. Antenna height: 100. Page: https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/listados-de-operadores-de-radiodifusion.",
+      "tags": [
+        "fm",
+        "official",
+        "uruguay",
+        "ursec",
+        "florida",
+        "fm"
+      ],
+      "source": "URSEC technical data list",
+      "sourceUrl": "https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/datos-y-estadisticas/datos/listado-datos-tecnicos",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "uy-florida-piedra-alta-fm-105-5",
+      "name": "PIEDRA ALTA FM",
+      "freqMhz": 105.5,
+      "cityId": "uy-florida",
+      "description": "Uruguay FM service listed by URSEC for FLORIDA, FLORIDA. Callsign: CX-288B. Type: FM. ERP: 1 kW. Antenna height: 30. Page: https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/listados-de-operadores-de-radiodifusion.",
+      "tags": [
+        "fm",
+        "official",
+        "uruguay",
+        "ursec",
+        "florida",
+        "fm"
+      ],
+      "source": "URSEC technical data list",
+      "sourceUrl": "https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/datos-y-estadisticas/datos/listado-datos-tecnicos",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "uy-fraile-muerto-sirio-fm-89-5",
+      "name": "SIRIO FM",
+      "freqMhz": 89.5,
+      "cityId": "uy-fraile-muerto",
+      "description": "Uruguay FM service listed by URSEC for FRAILE MUERTO, CERRO LARGO. Callsign: CX-208B. Type: FM. ERP: 3.00. Antenna height: 30. Page: https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/listados-de-operadores-de-radiodifusion.",
+      "tags": [
+        "fm",
+        "official",
+        "uruguay",
+        "ursec",
+        "cerro-largo",
+        "fm"
+      ],
+      "source": "URSEC technical data list",
+      "sourceUrl": "https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/datos-y-estadisticas/datos/listado-datos-tecnicos",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "uy-fray-bentos-vision-fm-96-5",
+      "name": "VISION FM",
+      "freqMhz": 96.5,
+      "cityId": "uy-fray-bentos",
+      "description": "Uruguay FM service listed by URSEC for FRAY BENTOS, RIO NEGRO. Callsign: CX-243A. Type: FM. ERP: 1 Kw. Antenna height: 75. Page: https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/listados-de-operadores-de-radiodifusion.",
+      "tags": [
+        "fm",
+        "official",
+        "uruguay",
+        "ursec",
+        "rio-negro",
+        "fm"
+      ],
+      "source": "URSEC technical data list",
+      "sourceUrl": "https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/datos-y-estadisticas/datos/listado-datos-tecnicos",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "uy-fray-bentos-sodre-102-9",
+      "name": "SODRE",
+      "freqMhz": 102.9,
+      "cityId": "uy-fray-bentos",
+      "description": "Uruguay FM service listed by URSEC for FRAY BENTOS, RIO NEGRO. Callsign: CX-275B. Type: FM. Page: https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/listados-de-operadores-de-radiodifusion.",
+      "tags": [
+        "fm",
+        "official",
+        "uruguay",
+        "ursec",
+        "rio-negro",
+        "fm"
+      ],
+      "source": "URSEC technical data list",
+      "sourceUrl": "https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/datos-y-estadisticas/datos/listado-datos-tecnicos",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "uy-fray-bentos-suenos-fm-106-7",
+      "name": "SUEÑOS FM",
+      "freqMhz": 106.7,
+      "cityId": "uy-fray-bentos",
+      "description": "Uruguay FM service listed by URSEC for FRAY BENTOS, RIO NEGRO. Callsign: CX-294. Type: FM. ERP: 3.00. Antenna height: 100. Page: https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/listados-de-operadores-de-radiodifusion.",
+      "tags": [
+        "fm",
+        "official",
+        "uruguay",
+        "ursec",
+        "rio-negro",
+        "fm"
+      ],
+      "source": "URSEC technical data list",
+      "sourceUrl": "https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/datos-y-estadisticas/datos/listado-datos-tecnicos",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "uy-fray-bentos-rincon-fm-107-7",
+      "name": "RINCON FM",
+      "freqMhz": 107.7,
+      "cityId": "uy-fray-bentos",
+      "description": "Uruguay FM service listed by URSEC for FRAY BENTOS, RIO NEGRO. Callsign: CX-299A. Type: FM. ERP: 1 kW.. Antenna height: 60. Page: https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/listados-de-operadores-de-radiodifusion.",
+      "tags": [
+        "fm",
+        "official",
+        "uruguay",
+        "ursec",
+        "rio-negro",
+        "fm"
+      ],
+      "source": "URSEC technical data list",
+      "sourceUrl": "https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/datos-y-estadisticas/datos/listado-datos-tecnicos",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "uy-general-enrique-martinez-lider-fm-89-1",
+      "name": "LIDER FM",
+      "freqMhz": 89.1,
+      "cityId": "uy-general-enrique-martinez",
+      "description": "Uruguay FM service listed by URSEC for GRAL. E . MARTÍNEZ, TREINTA Y TRES. Callsign: CX-206C. Type: FM. ERP: 1.00. Antenna height: 30. Page: https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/listados-de-operadores-de-radiodifusion.",
+      "tags": [
+        "fm",
+        "official",
+        "uruguay",
+        "ursec",
+        "treinta-y-tres",
+        "fm"
+      ],
+      "source": "URSEC technical data list",
+      "sourceUrl": "https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/datos-y-estadisticas/datos/listado-datos-tecnicos",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "uy-guichon-cordialidad-fm-94-9",
+      "name": "CORDIALIDAD FM",
+      "freqMhz": 94.9,
+      "cityId": "uy-guichon",
+      "description": "Uruguay FM service listed by URSEC for GUICHON, PAYSANDU. Callsign: CX-235. Type: FM. ERP: 1.00. Antenna height: 100. Page: https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/listados-de-operadores-de-radiodifusion.",
+      "tags": [
+        "fm",
+        "official",
+        "uruguay",
+        "ursec",
+        "paysandu",
+        "fm"
+      ],
+      "source": "URSEC technical data list",
+      "sourceUrl": "https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/datos-y-estadisticas/datos/listado-datos-tecnicos",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "uy-ituzaingo-la-rayada-105-5",
+      "name": "LA RAYADA",
+      "freqMhz": 105.5,
+      "cityId": "uy-ituzaingo",
+      "description": "Uruguay FM service listed by URSEC for CNIA. ETCHEPARE, SAN JOSE. Callsign: CX-293C. Type: FM. ERP: 0,03. Antenna height: 30. Page: https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/listados-de-operadores-de-radiodifusion.",
+      "tags": [
+        "fm",
+        "official",
+        "uruguay",
+        "ursec",
+        "san-jose",
+        "fm"
+      ],
+      "source": "URSEC technical data list",
+      "sourceUrl": "https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/datos-y-estadisticas/datos/listado-datos-tecnicos",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "uy-jose-batlle-y-ordonez-cerro-de-nico-perez-96-5",
+      "name": "CERRO DE NICO PEREZ",
+      "freqMhz": 96.5,
+      "cityId": "uy-jose-batlle-y-ordonez",
+      "description": "Uruguay FM service listed by URSEC for J.BATLLE Y ORDOÑEZ, LAVALLEJA. Callsign: CX-243. Type: FM. ERP: 5.00. Antenna height: 30. Page: https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/listados-de-operadores-de-radiodifusion.",
+      "tags": [
+        "fm",
+        "official",
+        "uruguay",
+        "ursec",
+        "lavalleja",
+        "fm"
+      ],
+      "source": "URSEC technical data list",
+      "sourceUrl": "https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/datos-y-estadisticas/datos/listado-datos-tecnicos",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "uy-jose-pedro-varela-emisora-delta-88-3",
+      "name": "EMISORA DELTA",
+      "freqMhz": 88.3,
+      "cityId": "uy-jose-pedro-varela",
+      "description": "Uruguay FM service listed by URSEC for JOSÉ PEDRO VARELA, LAVALLEJA. Callsign: CX-202B. Type: FM. ERP: 0.50. Antenna height: 60. Page: https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/listados-de-operadores-de-radiodifusion.",
+      "tags": [
+        "fm",
+        "official",
+        "uruguay",
+        "ursec",
+        "lavalleja",
+        "fm"
+      ],
+      "source": "URSEC technical data list",
+      "sourceUrl": "https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/datos-y-estadisticas/datos/listado-datos-tecnicos",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "uy-juan-l-lacaze-ptosauce-juan-lacaze-89-1",
+      "name": "PTO.SAUCE JUAN LACAZE",
+      "freqMhz": 89.1,
+      "cityId": "uy-juan-l-lacaze",
+      "description": "Uruguay FM service listed by URSEC for JUAN LACAZE, COLONIA. Callsign: CX-206B. Type: FM. ERP: 1 kw. Antenna height: 30. Page: https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/listados-de-operadores-de-radiodifusion.",
+      "tags": [
+        "fm",
+        "official",
+        "uruguay",
+        "ursec",
+        "colonia",
+        "fm"
+      ],
+      "source": "URSEC technical data list",
+      "sourceUrl": "https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/datos-y-estadisticas/datos/listado-datos-tecnicos",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "uy-la-coronilla-coronilla-fm-102-3",
+      "name": "CORONILLA FM",
+      "freqMhz": 102.3,
+      "cityId": "uy-la-coronilla",
+      "description": "Uruguay FM service listed by URSEC for LA CORONILLA, ROCHA. Callsign: CX-272. Type: FM. ERP: 10.00. Antenna height: 75. Page: https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/listados-de-operadores-de-radiodifusion.",
+      "tags": [
+        "fm",
+        "official",
+        "uruguay",
+        "ursec",
+        "rocha",
+        "fm"
+      ],
+      "source": "URSEC technical data list",
+      "sourceUrl": "https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/datos-y-estadisticas/datos/listado-datos-tecnicos",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "uy-la-paloma-oxigeno-fm-88-3",
+      "name": "OXIGENO FM",
+      "freqMhz": 88.3,
+      "cityId": "uy-la-paloma",
+      "description": "Uruguay FM service listed by URSEC for LA PALOMA (DURAZNO), DURAZNO. Callsign: CX-202G. Type: FM. ERP: 0.10. Antenna height: 30. Page: https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/listados-de-operadores-de-radiodifusion.",
+      "tags": [
+        "fm",
+        "official",
+        "uruguay",
+        "ursec",
+        "durazno",
+        "fm"
+      ],
+      "source": "URSEC technical data list",
+      "sourceUrl": "https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/datos-y-estadisticas/datos/listado-datos-tecnicos",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "uy-la-paloma-solari-fm-90-7",
+      "name": "SOLARI FM",
+      "freqMhz": 90.7,
+      "cityId": "uy-la-paloma",
+      "description": "Uruguay FM service listed by URSEC for LA PALOMA, ROCHA. Callsign: CX-214C. Type: FM. ERP: 1.. Antenna height: 30. Page: https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/listados-de-operadores-de-radiodifusion.",
+      "tags": [
+        "fm",
+        "official",
+        "uruguay",
+        "ursec",
+        "rocha",
+        "fm"
+      ],
+      "source": "URSEC technical data list",
+      "sourceUrl": "https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/datos-y-estadisticas/datos/listado-datos-tecnicos",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "uy-la-paloma-arena-fm-99-3",
+      "name": "ARENA FM",
+      "freqMhz": 99.3,
+      "cityId": "uy-la-paloma",
+      "description": "Uruguay FM service listed by URSEC for LA PALOMA, ROCHA. Callsign: CX-257. Type: FM. ERP: .5Kw. Antenna height: 35. Page: https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/listados-de-operadores-de-radiodifusion.",
+      "tags": [
+        "fm",
+        "official",
+        "uruguay",
+        "ursec",
+        "rocha",
+        "fm"
+      ],
+      "source": "URSEC technical data list",
+      "sourceUrl": "https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/datos-y-estadisticas/datos/listado-datos-tecnicos",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "uy-la-paloma-fm-imaginacion-99-9",
+      "name": "FM IMAGINACION",
+      "freqMhz": 99.9,
+      "cityId": "uy-la-paloma",
+      "description": "Uruguay FM service listed by URSEC for LA PALOMA, ROCHA. Callsign: CX-260. Type: FM. ERP: 30.00. Antenna height: 75. Page: https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/listados-de-operadores-de-radiodifusion.",
+      "tags": [
+        "fm",
+        "official",
+        "uruguay",
+        "ursec",
+        "rocha",
+        "fm"
+      ],
+      "source": "URSEC technical data list",
+      "sourceUrl": "https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/datos-y-estadisticas/datos/listado-datos-tecnicos",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "uy-la-paloma-la-paloma-fm-102-1",
+      "name": "LA PALOMA FM",
+      "freqMhz": 102.1,
+      "cityId": "uy-la-paloma",
+      "description": "Uruguay FM service listed by URSEC for LA PALOMA, ROCHA. Callsign: CX-271. Type: FM. ERP: 1 kW. Antenna height: 75. Page: https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/listados-de-operadores-de-radiodifusion.",
+      "tags": [
+        "fm",
+        "official",
+        "uruguay",
+        "ursec",
+        "rocha",
+        "fm"
+      ],
+      "source": "URSEC technical data list",
+      "sourceUrl": "https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/datos-y-estadisticas/datos/listado-datos-tecnicos",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "uy-la-paloma-onda-marina-fm-106-3",
+      "name": "ONDA MARINA FM",
+      "freqMhz": 106.3,
+      "cityId": "uy-la-paloma",
+      "description": "Uruguay FM service listed by URSEC for LA PALOMA, ROCHA. Callsign: CX-292. Type: FM. ERP: 15.00. Antenna height: 75. Page: https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/listados-de-operadores-de-radiodifusion.",
+      "tags": [
+        "fm",
+        "official",
+        "uruguay",
+        "ursec",
+        "rocha",
+        "fm"
+      ],
+      "source": "URSEC technical data list",
+      "sourceUrl": "https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/datos-y-estadisticas/datos/listado-datos-tecnicos",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "uy-la-paz-fm-libre-89-7",
+      "name": "FM LIBRE",
+      "freqMhz": 89.7,
+      "cityId": "uy-la-paz",
+      "description": "Uruguay FM service listed by URSEC for LA PAZ, CANELONES. Callsign: CX-209A. Type: FM. ERP: 1.kW. Antenna height: 30. Page: https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/listados-de-operadores-de-radiodifusion.",
+      "tags": [
+        "fm",
+        "official",
+        "uruguay",
+        "ursec",
+        "canelones",
+        "fm"
+      ],
+      "source": "URSEC technical data list",
+      "sourceUrl": "https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/datos-y-estadisticas/datos/listado-datos-tecnicos",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "uy-la-paz-metropolis-104-9",
+      "name": "METROPOLIS",
+      "freqMhz": 104.9,
+      "cityId": "uy-la-paz",
+      "description": "Uruguay FM service listed by URSEC for LA PAZ, CANELONES. Callsign: CX-285. Type: FM. ERP: 100. Antenna height: 75. Page: https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/listados-de-operadores-de-radiodifusion.",
+      "tags": [
+        "fm",
+        "official",
+        "uruguay",
+        "ursec",
+        "canelones",
+        "fm"
+      ],
+      "source": "URSEC technical data list",
+      "sourceUrl": "https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/datos-y-estadisticas/datos/listado-datos-tecnicos",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "uy-las-piedras-inolvidable-93-1",
+      "name": "INOLVIDABLE",
+      "freqMhz": 93.1,
+      "cityId": "uy-las-piedras",
+      "description": "Uruguay FM service listed by URSEC for LAS PIEDRAS, CANELONES. Callsign: CX-226. Type: FM. ERP: 50.00. Antenna height: 100. Page: https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/listados-de-operadores-de-radiodifusion.",
+      "tags": [
+        "fm",
+        "official",
+        "uruguay",
+        "ursec",
+        "canelones",
+        "fm"
+      ],
+      "source": "URSEC technical data list",
+      "sourceUrl": "https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/datos-y-estadisticas/datos/listado-datos-tecnicos",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "uy-las-piedras-2-emisora-total-102-9",
+      "name": "EMISORA TOTAL",
+      "freqMhz": 102.9,
+      "cityId": "uy-las-piedras-2",
+      "description": "Uruguay FM service listed by URSEC for PARAJE POQUITOS, CANELONES. Callsign: CX-275. Type: FM. ERP: 100.00. Antenna height: 75. Page: https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/listados-de-operadores-de-radiodifusion.",
+      "tags": [
+        "fm",
+        "official",
+        "uruguay",
+        "ursec",
+        "canelones",
+        "fm"
+      ],
+      "source": "URSEC technical data list",
+      "sourceUrl": "https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/datos-y-estadisticas/datos/listado-datos-tecnicos",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "uy-lascano-alas-fm-del-este-88-9",
+      "name": "ALAS FM DEL ESTE",
+      "freqMhz": 88.9,
+      "cityId": "uy-lascano",
+      "description": "Uruguay FM service listed by URSEC for LASCANO, ROCHA. Callsign: CX-205. Type: FM. ERP: 0.25. Antenna height: 30. Page: https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/listados-de-operadores-de-radiodifusion.",
+      "tags": [
+        "fm",
+        "official",
+        "uruguay",
+        "ursec",
+        "rocha",
+        "fm"
+      ],
+      "source": "URSEC technical data list",
+      "sourceUrl": "https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/datos-y-estadisticas/datos/listado-datos-tecnicos",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "uy-libertad-emisora-libertad-fm-88-5",
+      "name": "EMISORA LIBERTAD FM",
+      "freqMhz": 88.5,
+      "cityId": "uy-libertad",
+      "description": "Uruguay FM service listed by URSEC for LIBERTAD, SAN JOSE. Callsign: CX-203A. Type: FM. ERP: 5.00. Antenna height: 60. Page: https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/listados-de-operadores-de-radiodifusion.",
+      "tags": [
+        "fm",
+        "official",
+        "uruguay",
+        "ursec",
+        "san-jose",
+        "fm"
+      ],
+      "source": "URSEC technical data list",
+      "sourceUrl": "https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/datos-y-estadisticas/datos/listado-datos-tecnicos",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "uy-libertad-impacto-fm-917-91-7",
+      "name": "IMPACTO FM 91.7",
+      "freqMhz": 91.7,
+      "cityId": "uy-libertad",
+      "description": "Uruguay FM service listed by URSEC for LIBERTAD, SAN JOSE. Callsign: CX-219. Type: FM. ERP: 1.00. Antenna height: 30. Page: https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/listados-de-operadores-de-radiodifusion.",
+      "tags": [
+        "fm",
+        "official",
+        "uruguay",
+        "ursec",
+        "san-jose",
+        "fm"
+      ],
+      "source": "URSEC technical data list",
+      "sourceUrl": "https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/datos-y-estadisticas/datos/listado-datos-tecnicos",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "uy-maldonado-milenium-punta-88-7",
+      "name": "MILENIUM PUNTA",
+      "freqMhz": 88.7,
+      "cityId": "uy-maldonado",
+      "description": "Uruguay FM service listed by URSEC for BARRA MALDONADO, MALDONADO. Callsign: CX-204A. Type: FM. ERP: 1 kw. Antenna height: 30. Page: https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/listados-de-operadores-de-radiodifusion.",
+      "tags": [
+        "fm",
+        "official",
+        "uruguay",
+        "ursec",
+        "maldonado",
+        "fm"
+      ],
+      "source": "URSEC technical data list",
+      "sourceUrl": "https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/datos-y-estadisticas/datos/listado-datos-tecnicos",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "uy-maldonado-global-fm-89-5",
+      "name": "GLOBAL FM",
+      "freqMhz": 89.5,
+      "cityId": "uy-maldonado",
+      "description": "Uruguay FM service listed by URSEC for MALDONADO, MALDONADO. Callsign: CX-208. Type: FM. ERP: 1.00. Antenna height: 30. Page: https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/listados-de-operadores-de-radiodifusion.",
+      "tags": [
+        "fm",
+        "official",
+        "uruguay",
+        "ursec",
+        "maldonado",
+        "fm"
+      ],
+      "source": "URSEC technical data list",
+      "sourceUrl": "https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/datos-y-estadisticas/datos/listado-datos-tecnicos",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "uy-maldonado-brava-fm-91-5",
+      "name": "BRAVA FM",
+      "freqMhz": 91.5,
+      "cityId": "uy-maldonado",
+      "description": "Uruguay FM service listed by URSEC for MALDONADO, MALDONADO. Callsign: CX-218B. Type: FM. ERP: 5.00. Antenna height: 60. Page: https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/listados-de-operadores-de-radiodifusion.",
+      "tags": [
+        "fm",
+        "official",
+        "uruguay",
+        "ursec",
+        "maldonado",
+        "fm"
+      ],
+      "source": "URSEC technical data list",
+      "sourceUrl": "https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/datos-y-estadisticas/datos/listado-datos-tecnicos",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "uy-maldonado-fm-de-las-vertientes-96-7",
+      "name": "FM DE LAS VERTIENTES",
+      "freqMhz": 96.7,
+      "cityId": "uy-maldonado",
+      "description": "Uruguay FM service listed by URSEC for MALDONADO, MALDONADO. Callsign: CX-244. Type: FM. ERP: 6.00. Antenna height: 75. Page: https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/listados-de-operadores-de-radiodifusion.",
+      "tags": [
+        "fm",
+        "official",
+        "uruguay",
+        "ursec",
+        "maldonado",
+        "fm"
+      ],
+      "source": "URSEC technical data list",
+      "sourceUrl": "https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/datos-y-estadisticas/datos/listado-datos-tecnicos",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "uy-maldonado-babel-maldonado-1009-100-9",
+      "name": "BABEL MALDONADO 100,9",
+      "freqMhz": 100.9,
+      "cityId": "uy-maldonado",
+      "description": "Uruguay FM service listed by URSEC for MALDONADO, MALDONADO. Callsign: CX-265. Type: FM. ERP: 25.00. Antenna height: 75. Page: https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/listados-de-operadores-de-radiodifusion.",
+      "tags": [
+        "fm",
+        "official",
+        "uruguay",
+        "ursec",
+        "maldonado",
+        "fm"
+      ],
+      "source": "URSEC technical data list",
+      "sourceUrl": "https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/datos-y-estadisticas/datos/listado-datos-tecnicos",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "uy-maldonado-fm-gente-107-1",
+      "name": "FM GENTE",
+      "freqMhz": 107.1,
+      "cityId": "uy-maldonado",
+      "description": "Uruguay FM service listed by URSEC for MALDONADO, MALDONADO. Callsign: CX-296A. Type: FM. ERP: 60. Antenna height: 0. Page: https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/listados-de-operadores-de-radiodifusion.",
+      "tags": [
+        "fm",
+        "official",
+        "uruguay",
+        "ursec",
+        "maldonado",
+        "fm"
+      ],
+      "source": "URSEC technical data list",
+      "sourceUrl": "https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/datos-y-estadisticas/datos/listado-datos-tecnicos",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "uy-melo-ritmo-fm-88-1",
+      "name": "RITMO FM",
+      "freqMhz": 88.1,
+      "cityId": "uy-melo",
+      "description": "Uruguay FM service listed by URSEC for MELO, CERRO LARGO. Callsign: CX-201. Type: FM. ERP: 1 kW. Antenna height: 30. Page: https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/listados-de-operadores-de-radiodifusion.",
+      "tags": [
+        "fm",
+        "official",
+        "uruguay",
+        "ursec",
+        "cerro-largo",
+        "fm"
+      ],
+      "source": "URSEC technical data list",
+      "sourceUrl": "https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/datos-y-estadisticas/datos/listado-datos-tecnicos",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "uy-melo-emisora-c-de-melo-99-1",
+      "name": "EMISORA C. DE MELO",
+      "freqMhz": 99.1,
+      "cityId": "uy-melo",
+      "description": "Uruguay FM service listed by URSEC for MELO, CERRO LARGO. Callsign: CX-256. Type: FM. ERP: 75Kw. Antenna height: 100. Page: https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/listados-de-operadores-de-radiodifusion.",
+      "tags": [
+        "fm",
+        "official",
+        "uruguay",
+        "ursec",
+        "cerro-largo",
+        "fm"
+      ],
+      "source": "URSEC technical data list",
+      "sourceUrl": "https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/datos-y-estadisticas/datos/listado-datos-tecnicos",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "uy-melo-sodre-106-9",
+      "name": "SODRE",
+      "freqMhz": 106.9,
+      "cityId": "uy-melo",
+      "description": "Uruguay FM service listed by URSEC for MELO, CERRO LARGO. Callsign: CX-295. Type: FM. ERP: 100.00. Antenna height: 150. Page: https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/listados-de-operadores-de-radiodifusion.",
+      "tags": [
+        "fm",
+        "official",
+        "uruguay",
+        "ursec",
+        "cerro-largo",
+        "fm"
+      ],
+      "source": "URSEC technical data list",
+      "sourceUrl": "https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/datos-y-estadisticas/datos/listado-datos-tecnicos",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "uy-mercedes-emisora-del-hum-fm-89-3",
+      "name": "EMISORA DEL HUM FM",
+      "freqMhz": 89.3,
+      "cityId": "uy-mercedes",
+      "description": "Uruguay FM service listed by URSEC for MERCEDES, SORIANO. Callsign: CX-207A. Type: FM. ERP: 1.00. Antenna height: 30. Page: https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/listados-de-operadores-de-radiodifusion.",
+      "tags": [
+        "fm",
+        "official",
+        "uruguay",
+        "ursec",
+        "soriano",
+        "fm"
+      ],
+      "source": "URSEC technical data list",
+      "sourceUrl": "https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/datos-y-estadisticas/datos/listado-datos-tecnicos",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "uy-mercedes-espacio-fm-91-5",
+      "name": "ESPACIO FM",
+      "freqMhz": 91.5,
+      "cityId": "uy-mercedes",
+      "description": "Uruguay FM service listed by URSEC for MERCEDES, SORIANO. Callsign: CX-218A. Type: FM. ERP: 1 KW.. Antenna height: 75. Page: https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/listados-de-operadores-de-radiodifusion.",
+      "tags": [
+        "fm",
+        "official",
+        "uruguay",
+        "ursec",
+        "soriano",
+        "fm"
+      ],
+      "source": "URSEC technical data list",
+      "sourceUrl": "https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/datos-y-estadisticas/datos/listado-datos-tecnicos",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "uy-mercedes-repetidora-radio-uruguay-92-1",
+      "name": "REPETIDORA RADIO URUGUAY",
+      "freqMhz": 92.1,
+      "cityId": "uy-mercedes",
+      "description": "Uruguay FM service listed by URSEC for MERCEDES, SORIANO. Callsign: CX-221. Type: FM. ERP: 10.00. Antenna height: 75. Page: https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/listados-de-operadores-de-radiodifusion.",
+      "tags": [
+        "fm",
+        "official",
+        "uruguay",
+        "ursec",
+        "soriano",
+        "fm"
+      ],
+      "source": "URSEC technical data list",
+      "sourceUrl": "https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/datos-y-estadisticas/datos/listado-datos-tecnicos",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "uy-mercedes-primavera-fm-97-1",
+      "name": "PRIMAVERA FM",
+      "freqMhz": 97.1,
+      "cityId": "uy-mercedes",
+      "description": "Uruguay FM service listed by URSEC for MERCEDES, SORIANO. Callsign: CX-246. Type: FM. ERP: 1.00. Antenna height: 60. Page: https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/listados-de-operadores-de-radiodifusion.",
+      "tags": [
+        "fm",
+        "official",
+        "uruguay",
+        "ursec",
+        "soriano",
+        "fm"
+      ],
+      "source": "URSEC technical data list",
+      "sourceUrl": "https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/datos-y-estadisticas/datos/listado-datos-tecnicos",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "uy-mercedes-emisora-galicia-100-3",
+      "name": "EMISORA GALICIA",
+      "freqMhz": 100.3,
+      "cityId": "uy-mercedes",
+      "description": "Uruguay FM service listed by URSEC for MERCEDES, SORIANO. Callsign: CX-262. Type: FM. ERP: 10.00. Antenna height: 75. Page: https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/listados-de-operadores-de-radiodifusion.",
+      "tags": [
+        "fm",
+        "official",
+        "uruguay",
+        "ursec",
+        "soriano",
+        "fm"
+      ],
+      "source": "URSEC technical data list",
+      "sourceUrl": "https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/datos-y-estadisticas/datos/listado-datos-tecnicos",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "uy-minas-nosotros-fm-90-7",
+      "name": "NOSOTROS FM",
+      "freqMhz": 90.7,
+      "cityId": "uy-minas",
+      "description": "Uruguay FM service listed by URSEC for MINAS, LAVALLEJA. Callsign: CX-214A. Type: FM. ERP: .7Kw. Antenna height: 30. Page: https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/listados-de-operadores-de-radiodifusion.",
+      "tags": [
+        "fm",
+        "official",
+        "uruguay",
+        "ursec",
+        "lavalleja",
+        "fm"
+      ],
+      "source": "URSEC technical data list",
+      "sourceUrl": "https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/datos-y-estadisticas/datos/listado-datos-tecnicos",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "uy-minas-digital-92-1",
+      "name": "DIGITAL",
+      "freqMhz": 92.1,
+      "cityId": "uy-minas",
+      "description": "Uruguay FM service listed by URSEC for MINAS, LAVALLEJA. Callsign: CX-261A. Type: FM. ERP: 1 Kw. Antenna height: 30. Page: https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/listados-de-operadores-de-radiodifusion.",
+      "tags": [
+        "fm",
+        "official",
+        "uruguay",
+        "ursec",
+        "lavalleja",
+        "fm"
+      ],
+      "source": "URSEC technical data list",
+      "sourceUrl": "https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/datos-y-estadisticas/datos/listado-datos-tecnicos",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "uy-minas-fm-minas-933-93-3",
+      "name": "FM MINAS 93.3",
+      "freqMhz": 93.3,
+      "cityId": "uy-minas",
+      "description": "Uruguay FM service listed by URSEC for MINAS, LAVALLEJA. Callsign: CX-227A. Type: FM. ERP: 1.kW. Antenna height: 75. Page: https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/listados-de-operadores-de-radiodifusion.",
+      "tags": [
+        "fm",
+        "official",
+        "uruguay",
+        "ursec",
+        "lavalleja",
+        "fm"
+      ],
+      "source": "URSEC technical data list",
+      "sourceUrl": "https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/datos-y-estadisticas/datos/listado-datos-tecnicos",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "uy-minas-federal-fm-99-1",
+      "name": "FEDERAL FM",
+      "freqMhz": 99.1,
+      "cityId": "uy-minas",
+      "description": "Uruguay FM service listed by URSEC for MINAS, LAVALLEJA. Callsign: CX-256A. Type: FM. ERP: 5.00. Antenna height: 30. Page: https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/listados-de-operadores-de-radiodifusion.",
+      "tags": [
+        "fm",
+        "official",
+        "uruguay",
+        "ursec",
+        "lavalleja",
+        "fm"
+      ],
+      "source": "URSEC technical data list",
+      "sourceUrl": "https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/datos-y-estadisticas/datos/listado-datos-tecnicos",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "uy-minas-sodre-106-1",
+      "name": "SODRE",
+      "freqMhz": 106.1,
+      "cityId": "uy-minas",
+      "description": "Uruguay FM service listed by URSEC for MINAS, LAVALLEJA. Callsign: CX-291A. Type: FM. Page: https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/listados-de-operadores-de-radiodifusion.",
+      "tags": [
+        "fm",
+        "official",
+        "uruguay",
+        "ursec",
+        "lavalleja",
+        "fm"
+      ],
+      "source": "URSEC technical data list",
+      "sourceUrl": "https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/datos-y-estadisticas/datos/listado-datos-tecnicos",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "uy-montevideo-uni-radio-891-fm-89-1",
+      "name": "UNI RADIO 89.1 FM",
+      "freqMhz": 89.1,
+      "cityId": "uy-montevideo",
+      "description": "Uruguay FM service listed by URSEC for MONTEVIDEO, MONTEVIDEO. Callsign: CXD-206. Type: FM. ERP: 0,03. Antenna height: 30. Page: https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/listados-de-operadores-de-radiodifusion.",
+      "tags": [
+        "fm",
+        "official",
+        "uruguay",
+        "ursec",
+        "montevideo",
+        "fm"
+      ],
+      "source": "URSEC technical data list",
+      "sourceUrl": "https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/datos-y-estadisticas/datos/listado-datos-tecnicos",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "uy-montevideo-oldies-fm-90-3",
+      "name": "OLDIES FM",
+      "freqMhz": 90.3,
+      "cityId": "uy-montevideo",
+      "description": "Uruguay FM service listed by URSEC for MONTEVIDEO, MONTEVIDEO. Callsign: CXD-212. Type: FM. ERP: 1.00. Antenna height: 75. Page: https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/listados-de-operadores-de-radiodifusion.",
+      "tags": [
+        "fm",
+        "official",
+        "uruguay",
+        "ursec",
+        "montevideo",
+        "fm"
+      ],
+      "source": "URSEC technical data list",
+      "sourceUrl": "https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/datos-y-estadisticas/datos/listado-datos-tecnicos",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "uy-montevideo-futura-fm-91-1",
+      "name": "FUTURA FM",
+      "freqMhz": 91.1,
+      "cityId": "uy-montevideo",
+      "description": "Uruguay FM service listed by URSEC for MONTEVIDEO, MONTEVIDEO. Callsign: CXD-216. Type: FM. ERP: 0.30. Antenna height: 60. Page: https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/listados-de-operadores-de-radiodifusion.",
+      "tags": [
+        "fm",
+        "official",
+        "uruguay",
+        "ursec",
+        "montevideo",
+        "fm"
+      ],
+      "source": "URSEC technical data list",
+      "sourceUrl": "https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/datos-y-estadisticas/datos/listado-datos-tecnicos",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "uy-montevideo-radio-disney-919-fm-91-9",
+      "name": "RADIO DISNEY 91.9 FM",
+      "freqMhz": 91.9,
+      "cityId": "uy-montevideo",
+      "description": "Uruguay FM service listed by URSEC for MONTEVIDEO, MONTEVIDEO. Callsign: CXD-220. Type: FM. ERP: 3 KW. Antenna height: 100. Page: https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/listados-de-operadores-de-radiodifusion.",
+      "tags": [
+        "fm",
+        "official",
+        "uruguay",
+        "ursec",
+        "montevideo",
+        "fm"
+      ],
+      "source": "URSEC technical data list",
+      "sourceUrl": "https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/datos-y-estadisticas/datos/listado-datos-tecnicos",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "uy-montevideo-urbana-fm-92-5",
+      "name": "URBANA FM",
+      "freqMhz": 92.5,
+      "cityId": "uy-montevideo",
+      "description": "Uruguay FM service listed by URSEC for MONTEVIDEO, MONTEVIDEO. Callsign: CXD-223. Type: FM. ERP: 4.8 k/dir. Antenna height: 70. Page: https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/listados-de-operadores-de-radiodifusion.",
+      "tags": [
+        "fm",
+        "official",
+        "uruguay",
+        "ursec",
+        "montevideo",
+        "fm"
+      ],
+      "source": "URSEC technical data list",
+      "sourceUrl": "https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/datos-y-estadisticas/datos/listado-datos-tecnicos",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "uy-montevideo-oceano-93-9",
+      "name": "OCEANO",
+      "freqMhz": 93.9,
+      "cityId": "uy-montevideo",
+      "description": "Uruguay FM service listed by URSEC for MONTEVIDEO, MONTEVIDEO. Callsign: CXD-230. Type: FM. ERP: 100.00. Antenna height: 150. Page: https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/listados-de-operadores-de-radiodifusion.",
+      "tags": [
+        "fm",
+        "official",
+        "uruguay",
+        "ursec",
+        "montevideo",
+        "fm"
+      ],
+      "source": "URSEC technical data list",
+      "sourceUrl": "https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/datos-y-estadisticas/datos/listado-datos-tecnicos",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "uy-montevideo-sodre-94-7",
+      "name": "SODRE",
+      "freqMhz": 94.7,
+      "cityId": "uy-montevideo",
+      "description": "Uruguay FM service listed by URSEC for MONTEVIDEO, MONTEVIDEO. Callsign: CXD-234. Type: FM. ERP: 100.00. Antenna height: 150. Page: https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/listados-de-operadores-de-radiodifusion.",
+      "tags": [
+        "fm",
+        "official",
+        "uruguay",
+        "ursec",
+        "montevideo",
+        "fm"
+      ],
+      "source": "URSEC technical data list",
+      "sourceUrl": "https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/datos-y-estadisticas/datos/listado-datos-tecnicos",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "uy-montevideo-emisora-del-plata-95-5",
+      "name": "EMISORA DEL PLATA",
+      "freqMhz": 95.5,
+      "cityId": "uy-montevideo",
+      "description": "Uruguay FM service listed by URSEC for MONTEVIDEO, MONTEVIDEO. Callsign: CXD-238. Type: FM. ERP: 100.00. Antenna height: 150. Page: https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/listados-de-operadores-de-radiodifusion.",
+      "tags": [
+        "fm",
+        "official",
+        "uruguay",
+        "ursec",
+        "montevideo",
+        "fm"
+      ],
+      "source": "URSEC technical data list",
+      "sourceUrl": "https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/datos-y-estadisticas/datos/listado-datos-tecnicos",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "uy-montevideo-emisora-alfa-96-3",
+      "name": "EMISORA ALFA",
+      "freqMhz": 96.3,
+      "cityId": "uy-montevideo",
+      "description": "Uruguay FM service listed by URSEC for MONTEVIDEO, MONTEVIDEO. Callsign: CXD-242. Type: FM. ERP: 25.00. Antenna height: 75. Page: https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/listados-de-operadores-de-radiodifusion.",
+      "tags": [
+        "fm",
+        "official",
+        "uruguay",
+        "ursec",
+        "montevideo",
+        "fm"
+      ],
+      "source": "URSEC technical data list",
+      "sourceUrl": "https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/datos-y-estadisticas/datos/listado-datos-tecnicos",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "uy-montevideo-sodre-97-1",
+      "name": "SODRE",
+      "freqMhz": 97.1,
+      "cityId": "uy-montevideo",
+      "description": "Uruguay FM service listed by URSEC for MONTEVIDEO, MONTEVIDEO. Callsign: CXD-246. Type: FM. ERP: 100.00. Antenna height: 150. Page: https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/listados-de-operadores-de-radiodifusion.",
+      "tags": [
+        "fm",
+        "official",
+        "uruguay",
+        "ursec",
+        "montevideo",
+        "fm"
+      ],
+      "source": "URSEC technical data list",
+      "sourceUrl": "https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/datos-y-estadisticas/datos/listado-datos-tecnicos",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "uy-montevideo-m24-97-9",
+      "name": "M24",
+      "freqMhz": 97.9,
+      "cityId": "uy-montevideo",
+      "description": "Uruguay FM service listed by URSEC for MONTEVIDEO, MONTEVIDEO. Callsign: CXD-250. Type: FM. ERP: 50.00. Antenna height: 100. Page: https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/listados-de-operadores-de-radiodifusion.",
+      "tags": [
+        "fm",
+        "official",
+        "uruguay",
+        "ursec",
+        "montevideo",
+        "fm"
+      ],
+      "source": "URSEC technical data list",
+      "sourceUrl": "https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/datos-y-estadisticas/datos/listado-datos-tecnicos",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "uy-montevideo-diamante-fm-98-7",
+      "name": "DIAMANTE FM",
+      "freqMhz": 98.7,
+      "cityId": "uy-montevideo",
+      "description": "Uruguay FM service listed by URSEC for MONTEVIDEO, MONTEVIDEO. Callsign: CXD-254. Type: FM. ERP: 100. Antenna height: 150. Page: https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/listados-de-operadores-de-radiodifusion.",
+      "tags": [
+        "fm",
+        "official",
+        "uruguay",
+        "ursec",
+        "montevideo",
+        "fm"
+      ],
+      "source": "URSEC technical data list",
+      "sourceUrl": "https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/datos-y-estadisticas/datos/listado-datos-tecnicos",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "uy-montevideo-emisora-del-sol-99-5",
+      "name": "EMISORA DEL SOL",
+      "freqMhz": 99.5,
+      "cityId": "uy-montevideo",
+      "description": "Uruguay FM service listed by URSEC for MONTEVIDEO, MONTEVIDEO. Callsign: CXD-258. Type: FM. ERP: 100.00. Antenna height: 150. Page: https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/listados-de-operadores-de-radiodifusion.",
+      "tags": [
+        "fm",
+        "official",
+        "uruguay",
+        "ursec",
+        "montevideo",
+        "fm"
+      ],
+      "source": "URSEC technical data list",
+      "sourceUrl": "https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/datos-y-estadisticas/datos/listado-datos-tecnicos",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "uy-montevideo-aire-fm-100-3",
+      "name": "AIRE FM",
+      "freqMhz": 100.3,
+      "cityId": "uy-montevideo",
+      "description": "Uruguay FM service listed by URSEC for MONTEVIDEO, MONTEVIDEO. Callsign: CXD-262. Type: FM. ERP: 25.00. Antenna height: 75. Page: https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/listados-de-operadores-de-radiodifusion.",
+      "tags": [
+        "fm",
+        "official",
+        "uruguay",
+        "ursec",
+        "montevideo",
+        "fm"
+      ],
+      "source": "URSEC technical data list",
+      "sourceUrl": "https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/datos-y-estadisticas/datos/listado-datos-tecnicos",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "uy-montevideo-nuevo-tiempo-101-3",
+      "name": "NUEVO TIEMPO",
+      "freqMhz": 101.3,
+      "cityId": "uy-montevideo",
+      "description": "Uruguay FM service listed by URSEC for MONTEVIDEO, MONTEVIDEO. Callsign: CXD-267. Type: FM. ERP: 100 Direc. Antenna height: 116. Page: https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/listados-de-operadores-de-radiodifusion.",
+      "tags": [
+        "fm",
+        "official",
+        "uruguay",
+        "ursec",
+        "montevideo",
+        "fm"
+      ],
+      "source": "URSEC technical data list",
+      "sourceUrl": "https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/datos-y-estadisticas/datos/listado-datos-tecnicos",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "uy-montevideo-azul-fm-101-9",
+      "name": "AZUL FM",
+      "freqMhz": 101.9,
+      "cityId": "uy-montevideo",
+      "description": "Uruguay FM service listed by URSEC for MONTEVIDEO, MONTEVIDEO. Callsign: CXD-270. Type: FM. ERP: 100.00. Antenna height: 150. Page: https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/listados-de-operadores-de-radiodifusion.",
+      "tags": [
+        "fm",
+        "official",
+        "uruguay",
+        "ursec",
+        "montevideo",
+        "fm"
+      ],
+      "source": "URSEC technical data list",
+      "sourceUrl": "https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/datos-y-estadisticas/datos/listado-datos-tecnicos",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "uy-montevideo-milenium-montevideo-103-7",
+      "name": "MILENIUM MONTEVIDEO",
+      "freqMhz": 103.7,
+      "cityId": "uy-montevideo",
+      "description": "Uruguay FM service listed by URSEC for MONTEVIDEO, MONTEVIDEO. Callsign: CXD-279. Type: FM. ERP: 10Kw. Antenna height: 100. Page: https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/listados-de-operadores-de-radiodifusion.",
+      "tags": [
+        "fm",
+        "official",
+        "uruguay",
+        "ursec",
+        "montevideo",
+        "fm"
+      ],
+      "source": "URSEC technical data list",
+      "sourceUrl": "https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/datos-y-estadisticas/datos/listado-datos-tecnicos",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "uy-montevideo-radio-cero-104-3",
+      "name": "RADIO CERO",
+      "freqMhz": 104.3,
+      "cityId": "uy-montevideo",
+      "description": "Uruguay FM service listed by URSEC for MONTEVIDEO, MONTEVIDEO. Callsign: CXD-282. Type: FM. ERP: 100 kW.. Antenna height: 100. Page: https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/listados-de-operadores-de-radiodifusion.",
+      "tags": [
+        "fm",
+        "official",
+        "uruguay",
+        "ursec",
+        "montevideo",
+        "fm"
+      ],
+      "source": "URSEC technical data list",
+      "sourceUrl": "https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/datos-y-estadisticas/datos/listado-datos-tecnicos",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "uy-montevideo-galaxia-fm-stereo-105-9",
+      "name": "GALAXIA FM STEREO",
+      "freqMhz": 105.9,
+      "cityId": "uy-montevideo",
+      "description": "Uruguay FM service listed by URSEC for MONTEVIDEO, MONTEVIDEO. Callsign: CXD-290. Type: FM. ERP: 50.00. Antenna height: 100. Page: https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/listados-de-operadores-de-radiodifusion.",
+      "tags": [
+        "fm",
+        "official",
+        "uruguay",
+        "ursec",
+        "montevideo",
+        "fm"
+      ],
+      "source": "URSEC technical data list",
+      "sourceUrl": "https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/datos-y-estadisticas/datos/listado-datos-tecnicos",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "uy-montevideo-la-ley-fm-106-7",
+      "name": "LA LEY FM",
+      "freqMhz": 106.7,
+      "cityId": "uy-montevideo",
+      "description": "Uruguay FM service listed by URSEC for MONTEVIDEO, MONTEVIDEO. Callsign: CXD-294. Type: FM. ERP: 10.00. Antenna height: 75. Page: https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/listados-de-operadores-de-radiodifusion.",
+      "tags": [
+        "fm",
+        "official",
+        "uruguay",
+        "ursec",
+        "montevideo",
+        "fm"
+      ],
+      "source": "URSEC technical data list",
+      "sourceUrl": "https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/datos-y-estadisticas/datos/listado-datos-tecnicos",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "uy-nueva-helvecia-reflejos-fm-90-7",
+      "name": "REFLEJOS FM",
+      "freqMhz": 90.7,
+      "cityId": "uy-nueva-helvecia",
+      "description": "Uruguay FM service listed by URSEC for NUEVA HELVECIA, COLONIA. Callsign: CX-214B. Type: FM. ERP: 0.30 kw.. Antenna height: 60. Page: https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/listados-de-operadores-de-radiodifusion.",
+      "tags": [
+        "fm",
+        "official",
+        "uruguay",
+        "ursec",
+        "colonia",
+        "fm"
+      ],
+      "source": "URSEC technical data list",
+      "sourceUrl": "https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/datos-y-estadisticas/datos/listado-datos-tecnicos",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "uy-nueva-palmira-fm-rio-90-9",
+      "name": "FM RIO",
+      "freqMhz": 90.9,
+      "cityId": "uy-nueva-palmira",
+      "description": "Uruguay FM service listed by URSEC for NUEVA PALMIRA, COLONIA. Callsign: CX-215A. Type: FM. ERP: 1.00. Antenna height: 30. Page: https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/listados-de-operadores-de-radiodifusion.",
+      "tags": [
+        "fm",
+        "official",
+        "uruguay",
+        "ursec",
+        "colonia",
+        "fm"
+      ],
+      "source": "URSEC technical data list",
+      "sourceUrl": "https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/datos-y-estadisticas/datos/listado-datos-tecnicos",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "uy-pan-de-azucar-cielo-fm-92-5",
+      "name": "CIELO FM",
+      "freqMhz": 92.5,
+      "cityId": "uy-pan-de-azucar",
+      "description": "Uruguay FM service listed by URSEC for PAN DE AZÚCAR, MALDONADO. Callsign: CX-223A. Type: FM. ERP: 25.00. Antenna height: 75. Page: https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/listados-de-operadores-de-radiodifusion.",
+      "tags": [
+        "fm",
+        "official",
+        "uruguay",
+        "ursec",
+        "maldonado",
+        "fm"
+      ],
+      "source": "URSEC technical data list",
+      "sourceUrl": "https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/datos-y-estadisticas/datos/listado-datos-tecnicos",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "uy-pan-de-azucar-2-m-24-maldonado-102-5",
+      "name": "M-24 MALDONADO",
+      "freqMhz": 102.5,
+      "cityId": "uy-pan-de-azucar-2",
+      "description": "Uruguay FM service listed by URSEC for SIERRA DE LA BALLENA, MALDONADO. Callsign: CX-273. Type: FM. ERP: 20.00. Antenna height: 100. Page: https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/listados-de-operadores-de-radiodifusion.",
+      "tags": [
+        "fm",
+        "official",
+        "uruguay",
+        "ursec",
+        "maldonado",
+        "fm"
+      ],
+      "source": "URSEC technical data list",
+      "sourceUrl": "https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/datos-y-estadisticas/datos/listado-datos-tecnicos",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "uy-pando-del-molino-89-3",
+      "name": "DEL MOLINO",
+      "freqMhz": 89.3,
+      "cityId": "uy-pando",
+      "description": "Uruguay FM service listed by URSEC for PANDO, CANELONES. Callsign: CX-207B. Type: FM. ERP: 0.5kw. Antenna height: 30. Page: https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/listados-de-operadores-de-radiodifusion.",
+      "tags": [
+        "fm",
+        "official",
+        "uruguay",
+        "ursec",
+        "canelones",
+        "fm"
+      ],
+      "source": "URSEC technical data list",
+      "sourceUrl": "https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/datos-y-estadisticas/datos/listado-datos-tecnicos",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "uy-paso-de-los-toros-fm-toros-91-9",
+      "name": "FM TOROS",
+      "freqMhz": 91.9,
+      "cityId": "uy-paso-de-los-toros",
+      "description": "Uruguay FM service listed by URSEC for PASO DE LOS TOROS, TACUAREMBO. Callsign: CX-220A. Type: FM. ERP: 1. Antenna height: 30. Page: https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/listados-de-operadores-de-radiodifusion.",
+      "tags": [
+        "fm",
+        "official",
+        "uruguay",
+        "ursec",
+        "tacuarembo",
+        "fm"
+      ],
+      "source": "URSEC technical data list",
+      "sourceUrl": "https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/datos-y-estadisticas/datos/listado-datos-tecnicos",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "uy-paso-de-los-toros-emisora-sta-isabel-100-1",
+      "name": "EMISORA STA. ISABEL",
+      "freqMhz": 100.1,
+      "cityId": "uy-paso-de-los-toros",
+      "description": "Uruguay FM service listed by URSEC for PASO DE LOS TOROS, TACUAREMBO. Callsign: CX-261. Type: FM. ERP: 5.00. Antenna height: 75. Page: https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/listados-de-operadores-de-radiodifusion.",
+      "tags": [
+        "fm",
+        "official",
+        "uruguay",
+        "ursec",
+        "tacuarembo",
+        "fm"
+      ],
+      "source": "URSEC technical data list",
+      "sourceUrl": "https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/datos-y-estadisticas/datos/listado-datos-tecnicos",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "uy-paso-de-los-toros-sodre-106-1",
+      "name": "SODRE",
+      "freqMhz": 106.1,
+      "cityId": "uy-paso-de-los-toros",
+      "description": "Uruguay FM service listed by URSEC for PASO DE LOS TOROS, TACUAREMBO. Callsign: CX-291. Type: FM. ERP: 10.00. Antenna height: 75. Page: https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/listados-de-operadores-de-radiodifusion.",
+      "tags": [
+        "fm",
+        "official",
+        "uruguay",
+        "ursec",
+        "tacuarembo",
+        "fm"
+      ],
+      "source": "URSEC technical data list",
+      "sourceUrl": "https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/datos-y-estadisticas/datos/listado-datos-tecnicos",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "uy-paysandu-fm-latina-95-3",
+      "name": "FM LATINA",
+      "freqMhz": 95.3,
+      "cityId": "uy-paysandu",
+      "description": "Uruguay FM service listed by URSEC for PAYSANDÚ, PAYSANDU. Callsign: CX-237. Type: FM. ERP: 5.00. Antenna height: 75. Page: https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/listados-de-operadores-de-radiodifusion.",
+      "tags": [
+        "fm",
+        "official",
+        "uruguay",
+        "ursec",
+        "paysandu",
+        "fm"
+      ],
+      "source": "URSEC technical data list",
+      "sourceUrl": "https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/datos-y-estadisticas/datos/listado-datos-tecnicos",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "uy-paysandu-casino-fm-96-3",
+      "name": "CASINO FM",
+      "freqMhz": 96.3,
+      "cityId": "uy-paysandu",
+      "description": "Uruguay FM service listed by URSEC for PAYSANDÚ, PAYSANDU. Callsign: CX-242. Type: FM. ERP: 25.00. Antenna height: 75. Page: https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/listados-de-operadores-de-radiodifusion.",
+      "tags": [
+        "fm",
+        "official",
+        "uruguay",
+        "ursec",
+        "paysandu",
+        "fm"
+      ],
+      "source": "URSEC technical data list",
+      "sourceUrl": "https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/datos-y-estadisticas/datos/listado-datos-tecnicos",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "uy-paysandu-fm-maxima-97-7",
+      "name": "FM MAXIMA",
+      "freqMhz": 97.7,
+      "cityId": "uy-paysandu",
+      "description": "Uruguay FM service listed by URSEC for PAYSANDÚ, PAYSANDU. Callsign: CX-249. Type: FM. ERP: 10.. Antenna height: 100. Page: https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/listados-de-operadores-de-radiodifusion.",
+      "tags": [
+        "fm",
+        "official",
+        "uruguay",
+        "ursec",
+        "paysandu",
+        "fm"
+      ],
+      "source": "URSEC technical data list",
+      "sourceUrl": "https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/datos-y-estadisticas/datos/listado-datos-tecnicos",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "uy-paysandu-emisora-exito-99-7",
+      "name": "EMISORA EXITO",
+      "freqMhz": 99.7,
+      "cityId": "uy-paysandu",
+      "description": "Uruguay FM service listed by URSEC for PAYSANDÚ, PAYSANDU. Callsign: CX-259. Type: FM. ERP: 1.00. Antenna height: 100. Page: https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/listados-de-operadores-de-radiodifusion.",
+      "tags": [
+        "fm",
+        "official",
+        "uruguay",
+        "ursec",
+        "paysandu",
+        "fm"
+      ],
+      "source": "URSEC technical data list",
+      "sourceUrl": "https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/datos-y-estadisticas/datos/listado-datos-tecnicos",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "uy-paysandu-fm-mas-101-3",
+      "name": "FM MAS",
+      "freqMhz": 101.3,
+      "cityId": "uy-paysandu",
+      "description": "Uruguay FM service listed by URSEC for PAYSANDÚ, PAYSANDU. Callsign: CX-267. Type: FM. ERP: 10K. Antenna height: 100. Page: https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/listados-de-operadores-de-radiodifusion.",
+      "tags": [
+        "fm",
+        "official",
+        "uruguay",
+        "ursec",
+        "paysandu",
+        "fm"
+      ],
+      "source": "URSEC technical data list",
+      "sourceUrl": "https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/datos-y-estadisticas/datos/listado-datos-tecnicos",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "uy-paysandu-sodre-103-5",
+      "name": "SODRE",
+      "freqMhz": 103.5,
+      "cityId": "uy-paysandu",
+      "description": "Uruguay FM service listed by URSEC for PAYSANDÚ, PAYSANDU. Callsign: CX-278A. Type: FM. ERP: 25.00. Antenna height: 75. Page: https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/listados-de-operadores-de-radiodifusion.",
+      "tags": [
+        "fm",
+        "official",
+        "uruguay",
+        "ursec",
+        "paysandu",
+        "fm"
+      ],
+      "source": "URSEC technical data list",
+      "sourceUrl": "https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/datos-y-estadisticas/datos/listado-datos-tecnicos",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "uy-paysandu-contacto-fm-106-9",
+      "name": "CONTACTO FM",
+      "freqMhz": 106.9,
+      "cityId": "uy-paysandu",
+      "description": "Uruguay FM service listed by URSEC for PAYSANDÚ, PAYSANDU. Callsign: CX-295B. Type: FM. ERP: 1.. Antenna height: 60. Page: https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/listados-de-operadores-de-radiodifusion.",
+      "tags": [
+        "fm",
+        "official",
+        "uruguay",
+        "ursec",
+        "paysandu",
+        "fm"
+      ],
+      "source": "URSEC technical data list",
+      "sourceUrl": "https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/datos-y-estadisticas/datos/listado-datos-tecnicos",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "uy-punta-del-este-azul-en-el-este-935-93-5",
+      "name": "AZUL EN EL ESTE 93,5",
+      "freqMhz": 93.5,
+      "cityId": "uy-punta-del-este",
+      "description": "Uruguay FM service listed by URSEC for PUNTA DEL ESTE, MALDONADO. Callsign: CX-228B. Type: FM. ERP: 4 kW.. Antenna height: 100. Page: https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/listados-de-operadores-de-radiodifusion.",
+      "tags": [
+        "fm",
+        "official",
+        "uruguay",
+        "ursec",
+        "maldonado",
+        "fm"
+      ],
+      "source": "URSEC technical data list",
+      "sourceUrl": "https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/datos-y-estadisticas/datos/listado-datos-tecnicos",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "uy-punta-del-este-2-dance-95-95-1",
+      "name": "DANCE 95",
+      "freqMhz": 95.1,
+      "cityId": "uy-punta-del-este-2",
+      "description": "Uruguay FM service listed by URSEC for PORTEZUELO, MALDONADO. Callsign: CX-236C. Type: FM. ERP: 1 kW. Antenna height: 60. Page: https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/listados-de-operadores-de-radiodifusion.",
+      "tags": [
+        "fm",
+        "official",
+        "uruguay",
+        "ursec",
+        "maldonado",
+        "fm"
+      ],
+      "source": "URSEC technical data list",
+      "sourceUrl": "https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/datos-y-estadisticas/datos/listado-datos-tecnicos",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "uy-punta-del-este-2-metropolis-punta-95-9",
+      "name": "METROPOLIS PUNTA",
+      "freqMhz": 95.9,
+      "cityId": "uy-punta-del-este-2",
+      "description": "Uruguay FM service listed by URSEC for PUNTA DEL ESTE, MALDONADO. Callsign: CX-240. Type: FM. ERP: 3 kw. Antenna height: 100. Page: https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/listados-de-operadores-de-radiodifusion.",
+      "tags": [
+        "fm",
+        "official",
+        "uruguay",
+        "ursec",
+        "maldonado",
+        "fm"
+      ],
+      "source": "URSEC technical data list",
+      "sourceUrl": "https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/datos-y-estadisticas/datos/listado-datos-tecnicos",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "uy-punta-del-este-2-la-voz-dla-esperanza-del-este-97-5",
+      "name": "LA VOZ D/LA ESPERANZA DEL ESTE",
+      "freqMhz": 97.5,
+      "cityId": "uy-punta-del-este-2",
+      "description": "Uruguay FM service listed by URSEC for PUNTA DEL ESTE, MALDONADO. Callsign: CX-248. Type: FM. ERP: 10 kW. Antenna height: 100. Page: https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/listados-de-operadores-de-radiodifusion.",
+      "tags": [
+        "fm",
+        "official",
+        "uruguay",
+        "ursec",
+        "maldonado",
+        "fm"
+      ],
+      "source": "URSEC technical data list",
+      "sourceUrl": "https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/datos-y-estadisticas/datos/listado-datos-tecnicos",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "uy-punta-del-este-2-clasica-98-9",
+      "name": "CLASICA",
+      "freqMhz": 98.9,
+      "cityId": "uy-punta-del-este-2",
+      "description": "Uruguay FM service listed by URSEC for PUNTA DEL ESTE, MALDONADO. Callsign: CX-255. Type: FM. ERP: 1.. Antenna height: 75. Page: https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/listados-de-operadores-de-radiodifusion.",
+      "tags": [
+        "fm",
+        "official",
+        "uruguay",
+        "ursec",
+        "maldonado",
+        "fm"
+      ],
+      "source": "URSEC technical data list",
+      "sourceUrl": "https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/datos-y-estadisticas/datos/listado-datos-tecnicos",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "uy-punta-del-este-2-radio-cero-punta-101-5",
+      "name": "RADIO CERO PUNTA",
+      "freqMhz": 101.5,
+      "cityId": "uy-punta-del-este-2",
+      "description": "Uruguay FM service listed by URSEC for PUNTA DEL ESTE, MALDONADO. Callsign: CX-268B. Type: FM. ERP: 35 Kw.. Antenna height: 100. Page: https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/listados-de-operadores-de-radiodifusion.",
+      "tags": [
+        "fm",
+        "official",
+        "uruguay",
+        "ursec",
+        "maldonado",
+        "fm"
+      ],
+      "source": "URSEC technical data list",
+      "sourceUrl": "https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/datos-y-estadisticas/datos/listado-datos-tecnicos",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "uy-punta-del-este-2-aspen-fm-103-5",
+      "name": "ASPEN FM",
+      "freqMhz": 103.5,
+      "cityId": "uy-punta-del-este-2",
+      "description": "Uruguay FM service listed by URSEC for PUNTA DEL ESTE, MALDONADO. Callsign: CX-278. Type: FM. ERP: 25.00. Antenna height: 75. Page: https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/listados-de-operadores-de-radiodifusion.",
+      "tags": [
+        "fm",
+        "official",
+        "uruguay",
+        "ursec",
+        "maldonado",
+        "fm"
+      ],
+      "source": "URSEC technical data list",
+      "sourceUrl": "https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/datos-y-estadisticas/datos/listado-datos-tecnicos",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "uy-punta-del-este-2-cadena-del-mar-106-5",
+      "name": "CADENA DEL MAR",
+      "freqMhz": 106.5,
+      "cityId": "uy-punta-del-este-2",
+      "description": "Uruguay FM service listed by URSEC for PORTEZUELO, MALDONADO. Callsign: CX-293B. Type: FM. ERP: 1 Kw. Antenna height: 75. Page: https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/listados-de-operadores-de-radiodifusion.",
+      "tags": [
+        "fm",
+        "official",
+        "uruguay",
+        "ursec",
+        "maldonado",
+        "fm"
+      ],
+      "source": "URSEC technical data list",
+      "sourceUrl": "https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/datos-y-estadisticas/datos/listado-datos-tecnicos",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "uy-rio-branco-maua-fm-105-5",
+      "name": "MAUA FM",
+      "freqMhz": 105.5,
+      "cityId": "uy-rio-branco",
+      "description": "Uruguay FM service listed by URSEC for RÍO BRANCO, CERRO LARGO. Callsign: CX-288A. Type: FM. ERP: 40.00. Antenna height: 80. Page: https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/listados-de-operadores-de-radiodifusion.",
+      "tags": [
+        "fm",
+        "official",
+        "uruguay",
+        "ursec",
+        "cerro-largo",
+        "fm"
+      ],
+      "source": "URSEC technical data list",
+      "sourceUrl": "https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/datos-y-estadisticas/datos/listado-datos-tecnicos",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "uy-rivera-columbia-fm-88-5",
+      "name": "COLUMBIA FM",
+      "freqMhz": 88.5,
+      "cityId": "uy-rivera",
+      "description": "Uruguay FM service listed by URSEC for RIVERA, RIVERA. Callsign: CX-203D. Type: FM. ERP: 1.00. Antenna height: 30. Page: https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/listados-de-operadores-de-radiodifusion.",
+      "tags": [
+        "fm",
+        "official",
+        "uruguay",
+        "ursec",
+        "rivera",
+        "fm"
+      ],
+      "source": "URSEC technical data list",
+      "sourceUrl": "https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/datos-y-estadisticas/datos/listado-datos-tecnicos",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "uy-rivera-horizonte-fm-89-3",
+      "name": "HORIZONTE FM",
+      "freqMhz": 89.3,
+      "cityId": "uy-rivera",
+      "description": "Uruguay FM service listed by URSEC for RIVERA, RIVERA. Callsign: CX-207C. Type: FM. ERP: 1. Antenna height: 30. Page: https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/listados-de-operadores-de-radiodifusion.",
+      "tags": [
+        "fm",
+        "official",
+        "uruguay",
+        "ursec",
+        "rivera",
+        "fm"
+      ],
+      "source": "URSEC technical data list",
+      "sourceUrl": "https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/datos-y-estadisticas/datos/listado-datos-tecnicos",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "uy-rivera-fm-radio-activa-89-9",
+      "name": "FM RADIO ACTIVA",
+      "freqMhz": 89.9,
+      "cityId": "uy-rivera",
+      "description": "Uruguay FM service listed by URSEC for RIVERA, RIVERA. Callsign: CX-210. Type: FM. ERP: 1.00 kW. Antenna height: 30. Page: https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/listados-de-operadores-de-radiodifusion.",
+      "tags": [
+        "fm",
+        "official",
+        "uruguay",
+        "ursec",
+        "rivera",
+        "fm"
+      ],
+      "source": "URSEC technical data list",
+      "sourceUrl": "https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/datos-y-estadisticas/datos/listado-datos-tecnicos",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "uy-rivera-sodre-93-9",
+      "name": "SODRE",
+      "freqMhz": 93.9,
+      "cityId": "uy-rivera",
+      "description": "Uruguay FM service listed by URSEC for RIVERA, RIVERA. Callsign: CX-230. Type: FM. ERP: 50.00. Antenna height: 100. Page: https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/listados-de-operadores-de-radiodifusion.",
+      "tags": [
+        "fm",
+        "official",
+        "uruguay",
+        "ursec",
+        "rivera",
+        "fm"
+      ],
+      "source": "URSEC technical data list",
+      "sourceUrl": "https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/datos-y-estadisticas/datos/listado-datos-tecnicos",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "uy-rivera-internacional-fm-94-5",
+      "name": "INTERNACIONAL FM",
+      "freqMhz": 94.5,
+      "cityId": "uy-rivera",
+      "description": "Uruguay FM service listed by URSEC for RIVERA, RIVERA. Callsign: CX-233. Type: FM. ERP: 5 kw. Antenna height: 75. Page: https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/listados-de-operadores-de-radiodifusion.",
+      "tags": [
+        "fm",
+        "official",
+        "uruguay",
+        "ursec",
+        "rivera",
+        "fm"
+      ],
+      "source": "URSEC technical data list",
+      "sourceUrl": "https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/datos-y-estadisticas/datos/listado-datos-tecnicos",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "uy-rocha-fm-sol-91-7",
+      "name": "FM SOL",
+      "freqMhz": 91.7,
+      "cityId": "uy-rocha",
+      "description": "Uruguay FM service listed by URSEC for ROCHA, ROCHA. Callsign: CX-219A. Type: FM. ERP: 1 kW. Antenna height: 30. Page: https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/listados-de-operadores-de-radiodifusion.",
+      "tags": [
+        "fm",
+        "official",
+        "uruguay",
+        "ursec",
+        "rocha",
+        "fm"
+      ],
+      "source": "URSEC technical data list",
+      "sourceUrl": "https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/datos-y-estadisticas/datos/listado-datos-tecnicos",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "uy-rocha-navegante-fm-94-1",
+      "name": "NAVEGANTE FM",
+      "freqMhz": 94.1,
+      "cityId": "uy-rocha",
+      "description": "Uruguay FM service listed by URSEC for ROCHA, ROCHA. Callsign: CX-231. Type: FM. ERP: 1 kW. Antenna height: 75. Page: https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/listados-de-operadores-de-radiodifusion.",
+      "tags": [
+        "fm",
+        "official",
+        "uruguay",
+        "ursec",
+        "rocha",
+        "fm"
+      ],
+      "source": "URSEC technical data list",
+      "sourceUrl": "https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/datos-y-estadisticas/datos/listado-datos-tecnicos",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "uy-rocha-fm-acuario-94-9",
+      "name": "FM ACUARIO",
+      "freqMhz": 94.9,
+      "cityId": "uy-rocha",
+      "description": "Uruguay FM service listed by URSEC for ROCHA, ROCHA. Callsign: CX-235A. Type: FM. ERP: 1 Kw. Antenna height: 75. Page: https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/listados-de-operadores-de-radiodifusion.",
+      "tags": [
+        "fm",
+        "official",
+        "uruguay",
+        "ursec",
+        "rocha",
+        "fm"
+      ],
+      "source": "URSEC technical data list",
+      "sourceUrl": "https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/datos-y-estadisticas/datos/listado-datos-tecnicos",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "uy-rocha-2-rocha-fm-98-3",
+      "name": "ROCHA FM",
+      "freqMhz": 98.3,
+      "cityId": "uy-rocha-2",
+      "description": "Uruguay FM service listed by URSEC for LAS GARZAS, ROCHA. Callsign: CX-252. Type: FM. ERP: 10. Antenna height: 75. Page: https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/listados-de-operadores-de-radiodifusion.",
+      "tags": [
+        "fm",
+        "official",
+        "uruguay",
+        "ursec",
+        "rocha",
+        "fm"
+      ],
+      "source": "URSEC technical data list",
+      "sourceUrl": "https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/datos-y-estadisticas/datos/listado-datos-tecnicos",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "uy-rocha-2-vida-fm-104-7",
+      "name": "VIDA FM",
+      "freqMhz": 104.7,
+      "cityId": "uy-rocha-2",
+      "description": "Uruguay FM service listed by URSEC for ROCHA, ROCHA. Callsign: CX-284A. Type: FM. ERP: 5.00. Antenna height: 60. Page: https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/listados-de-operadores-de-radiodifusion.",
+      "tags": [
+        "fm",
+        "official",
+        "uruguay",
+        "ursec",
+        "rocha",
+        "fm"
+      ],
+      "source": "URSEC technical data list",
+      "sourceUrl": "https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/datos-y-estadisticas/datos/listado-datos-tecnicos",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "uy-rocha-2-sodre-107-7",
+      "name": "SODRE",
+      "freqMhz": 107.7,
+      "cityId": "uy-rocha-2",
+      "description": "Uruguay FM service listed by URSEC for ROCHA, ROCHA. Callsign: CX-299. Type: FM. ERP: 10.00. Antenna height: 75. Page: https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/listados-de-operadores-de-radiodifusion.",
+      "tags": [
+        "fm",
+        "official",
+        "uruguay",
+        "ursec",
+        "rocha",
+        "fm"
+      ],
+      "source": "URSEC technical data list",
+      "sourceUrl": "https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/datos-y-estadisticas/datos/listado-datos-tecnicos",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "uy-rosario-fm-rosario-89-9",
+      "name": "FM ROSARIO",
+      "freqMhz": 89.9,
+      "cityId": "uy-rosario",
+      "description": "Uruguay FM service listed by URSEC for ROSARIO, COLONIA. Callsign: CX-210A. Type: FM. ERP: 0.10. Antenna height: 30. Page: https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/listados-de-operadores-de-radiodifusion.",
+      "tags": [
+        "fm",
+        "official",
+        "uruguay",
+        "ursec",
+        "colonia",
+        "fm"
+      ],
+      "source": "URSEC technical data list",
+      "sourceUrl": "https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/datos-y-estadisticas/datos/listado-datos-tecnicos",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "uy-salto-emisora-del-lago-88-3",
+      "name": "EMISORA DEL LAGO",
+      "freqMhz": 88.3,
+      "cityId": "uy-salto",
+      "description": "Uruguay FM service listed by URSEC for SALTO, SALTO. Callsign: CX-202E. Type: FM. ERP: 2.00. Antenna height: 30. Page: https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/listados-de-operadores-de-radiodifusion.",
+      "tags": [
+        "fm",
+        "official",
+        "uruguay",
+        "ursec",
+        "salto",
+        "fm"
+      ],
+      "source": "URSEC technical data list",
+      "sourceUrl": "https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/datos-y-estadisticas/datos/listado-datos-tecnicos",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "uy-salto-fm-siglo-xxi-101-5",
+      "name": "FM SIGLO XXI",
+      "freqMhz": 101.5,
+      "cityId": "uy-salto",
+      "description": "Uruguay FM service listed by URSEC for SALTO, SALTO. Callsign: CX-268A. Type: FM. ERP: 3.00. Antenna height: 100. Page: https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/listados-de-operadores-de-radiodifusion.",
+      "tags": [
+        "fm",
+        "official",
+        "uruguay",
+        "ursec",
+        "salto",
+        "fm"
+      ],
+      "source": "URSEC technical data list",
+      "sourceUrl": "https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/datos-y-estadisticas/datos/listado-datos-tecnicos",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "uy-salto-emisora-nueva-era-102-3",
+      "name": "EMISORA NUEVA ERA",
+      "freqMhz": 102.3,
+      "cityId": "uy-salto",
+      "description": "Uruguay FM service listed by URSEC for SALTO, SALTO. Callsign: CX-272A. Type: FM. ERP: 1.00. Antenna height: 60. Page: https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/listados-de-operadores-de-radiodifusion.",
+      "tags": [
+        "fm",
+        "official",
+        "uruguay",
+        "ursec",
+        "salto",
+        "fm"
+      ],
+      "source": "URSEC technical data list",
+      "sourceUrl": "https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/datos-y-estadisticas/datos/listado-datos-tecnicos",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "uy-salto-america-ii-103-3",
+      "name": "AMERICA II",
+      "freqMhz": 103.3,
+      "cityId": "uy-salto",
+      "description": "Uruguay FM service listed by URSEC for SALTO, SALTO. Callsign: CX-277A. Type: FM. ERP: 1 Kw.. Antenna height: 75. Page: https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/listados-de-operadores-de-radiodifusion.",
+      "tags": [
+        "fm",
+        "official",
+        "uruguay",
+        "ursec",
+        "salto",
+        "fm"
+      ],
+      "source": "URSEC technical data list",
+      "sourceUrl": "https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/datos-y-estadisticas/datos/listado-datos-tecnicos",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "uy-salto-sodre-104-3",
+      "name": "SODRE",
+      "freqMhz": 104.3,
+      "cityId": "uy-salto",
+      "description": "Uruguay FM service listed by URSEC for SALTO, SALTO. Callsign: CX-282. Type: FM. ERP: 25 .. Antenna height: 75. Page: https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/listados-de-operadores-de-radiodifusion.",
+      "tags": [
+        "fm",
+        "official",
+        "uruguay",
+        "ursec",
+        "salto",
+        "fm"
+      ],
+      "source": "URSEC technical data list",
+      "sourceUrl": "https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/datos-y-estadisticas/datos/listado-datos-tecnicos",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "uy-salto-emisora-del-exodo-106-5",
+      "name": "EMISORA DEL EXODO",
+      "freqMhz": 106.5,
+      "cityId": "uy-salto",
+      "description": "Uruguay FM service listed by URSEC for SALTO, SALTO. Callsign: CX-293. Type: FM. ERP: 25.00. Antenna height: 75. Page: https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/listados-de-operadores-de-radiodifusion.",
+      "tags": [
+        "fm",
+        "official",
+        "uruguay",
+        "ursec",
+        "salto",
+        "fm"
+      ],
+      "source": "URSEC technical data list",
+      "sourceUrl": "https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/datos-y-estadisticas/datos/listado-datos-tecnicos",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "uy-salto-el-mundo-fm-107-9",
+      "name": "EL MUNDO FM",
+      "freqMhz": 107.9,
+      "cityId": "uy-salto",
+      "description": "Uruguay FM service listed by URSEC for SALTO, SALTO. Callsign: CX-300A. Type: FM. ERP: 1 kW. Antenna height: 60. Page: https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/listados-de-operadores-de-radiodifusion.",
+      "tags": [
+        "fm",
+        "official",
+        "uruguay",
+        "ursec",
+        "salto",
+        "fm"
+      ],
+      "source": "URSEC technical data list",
+      "sourceUrl": "https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/datos-y-estadisticas/datos/listado-datos-tecnicos",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "uy-san-carlos-radio-liceo-no1-90-9",
+      "name": "RADIO LICEO Nº1",
+      "freqMhz": 90.9,
+      "cityId": "uy-san-carlos",
+      "description": "Uruguay FM service listed by URSEC for SAN CARLOS, MALDONADO. Callsign: CX-215D. Type: FM. ERP: 0,03. Antenna height: 30. Page: https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/listados-de-operadores-de-radiodifusion.",
+      "tags": [
+        "fm",
+        "official",
+        "uruguay",
+        "ursec",
+        "maldonado",
+        "fm"
+      ],
+      "source": "URSEC technical data list",
+      "sourceUrl": "https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/datos-y-estadisticas/datos/listado-datos-tecnicos",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "uy-san-gregorio-de-polanco-plural-fm-899-mhz-89-9",
+      "name": "PLURAL FM 89,9 MHz",
+      "freqMhz": 89.9,
+      "cityId": "uy-san-gregorio-de-polanco",
+      "description": "Uruguay FM service listed by URSEC for SAN GREGORIO, TACUAREMBO. Callsign: CX-210C. Type: FM. ERP: 0,5. Antenna height: 35. Page: https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/listados-de-operadores-de-radiodifusion.",
+      "tags": [
+        "fm",
+        "official",
+        "uruguay",
+        "ursec",
+        "tacuarembo",
+        "fm"
+      ],
+      "source": "URSEC technical data list",
+      "sourceUrl": "https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/datos-y-estadisticas/datos/listado-datos-tecnicos",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "uy-san-jose-de-mayo-nativa-fm-88-9",
+      "name": "NATIVA FM",
+      "freqMhz": 88.9,
+      "cityId": "uy-san-jose-de-mayo",
+      "description": "Uruguay FM service listed by URSEC for VILLA RODRÍGUEZ, SAN JOSE. Callsign: CX-205A. Type: FM. ERP: 1.5kW DIR. Antenna height: 50. Page: https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/listados-de-operadores-de-radiodifusion.",
+      "tags": [
+        "fm",
+        "official",
+        "uruguay",
+        "ursec",
+        "san-jose",
+        "fm"
+      ],
+      "source": "URSEC technical data list",
+      "sourceUrl": "https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/datos-y-estadisticas/datos/listado-datos-tecnicos",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "uy-san-jose-de-mayo-2-sodre-95-1",
+      "name": "SODRE",
+      "freqMhz": 95.1,
+      "cityId": "uy-san-jose-de-mayo-2",
+      "description": "Uruguay FM service listed by URSEC for SAN JOSÉ, SAN JOSE. Callsign: CX-236D. Type: FM. ERP: 1.. Antenna height: 75. Page: https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/listados-de-operadores-de-radiodifusion.",
+      "tags": [
+        "fm",
+        "official",
+        "uruguay",
+        "ursec",
+        "san-jose",
+        "fm"
+      ],
+      "source": "URSEC technical data list",
+      "sourceUrl": "https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/datos-y-estadisticas/datos/listado-datos-tecnicos",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "uy-san-jose-de-mayo-2-radio-maragata-97-5",
+      "name": "RADIO MARAGATA",
+      "freqMhz": 97.5,
+      "cityId": "uy-san-jose-de-mayo-2",
+      "description": "Uruguay FM service listed by URSEC for SAN JOSÉ, SAN JOSE. Callsign: CX-248A. Type: FM. ERP: 1 kW. Antenna height: 75. Page: https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/listados-de-operadores-de-radiodifusion.",
+      "tags": [
+        "fm",
+        "official",
+        "uruguay",
+        "ursec",
+        "san-jose",
+        "fm"
+      ],
+      "source": "URSEC technical data list",
+      "sourceUrl": "https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/datos-y-estadisticas/datos/listado-datos-tecnicos",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "uy-san-jose-de-mayo-2-991-fm-el-lugar-99-1",
+      "name": "99.1 FM EL LUGAR",
+      "freqMhz": 99.1,
+      "cityId": "uy-san-jose-de-mayo-2",
+      "description": "Uruguay FM service listed by URSEC for SAN JOSÉ, SAN JOSE. Callsign: CX-256B. Type: FM. ERP: 6 Kw DIR. Antenna height: 75. Page: https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/listados-de-operadores-de-radiodifusion.",
+      "tags": [
+        "fm",
+        "official",
+        "uruguay",
+        "ursec",
+        "san-jose",
+        "fm"
+      ],
+      "source": "URSEC technical data list",
+      "sourceUrl": "https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/datos-y-estadisticas/datos/listado-datos-tecnicos",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "uy-san-jose-de-mayo-2-encuentro-fm-103-3",
+      "name": "ENCUENTRO FM",
+      "freqMhz": 103.3,
+      "cityId": "uy-san-jose-de-mayo-2",
+      "description": "Uruguay FM service listed by URSEC for SAN JOSÉ, SAN JOSE. Callsign: CX-277. Type: FM. ERP: 25.k. Antenna height: 75. Page: https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/listados-de-operadores-de-radiodifusion.",
+      "tags": [
+        "fm",
+        "official",
+        "uruguay",
+        "ursec",
+        "san-jose",
+        "fm"
+      ],
+      "source": "URSEC technical data list",
+      "sourceUrl": "https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/datos-y-estadisticas/datos/listado-datos-tecnicos",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "uy-san-jose-de-mayo-2-emisora-principal-107-9",
+      "name": "EMISORA PRINCIPAL",
+      "freqMhz": 107.9,
+      "cityId": "uy-san-jose-de-mayo-2",
+      "description": "Uruguay FM service listed by URSEC for SAN JOSÉ, SAN JOSE. Callsign: CX-300. Type: FM. ERP: 25.00. Antenna height: 75. Page: https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/listados-de-operadores-de-radiodifusion.",
+      "tags": [
+        "fm",
+        "official",
+        "uruguay",
+        "ursec",
+        "san-jose",
+        "fm"
+      ],
+      "source": "URSEC technical data list",
+      "sourceUrl": "https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/datos-y-estadisticas/datos/listado-datos-tecnicos",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "uy-san-ramon-913-fm-san-ramon-91-3",
+      "name": "91.3 FM SAN RAMON",
+      "freqMhz": 91.3,
+      "cityId": "uy-san-ramon",
+      "description": "Uruguay FM service listed by URSEC for SAN RAMÓN, CANELONES. Callsign: CX-217B. Type: FM. ERP: 1. Antenna height: 75. Page: https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/listados-de-operadores-de-radiodifusion.",
+      "tags": [
+        "fm",
+        "official",
+        "uruguay",
+        "ursec",
+        "canelones",
+        "fm"
+      ],
+      "source": "URSEC technical data list",
+      "sourceUrl": "https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/datos-y-estadisticas/datos/listado-datos-tecnicos",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "uy-santa-clara-de-olimar-sinfonia-fm-95-7",
+      "name": "SINFONIA FM",
+      "freqMhz": 95.7,
+      "cityId": "uy-santa-clara-de-olimar",
+      "description": "Uruguay FM service listed by URSEC for STA.CLARA DE OLIMAR, TREINTA Y TRES. Callsign: CX-239. Type: FM. ERP: 5.00. Antenna height: 30. Page: https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/listados-de-operadores-de-radiodifusion.",
+      "tags": [
+        "fm",
+        "official",
+        "uruguay",
+        "ursec",
+        "treinta-y-tres",
+        "fm"
+      ],
+      "source": "URSEC technical data list",
+      "sourceUrl": "https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/datos-y-estadisticas/datos/listado-datos-tecnicos",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "uy-santa-lucia-ideal-fm-90-1",
+      "name": "IDEAL FM",
+      "freqMhz": 90.1,
+      "cityId": "uy-santa-lucia",
+      "description": "Uruguay FM service listed by URSEC for SANTA LUCÍA, CANELONES. Callsign: CX-211A. Type: FM. ERP: 1.00. Antenna height: 30. Page: https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/listados-de-operadores-de-radiodifusion.",
+      "tags": [
+        "fm",
+        "official",
+        "uruguay",
+        "ursec",
+        "canelones",
+        "fm"
+      ],
+      "source": "URSEC technical data list",
+      "sourceUrl": "https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/datos-y-estadisticas/datos/listado-datos-tecnicos",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "uy-sarandi-del-yi-scala-fm-89-5",
+      "name": "SCALA FM",
+      "freqMhz": 89.5,
+      "cityId": "uy-sarandi-del-yi",
+      "description": "Uruguay FM service listed by URSEC for SARANDÍ DEL YÍ, DURAZNO. Callsign: CX-208A. Type: FM. ERP: 1.00. Antenna height: 75. Page: https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/listados-de-operadores-de-radiodifusion.",
+      "tags": [
+        "fm",
+        "official",
+        "uruguay",
+        "ursec",
+        "durazno",
+        "fm"
+      ],
+      "source": "URSEC technical data list",
+      "sourceUrl": "https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/datos-y-estadisticas/datos/listado-datos-tecnicos",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "uy-sarandi-grande-cx-215-fm-sdigrande-90-9",
+      "name": "CX-215 FM SDI.GRANDE",
+      "freqMhz": 90.9,
+      "cityId": "uy-sarandi-grande",
+      "description": "Uruguay FM service listed by URSEC for SARANDÍ GRANDE, FLORIDA. Callsign: CX-215. Type: FM. ERP: 1.00. Antenna height: 30. Page: https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/listados-de-operadores-de-radiodifusion.",
+      "tags": [
+        "fm",
+        "official",
+        "uruguay",
+        "ursec",
+        "florida",
+        "fm"
+      ],
+      "source": "URSEC technical data list",
+      "sourceUrl": "https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/datos-y-estadisticas/datos/listado-datos-tecnicos",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "uy-tacuarembo-emisora-de-la-musica-88-9",
+      "name": "EMISORA DE LA MUSICA",
+      "freqMhz": 88.9,
+      "cityId": "uy-tacuarembo",
+      "description": "Uruguay FM service listed by URSEC for TACUAREMBÓ, TACUAREMBO. Callsign: CX-205B. Type: FM. ERP: 1.00. Antenna height: 30. Page: https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/listados-de-operadores-de-radiodifusion.",
+      "tags": [
+        "fm",
+        "official",
+        "uruguay",
+        "ursec",
+        "tacuarembo",
+        "fm"
+      ],
+      "source": "URSEC technical data list",
+      "sourceUrl": "https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/datos-y-estadisticas/datos/listado-datos-tecnicos",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "uy-tacuarembo-emisora-armonia-fm-92-5",
+      "name": "EMISORA ARMONIA FM",
+      "freqMhz": 92.5,
+      "cityId": "uy-tacuarembo",
+      "description": "Uruguay FM service listed by URSEC for TACUAREMBÓ, TACUAREMBO. Callsign: CX-223. Type: FM. ERP: 1.00. Antenna height: 75. Page: https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/listados-de-operadores-de-radiodifusion.",
+      "tags": [
+        "fm",
+        "official",
+        "uruguay",
+        "ursec",
+        "tacuarembo",
+        "fm"
+      ],
+      "source": "URSEC technical data list",
+      "sourceUrl": "https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/datos-y-estadisticas/datos/listado-datos-tecnicos",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "uy-tacuarembo-fm-tiempo-101-7",
+      "name": "FM TIEMPO",
+      "freqMhz": 101.7,
+      "cityId": "uy-tacuarembo",
+      "description": "Uruguay FM service listed by URSEC for TACUAREMBÓ, TACUAREMBO. Callsign: CX-269. Type: FM. ERP: 5 kW. Antenna height: 75. Page: https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/listados-de-operadores-de-radiodifusion.",
+      "tags": [
+        "fm",
+        "official",
+        "uruguay",
+        "ursec",
+        "tacuarembo",
+        "fm"
+      ],
+      "source": "URSEC technical data list",
+      "sourceUrl": "https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/datos-y-estadisticas/datos/listado-datos-tecnicos",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "uy-tacuarembo-sodre-103-7",
+      "name": "SODRE",
+      "freqMhz": 103.7,
+      "cityId": "uy-tacuarembo",
+      "description": "Uruguay FM service listed by URSEC for TACUAREMBÓ, TACUAREMBO. Callsign: CX-279. Type: FM. ERP: 25.00. Antenna height: 75. Page: https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/listados-de-operadores-de-radiodifusion.",
+      "tags": [
+        "fm",
+        "official",
+        "uruguay",
+        "ursec",
+        "tacuarembo",
+        "fm"
+      ],
+      "source": "URSEC technical data list",
+      "sourceUrl": "https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/datos-y-estadisticas/datos/listado-datos-tecnicos",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "uy-tacuarembo-2-fm-gaucha-104-5",
+      "name": "FM GAUCHA",
+      "freqMhz": 104.5,
+      "cityId": "uy-tacuarembo-2",
+      "description": "Uruguay FM service listed by URSEC for CUCHILLA DEL OMBÚ, TACUAREMBO. Callsign: CX-283. Type: FM. ERP: 25.00. Antenna height: 75. Page: https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/listados-de-operadores-de-radiodifusion.",
+      "tags": [
+        "fm",
+        "official",
+        "uruguay",
+        "ursec",
+        "tacuarembo",
+        "fm"
+      ],
+      "source": "URSEC technical data list",
+      "sourceUrl": "https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/datos-y-estadisticas/datos/listado-datos-tecnicos",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "uy-tala-emisora-naturaleza-88-1",
+      "name": "EMISORA NATURALEZA",
+      "freqMhz": 88.1,
+      "cityId": "uy-tala",
+      "description": "Uruguay FM service listed by URSEC for TALA, CANELONES. Callsign: CX-201A. Type: FM. ERP: 5.00. Antenna height: 60. Page: https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/listados-de-operadores-de-radiodifusion.",
+      "tags": [
+        "fm",
+        "official",
+        "uruguay",
+        "ursec",
+        "canelones",
+        "fm"
+      ],
+      "source": "URSEC technical data list",
+      "sourceUrl": "https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/datos-y-estadisticas/datos/listado-datos-tecnicos",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "uy-tala-uno-100-7",
+      "name": "UNO",
+      "freqMhz": 100.7,
+      "cityId": "uy-tala",
+      "description": "Uruguay FM service listed by URSEC for TALA, CANELONES. Callsign: CX-264. Type: FM. ERP: .5Kw. Antenna height: 35. Page: https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/listados-de-operadores-de-radiodifusion.",
+      "tags": [
+        "fm",
+        "official",
+        "uruguay",
+        "ursec",
+        "canelones",
+        "fm"
+      ],
+      "source": "URSEC technical data list",
+      "sourceUrl": "https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/datos-y-estadisticas/datos/listado-datos-tecnicos",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "uy-tranqueras-acacia-fm-90-7",
+      "name": "ACACIA FM",
+      "freqMhz": 90.7,
+      "cityId": "uy-tranqueras",
+      "description": "Uruguay FM service listed by URSEC for TRANQUERAS, RIVERA. Callsign: CX-214D. Type: FM. ERP: 1 Kw.. Antenna height: 30. Page: https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/listados-de-operadores-de-radiodifusion.",
+      "tags": [
+        "fm",
+        "official",
+        "uruguay",
+        "ursec",
+        "rivera",
+        "fm"
+      ],
+      "source": "URSEC technical data list",
+      "sourceUrl": "https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/datos-y-estadisticas/datos/listado-datos-tecnicos",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "uy-tranqueras-tranqueras-fm-107-3",
+      "name": "TRANQUERAS FM",
+      "freqMhz": 107.3,
+      "cityId": "uy-tranqueras",
+      "description": "Uruguay FM service listed by URSEC for TRANQUERAS, RIVERA. Callsign: CX-297A. Type: FM. ERP: 5 kW.. Antenna height: 75. Page: https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/listados-de-operadores-de-radiodifusion.",
+      "tags": [
+        "fm",
+        "official",
+        "uruguay",
+        "ursec",
+        "rivera",
+        "fm"
+      ],
+      "source": "URSEC technical data list",
+      "sourceUrl": "https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/datos-y-estadisticas/datos/listado-datos-tecnicos",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "uy-treinta-y-tres-perfil-fm-90-9",
+      "name": "PERFIL FM",
+      "freqMhz": 90.9,
+      "cityId": "uy-treinta-y-tres",
+      "description": "Uruguay FM service listed by URSEC for TREINTA Y TRES, TREINTA Y TRES. Callsign: CX-215C. Type: FM. ERP: 1 Kw. Antenna height: 75. Page: https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/listados-de-operadores-de-radiodifusion.",
+      "tags": [
+        "fm",
+        "official",
+        "uruguay",
+        "ursec",
+        "treinta-y-tres",
+        "fm"
+      ],
+      "source": "URSEC technical data list",
+      "sourceUrl": "https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/datos-y-estadisticas/datos/listado-datos-tecnicos",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "uy-treinta-y-tres-sodre-92-7",
+      "name": "SODRE",
+      "freqMhz": 92.7,
+      "cityId": "uy-treinta-y-tres",
+      "description": "Uruguay FM service listed by URSEC for TREINTA Y TRES, TREINTA Y TRES. Callsign: CX-224. Type: FM. ERP: 25.00. Antenna height: 75. Page: https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/listados-de-operadores-de-radiodifusion.",
+      "tags": [
+        "fm",
+        "official",
+        "uruguay",
+        "ursec",
+        "treinta-y-tres",
+        "fm"
+      ],
+      "source": "URSEC technical data list",
+      "sourceUrl": "https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/datos-y-estadisticas/datos/listado-datos-tecnicos",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "uy-treinta-y-tres-treinta-y-tres-fm-94-3",
+      "name": "TREINTA Y TRES FM",
+      "freqMhz": 94.3,
+      "cityId": "uy-treinta-y-tres",
+      "description": "Uruguay FM service listed by URSEC for TREINTA Y TRES, TREINTA Y TRES. Callsign: CX-232A. Type: FM. ERP: 25.00. Antenna height: 75. Page: https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/listados-de-operadores-de-radiodifusion.",
+      "tags": [
+        "fm",
+        "official",
+        "uruguay",
+        "ursec",
+        "treinta-y-tres",
+        "fm"
+      ],
+      "source": "URSEC technical data list",
+      "sourceUrl": "https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/datos-y-estadisticas/datos/listado-datos-tecnicos",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "uy-treinta-y-tres-fm-conquistador-97-3",
+      "name": "FM CONQUISTADOR",
+      "freqMhz": 97.3,
+      "cityId": "uy-treinta-y-tres",
+      "description": "Uruguay FM service listed by URSEC for TREINTA Y TRES, TREINTA Y TRES. Callsign: CX-247. Type: FM. ERP: 25.00. Antenna height: 75. Page: https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/listados-de-operadores-de-radiodifusion.",
+      "tags": [
+        "fm",
+        "official",
+        "uruguay",
+        "ursec",
+        "treinta-y-tres",
+        "fm"
+      ],
+      "source": "URSEC technical data list",
+      "sourceUrl": "https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/datos-y-estadisticas/datos/listado-datos-tecnicos",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "uy-trinidad-radio-cinco-89-7",
+      "name": "RADIO CINCO",
+      "freqMhz": 89.7,
+      "cityId": "uy-trinidad",
+      "description": "Uruguay FM service listed by URSEC for TRINIDAD, FLORES. Callsign: CX-209C. Type: FM. ERP: 1 Kw.. Antenna height: 30. Page: https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/listados-de-operadores-de-radiodifusion.",
+      "tags": [
+        "fm",
+        "official",
+        "uruguay",
+        "ursec",
+        "flores",
+        "fm"
+      ],
+      "source": "URSEC technical data list",
+      "sourceUrl": "https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/datos-y-estadisticas/datos/listado-datos-tecnicos",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "uy-trinidad-sodre-96-9",
+      "name": "SODRE",
+      "freqMhz": 96.9,
+      "cityId": "uy-trinidad",
+      "description": "Uruguay FM service listed by URSEC for TRINIDAD, FLORES. Callsign: CX-245. Type: FM. Page: https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/listados-de-operadores-de-radiodifusion.",
+      "tags": [
+        "fm",
+        "official",
+        "uruguay",
+        "ursec",
+        "flores",
+        "fm"
+      ],
+      "source": "URSEC technical data list",
+      "sourceUrl": "https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/datos-y-estadisticas/datos/listado-datos-tecnicos",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "uy-trinidad-planetacien-100-5",
+      "name": "PLANETACIEN",
+      "freqMhz": 100.5,
+      "cityId": "uy-trinidad",
+      "description": "Uruguay FM service listed by URSEC for TRINIDAD, FLORES. Callsign: CX-263. Type: FM. ERP: 3 Kw. Antenna height: 100. Page: https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/listados-de-operadores-de-radiodifusion.",
+      "tags": [
+        "fm",
+        "official",
+        "uruguay",
+        "ursec",
+        "flores",
+        "fm"
+      ],
+      "source": "URSEC technical data list",
+      "sourceUrl": "https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/datos-y-estadisticas/datos/listado-datos-tecnicos",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "uy-trinidad-fm-sur-107-1",
+      "name": "FM SUR",
+      "freqMhz": 107.1,
+      "cityId": "uy-trinidad",
+      "description": "Uruguay FM service listed by URSEC for TRINIDAD, FLORES. Callsign: CX-296. Type: FM. ERP: 5.00. Antenna height: 60. Page: https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/listados-de-operadores-de-radiodifusion.",
+      "tags": [
+        "fm",
+        "official",
+        "uruguay",
+        "ursec",
+        "flores",
+        "fm"
+      ],
+      "source": "URSEC technical data list",
+      "sourceUrl": "https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/datos-y-estadisticas/datos/listado-datos-tecnicos",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "uy-vichadero-fm-de-la-cumbre-102-9",
+      "name": "FM DE LA CUMBRE",
+      "freqMhz": 102.9,
+      "cityId": "uy-vichadero",
+      "description": "Uruguay FM service listed by URSEC for VICHADERO, RIVERA. Callsign: CX-275A. Type: FM. ERP: 25.00. Antenna height: 75. Page: https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/listados-de-operadores-de-radiodifusion.",
+      "tags": [
+        "fm",
+        "official",
+        "uruguay",
+        "ursec",
+        "rivera",
+        "fm"
+      ],
+      "source": "URSEC technical data list",
+      "sourceUrl": "https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/datos-y-estadisticas/datos/listado-datos-tecnicos",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "uy-villa-del-carmen-boreal-106-5",
+      "name": "BOREAL",
+      "freqMhz": 106.5,
+      "cityId": "uy-villa-del-carmen",
+      "description": "Uruguay FM service listed by URSEC for VILLA DEL CARMEN, DURAZNO. Callsign: CX-293A. Type: FM. ERP: 5.00. Antenna height: 100. Page: https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/listados-de-operadores-de-radiodifusion.",
+      "tags": [
+        "fm",
+        "official",
+        "uruguay",
+        "ursec",
+        "durazno",
+        "fm"
+      ],
+      "source": "URSEC technical data list",
+      "sourceUrl": "https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/datos-y-estadisticas/datos/listado-datos-tecnicos",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "uy-young-imagen-fm-891-89-1",
+      "name": "IMAGEN FM 89.1",
+      "freqMhz": 89.1,
+      "cityId": "uy-young",
+      "description": "Uruguay FM service listed by URSEC for YOUNG, RIO NEGRO. Callsign: CX-206. Type: FM. ERP: 0.30. Antenna height: 60. Page: https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/listados-de-operadores-de-radiodifusion.",
+      "tags": [
+        "fm",
+        "official",
+        "uruguay",
+        "ursec",
+        "rio-negro",
+        "fm"
+      ],
+      "source": "URSEC technical data list",
+      "sourceUrl": "https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/datos-y-estadisticas/datos/listado-datos-tecnicos",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "uy-young-fm-luna-93-3",
+      "name": "FM LUNA",
+      "freqMhz": 93.3,
+      "cityId": "uy-young",
+      "description": "Uruguay FM service listed by URSEC for YOUNG, RIO NEGRO. Callsign: CX-227. Type: FM. ERP: 1 kW. Antenna height: 60. Page: https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/listados-de-operadores-de-radiodifusion.",
+      "tags": [
+        "fm",
+        "official",
+        "uruguay",
+        "ursec",
+        "rio-negro",
+        "fm"
+      ],
+      "source": "URSEC technical data list",
+      "sourceUrl": "https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/datos-y-estadisticas/datos/listado-datos-tecnicos",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "uy-young-fm-joven-94-5",
+      "name": "FM JOVEN",
+      "freqMhz": 94.5,
+      "cityId": "uy-young",
+      "description": "Uruguay FM service listed by URSEC for YOUNG, RIO NEGRO. Callsign: CX-233A. Type: FM. ERP: 1 kW. Antenna height: 75. Page: https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/listados-de-operadores-de-radiodifusion.",
+      "tags": [
+        "fm",
+        "official",
+        "uruguay",
+        "ursec",
+        "rio-negro",
+        "fm"
+      ],
+      "source": "URSEC technical data list",
+      "sourceUrl": "https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/datos-y-estadisticas/datos/listado-datos-tecnicos",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    }
+  ]
+}

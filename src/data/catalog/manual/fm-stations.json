@@ -1,0 +1,123 @@
+[
+  {
+    "id": "gb-london-bbc-radio-2",
+    "name": "BBC Radio 2",
+    "freqMhz": 89.1,
+    "cityId": "gb-london",
+    "description": "Adult pop and general-interest BBC programming.",
+    "tags": ["public", "music"],
+    "source": "Community seed",
+    "verifiedAt": "2026-03-23",
+    "curated": true
+  },
+  {
+    "id": "gb-london-bbc-radio-3",
+    "name": "BBC Radio 3",
+    "freqMhz": 90.2,
+    "cityId": "gb-london",
+    "description": "Classical, jazz, and cultural programming.",
+    "tags": ["public", "classical"],
+    "source": "Community seed",
+    "verifiedAt": "2026-03-23",
+    "curated": true
+  },
+  {
+    "id": "gb-london-bbc-radio-1",
+    "name": "BBC Radio 1",
+    "freqMhz": 98.8,
+    "cityId": "gb-london",
+    "description": "BBC pop and youth channel.",
+    "tags": ["public", "pop"],
+    "source": "Community seed",
+    "verifiedAt": "2026-03-23",
+    "curated": true
+  },
+  {
+    "id": "gb-london-classic-fm",
+    "name": "Classic FM",
+    "freqMhz": 100.0,
+    "cityId": "gb-london",
+    "description": "National commercial classical station.",
+    "tags": ["commercial", "classical"],
+    "source": "Community seed",
+    "verifiedAt": "2026-03-23",
+    "curated": true
+  },
+  {
+    "id": "jp-tokyo-tokyo-fm",
+    "name": "TOKYO FM",
+    "freqMhz": 80.0,
+    "cityId": "jp-tokyo",
+    "description": "Mainstream music and talk station for Tokyo.",
+    "tags": ["music", "talk"],
+    "source": "Community seed",
+    "verifiedAt": "2026-03-23",
+    "curated": true
+  },
+  {
+    "id": "jp-tokyo-j-wave",
+    "name": "J-WAVE",
+    "freqMhz": 81.3,
+    "cityId": "jp-tokyo",
+    "description": "Tokyo music station with an urban format.",
+    "tags": ["music", "urban"],
+    "source": "Community seed",
+    "verifiedAt": "2026-03-23",
+    "curated": true
+  },
+  {
+    "id": "jp-tokyo-nhk-fm",
+    "name": "NHK FM Tokyo",
+    "freqMhz": 82.5,
+    "cityId": "jp-tokyo",
+    "description": "NHK public music network.",
+    "tags": ["public", "music"],
+    "source": "Community seed",
+    "verifiedAt": "2026-03-23",
+    "curated": true
+  },
+  {
+    "id": "jp-tokyo-interfm897",
+    "name": "InterFM897",
+    "freqMhz": 89.7,
+    "cityId": "jp-tokyo",
+    "description": "International music and pop culture programming.",
+    "tags": ["music", "international"],
+    "source": "Community seed",
+    "verifiedAt": "2026-03-23",
+    "curated": true
+  },
+  {
+    "id": "kr-seoul-kbs-cool-fm",
+    "name": "KBS Cool FM",
+    "freqMhz": 89.1,
+    "cityId": "kr-seoul",
+    "description": "KBS pop and entertainment station.",
+    "tags": ["public", "pop"],
+    "source": "Community seed",
+    "verifiedAt": "2026-03-23",
+    "curated": true
+  },
+  {
+    "id": "kr-seoul-mbc-fm4u",
+    "name": "MBC FM4U",
+    "freqMhz": 91.9,
+    "cityId": "kr-seoul",
+    "description": "MBC music and magazine programming.",
+    "tags": ["music", "entertainment"],
+    "source": "Community seed",
+    "verifiedAt": "2026-03-23",
+    "curated": true
+  },
+  {
+    "id": "kr-seoul-sbs-power-fm",
+    "name": "SBS Power FM",
+    "freqMhz": 107.7,
+    "cityId": "kr-seoul",
+    "description": "Pop, shows, and morning radio.",
+    "tags": ["pop", "talk"],
+    "source": "Community seed",
+    "verifiedAt": "2026-03-23",
+    "curated": true
+  }
+]

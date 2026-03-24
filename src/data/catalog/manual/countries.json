@@ -1,0 +1,20 @@
+[
+  {
+    "id": "japan",
+    "code": "JP",
+    "name": "Japan",
+    "regionId": "asia"
+  },
+  {
+    "id": "south-korea",
+    "code": "KR",
+    "name": "South Korea",
+    "regionId": "asia"
+  },
+  {
+    "id": "united-kingdom",
+    "code": "GB",
+    "name": "United Kingdom",
+    "regionId": "europe"
+  }
+]

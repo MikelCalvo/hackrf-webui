@@ -1,0 +1,95 @@
+{
+  "country": {
+    "id": "united-kingdom",
+    "code": "GB",
+    "name": "United Kingdom",
+    "regionId": "europe",
+    "cityCount": 1,
+    "stationCount": 4,
+    "sourceCount": 1,
+    "sources": [
+      {
+        "name": "Community seed",
+        "kind": "manual"
+      }
+    ],
+    "lastImportedAt": "2026-03-23",
+    "coverageStatus": "manual",
+    "coverageTier": "manual-seed",
+    "coverageScope": "city-seed",
+    "sourceQuality": "manual-curated",
+    "hasOfficialImporter": false,
+    "notesPath": "docs/fm/uk-source-notes.md",
+    "coverageNotes": "Only a tiny manual seed is shipped. Official Ofcom downloads remain Cloudflare-blocked from this environment.",
+    "coverageScore": 12
+  },
+  "cities": [
+    {
+      "id": "gb-london",
+      "name": "London",
+      "countryId": "united-kingdom",
+      "timezone": "Europe/London",
+      "latitude": 51.5072,
+      "longitude": -0.1276,
+      "stationCount": 4
+    }
+  ],
+  "stations": [
+    {
+      "id": "gb-london-bbc-radio-2",
+      "name": "BBC Radio 2",
+      "freqMhz": 89.1,
+      "cityId": "gb-london",
+      "description": "Adult pop and general-interest BBC programming.",
+      "tags": [
+        "public",
+        "music"
+      ],
+      "source": "Community seed",
+      "verifiedAt": "2026-03-23",
+      "curated": true
+    },
+    {
+      "id": "gb-london-bbc-radio-3",
+      "name": "BBC Radio 3",
+      "freqMhz": 90.2,
+      "cityId": "gb-london",
+      "description": "Classical, jazz, and cultural programming.",
+      "tags": [
+        "public",
+        "classical"
+      ],
+      "source": "Community seed",
+      "verifiedAt": "2026-03-23",
+      "curated": true
+    },
+    {
+      "id": "gb-london-bbc-radio-1",
+      "name": "BBC Radio 1",
+      "freqMhz": 98.8,
+      "cityId": "gb-london",
+      "description": "BBC pop and youth channel.",
+      "tags": [
+        "public",
+        "pop"
+      ],
+      "source": "Community seed",
+      "verifiedAt": "2026-03-23",
+      "curated": true
+    },
+    {
+      "id": "gb-london-classic-fm",
+      "name": "Classic FM",
+      "freqMhz": 100,
+      "cityId": "gb-london",
+      "description": "National commercial classical station.",
+      "tags": [
+        "commercial",
+        "classical"
+      ],
+      "source": "Community seed",
+      "verifiedAt": "2026-03-23",
+      "curated": true
+    }
+  ]
+}

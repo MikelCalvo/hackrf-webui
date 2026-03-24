@@ -1,18 +1,29 @@
 "use client";
 
+import Link from "next/link";
 import {
   startTransition,
   useDeferredValue,
   useEffect,
+  useEffectEvent,
   useMemo,
   useRef,
   useState,
+  type FormEvent,
 } from "react";
 
-import { buildCustomStation, compareText, sortStations } from "@/lib/catalog";
 import { PmrModule } from "@/components/pmr";
+import {
+  buildCustomStation,
+  compareText,
+  hydrateCountryShard,
+  sortStations,
+} from "@/lib/catalog";
 import type {
+  CatalogCountryShard,
+  CatalogCountrySummary,
   CatalogData,
+  CatalogManifest,
   CustomStationDraft,
   FmStation,
   HardwareStatus,
@@ -20,6 +31,8 @@ import type {
 
 const STORAGE_KEY = "hackrf-webui.custom-stations.v1";
 const LOCATION_KEY = "hackrf-webui.location.v1";
+const STATION_ROW_HEIGHT = 76;
+const STATION_LIST_OVERSCAN = 10;
 
 type SavedLocation = {
   cityId: string;
@@ -27,6 +40,14 @@ type SavedLocation = {
   countryId: string;
   countryName: string;
   regionId: string;
+};
+
+type LocationOption = { id: string; label: string; count: number };
+type CountryOption = LocationOption & { regionId: string };
+
+type LoadedCountryCatalog = {
+  catalog: CatalogData;
+  shard: CatalogCountryShard;
 };
 
 const DEFAULT_DRAFT: CustomStationDraft = {
@@ -37,18 +58,22 @@ const DEFAULT_DRAFT: CustomStationDraft = {
   description: "",
 };
 
-type LocationOption = { id: string; label: string; count: number };
-
 const MODULES = [
-  { id: "fm",      label: "FM",      band: "87.5–108", live: true  },
-  { id: "pmr",     label: "PMR",     band: "446 MHz",  live: true  },
-  { id: "ads-b",   label: "ADS-B",   band: "1090 MHz", live: false },
-  { id: "ais",     label: "AIS",     band: "162 MHz",  live: false },
-  { id: "airband", label: "Airband", band: "118–137",  live: false },
-];
+  { id: "fm", label: "FM", band: "87.5-108", live: true },
+  { id: "pmr", label: "PMR", band: "446 MHz", live: true },
+  { id: "ads-b", label: "ADS-B", band: "1090 MHz", live: false },
+  { id: "ais", label: "AIS", band: "162 MHz", live: false },
+  { id: "airband", label: "Airband", band: "118-137", live: false },
+] as const;
+
+const numberFormatter = new Intl.NumberFormat("en");
 
 function cx(...args: Array<string | false | null | undefined>): string {
   return args.filter(Boolean).join(" ");
+}
+
+function formatCount(value: number): string {
+  return numberFormatter.format(value);
 }
 
 function buildStreamUrl(
@@ -63,77 +88,252 @@ function buildStreamUrl(
     audioGain: String(controls.audioGain),
     t: String(Date.now()),
   });
+
   return `/api/stream?${params.toString()}`;
 }
 
 function downloadCustomStations(stations: FmStation[]): void {
-  const blob = new Blob([JSON.stringify(stations, null, 2)], { type: "application/json" });
+  const blob = new Blob([JSON.stringify(stations, null, 2)], {
+    type: "application/json",
+  });
   const url = URL.createObjectURL(blob);
-  const a = document.createElement("a");
-  a.href = url;
-  a.download = "hackrf-webui-custom-stations.json";
-  a.click();
+  const anchor = document.createElement("a");
+  anchor.href = url;
+  anchor.download = "hackrf-webui-custom-stations.json";
+  anchor.click();
   URL.revokeObjectURL(url);
 }
 
 function hwTone(state: HardwareStatus["state"] | "unknown") {
-  if (state === "connected")
-    return { badge: "border-emerald-400/30 bg-emerald-400/10 text-emerald-300", dot: "bg-emerald-400", pulse: true };
-  if (state === "disconnected")
-    return { badge: "border-amber-400/30 bg-amber-400/10 text-amber-300", dot: "bg-amber-400", pulse: false };
-  if (state !== "unknown")
-    return { badge: "border-rose-400/30 bg-rose-400/10 text-rose-300", dot: "bg-rose-400", pulse: false };
-  return { badge: "border-white/10 bg-white/[0.04] text-[var(--muted-strong)]", dot: "bg-slate-500", pulse: false };
+  if (state === "connected") {
+    return {
+      badge: "border-emerald-400/30 bg-emerald-400/10 text-emerald-300",
+      dot: "bg-emerald-400",
+      pulse: true,
+    };
+  }
+
+  if (state === "disconnected") {
+    return {
+      badge: "border-amber-400/30 bg-amber-400/10 text-amber-300",
+      dot: "bg-amber-400",
+      pulse: false,
+    };
+  }
+
+  if (state !== "unknown") {
+    return {
+      badge: "border-rose-400/30 bg-rose-400/10 text-rose-300",
+      dot: "bg-rose-400",
+      pulse: false,
+    };
+  }
+
+  return {
+    badge: "border-white/10 bg-white/[0.04] text-[var(--muted-strong)]",
+    dot: "bg-slate-500",
+    pulse: false,
+  };
 }
 
-function buildLocationOptions(
-  stations: FmStation[],
-  keyOf: (s: FmStation) => string,
-  labelOf: (s: FmStation) => string,
-): LocationOption[] {
-  const map = new Map<string, LocationOption>();
-  for (const s of stations) {
-    const id = keyOf(s);
-    const cur = map.get(id);
-    if (cur) { cur.count++; continue; }
-    map.set(id, { id, label: labelOf(s), count: 1 });
+function mergeLocationOption(
+  map: Map<string, LocationOption>,
+  option: LocationOption,
+): void {
+  const existing = map.get(option.id);
+  if (existing) {
+    existing.count += option.count;
+    return;
   }
-  return [...map.values()].sort((a, b) => compareText(a.label, b.label));
+
+  map.set(option.id, { ...option });
+}
+
+function buildRegionOptions(
+  manifest: CatalogManifest,
+  customStations: FmStation[],
+): LocationOption[] {
+  const regionsById = new Map(manifest.regions.map((region) => [region.id, region]));
+  const options = new Map<string, LocationOption>();
+
+  for (const country of manifest.countries) {
+    const region = regionsById.get(country.regionId);
+    if (!region) {
+      continue;
+    }
+
+    mergeLocationOption(options, {
+      id: region.id,
+      label: region.name,
+      count: country.stationCount,
+    });
+  }
+
+  for (const station of customStations) {
+    mergeLocationOption(options, {
+      id: station.location.regionId,
+      label: station.location.regionName,
+      count: 1,
+    });
+  }
+
+  return [...options.values()].sort((left, right) => compareText(left.label, right.label));
+}
+
+function buildCountryOptions(
+  manifest: CatalogManifest,
+  activeRegion: string,
+  customStations: FmStation[],
+): CountryOption[] {
+  const options = new Map<string, CountryOption>();
+
+  for (const country of manifest.countries) {
+    if (activeRegion !== "all" && country.regionId !== activeRegion) {
+      continue;
+    }
+
+    options.set(country.id, {
+      id: country.id,
+      label: country.name,
+      count: country.stationCount,
+      regionId: country.regionId,
+    });
+  }
+
+  for (const station of customStations) {
+    if (activeRegion !== "all" && station.location.regionId !== activeRegion) {
+      continue;
+    }
+
+    const existing = options.get(station.location.countryId);
+    if (existing) {
+      existing.count += 1;
+      continue;
+    }
+
+    options.set(station.location.countryId, {
+      id: station.location.countryId,
+      label: station.location.countryName,
+      count: 1,
+      regionId: station.location.regionId,
+    });
+  }
+
+  return [...options.values()].sort((left, right) => compareText(left.label, right.label));
+}
+
+function buildCityOptions(
+  shard: CatalogCountryShard | null,
+  activeCountry: string,
+  customStations: FmStation[],
+): LocationOption[] {
+  const options = new Map<string, LocationOption>();
+
+  if (shard) {
+    for (const city of shard.cities) {
+      options.set(city.id, {
+        id: city.id,
+        label: city.name,
+        count: city.stationCount,
+      });
+    }
+  }
+
+  if (activeCountry === "all") {
+    return [...options.values()].sort((left, right) => compareText(left.label, right.label));
+  }
+
+  for (const station of customStations) {
+    if (station.location.countryId !== activeCountry) {
+      continue;
+    }
+
+    mergeLocationOption(options, {
+      id: station.location.cityId,
+      label: station.location.cityName,
+      count: 1,
+    });
+  }
+
+  return [...options.values()].sort((left, right) => compareText(left.label, right.label));
+}
+
+function matchesStationSearch(station: FmStation, query: string): boolean {
+  if (!query) {
+    return true;
+  }
+
+  return [
+    station.name,
+    station.location.cityName,
+    station.location.countryName,
+    station.location.regionName,
+    station.description,
+    ...station.tags,
+  ]
+    .join(" ")
+    .toLowerCase()
+    .includes(query);
 }
 
 async function fetchHardwareStatus(): Promise<HardwareStatus> {
   const res = await fetch("/api/hardware", { cache: "no-store" });
-  if (!res.ok) throw new Error(`HTTP ${res.status}`);
-  return (await res.json()) as HardwareStatus;
-}
+  if (!res.ok) {
+    throw new Error(`HTTP ${res.status}`);
+  }
 
-function readSavedLocation(): SavedLocation | null {
-  if (typeof window === "undefined") return null;
-  const raw = window.localStorage.getItem(LOCATION_KEY);
-  if (!raw || raw === "skipped") return null;
-  try { return JSON.parse(raw) as SavedLocation; } catch { return null; }
+  return (await res.json()) as HardwareStatus;
 }
 
 function SpeakerIcon({ volume }: { volume: number }) {
   if (volume === 0) {
     return (
-      <svg fill="none" height="14" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" viewBox="0 0 24 24" width="14">
+      <svg
+        fill="none"
+        height="14"
+        stroke="currentColor"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth="2"
+        viewBox="0 0 24 24"
+        width="14"
+      >
         <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" />
         <line x1="23" x2="17" y1="9" y2="15" />
         <line x1="17" x2="23" y1="9" y2="15" />
       </svg>
     );
   }
+
   if (volume < 0.5) {
     return (
-      <svg fill="none" height="14" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" viewBox="0 0 24 24" width="14">
+      <svg
+        fill="none"
+        height="14"
+        stroke="currentColor"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth="2"
+        viewBox="0 0 24 24"
+        width="14"
+      >
         <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" />
         <path d="M15.54 8.46a5 5 0 0 1 0 7.07" />
       </svg>
     );
   }
+
   return (
-    <svg fill="none" height="14" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" viewBox="0 0 24 24" width="14">
+    <svg
+      fill="none"
+      height="14"
+      stroke="currentColor"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      strokeWidth="2"
+      viewBox="0 0 24 24"
+      width="14"
+    >
       <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" />
       <path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07" />
     </svg>
@@ -145,7 +345,7 @@ function VolumeControl({
   onChange,
 }: {
   volume: number;
-  onChange: (v: number) => void;
+  onChange: (value: number) => void;
 }) {
   const [open, setOpen] = useState(false);
 
@@ -158,13 +358,12 @@ function VolumeControl({
       <button
         className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full border border-white/8 text-[var(--muted)] transition hover:border-white/16 hover:text-[var(--foreground)]"
         onClick={() => onChange(volume === 0 ? 1 : 0)}
-        type="button"
         title={volume === 0 ? "Unmute" : "Mute"}
+        type="button"
       >
         <SpeakerIcon volume={volume} />
       </button>
 
-      {/* Slide-out bar — 20px tall so overflow:hidden doesn't clip the 14px thumb */}
       <div
         style={{
           width: open ? "5rem" : 0,
@@ -180,13 +379,13 @@ function VolumeControl({
       >
         <input
           className="rf-slider"
-          style={{ width: "5rem", flexShrink: 0 }}
           max={1}
           min={0}
           step={0.02}
+          style={{ width: "5rem", flexShrink: 0 }}
           type="range"
           value={volume}
-          onChange={e => onChange(Number.parseFloat(e.target.value))}
+          onChange={(event) => onChange(Number.parseFloat(event.target.value))}
         />
       </div>
     </div>
@@ -194,187 +393,454 @@ function VolumeControl({
 }
 
 function WelcomeModal({
-  stations,
+  manifest,
   onSelect,
+  onLoadCountry,
   onSkip,
 }: {
-  stations: FmStation[];
-  onSelect: (loc: SavedLocation) => void;
+  manifest: CatalogManifest;
+  onSelect: (location: SavedLocation) => void;
+  onLoadCountry: (countryId: string) => Promise<CatalogCountryShard | null>;
   onSkip: () => void;
 }) {
   const [search, setSearch] = useState("");
+  const [selectedCountry, setSelectedCountry] = useState<CatalogCountrySummary | null>(null);
+  const [cityOptions, setCityOptions] = useState<LocationOption[]>([]);
+  const [isLoadingCities, setIsLoadingCities] = useState(false);
+  const [loadError, setLoadError] = useState("");
 
-  const cityList = useMemo(() => {
-    const map = new Map<string, SavedLocation & { count: number }>();
-    for (const s of stations) {
-      const key = s.location.cityId;
-      if (!map.has(key)) {
-        map.set(key, {
-          cityId: s.location.cityId,
-          cityName: s.location.cityName,
-          countryId: s.location.countryId,
-          countryName: s.location.countryName,
-          regionId: s.location.regionId,
-          count: 1,
-        });
-      } else {
-        map.get(key)!.count++;
-      }
+  const regionsById = useMemo(
+    () => new Map(manifest.regions.map((region) => [region.id, region.name])),
+    [manifest.regions],
+  );
+
+  const countryResults = useMemo(() => {
+    const query = search.trim().toLowerCase();
+    const candidates = manifest.countries.map((country) => ({
+      ...country,
+      regionName: regionsById.get(country.regionId) ?? "Other",
+    }));
+
+    if (!query) {
+      return candidates;
     }
-    return [...map.values()].sort((a, b) => compareText(a.cityName, b.cityName));
-  }, [stations]);
 
-  const q = search.trim().toLowerCase();
-  const results = q
-    ? cityList.filter(
-        c =>
-          c.cityName.toLowerCase().includes(q) ||
-          c.countryName.toLowerCase().includes(q),
-      )
-    : cityList;
+    return candidates.filter((country) => {
+      return (
+        country.name.toLowerCase().includes(query) ||
+        country.code.toLowerCase().includes(query) ||
+        country.regionName.toLowerCase().includes(query)
+      );
+    });
+  }, [manifest.countries, regionsById, search]);
 
-  const INPUT_MODAL =
+  const cityResults = useMemo(() => {
+    const query = search.trim().toLowerCase();
+    if (!query) {
+      return cityOptions;
+    }
+
+    return cityOptions.filter((city) => city.label.toLowerCase().includes(query));
+  }, [cityOptions, search]);
+
+  const inputClass =
     "w-full rounded-lg border border-white/10 bg-white/[0.05] px-3 py-2.5 text-sm text-[var(--foreground)] outline-none transition placeholder:text-[var(--muted)] focus:border-[var(--accent)]/50 focus:bg-white/[0.07]";
+
+  async function handleCountrySelect(country: CatalogCountrySummary): Promise<void> {
+    setSelectedCountry(country);
+    setIsLoadingCities(true);
+    setLoadError("");
+
+    try {
+      const shard = await onLoadCountry(country.id);
+      if (!shard) {
+        throw new Error(`Could not load cities for ${country.name}.`);
+      }
+
+      const cities = shard.cities
+        .map((city) => ({
+          id: city.id,
+          label: city.name,
+          count: city.stationCount,
+        }))
+        .sort((left, right) => compareText(left.label, right.label));
+
+      setCityOptions(cities);
+      setSearch("");
+    } catch (error) {
+      setLoadError(
+        error instanceof Error
+          ? error.message
+          : `Could not load cities for ${country.name}.`,
+      );
+    } finally {
+      setIsLoadingCities(false);
+    }
+  }
+
+  function goBackToCountries(): void {
+    setSelectedCountry(null);
+    setCityOptions([]);
+    setLoadError("");
+    setSearch("");
+  }
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/75 backdrop-blur-sm">
       <div
-        className="w-[22rem] rounded-2xl border border-white/10 bg-[#080f1c] p-6 shadow-[0_32px_80px_rgba(0,0,0,0.6)]"
-        style={{ boxShadow: "0 32px 80px rgba(0,0,0,0.6), 0 0 0 1px rgba(87,215,255,0.06)" }}
+        className="w-[24rem] rounded-2xl border border-white/10 bg-[#080f1c] p-6 shadow-[0_32px_80px_rgba(0,0,0,0.6)]"
+        style={{
+          boxShadow: "0 32px 80px rgba(0,0,0,0.6), 0 0 0 1px rgba(87,215,255,0.06)",
+        }}
       >
         <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-[var(--accent)]">
           HackRF WebUI
         </p>
         <h2 className="mt-2 text-xl font-semibold text-[var(--foreground)]">
-          Where are you tuning from?
+          {selectedCountry ? `Choose a city in ${selectedCountry.name}` : "Choose a country to start"}
         </h2>
         <p className="mt-1.5 text-sm leading-5 text-[var(--muted)]">
-          Pick your city and we&apos;ll filter local stations automatically.
+          {selectedCountry
+            ? "The dialog is now city-first inside the selected country so the initial filter is much tighter."
+            : "The UI keeps the catalog fast by loading one country at a time. After that, you can pick a city inside that country."}
         </p>
 
         <input
           autoFocus
-          className={INPUT_MODAL + " mt-4"}
-          placeholder="City or country…"
+          className={cx(inputClass, "mt-4")}
+          placeholder={selectedCountry ? "Search city..." : "Country, code, or region..."}
           value={search}
-          onChange={e => setSearch(e.target.value)}
+          onChange={(event) => setSearch(event.target.value)}
         />
 
-        <div className="mt-2 max-h-52 overflow-y-auto rounded-xl border border-white/8 bg-white/[0.02]">
-          {results.length === 0 ? (
-            <p className="px-4 py-3 text-sm text-[var(--muted)]">No results.</p>
-          ) : (
-            results.map(city => (
+        <div className="mt-3 max-h-64 overflow-y-auto rounded-xl border border-white/8 bg-white/[0.02]">
+          {loadError ? (
+            <div className="space-y-3 px-4 py-4">
+              <p className="text-sm text-rose-200">{loadError}</p>
               <button
-                key={city.cityId}
-                className="flex w-full items-center justify-between border-b border-white/[0.04] px-4 py-2.5 text-left last:border-0 transition hover:bg-white/[0.04]"
-                onClick={() => onSelect(city)}
+                className={cx(CLS_BTN_GHOST, "w-full justify-center")}
+                onClick={goBackToCountries}
                 type="button"
               >
-                <span className="text-sm font-medium text-[var(--foreground)]">{city.cityName}</span>
-                <span className="font-mono text-[10px] text-[var(--muted)]">
-                  {city.countryName} · {city.count}
-                </span>
+                Back
               </button>
-            ))
+            </div>
+          ) : isLoadingCities ? (
+            <div className="flex flex-col items-center gap-3 px-4 py-8 text-center">
+              <Spinner />
+              <p className="text-sm text-[var(--muted)]">
+                Loading cities for {selectedCountry?.name}...
+              </p>
+            </div>
+          ) : selectedCountry ? (
+            cityResults.length === 0 ? (
+              <p className="px-4 py-3 text-sm text-[var(--muted)]">No cities match your search.</p>
+            ) : (
+              <>
+                <button
+                  className="flex w-full items-center justify-between border-b border-white/[0.04] px-4 py-3 text-left transition hover:bg-white/[0.04]"
+                  onClick={() =>
+                    onSelect({
+                      regionId: selectedCountry.regionId,
+                      countryId: selectedCountry.id,
+                      countryName: selectedCountry.name,
+                      cityId: "all",
+                      cityName: "All cities",
+                    })
+                  }
+                  type="button"
+                >
+                  <div className="min-w-0">
+                    <p className="truncate text-sm font-medium text-[var(--foreground)]">
+                      All cities
+                    </p>
+                    <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-[var(--muted)]">
+                      {selectedCountry.name}
+                    </p>
+                  </div>
+                  <p className="font-mono text-[10px] text-[var(--muted)]">
+                    {formatCount(selectedCountry.stationCount)} presets
+                  </p>
+                </button>
+                {cityResults.map((city) => (
+                  <button
+                    key={city.id}
+                    className="flex w-full items-center justify-between border-b border-white/[0.04] px-4 py-3 text-left transition hover:bg-white/[0.04] last:border-0"
+                    onClick={() =>
+                      onSelect({
+                        regionId: selectedCountry.regionId,
+                        countryId: selectedCountry.id,
+                        countryName: selectedCountry.name,
+                        cityId: city.id,
+                        cityName: city.label,
+                      })
+                    }
+                    type="button"
+                  >
+                    <span className="truncate text-sm font-medium text-[var(--foreground)]">
+                      {city.label}
+                    </span>
+                    <span className="font-mono text-[10px] text-[var(--muted)]">
+                      {formatCount(city.count)}
+                    </span>
+                  </button>
+                ))}
+              </>
+            )
+          ) : (
+            countryResults.length === 0 ? (
+              <p className="px-4 py-3 text-sm text-[var(--muted)]">No countries match your search.</p>
+            ) : (
+              countryResults.map((country) => (
+              <button
+                key={country.id}
+                className="flex w-full items-center justify-between border-b border-white/[0.04] px-4 py-3 text-left transition hover:bg-white/[0.04] last:border-0"
+                onClick={() => void handleCountrySelect(country)}
+                type="button"
+              >
+                <div className="min-w-0">
+                  <p className="truncate text-sm font-medium text-[var(--foreground)]">
+                    {country.name}
+                  </p>
+                  <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-[var(--muted)]">
+                    {country.code} · {country.regionName}
+                  </p>
+                </div>
+                <div className="text-right">
+                  <p className="font-mono text-[10px] text-[var(--foreground)]">
+                    {formatCount(country.stationCount)} presets
+                  </p>
+                  <p className="font-mono text-[10px] text-[var(--muted)]">
+                    {formatCount(country.cityCount)} cities
+                  </p>
+                </div>
+              </button>
+              ))
+            )
           )}
         </div>
 
-        <button
-          className="mt-4 w-full rounded-full border border-white/8 py-2 font-mono text-[11px] uppercase tracking-[0.2em] text-[var(--muted)] transition hover:border-white/14 hover:text-[var(--muted-strong)]"
-          onClick={onSkip}
-          type="button"
-        >
-          Skip — show everything
-        </button>
+        <div className="mt-5 border-t border-white/[0.06] pt-4">
+          <div
+            className={cx(
+              "grid gap-3",
+              selectedCountry ? "grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)]" : "grid-cols-1",
+            )}
+          >
+          {selectedCountry ? (
+            <button
+              className={cx(CLS_BTN_TILE, "border-white/10 bg-white/[0.04] text-[var(--muted-strong)] hover:border-white/18 hover:bg-white/[0.07]")}
+              onClick={goBackToCountries}
+              type="button"
+            >
+              <span className="font-mono text-[10px] uppercase tracking-[0.18em] text-[var(--muted)]">
+                Step Back
+              </span>
+              <span className="mt-1 text-sm font-semibold text-[var(--foreground)]">
+                Back to countries
+              </span>
+            </button>
+          ) : null}
+          <button
+            className={cx(
+              CLS_BTN_TILE,
+              "border-[var(--accent)]/18 bg-[linear-gradient(135deg,rgba(87,215,255,0.1),rgba(87,215,255,0.03))] text-[var(--muted-strong)] hover:border-[var(--accent)]/38 hover:bg-[linear-gradient(135deg,rgba(87,215,255,0.16),rgba(87,215,255,0.05))]",
+              selectedCountry ? "" : "w-full",
+            )}
+            onClick={onSkip}
+            type="button"
+          >
+            <span className="font-mono text-[10px] uppercase tracking-[0.18em] text-[var(--accent)]">
+              Skip Catalog
+            </span>
+            <span className="mt-1 text-sm font-semibold text-[var(--foreground)]">
+              Use only custom presets
+            </span>
+            <span className="mt-1 text-xs text-[var(--muted)]">
+              You can load a country later from the dashboard filters.
+            </span>
+          </button>
+        </div>
+        </div>
       </div>
     </div>
   );
 }
 
 const CLS_INPUT =
-  "w-full rounded-lg border border-white/10 bg-white/[0.04] px-3 py-2 text-sm text-[var(--foreground)] outline-none transition placeholder:text-[var(--muted)] focus:border-[var(--accent)]/50 focus:bg-white/[0.06]";
+  "w-full rounded-lg border border-white/10 bg-white/[0.04] px-3 py-2 text-sm text-[var(--foreground)] outline-none transition placeholder:text-[var(--muted)] focus:border-[var(--accent)]/50 focus:bg-white/[0.06] disabled:cursor-not-allowed disabled:opacity-50";
 const CLS_BTN_PRIMARY =
   "inline-flex items-center justify-center gap-2 rounded-full border border-[var(--accent)]/40 bg-[var(--accent)]/12 px-4 py-2 text-sm font-semibold transition hover:border-[var(--accent)]/70 hover:bg-[var(--accent)]/20 disabled:cursor-not-allowed disabled:opacity-40";
 const CLS_BTN_GHOST =
   "inline-flex items-center justify-center rounded-full border border-white/10 bg-white/[0.04] px-4 py-2 text-sm font-semibold text-[var(--muted-strong)] transition hover:border-white/18 hover:bg-white/[0.07]";
+const CLS_BTN_TILE =
+  "inline-flex min-h-[4.25rem] flex-col items-start justify-center rounded-2xl px-4 py-3 text-left transition";
 
 function Spinner() {
   return (
-    <svg className="h-3.5 w-3.5 animate-spin" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-      <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="3" strokeOpacity="0.25" />
+    <svg
+      aria-hidden="true"
+      className="h-3.5 w-3.5 animate-spin"
+      fill="none"
+      viewBox="0 0 24 24"
+    >
+      <circle
+        cx="12"
+        cy="12"
+        r="10"
+        stroke="currentColor"
+        strokeOpacity="0.25"
+        strokeWidth="3"
+      />
       <path fill="currentColor" d="M12 2a10 10 0 0 1 10 10h-3a7 7 0 0 0-7-7V2z" />
     </svg>
   );
 }
 
-export function Dashboard({ catalog }: { catalog: CatalogData }) {
+export function Dashboard({ manifest }: { manifest: CatalogManifest }) {
   const audioRef = useRef<HTMLAudioElement>(null);
+  const listRef = useRef<HTMLDivElement>(null);
+  const cacheRef = useRef<Record<string, LoadedCountryCatalog>>({});
+  const pendingLoadsRef = useRef<Map<string, Promise<LoadedCountryCatalog | null>>>(
+    new Map(),
+  );
 
   const [customStations, setCustomStations] = useState<FmStation[]>(() => {
-    if (typeof window === "undefined") return [];
+    if (typeof window === "undefined") {
+      return [];
+    }
+
     const raw = window.localStorage.getItem(STORAGE_KEY);
-    if (!raw) return [];
+    if (!raw) {
+      return [];
+    }
+
     try {
       const parsed = JSON.parse(raw) as FmStation[];
       return Array.isArray(parsed) ? sortStations(parsed) : [];
-    } catch { return []; }
+    } catch {
+      return [];
+    }
   });
+  const [loadedCountries, setLoadedCountries] = useState<Record<string, LoadedCountryCatalog>>(
+    {},
+  );
   const [activeModule, setActiveModule] = useState<"fm" | "pmr">("fm");
-
   const [showWelcome, setShowWelcome] = useState(false);
   const [savedLocation, setSavedLocation] = useState<SavedLocation | null>(null);
-
   const [query, setQuery] = useState("");
-  const deferred = useDeferredValue(query.trim().toLowerCase());
+  const deferredQuery = useDeferredValue(query.trim().toLowerCase());
   const [regionFilter, setRegionFilter] = useState("all");
   const [countryFilter, setCountryFilter] = useState("all");
   const [cityFilter, setCityFilter] = useState("all");
-  const [selectedId, setSelectedId] = useState<string>(catalog.stations[0]?.id || "");
+  const [selectedId, setSelectedId] = useState("");
   const [playingId, setPlayingId] = useState<string | null>(null);
+  const [pendingScrollId, setPendingScrollId] = useState<string | null>(null);
   const [hardware, setHardware] = useState<HardwareStatus | null>(null);
   const [hardwareError, setHardwareError] = useState("");
+  const [catalogError, setCatalogError] = useState("");
   const [streamError, setStreamError] = useState("");
   const [draft, setDraft] = useState<CustomStationDraft>(DEFAULT_DRAFT);
   const [showAdd, setShowAdd] = useState(false);
   const [controls, setControls] = useState({ lna: 24, vga: 20, audioGain: 1.0 });
   const [volume, setVolume] = useState(1);
   const [streamStarting, setStreamStarting] = useState(false);
+  const [loadingCountryId, setLoadingCountryId] = useState<string | null>(null);
+  const [listHeight, setListHeight] = useState(0);
+  const [scrollTop, setScrollTop] = useState(0);
 
-  // Restore location filter from localStorage after mount (avoids SSR/client hydration mismatch)
+  const countriesById = useMemo(
+    () => new Map(manifest.countries.map((country) => [country.id, country])),
+    [manifest.countries],
+  );
+
+  const lookupCatalog = useMemo(
+    () => ({ regions: manifest.regions, countries: manifest.countries }),
+    [manifest.countries, manifest.regions],
+  );
+
+  function persistLocation(location: SavedLocation | null): void {
+    if (location) {
+      window.localStorage.setItem(LOCATION_KEY, JSON.stringify(location));
+      setSavedLocation(location);
+      return;
+    }
+
+    window.localStorage.setItem(LOCATION_KEY, "skipped");
+    setSavedLocation(null);
+  }
+
   useEffect(() => {
     const raw = window.localStorage.getItem(LOCATION_KEY);
-    if (!raw) { setShowWelcome(true); return; }
-    if (raw === "skipped") return;
+    if (!raw) {
+      setShowWelcome(true);
+      return;
+    }
+
+    if (raw === "skipped") {
+      return;
+    }
+
     try {
-      const loc = JSON.parse(raw) as SavedLocation;
-      setSavedLocation(loc);
-      setRegionFilter(loc.regionId);
-      setCountryFilter(loc.countryId);
-      setCityFilter(loc.cityId);
-    } catch { /* corrupt data — ignore */ }
-  }, []);
+      const parsed = JSON.parse(raw) as Partial<SavedLocation>;
+      if (!parsed.countryId) {
+        setShowWelcome(true);
+        return;
+      }
+
+      const country = countriesById.get(parsed.countryId);
+      if (!country) {
+        setShowWelcome(true);
+        return;
+      }
+
+      const location: SavedLocation = {
+        regionId: country.regionId,
+        countryId: country.id,
+        countryName: country.name,
+        cityId: typeof parsed.cityId === "string" ? parsed.cityId : "all",
+        cityName:
+          typeof parsed.cityName === "string" && parsed.cityName.trim().length > 0
+            ? parsed.cityName
+            : "All cities",
+      };
+
+      setSavedLocation(location);
+      setRegionFilter(country.regionId);
+      setCountryFilter(country.id);
+      setCityFilter(location.cityId);
+    } catch {
+      setShowWelcome(true);
+    }
+  }, [countriesById]);
 
   useEffect(() => {
     window.localStorage.setItem(STORAGE_KEY, JSON.stringify(customStations));
   }, [customStations]);
 
   useEffect(() => {
-    if (audioRef.current) audioRef.current.volume = volume;
+    if (audioRef.current) {
+      audioRef.current.volume = volume;
+    }
   }, [volume]);
 
   async function refreshHardware(): Promise<void> {
     try {
       setHardware(await fetchHardwareStatus());
       setHardwareError("");
-    } catch (err) {
-      setHardwareError(err instanceof Error ? err.message : "Could not read HackRF status.");
+    } catch (error) {
+      setHardwareError(
+        error instanceof Error ? error.message : "Could not read HackRF status.",
+      );
     }
   }
 
   function stopListening(): void {
     const audio = audioRef.current;
-    if (!audio) return;
+    if (!audio) {
+      return;
+    }
+
     audio.pause();
     audio.removeAttribute("src");
     audio.load();
@@ -385,132 +851,363 @@ export function Dashboard({ catalog }: { catalog: CatalogData }) {
   function resetFilters(): void {
     startTransition(() => {
       setQuery("");
-      setRegionFilter("all");
-      setCountryFilter("all");
       setCityFilter("all");
+      if (countryFilter === "all") {
+        setRegionFilter("all");
+      }
     });
   }
+
+  async function loadCountryCatalog(countryId: string): Promise<LoadedCountryCatalog | null> {
+    if (cacheRef.current[countryId]) {
+      return cacheRef.current[countryId];
+    }
+
+    const pending = pendingLoadsRef.current.get(countryId);
+    if (pending) {
+      return pending;
+    }
+
+    const task = (async () => {
+      setLoadingCountryId(countryId);
+      setCatalogError("");
+
+      try {
+        const response = await fetch(`/catalog/countries/${countryId}.json`, {
+          cache: "force-cache",
+        });
+        if (!response.ok) {
+          throw new Error(`Failed to load ${countryId} catalog shard (${response.status}).`);
+        }
+
+        const shard = (await response.json()) as CatalogCountryShard;
+        const loaded = {
+          catalog: hydrateCountryShard(manifest, shard),
+          shard,
+        };
+
+        cacheRef.current[countryId] = loaded;
+        setLoadedCountries((current) => ({ ...current, [countryId]: loaded }));
+        return loaded;
+      } catch (error) {
+        setCatalogError(
+          error instanceof Error
+            ? error.message
+            : "Could not load the selected country catalog.",
+        );
+        return null;
+      } finally {
+        pendingLoadsRef.current.delete(countryId);
+        setLoadingCountryId((current) => (current === countryId ? null : current));
+      }
+    })();
+
+    pendingLoadsRef.current.set(countryId, task);
+    return task;
+  }
+
+  const ensureCountryLoaded = useEffectEvent(
+    async (countryId: string): Promise<LoadedCountryCatalog | null> =>
+      loadCountryCatalog(countryId),
+  );
+
+  useEffect(() => {
+    if (countryFilter === "all") {
+      return;
+    }
+
+    void ensureCountryLoaded(countryFilter);
+  }, [countryFilter]);
+
+  useEffect(() => {
+    let dead = false;
+    const audio = audioRef.current;
+
+    const poll = async () => {
+      try {
+        const data = await fetchHardwareStatus();
+        if (!dead) {
+          setHardware(data);
+          setHardwareError("");
+        }
+      } catch (error) {
+        if (!dead) {
+          setHardwareError(
+            error instanceof Error ? error.message : "Could not read HackRF status.",
+          );
+        }
+      }
+    };
+
+    void poll();
+    const timer = window.setInterval(() => void poll(), 4_000);
+
+    return () => {
+      dead = true;
+      clearInterval(timer);
+      if (audio) {
+        audio.pause();
+        audio.removeAttribute("src");
+        audio.load();
+      }
+    };
+  }, []);
+
+  useEffect(() => {
+    const listNode = listRef.current;
+    if (!listNode) {
+      return;
+    }
+
+    const syncMetrics = () => {
+      setScrollTop(listNode.scrollTop);
+      setListHeight(listNode.clientHeight);
+    };
+
+    syncMetrics();
+    listNode.addEventListener("scroll", syncMetrics, { passive: true });
+
+    const resizeObserver =
+      typeof ResizeObserver !== "undefined"
+        ? new ResizeObserver(() => syncMetrics())
+        : null;
+    resizeObserver?.observe(listNode);
+    window.addEventListener("resize", syncMetrics);
+
+    return () => {
+      listNode.removeEventListener("scroll", syncMetrics);
+      resizeObserver?.disconnect();
+      window.removeEventListener("resize", syncMetrics);
+    };
+  }, []);
+
+  const regionOptions = useMemo(
+    () => buildRegionOptions(manifest, customStations),
+    [customStations, manifest],
+  );
+  const activeRegion =
+    regionFilter === "all" || regionOptions.some((region) => region.id === regionFilter)
+      ? regionFilter
+      : "all";
+
+  const countryOptions = useMemo(
+    () => buildCountryOptions(manifest, activeRegion, customStations),
+    [activeRegion, customStations, manifest],
+  );
+  const activeCountry =
+    countryFilter === "all" || countryOptions.some((country) => country.id === countryFilter)
+      ? countryFilter
+      : "all";
+
+  const activeCountrySummary =
+    activeCountry === "all" ? null : countriesById.get(activeCountry) ?? null;
+  const activeCountryData =
+    activeCountry === "all" ? null : loadedCountries[activeCountry] ?? null;
+  const cityOptions = useMemo(
+    () => buildCityOptions(activeCountryData?.shard ?? null, activeCountry, customStations),
+    [activeCountry, activeCountryData, customStations],
+  );
+  const activeCity =
+    cityFilter === "all" || cityOptions.some((city) => city.id === cityFilter)
+      ? cityFilter
+      : "all";
+
+  const allStations = useMemo(() => {
+    const scopedCustomStations =
+      activeCountry === "all"
+        ? customStations
+        : customStations.filter((station) => station.location.countryId === activeCountry);
+    const loadedStations = activeCountryData?.catalog.stations ?? [];
+
+    return sortStations([...scopedCustomStations, ...loadedStations]);
+  }, [activeCountry, activeCountryData, customStations]);
+
+  const knownStations = useMemo(() => {
+    return [
+      ...customStations,
+      ...Object.values(loadedCountries).flatMap((country) => country.catalog.stations),
+    ];
+  }, [customStations, loadedCountries]);
+
+  const visible = useMemo(() => {
+    return allStations.filter((station) => {
+      if (activeRegion !== "all" && station.location.regionId !== activeRegion) {
+        return false;
+      }
+      if (activeCountry !== "all" && station.location.countryId !== activeCountry) {
+        return false;
+      }
+      if (activeCity !== "all" && station.location.cityId !== activeCity) {
+        return false;
+      }
+
+      return matchesStationSearch(station, deferredQuery);
+    });
+  }, [activeCity, activeCountry, activeRegion, allStations, deferredQuery]);
+
+  const selected =
+    visible.find((station) => station.id === selectedId) ||
+    visible[0] ||
+    allStations.find((station) => station.id === selectedId) ||
+    allStations[0] ||
+    null;
+
+  useEffect(() => {
+    if (selectedId && allStations.some((station) => station.id === selectedId)) {
+      return;
+    }
+
+    const fallback = visible[0] ?? allStations[0] ?? null;
+    if (fallback) {
+      setSelectedId(fallback.id);
+      return;
+    }
+
+    if (selectedId) {
+      setSelectedId("");
+    }
+  }, [allStations, selectedId, visible]);
+
+  useEffect(() => {
+    if (pendingScrollId) {
+      return;
+    }
+
+    const listNode = listRef.current;
+    if (!listNode) {
+      return;
+    }
+
+    listNode.scrollTo({ top: 0, behavior: "auto" });
+    setScrollTop(0);
+  }, [activeCity, activeCountry, activeRegion, deferredQuery, pendingScrollId]);
+
+  useEffect(() => {
+    if (!pendingScrollId) {
+      return;
+    }
+
+    const index = visible.findIndex((station) => station.id === pendingScrollId);
+    if (index < 0) {
+      return;
+    }
+
+    const listNode = listRef.current;
+    if (listNode) {
+      listNode.scrollTo({
+        top: index * STATION_ROW_HEIGHT,
+        behavior: "smooth",
+      });
+    }
+
+    setSelectedId(pendingScrollId);
+    setPendingScrollId(null);
+  }, [pendingScrollId, visible]);
+
+  const windowedRange = useMemo(() => {
+    if (visible.length === 0) {
+      return { start: 0, end: 0 };
+    }
+
+    const viewportHeight = listHeight || 640;
+    const start = Math.max(
+      0,
+      Math.floor(scrollTop / STATION_ROW_HEIGHT) - STATION_LIST_OVERSCAN,
+    );
+    const end = Math.min(
+      visible.length,
+      Math.ceil((scrollTop + viewportHeight) / STATION_ROW_HEIGHT) + STATION_LIST_OVERSCAN,
+    );
+
+    return { start, end };
+  }, [listHeight, scrollTop, visible.length]);
+
+  const windowedStations = visible.slice(windowedRange.start, windowedRange.end);
+  const topSpacerHeight = windowedRange.start * STATION_ROW_HEIGHT;
+  const bottomSpacerHeight =
+    (visible.length - windowedRange.end) * STATION_ROW_HEIGHT;
 
   function focusPlayingStation(): void {
-    if (!playingId) return;
-    const alreadyVisible = visible.some(s => s.id === playingId);
+    if (!playingId) {
+      return;
+    }
+
+    const station = knownStations.find((candidate) => candidate.id === playingId);
+    if (!station) {
+      return;
+    }
+
     startTransition(() => {
-      // Only clear filters if the playing station is hidden by them
-      if (!alreadyVisible) {
-        setQuery("");
-        setRegionFilter("all");
-        setCountryFilter("all");
-        setCityFilter("all");
-      }
-      setSelectedId(playingId);
+      setQuery("");
+      setRegionFilter(station.location.regionId);
+      setCountryFilter(station.location.countryId);
+      setCityFilter(station.location.cityId);
+      setSelectedId(station.id);
     });
-    // Double RAF: first frame commits state, second frame the DOM row exists
-    requestAnimationFrame(() => {
-      requestAnimationFrame(() => {
-        document.querySelector(`[data-station-id="${playingId}"]`)?.scrollIntoView({
-          behavior: "smooth",
-          block: "nearest",
-        });
-      });
-    });
+
+    setPendingScrollId(station.id);
   }
 
-  function handleLocationSelect(loc: SavedLocation): void {
-    window.localStorage.setItem(LOCATION_KEY, JSON.stringify(loc));
-    setSavedLocation(loc);
+  function handleLocationSelect(location: SavedLocation): void {
+    persistLocation(location);
     startTransition(() => {
-      setRegionFilter(loc.regionId);
-      setCountryFilter(loc.countryId);
-      setCityFilter(loc.cityId);
+      setRegionFilter(location.regionId);
+      setCountryFilter(location.countryId);
+      setCityFilter(location.cityId);
+      setQuery("");
     });
     setShowWelcome(false);
   }
 
   function handleLocationSkip(): void {
-    window.localStorage.setItem(LOCATION_KEY, "skipped");
+    persistLocation(null);
     setShowWelcome(false);
   }
 
-  useEffect(() => {
-    let dead = false;
-    const audio = audioRef.current;
-    const poll = async () => {
-      try {
-        const data = await fetchHardwareStatus();
-        if (!dead) { setHardware(data); setHardwareError(""); }
-      } catch (err) {
-        if (!dead) setHardwareError(err instanceof Error ? err.message : "Could not read HackRF status.");
-      }
-    };
-    void poll();
-    const timer = window.setInterval(() => void poll(), 4_000);
-    return () => {
-      dead = true;
-      clearInterval(timer);
-      if (audio) { audio.pause(); audio.removeAttribute("src"); audio.load(); }
-    };
-  }, []);
-
-  const allStations = sortStations([...customStations, ...catalog.stations]);
-
-  const regionOpts = buildLocationOptions(allStations, s => s.location.regionId, s => s.location.regionName);
-  const activeRegion = regionFilter === "all" || regionOpts.some(r => r.id === regionFilter) ? regionFilter : "all";
-  const inRegion = activeRegion === "all" ? allStations : allStations.filter(s => s.location.regionId === activeRegion);
-
-  const countryOpts = buildLocationOptions(inRegion, s => s.location.countryId, s => s.location.countryName);
-  const activeCountry = countryFilter === "all" || countryOpts.some(c => c.id === countryFilter) ? countryFilter : "all";
-  const inCountry = activeCountry === "all" ? inRegion : inRegion.filter(s => s.location.countryId === activeCountry);
-
-  const cityOpts = buildLocationOptions(inCountry, s => s.location.cityId, s => s.location.cityName);
-  const activeCity = cityFilter === "all" || cityOpts.some(c => c.id === cityFilter) ? cityFilter : "all";
-
-  const visible = allStations.filter(s => {
-    if (activeRegion !== "all" && s.location.regionId !== activeRegion) return false;
-    if (activeCountry !== "all" && s.location.countryId !== activeCountry) return false;
-    if (activeCity !== "all" && s.location.cityId !== activeCity) return false;
-    if (!deferred) return true;
-    return [s.name, s.location.cityName, s.location.countryName, s.location.regionName, s.description, ...s.tags]
-      .join(" ").toLowerCase().includes(deferred);
-  });
-
-  const selected =
-    visible.find(s => s.id === selectedId) ||
-    visible[0] ||
-    allStations.find(s => s.id === selectedId) ||
-    allStations[0] || null;
-
   async function startListening(station: FmStation | null): Promise<void> {
-    if (!station || !audioRef.current) return;
+    if (!station || !audioRef.current) {
+      return;
+    }
+
     setStreamError("");
     setStreamStarting(true);
+
     const audio = audioRef.current;
     audio.pause();
     audio.src = buildStreamUrl(station, controls);
+
     try {
       await audio.play();
       setPlayingId(station.id);
       void refreshHardware();
-    } catch (err) {
-      // AbortError = play() interrupted by a rapid pause()/src-change — safe to ignore
-      if (err instanceof DOMException && err.name === "AbortError") return;
+    } catch (error) {
+      if (error instanceof DOMException && error.name === "AbortError") {
+        return;
+      }
+
       audio.removeAttribute("src");
       audio.load();
       setPlayingId(null);
-      setStreamError(err instanceof Error ? err.message : "Browser could not start audio playback.");
+      setStreamError(
+        error instanceof Error
+          ? error.message
+          : "Browser could not start audio playback.",
+      );
     } finally {
       setStreamStarting(false);
     }
   }
 
-  function handleAddPreset(e: React.FormEvent<HTMLFormElement>): void {
-    e.preventDefault();
+  function handleAddPreset(event: FormEvent<HTMLFormElement>): void {
+    event.preventDefault();
     const freq = Number.parseFloat(draft.freqMhz);
     if (!Number.isFinite(freq) || freq < 64 || freq > 108) {
       setStreamError("Frequency must be between 64 and 108 MHz.");
       return;
     }
-    const station = buildCustomStation(draft, catalog);
-    setCustomStations(cur => sortStations([...cur, station]));
+
+    const station = buildCustomStation(draft, lookupCatalog);
+    setCustomStations((current) => sortStations([...current, station]));
     setDraft(DEFAULT_DRAFT);
     setSelectedId(station.id);
     setStreamError("");
@@ -523,64 +1220,173 @@ export function Dashboard({ catalog }: { catalog: CatalogData }) {
       setStreamError("Frequency must be between 64 and 108 MHz.");
       return;
     }
-    await startListening(buildCustomStation(draft, catalog));
+
+    await startListening(buildCustomStation(draft, lookupCatalog));
   }
 
   function removeCustom(id: string): void {
-    if (playingId === id) stopListening();
-    setCustomStations(cur => cur.filter(s => s.id !== id));
+    if (playingId === id) {
+      stopListening();
+    }
+
+    setCustomStations((current) => current.filter((station) => station.id !== id));
   }
 
-  const hasFilters = query.trim().length > 0 || activeRegion !== "all" || activeCountry !== "all" || activeCity !== "all";
+  function handleRegionChange(nextRegion: string): void {
+    persistLocation(null);
+    startTransition(() => {
+      setRegionFilter(nextRegion);
+      setCountryFilter("all");
+      setCityFilter("all");
+      setQuery("");
+    });
+  }
+
+  function handleCountryChange(nextCountry: string): void {
+    if (nextCountry === "all") {
+      persistLocation(null);
+      startTransition(() => {
+        setCountryFilter("all");
+        setCityFilter("all");
+        setSelectedId("");
+      });
+      return;
+    }
+
+    const country = countriesById.get(nextCountry);
+    if (!country) {
+      return;
+    }
+
+    persistLocation({
+      regionId: country.regionId,
+      countryId: country.id,
+      countryName: country.name,
+      cityId: "all",
+      cityName: "All cities",
+    });
+
+    startTransition(() => {
+      setRegionFilter(country.regionId);
+      setCountryFilter(country.id);
+      setCityFilter("all");
+      setQuery("");
+    });
+  }
+
+  function handleCityChange(nextCity: string): void {
+    setCityFilter(nextCity);
+
+    if (activeCountry === "all") {
+      return;
+    }
+
+    const country = countriesById.get(activeCountry);
+    if (!country) {
+      return;
+    }
+
+    if (nextCity === "all") {
+      persistLocation({
+        regionId: country.regionId,
+        countryId: country.id,
+        countryName: country.name,
+        cityId: "all",
+        cityName: "All cities",
+      });
+      return;
+    }
+
+    const city = cityOptions.find((option) => option.id === nextCity);
+    if (!city) {
+      return;
+    }
+
+    persistLocation({
+      regionId: country.regionId,
+      countryId: country.id,
+      countryName: country.name,
+      cityId: city.id,
+      cityName: city.label,
+    });
+  }
+
+  const hasFilters =
+    query.trim().length > 0 || activeRegion !== "all" || activeCountry !== "all" || activeCity !== "all";
   const telemetry = hardware?.activeStream?.telemetry ?? null;
-  const hwMeta = hwTone(hardware?.state ?? "unknown");
+  const hardwareMeta = hwTone(hardware?.state ?? "unknown");
+  const locationLabel = savedLocation
+    ? savedLocation.cityId !== "all"
+      ? savedLocation.cityName
+      : savedLocation.countryName
+    : "All locations";
+  const activeCountryLoading =
+    activeCountry !== "all" && !activeCountryData && loadingCountryId === activeCountry;
+  const shouldShowSelectCountryState =
+    activeCountry === "all" && customStations.length === 0;
 
   return (
     <div className="flex h-screen flex-col overflow-hidden">
-
-      {/* ── Welcome modal ────────────────────────────────────────── */}
       {showWelcome ? (
         <WelcomeModal
-          stations={allStations}
+          manifest={manifest}
+          onLoadCountry={async (countryId) => {
+            const loaded = await loadCountryCatalog(countryId);
+            return loaded?.shard ?? null;
+          }}
           onSelect={handleLocationSelect}
           onSkip={handleLocationSkip}
         />
       ) : null}
 
-      {/* ── Header ──────────────────────────────────────────────── */}
       <header className="flex h-12 shrink-0 items-center gap-3 border-b border-white/8 bg-black/40 px-4 backdrop-blur-sm">
         <div className="flex items-center gap-2">
-          <span className="font-mono text-xs font-bold uppercase tracking-[0.3em] text-[var(--accent)]">HackRF</span>
+          <span className="font-mono text-xs font-bold uppercase tracking-[0.3em] text-[var(--accent)]">
+            HackRF
+          </span>
           <span className="font-mono text-[10px] text-[var(--muted)] opacity-50">webui</span>
         </div>
 
         <div className="mx-1 h-4 w-px bg-white/10" />
 
-        {/* Hardware status */}
-        <div className={cx("flex items-center gap-1.5 rounded-full border px-2.5 py-1 font-mono text-[11px] font-semibold", hwMeta.badge)}>
-          <span className={cx("h-1.5 w-1.5 rounded-full", hwMeta.dot, hwMeta.pulse && "animate-pulse")} />
+        <div
+          className={cx(
+            "flex items-center gap-1.5 rounded-full border px-2.5 py-1 font-mono text-[11px] font-semibold",
+            hardwareMeta.badge,
+          )}
+        >
+          <span
+            className={cx(
+              "h-1.5 w-1.5 rounded-full",
+              hardwareMeta.dot,
+              hardwareMeta.pulse && "animate-pulse",
+            )}
+          />
           {hardware?.product || "HackRF One"}
         </div>
 
         {hardware?.state === "connected" && hardware.firmware ? (
-          <span className="font-mono text-[10px] text-[var(--muted)]">fw&nbsp;{hardware.firmware}</span>
+          <span className="font-mono text-[10px] text-[var(--muted)]">
+            fw&nbsp;{hardware.firmware}
+          </span>
         ) : null}
 
         <div className="flex-1" />
 
-        {/* Active stream — click to focus in list */}
         {hardware?.activeStream ? (
           <button
             className="flex items-center gap-2 rounded-full border border-[var(--accent)]/20 bg-[var(--accent)]/6 px-3 py-1 transition hover:border-[var(--accent)]/40 hover:bg-[var(--accent)]/10"
             onClick={focusPlayingStation}
-            type="button"
             title="Show in station list"
+            type="button"
           >
-            <span className="h-1.5 w-1.5 rounded-full bg-[var(--accent)] animate-pulse" />
+            <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-[var(--accent)]" />
             <span className="font-mono text-sm font-bold tabular-nums text-[var(--foreground)]">
               {(hardware.activeStream.freqHz / 1_000_000).toFixed(1)}&nbsp;MHz
             </span>
-            <span className="text-xs text-[var(--muted)]">{hardware.activeStream.label}</span>
+            <span className="text-xs text-[var(--muted)]">
+              {hardware.activeStream.label}
+            </span>
           </button>
         ) : null}
 
@@ -596,154 +1402,190 @@ export function Dashboard({ catalog }: { catalog: CatalogData }) {
         <button
           className="rounded-full border border-white/8 px-3 py-1.5 font-mono text-[11px] text-[var(--muted)] transition hover:border-white/16 hover:text-[var(--foreground)]"
           onClick={() => void refreshHardware()}
-          type="button"
           title="Refresh hardware status"
+          type="button"
         >
           ↺
         </button>
       </header>
 
-      {/* ── Body ────────────────────────────────────────────────── */}
       <div className="flex flex-1 overflow-hidden">
-
-        {/* ── Module sidebar ──────────────────────────────────── */}
         <nav className="flex w-[70px] shrink-0 flex-col border-r border-white/8 bg-black/20 py-2">
-          {MODULES.map(mod => {
-            const isActive = mod.live && activeModule === mod.id;
+          {MODULES.map((module) => {
+            const isActive = module.live && activeModule === module.id;
+
             return (
               <button
-                key={mod.id}
+                key={module.id}
                 className={cx(
                   "flex flex-col items-center gap-1 px-2 py-3 text-center transition-colors",
                   isActive
-                    ? "bg-[var(--accent)]/6 text-[var(--accent)] border-r-accent"
-                    : mod.live
+                    ? "border-r-accent bg-[var(--accent)]/6 text-[var(--accent)]"
+                    : module.live
                       ? "text-[var(--muted-strong)] hover:bg-white/[0.03] hover:text-[var(--foreground)]"
                       : "cursor-not-allowed text-[var(--muted)] opacity-30",
                 )}
-                disabled={!mod.live}
-                type="button"
-                title={mod.live ? `${mod.label} · ${mod.band}` : `${mod.label} · coming soon`}
+                disabled={!module.live}
                 onClick={() => {
-                  if (!mod.live) return;
-                  if (activeModule !== mod.id) {
+                  if (!module.live) {
+                    return;
+                  }
+
+                  if (activeModule !== module.id) {
                     stopListening();
-                    setActiveModule(mod.id as "fm" | "pmr");
+                    setActiveModule(module.id);
                   }
                 }}
+                title={
+                  module.live
+                    ? `${module.label} · ${module.band}`
+                    : `${module.label} · coming soon`
+                }
+                type="button"
               >
-                <span className="font-mono text-[11px] font-bold uppercase tracking-[0.1em]">{mod.label}</span>
-                <span className="font-mono text-[8px] leading-none text-current opacity-70">{mod.band}</span>
-                {!mod.live ? <span className="font-mono text-[7px] uppercase tracking-wide opacity-60">soon</span> : null}
+                <span className="font-mono text-[11px] font-bold uppercase tracking-[0.1em]">
+                  {module.label}
+                </span>
+                <span className="font-mono text-[8px] leading-none text-current opacity-70">
+                  {module.band}
+                </span>
+                {!module.live ? (
+                  <span className="font-mono text-[7px] uppercase tracking-wide opacity-60">
+                    soon
+                  </span>
+                ) : null}
               </button>
             );
           })}
         </nav>
 
-        {/* ── PMR module ──────────────────────────────────────── */}
         {activeModule === "pmr" ? (
           <PmrModule
             audioRef={audioRef}
-            hardware={hardware}
-            onRefreshHardware={refreshHardware}
             controls={controls}
+            hardware={hardware}
             onControlsChange={setControls}
+            onRefreshHardware={refreshHardware}
           />
         ) : null}
 
-        {/* ── FM content ──────────────────────────────────────── */}
         <div className={cx("flex flex-1 overflow-hidden", activeModule !== "fm" && "hidden")}>
-
-          {/* ── Filters ─────────────────────────────────────── */}
           <aside className="flex w-56 shrink-0 flex-col overflow-y-auto border-r border-white/8 bg-black/10">
             <div className="space-y-3 p-4">
               <div className="flex items-center justify-between">
-                <span className="font-mono text-[10px] uppercase tracking-[0.25em] text-[var(--muted)]">Filters</span>
+                <span className="font-mono text-[10px] uppercase tracking-[0.25em] text-[var(--muted)]">
+                  Filters
+                </span>
                 {hasFilters ? (
                   <button
                     className="font-mono text-[10px] uppercase tracking-[0.15em] text-[var(--accent)] transition hover:opacity-70"
                     onClick={resetFilters}
                     type="button"
                   >
-                    Clear
+                    Reset
                   </button>
                 ) : null}
               </div>
 
-              {/* Location pill */}
               <button
                 className="flex w-full items-center gap-1.5 rounded-lg border border-white/8 bg-white/[0.03] px-3 py-2 transition hover:bg-white/[0.05]"
                 onClick={() => setShowWelcome(true)}
-                type="button"
                 title="Change location filter"
+                type="button"
               >
                 <span className="text-[11px]">📍</span>
                 <span className="min-w-0 flex-1 truncate text-left font-mono text-[10px] text-[var(--muted-strong)]">
-                  {savedLocation ? savedLocation.cityName : "All locations"}
+                  {locationLabel}
                 </span>
-                <span className="shrink-0 font-mono text-[9px] text-[var(--muted)] opacity-60">edit</span>
+                <span className="shrink-0 font-mono text-[9px] text-[var(--muted)] opacity-60">
+                  edit
+                </span>
               </button>
 
               <input
                 className={CLS_INPUT}
-                placeholder="Search…"
+                placeholder={
+                  activeCountry === "all" ? "Select a country first..." : "Search loaded stations..."
+                }
                 value={query}
-                onChange={e => setQuery(e.target.value)}
+                onChange={(event) => setQuery(event.target.value)}
               />
 
               <select
                 className={CLS_INPUT}
                 value={activeRegion}
-                onChange={e => {
-                  const v = e.target.value;
-                  startTransition(() => { setRegionFilter(v); setCountryFilter("all"); setCityFilter("all"); });
-                }}
+                onChange={(event) => handleRegionChange(event.target.value)}
               >
                 <option value="all">All regions</option>
-                {regionOpts.map(r => (
-                  <option key={r.id} value={r.id}>{r.label} ({r.count})</option>
+                {regionOptions.map((region) => (
+                  <option key={region.id} value={region.id}>
+                    {region.label} ({formatCount(region.count)})
+                  </option>
                 ))}
               </select>
 
               <select
                 className={CLS_INPUT}
                 value={activeCountry}
-                onChange={e => {
-                  const v = e.target.value;
-                  startTransition(() => { setCountryFilter(v); setCityFilter("all"); });
-                }}
+                onChange={(event) => handleCountryChange(event.target.value)}
               >
-                <option value="all">All countries</option>
-                {countryOpts.map(c => (
-                  <option key={c.id} value={c.id}>{c.label} ({c.count})</option>
+                <option value="all">Choose a country</option>
+                {countryOptions.map((country) => (
+                  <option key={country.id} value={country.id}>
+                    {country.label} ({formatCount(country.count)})
+                  </option>
                 ))}
               </select>
 
               <select
                 className={CLS_INPUT}
+                disabled={activeCountry === "all"}
                 value={activeCity}
-                onChange={e => setCityFilter(e.target.value)}
+                onChange={(event) => handleCityChange(event.target.value)}
               >
-                <option value="all">All cities</option>
-                {cityOpts.map(c => (
-                  <option key={c.id} value={c.id}>{c.label} ({c.count})</option>
+                <option value="all">
+                  {activeCountry === "all" ? "Load a country first" : "All cities"}
+                </option>
+                {cityOptions.map((city) => (
+                  <option key={city.id} value={city.id}>
+                    {city.label} ({formatCount(city.count)})
+                  </option>
                 ))}
               </select>
 
               <p className="font-mono text-[10px] text-[var(--muted)]">
-                {visible.length} / {allStations.length} stations
+                {formatCount(visible.length)} visible
+                {activeCountrySummary ? ` / ${formatCount(allStations.length)} loaded` : ""}
               </p>
             </div>
 
-            {/* Add preset */}
-            <div className="mt-auto border-t border-white/8">
+            <div className="mt-auto border-t border-white/8 px-4 py-3">
+              <Link
+                className="flex w-full items-center justify-between rounded-xl border border-white/10 bg-white/[0.035] px-3 py-3 transition hover:bg-white/[0.06]"
+                href="/fm/coverage"
+              >
+                <span>
+                  <span className="block font-mono text-[9px] uppercase tracking-[0.18em] text-[var(--accent)]">
+                    Coverage
+                  </span>
+                  <span className="mt-1 block text-sm text-[var(--foreground)]">
+                    Open the global FM coverage view
+                  </span>
+                </span>
+                <span className="font-mono text-[10px] uppercase tracking-[0.18em] text-[var(--muted)]">
+                  view
+                </span>
+              </Link>
+            </div>
+
+            <div>
               <button
                 className="flex w-full items-center justify-between px-4 py-3 text-left transition hover:bg-white/[0.025]"
-                onClick={() => setShowAdd(v => !v)}
+                onClick={() => setShowAdd((current) => !current)}
                 type="button"
               >
                 <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-[var(--muted-strong)]">
-                  {showAdd ? "— Cancel" : "+ Add preset"}
+                  {showAdd ? "- Cancel" : "+ Add preset"}
                 </span>
               </button>
 
@@ -753,35 +1595,49 @@ export function Dashboard({ catalog }: { catalog: CatalogData }) {
                     className={CLS_INPUT}
                     placeholder="Name"
                     value={draft.name}
-                    onChange={e => setDraft(d => ({ ...d, name: e.target.value }))}
+                    onChange={(event) =>
+                      setDraft((current) => ({ ...current, name: event.target.value }))
+                    }
                   />
                   <input
                     className={CLS_INPUT}
                     placeholder="Freq MHz (e.g. 99.5)"
                     value={draft.freqMhz}
-                    onChange={e => setDraft(d => ({ ...d, freqMhz: e.target.value }))}
+                    onChange={(event) =>
+                      setDraft((current) => ({ ...current, freqMhz: event.target.value }))
+                    }
                   />
                   <input
                     className={CLS_INPUT}
                     placeholder="Country"
                     value={draft.country}
-                    onChange={e => setDraft(d => ({ ...d, country: e.target.value }))}
+                    onChange={(event) =>
+                      setDraft((current) => ({ ...current, country: event.target.value }))
+                    }
                   />
                   <input
                     className={CLS_INPUT}
                     placeholder="City"
                     value={draft.city}
-                    onChange={e => setDraft(d => ({ ...d, city: e.target.value }))}
+                    onChange={(event) =>
+                      setDraft((current) => ({ ...current, city: event.target.value }))
+                    }
                   />
                   <textarea
                     className={cx(CLS_INPUT, "min-h-14 resize-none")}
-                    placeholder="Notes…"
+                    placeholder="Notes..."
                     value={draft.description}
-                    onChange={e => setDraft(d => ({ ...d, description: e.target.value }))}
+                    onChange={(event) =>
+                      setDraft((current) => ({ ...current, description: event.target.value }))
+                    }
                   />
                   <div className="flex gap-2">
-                    <button className={cx("flex-1", CLS_BTN_PRIMARY)} type="submit">Save</button>
-                    <button className={CLS_BTN_GHOST} onClick={() => void tuneDraft()} type="button">▶</button>
+                    <button className={cx("flex-1", CLS_BTN_PRIMARY)} type="submit">
+                      Save
+                    </button>
+                    <button className={CLS_BTN_GHOST} onClick={() => void tuneDraft()} type="button">
+                      ▶
+                    </button>
                   </div>
                 </form>
               ) : null}
@@ -800,49 +1656,106 @@ export function Dashboard({ catalog }: { catalog: CatalogData }) {
             </div>
           </aside>
 
-          {/* ── Station list ────────────────────────────────── */}
           <main className="flex flex-1 flex-col overflow-hidden">
             <div className="flex shrink-0 items-center justify-between border-b border-white/8 px-4 py-2.5">
-              <span className="font-mono text-[10px] uppercase tracking-[0.22em] text-[var(--muted)]">FM Broadcast</span>
-              <span className="font-mono text-[10px] text-[var(--muted)]">{visible.length}</span>
+              <div>
+                <span className="font-mono text-[10px] uppercase tracking-[0.22em] text-[var(--muted)]">
+                  FM Broadcast
+                </span>
+                {activeCountrySummary ? (
+                  <p className="mt-1 font-mono text-[10px] text-[var(--muted)]">
+                    {activeCountrySummary.name} shard
+                    {activeCountryLoading ? " · loading..." : ""}
+                  </p>
+                ) : null}
+              </div>
+              <span className="font-mono text-[10px] text-[var(--muted)]">
+                {activeCountrySummary
+                  ? `${formatCount(allStations.length)} loaded`
+                  : `${formatCount(customStations.length)} custom`}
+              </span>
             </div>
 
-            {visible.length === 0 ? (
+            {shouldShowSelectCountryState ? (
               <div className="flex flex-1 items-center justify-center p-8 text-center">
-                <p className="text-sm text-[var(--muted)]">No stations match — try adjusting filters.</p>
+                <div className="max-w-md space-y-3">
+                  <p className="font-mono text-[10px] uppercase tracking-[0.24em] text-[var(--accent)]">
+                    Catalog Ready
+                  </p>
+                  <h3 className="text-xl font-semibold text-[var(--foreground)]">
+                    Pick a country to load its FM shard
+                  </h3>
+                  <p className="text-sm leading-6 text-[var(--muted)]">
+                    The initial UI stays light by shipping only a manifest. Once you pick a
+                    country, the app loads that catalog locally and keeps the station list fluid.
+                  </p>
+                </div>
+              </div>
+            ) : activeCountryLoading ? (
+              <div className="flex flex-1 items-center justify-center p-8 text-center">
+                <div className="space-y-3">
+                  <div className="mx-auto flex h-10 w-10 items-center justify-center rounded-full border border-white/10 bg-white/[0.03]">
+                    <Spinner />
+                  </div>
+                  <p className="text-sm text-[var(--muted)]">
+                    Loading {activeCountrySummary?.name ?? "country"} catalog shard...
+                  </p>
+                </div>
+              </div>
+            ) : catalogError && !activeCountryData ? (
+              <div className="flex flex-1 items-center justify-center p-8 text-center">
+                <p className="max-w-md rounded-xl border border-rose-400/20 bg-rose-400/8 p-4 text-sm leading-6 text-rose-200">
+                  {catalogError}
+                </p>
+              </div>
+            ) : visible.length === 0 ? (
+              <div className="flex flex-1 items-center justify-center p-8 text-center">
+                <p className="text-sm text-[var(--muted)]">
+                  No stations match the current filters. Try another city or clear the search.
+                </p>
               </div>
             ) : (
-              <div className="flex-1 overflow-y-auto">
-                {visible.map(station => {
-                  const isSel = selected?.id === station.id;
-                  const isPlay = playingId === station.id;
+              <div className="flex-1 overflow-y-auto" ref={listRef}>
+                <div style={{ height: topSpacerHeight }} />
+                {windowedStations.map((station) => {
+                  const isSelected = selected?.id === station.id;
+                  const isPlaying = playingId === station.id;
 
                   return (
                     <div
                       key={station.id}
                       className={cx(
-                        "group flex cursor-pointer items-center gap-3 border-b border-white/[0.045] px-4 py-3 transition-colors",
-                        isSel
-                          ? "bg-[var(--accent)]/7 border-l-accent"
-                          : "hover:bg-white/[0.025] border-l-clear",
+                        "group flex cursor-pointer items-center gap-3 border-b border-white/[0.045] px-4 transition-colors",
+                        isSelected
+                          ? "border-l-accent bg-[var(--accent)]/7"
+                          : "border-l-clear hover:bg-white/[0.025]",
                       )}
                       data-station-id={station.id}
                       onClick={() => setSelectedId(station.id)}
+                      style={{ height: STATION_ROW_HEIGHT }}
                     >
-                      {/* Frequency */}
-                      <span className={cx(
-                        "w-14 shrink-0 font-mono text-base font-bold tabular-nums",
-                        isPlay ? "text-[var(--accent)]" : isSel ? "text-[var(--foreground)]" : "text-[var(--muted-strong)]",
-                      )}>
+                      <span
+                        className={cx(
+                          "w-14 shrink-0 font-mono text-base font-bold tabular-nums",
+                          isPlaying
+                            ? "text-[var(--accent)]"
+                            : isSelected
+                              ? "text-[var(--foreground)]"
+                              : "text-[var(--muted-strong)]",
+                        )}
+                      >
                         {station.freqMhz.toFixed(1)}
                       </span>
 
-                      {/* Name + location */}
                       <div className="min-w-0 flex-1">
-                        <p className={cx(
-                          "truncate text-sm",
-                          isSel ? "font-semibold text-[var(--foreground)]" : "font-medium text-[var(--muted-strong)]",
-                        )}>
+                        <p
+                          className={cx(
+                            "truncate text-sm",
+                            isSelected
+                              ? "font-semibold text-[var(--foreground)]"
+                              : "font-medium text-[var(--muted-strong)]",
+                          )}
+                        >
                           {station.name}
                         </p>
                         <p className="truncate font-mono text-[10px] text-[var(--muted)]">
@@ -850,33 +1763,36 @@ export function Dashboard({ catalog }: { catalog: CatalogData }) {
                         </p>
                       </div>
 
-                      {/* On air */}
-                      {isPlay ? (
+                      {isPlaying ? (
                         <span className="flex shrink-0 items-center gap-1 font-mono text-[9px] uppercase tracking-[0.2em] text-[var(--accent)]">
-                          <span className="h-1.5 w-1.5 rounded-full bg-[var(--accent)] animate-pulse" />
+                          <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-[var(--accent)]" />
                           on air
                         </span>
                       ) : null}
 
-                      {/* Play */}
                       <button
                         className={cx(
                           "shrink-0 rounded-full border px-2.5 py-1 font-mono text-[10px] font-semibold transition",
-                          isPlay
+                          isPlaying
                             ? "border-[var(--accent)]/35 bg-[var(--accent)]/10 text-[var(--accent)]"
                             : "border-white/10 bg-white/[0.03] text-[var(--muted)] opacity-0 group-hover:opacity-100",
                         )}
-                        onClick={e => { e.stopPropagation(); void startListening(station); }}
+                        onClick={(event) => {
+                          event.stopPropagation();
+                          void startListening(station);
+                        }}
                         type="button"
                       >
                         ▶
                       </button>
 
-                      {/* Delete custom */}
                       {!station.curated ? (
                         <button
                           className="shrink-0 rounded-full border border-rose-400/20 px-2 py-1 font-mono text-[9px] text-rose-300 opacity-0 transition hover:bg-rose-400/10 group-hover:opacity-100"
-                          onClick={e => { e.stopPropagation(); removeCustom(station.id); }}
+                          onClick={(event) => {
+                            event.stopPropagation();
+                            removeCustom(station.id);
+                          }}
                           type="button"
                         >
                           ✕
@@ -885,15 +1801,14 @@ export function Dashboard({ catalog }: { catalog: CatalogData }) {
                     </div>
                   );
                 })}
+                <div style={{ height: bottomSpacerHeight }} />
               </div>
             )}
           </main>
 
-          {/* ── Tuner panel ─────────────────────────────────── */}
           <aside className="flex w-72 shrink-0 flex-col overflow-y-auto border-l border-white/8 bg-black/15">
             {selected ? (
               <>
-                {/* Station info */}
                 <div className="border-b border-white/8 p-5">
                   <div className="flex items-start justify-between gap-3">
                     <div className="min-w-0">
@@ -903,7 +1818,9 @@ export function Dashboard({ catalog }: { catalog: CatalogData }) {
                       <h2 className="mt-1 text-xl font-semibold leading-tight text-[var(--foreground)]">
                         {selected.name}
                       </h2>
-                      <p className="mt-0.5 text-xs text-[var(--muted)]">{selected.location.cityName}</p>
+                      <p className="mt-0.5 text-xs text-[var(--muted)]">
+                        {selected.location.cityName}
+                      </p>
                     </div>
                     <div className="shrink-0 rounded-xl border border-white/10 bg-black/30 px-3 py-2 text-right">
                       <p className="font-mono text-2xl font-bold tabular-nums leading-none text-[var(--foreground)]">
@@ -914,75 +1831,115 @@ export function Dashboard({ catalog }: { catalog: CatalogData }) {
                   </div>
 
                   {selected.description ? (
-                    <p className="mt-3 text-xs leading-5 text-[var(--muted)]">{selected.description}</p>
+                    <p className="mt-3 text-xs leading-5 text-[var(--muted)]">
+                      {selected.description}
+                    </p>
                   ) : null}
 
                   <div className="mt-3 flex flex-wrap gap-1.5">
-                    <span className={cx(
-                      "rounded-full border px-2 py-0.5 font-mono text-[10px] uppercase tracking-[0.12em]",
-                      selected.curated
-                        ? "border-[var(--accent)]/25 bg-[var(--accent)]/8 text-[var(--foreground)]"
-                        : "border-[var(--highlight)]/25 bg-[var(--highlight)]/8 text-[var(--foreground)]",
-                    )}>
+                    <span
+                      className={cx(
+                        "rounded-full border px-2 py-0.5 font-mono text-[10px] uppercase tracking-[0.12em]",
+                        selected.curated
+                          ? "border-[var(--accent)]/25 bg-[var(--accent)]/8 text-[var(--foreground)]"
+                          : "border-[var(--highlight)]/25 bg-[var(--highlight)]/8 text-[var(--foreground)]",
+                      )}
+                    >
                       {selected.curated ? "curated" : "custom"}
                     </span>
-                    {selected.tags.map(tag => (
-                      <span key={tag} className="rounded-full border border-white/8 bg-white/[0.03] px-2 py-0.5 font-mono text-[10px] text-[var(--muted)]">
+                    {selected.tags.map((tag) => (
+                      <span
+                        key={tag}
+                        className="rounded-full border border-white/8 bg-white/[0.03] px-2 py-0.5 font-mono text-[10px] text-[var(--muted)]"
+                      >
                         {tag}
                       </span>
                     ))}
                   </div>
                 </div>
 
-                {/* RF controls */}
-                <div className="border-b border-white/8 p-5 space-y-5">
-                  <p className="font-mono text-[10px] uppercase tracking-[0.22em] text-[var(--muted)]">RF Controls</p>
+                <div className="space-y-5 border-b border-white/8 p-5">
+                  <p className="font-mono text-[10px] uppercase tracking-[0.22em] text-[var(--muted)]">
+                    RF Controls
+                  </p>
 
                   <label className="block space-y-1.5">
                     <div className="flex items-center justify-between">
-                      <span className="font-mono text-[11px] uppercase tracking-[0.18em] text-[var(--muted-strong)]">LNA</span>
-                      <span className="font-mono text-[11px] tabular-nums text-[var(--foreground)]">{controls.lna} dB</span>
+                      <span className="font-mono text-[11px] uppercase tracking-[0.18em] text-[var(--muted-strong)]">
+                        LNA
+                      </span>
+                      <span className="font-mono text-[11px] tabular-nums text-[var(--foreground)]">
+                        {controls.lna} dB
+                      </span>
                     </div>
                     <input
                       className="rf-slider w-full"
-                      max={40} min={0} step={8}
+                      max={40}
+                      min={0}
+                      step={8}
                       type="range"
                       value={controls.lna}
-                      onChange={e => setControls(c => ({ ...c, lna: Number.parseInt(e.target.value, 10) }))}
+                      onChange={(event) =>
+                        setControls((current) => ({
+                          ...current,
+                          lna: Number.parseInt(event.target.value, 10),
+                        }))
+                      }
                     />
                   </label>
 
                   <label className="block space-y-1.5">
                     <div className="flex items-center justify-between">
-                      <span className="font-mono text-[11px] uppercase tracking-[0.18em] text-[var(--muted-strong)]">VGA</span>
-                      <span className="font-mono text-[11px] tabular-nums text-[var(--foreground)]">{controls.vga} dB</span>
+                      <span className="font-mono text-[11px] uppercase tracking-[0.18em] text-[var(--muted-strong)]">
+                        VGA
+                      </span>
+                      <span className="font-mono text-[11px] tabular-nums text-[var(--foreground)]">
+                        {controls.vga} dB
+                      </span>
                     </div>
                     <input
                       className="rf-slider w-full"
-                      max={62} min={0} step={2}
+                      max={62}
+                      min={0}
+                      step={2}
                       type="range"
                       value={controls.vga}
-                      onChange={e => setControls(c => ({ ...c, vga: Number.parseInt(e.target.value, 10) }))}
+                      onChange={(event) =>
+                        setControls((current) => ({
+                          ...current,
+                          vga: Number.parseInt(event.target.value, 10),
+                        }))
+                      }
                     />
                   </label>
 
                   <label className="block space-y-1.5">
                     <div className="flex items-center justify-between">
-                      <span className="font-mono text-[11px] uppercase tracking-[0.18em] text-[var(--muted-strong)]">Volume</span>
-                      <span className="font-mono text-[11px] tabular-nums text-[var(--foreground)]">{controls.audioGain.toFixed(1)}×</span>
+                      <span className="font-mono text-[11px] uppercase tracking-[0.18em] text-[var(--muted-strong)]">
+                        Volume
+                      </span>
+                      <span className="font-mono text-[11px] tabular-nums text-[var(--foreground)]">
+                        {controls.audioGain.toFixed(1)}x
+                      </span>
                     </div>
                     <input
                       className="rf-slider w-full"
-                      max={8} min={0.2} step={0.1}
+                      max={8}
+                      min={0.2}
+                      step={0.1}
                       type="range"
                       value={controls.audioGain}
-                      onChange={e => setControls(c => ({ ...c, audioGain: Number.parseFloat(e.target.value) }))}
+                      onChange={(event) =>
+                        setControls((current) => ({
+                          ...current,
+                          audioGain: Number.parseFloat(event.target.value),
+                        }))
+                      }
                     />
                   </label>
                 </div>
 
-                {/* Playback */}
-                <div className="p-5 space-y-3">
+                <div className="space-y-3 p-5">
                   <div className="flex gap-2">
                     <button
                       className={cx("flex-1 justify-center", CLS_BTN_PRIMARY)}
@@ -991,10 +1948,19 @@ export function Dashboard({ catalog }: { catalog: CatalogData }) {
                       type="button"
                     >
                       {streamStarting ? (
-                        <><Spinner />Starting…</>
-                      ) : playingId === selected.id ? "▶ Retune" : "▶ Listen"}
+                        <>
+                          <Spinner />
+                          Starting...
+                        </>
+                      ) : playingId === selected.id ? (
+                        "▶ Retune"
+                      ) : (
+                        "▶ Listen"
+                      )}
                     </button>
-                    <button className={CLS_BTN_GHOST} onClick={stopListening} type="button">■</button>
+                    <button className={CLS_BTN_GHOST} onClick={stopListening} type="button">
+                      ■
+                    </button>
                   </div>
 
                   <audio
@@ -1003,7 +1969,9 @@ export function Dashboard({ catalog }: { catalog: CatalogData }) {
                     onEnded={() => setPlayingId(null)}
                     onError={() => {
                       setPlayingId(null);
-                      setStreamError("Could not open stream. Check HackRF status, ffmpeg, and the native binary.");
+                      setStreamError(
+                        "Could not open stream. Check HackRF status, ffmpeg, and the native binary.",
+                      );
                       void refreshHardware();
                     }}
                     preload="none"
@@ -1016,6 +1984,12 @@ export function Dashboard({ catalog }: { catalog: CatalogData }) {
                     </p>
                   ) : null}
 
+                  {catalogError && activeCountryData ? (
+                    <p className="rounded-lg border border-amber-400/20 bg-amber-400/8 p-3 text-xs leading-5 text-amber-200">
+                      {catalogError}
+                    </p>
+                  ) : null}
+
                   {hardwareError ? (
                     <p className="rounded-lg border border-amber-400/20 bg-amber-400/8 p-3 text-xs leading-5 text-amber-200">
                       {hardwareError}
@@ -1024,12 +1998,22 @@ export function Dashboard({ catalog }: { catalog: CatalogData }) {
 
                   {telemetry ? (
                     <div className="rounded-lg border border-white/8 bg-white/[0.02] p-3">
-                      <p className="mb-2 font-mono text-[9px] uppercase tracking-[0.2em] text-[var(--muted)]">Telemetry</p>
+                      <p className="mb-2 font-mono text-[9px] uppercase tracking-[0.2em] text-[var(--muted)]">
+                        Telemetry
+                      </p>
                       <div className="grid grid-cols-3 gap-1 text-center">
-                        {([["RMS", telemetry.rms], ["Peak", telemetry.peak], ["RF", telemetry.rf]] as [string, number][]).map(([l, v]) => (
-                          <div key={l}>
-                            <p className="font-mono text-[8px] text-[var(--muted)]">{l}</p>
-                            <p className="font-mono text-[11px] text-[var(--accent)]">{v.toFixed(3)}</p>
+                        {(
+                          [
+                            ["RMS", telemetry.rms],
+                            ["Peak", telemetry.peak],
+                            ["RF", telemetry.rf],
+                          ] as [string, number][]
+                        ).map(([label, value]) => (
+                          <div key={label}>
+                            <p className="font-mono text-[8px] text-[var(--muted)]">{label}</p>
+                            <p className="font-mono text-[11px] text-[var(--accent)]">
+                              {value.toFixed(3)}
+                            </p>
                           </div>
                         ))}
                       </div>
@@ -1039,7 +2023,11 @@ export function Dashboard({ catalog }: { catalog: CatalogData }) {
               </>
             ) : (
               <div className="flex flex-1 items-center justify-center p-8 text-center">
-                <p className="text-sm text-[var(--muted)]">Select a station to tune</p>
+                <p className="text-sm text-[var(--muted)]">
+                  {activeCountry === "all"
+                    ? "Select a country or add a custom preset to start tuning."
+                    : "Select a station to tune."}
+                </p>
               </div>
             )}
           </aside>

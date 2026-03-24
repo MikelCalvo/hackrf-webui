@@ -1,0 +1,4943 @@
+{
+  "country": {
+    "id": "slovenia",
+    "code": "SI",
+    "name": "Slovenia",
+    "regionId": "europe",
+    "cityCount": 69,
+    "stationCount": 226,
+    "sourceCount": 1,
+    "sources": [
+      {
+        "name": "AKOS RA and TV frequencies register",
+        "url": "https://www.akos-rs.si/en/registers/registers-list/ra-and-tv-frequencies"
+      }
+    ],
+    "lastImportedAt": "2026-03-24",
+    "coverageStatus": "active",
+    "coverageTier": "official-substantial",
+    "coverageScope": "national",
+    "sourceQuality": "official-regulator",
+    "hasOfficialImporter": true,
+    "coverageScore": 88
+  },
+  "cities": [
+    {
+      "id": "si-ajdovscina",
+      "name": "Ajdovščina",
+      "countryId": "slovenia",
+      "timezone": "Europe/Ljubljana",
+      "latitude": 45.88601,
+      "longitude": 13.90946,
+      "stationCount": 11
+    },
+    {
+      "id": "si-begunje-na-gorenjskem",
+      "name": "Begunje na Gorenjskem",
+      "countryId": "slovenia",
+      "timezone": "Europe/Ljubljana",
+      "latitude": 46.38333,
+      "longitude": 14.21667,
+      "stationCount": 1
+    },
+    {
+      "id": "si-bizeljsko",
+      "name": "Bizeljsko",
+      "countryId": "slovenia",
+      "timezone": "Europe/Ljubljana",
+      "latitude": 46.01494,
+      "longitude": 15.69285,
+      "stationCount": 3
+    },
+    {
+      "id": "si-blejska-dobrava",
+      "name": "Blejska Dobrava",
+      "countryId": "slovenia",
+      "timezone": "Europe/Ljubljana",
+      "latitude": 46.4,
+      "longitude": 14.1,
+      "stationCount": 5
+    },
+    {
+      "id": "si-bovec",
+      "name": "Bovec",
+      "countryId": "slovenia",
+      "timezone": "Europe/Ljubljana",
+      "latitude": 46.33808,
+      "longitude": 13.55245,
+      "stationCount": 5
+    },
+    {
+      "id": "si-cerknica",
+      "name": "Cerknica",
+      "countryId": "slovenia",
+      "timezone": "Europe/Ljubljana",
+      "latitude": 45.79703,
+      "longitude": 14.36263,
+      "stationCount": 2
+    },
+    {
+      "id": "si-cerkno",
+      "name": "Cerkno",
+      "countryId": "slovenia",
+      "timezone": "Europe/Ljubljana",
+      "latitude": 46.12533,
+      "longitude": 13.98266,
+      "stationCount": 5
+    },
+    {
+      "id": "si-crnomelj",
+      "name": "Črnomelj",
+      "countryId": "slovenia",
+      "timezone": "Europe/Ljubljana",
+      "latitude": 45.57262,
+      "longitude": 15.1919,
+      "stationCount": 7
+    },
+    {
+      "id": "si-golnik",
+      "name": "Golnik",
+      "countryId": "slovenia",
+      "timezone": "Europe/Ljubljana",
+      "latitude": 46.33333,
+      "longitude": 14.33333,
+      "stationCount": 3
+    },
+    {
+      "id": "si-gornja-radgona",
+      "name": "Gornja Radgona",
+      "countryId": "slovenia",
+      "timezone": "Europe/Ljubljana",
+      "latitude": 46.67263,
+      "longitude": 15.99219,
+      "stationCount": 2
+    },
+    {
+      "id": "si-hotedrsica",
+      "name": "Hotedršica",
+      "countryId": "slovenia",
+      "timezone": "Europe/Ljubljana",
+      "latitude": 45.93028,
+      "longitude": 14.14222,
+      "stationCount": 2
+    },
+    {
+      "id": "si-hrvatini",
+      "name": "Hrvatini",
+      "countryId": "slovenia",
+      "timezone": "Europe/Ljubljana",
+      "latitude": 45.58278,
+      "longitude": 13.75667,
+      "stationCount": 4
+    },
+    {
+      "id": "si-idrija",
+      "name": "Idrija",
+      "countryId": "slovenia",
+      "timezone": "Europe/Ljubljana",
+      "latitude": 46.00295,
+      "longitude": 14.02787,
+      "stationCount": 10
+    },
+    {
+      "id": "si-ilirska-bistrica",
+      "name": "Ilirska Bistrica",
+      "countryId": "slovenia",
+      "timezone": "Europe/Ljubljana",
+      "latitude": 45.56757,
+      "longitude": 14.24571,
+      "stationCount": 3
+    },
+    {
+      "id": "si-izola",
+      "name": "Izola",
+      "countryId": "slovenia",
+      "timezone": "Europe/Ljubljana",
+      "latitude": 45.53661,
+      "longitude": 13.66015,
+      "stationCount": 5
+    },
+    {
+      "id": "si-jesenice",
+      "name": "Jesenice",
+      "countryId": "slovenia",
+      "timezone": "Europe/Ljubljana",
+      "latitude": 46.4324,
+      "longitude": 14.06232,
+      "stationCount": 3
+    },
+    {
+      "id": "si-kocevje",
+      "name": "Kočevje",
+      "countryId": "slovenia",
+      "timezone": "Europe/Ljubljana",
+      "latitude": 45.64323,
+      "longitude": 14.86036,
+      "stationCount": 7
+    },
+    {
+      "id": "si-koper",
+      "name": "Koper",
+      "countryId": "slovenia",
+      "timezone": "Europe/Ljubljana",
+      "latitude": 45.5482,
+      "longitude": 13.72963,
+      "stationCount": 7
+    },
+    {
+      "id": "si-kozina",
+      "name": "Kozina",
+      "countryId": "slovenia",
+      "timezone": "Europe/Ljubljana",
+      "latitude": 45.61,
+      "longitude": 13.93556,
+      "stationCount": 2
+    },
+    {
+      "id": "si-kozje",
+      "name": "Kozje",
+      "countryId": "slovenia",
+      "timezone": "Europe/Ljubljana",
+      "latitude": 46.07333,
+      "longitude": 15.55989,
+      "stationCount": 2
+    },
+    {
+      "id": "si-kranj",
+      "name": "Kranj",
+      "countryId": "slovenia",
+      "timezone": "Europe/Ljubljana",
+      "latitude": 46.23887,
+      "longitude": 14.35561,
+      "stationCount": 2
+    },
+    {
+      "id": "si-kranjska-gora",
+      "name": "Kranjska Gora",
+      "countryId": "slovenia",
+      "timezone": "Europe/Ljubljana",
+      "latitude": 46.45689,
+      "longitude": 13.77824,
+      "stationCount": 7
+    },
+    {
+      "id": "si-krsko",
+      "name": "Krško",
+      "countryId": "slovenia",
+      "timezone": "Europe/Ljubljana",
+      "latitude": 45.95915,
+      "longitude": 15.49167,
+      "stationCount": 8
+    },
+    {
+      "id": "si-lasko",
+      "name": "Laško",
+      "countryId": "slovenia",
+      "timezone": "Europe/Ljubljana",
+      "latitude": 46.15463,
+      "longitude": 15.23555,
+      "stationCount": 1
+    },
+    {
+      "id": "si-lenart-v-slovenskih-goricah",
+      "name": "Lenart v Slovenskih Goricah",
+      "countryId": "slovenia",
+      "timezone": "Europe/Ljubljana",
+      "latitude": 46.57676,
+      "longitude": 15.83172,
+      "stationCount": 1
+    },
+    {
+      "id": "si-lendava",
+      "name": "Lendava",
+      "countryId": "slovenia",
+      "timezone": "Europe/Ljubljana",
+      "latitude": 46.56494,
+      "longitude": 16.45091,
+      "stationCount": 2
+    },
+    {
+      "id": "si-litija",
+      "name": "Litija",
+      "countryId": "slovenia",
+      "timezone": "Europe/Ljubljana",
+      "latitude": 46.06038,
+      "longitude": 14.8218,
+      "stationCount": 1
+    },
+    {
+      "id": "si-ljubljana",
+      "name": "Ljubljana",
+      "countryId": "slovenia",
+      "timezone": "Europe/Ljubljana",
+      "latitude": 46.05108,
+      "longitude": 14.50513,
+      "stationCount": 12
+    },
+    {
+      "id": "si-logatec",
+      "name": "Logatec",
+      "countryId": "slovenia",
+      "timezone": "Europe/Ljubljana",
+      "latitude": 45.9168,
+      "longitude": 14.22652,
+      "stationCount": 2
+    },
+    {
+      "id": "si-loz",
+      "name": "Lož",
+      "countryId": "slovenia",
+      "timezone": "Europe/Ljubljana",
+      "latitude": 45.72417,
+      "longitude": 14.46889,
+      "stationCount": 2
+    },
+    {
+      "id": "si-luce",
+      "name": "Luče",
+      "countryId": "slovenia",
+      "timezone": "Europe/Ljubljana",
+      "latitude": 46.35496,
+      "longitude": 14.7476,
+      "stationCount": 2
+    },
+    {
+      "id": "si-majsperk",
+      "name": "Majšperk",
+      "countryId": "slovenia",
+      "timezone": "Europe/Ljubljana",
+      "latitude": 46.35034,
+      "longitude": 15.73412,
+      "stationCount": 2
+    },
+    {
+      "id": "si-maribor",
+      "name": "Maribor",
+      "countryId": "slovenia",
+      "timezone": "Europe/Ljubljana",
+      "latitude": 46.55583,
+      "longitude": 15.64593,
+      "stationCount": 7
+    },
+    {
+      "id": "si-metlika",
+      "name": "Metlika",
+      "countryId": "slovenia",
+      "timezone": "Europe/Ljubljana",
+      "latitude": 45.64983,
+      "longitude": 15.31333,
+      "stationCount": 1
+    },
+    {
+      "id": "si-mozirje",
+      "name": "Mozirje",
+      "countryId": "slovenia",
+      "timezone": "Europe/Ljubljana",
+      "latitude": 46.33829,
+      "longitude": 14.96495,
+      "stationCount": 7
+    },
+    {
+      "id": "si-murska-sobota",
+      "name": "Murska Sobota",
+      "countryId": "slovenia",
+      "timezone": "Europe/Ljubljana",
+      "latitude": 46.66264,
+      "longitude": 16.16643,
+      "stationCount": 2
+    },
+    {
+      "id": "si-nova-gorica",
+      "name": "Nova Gorica",
+      "countryId": "slovenia",
+      "timezone": "Europe/Ljubljana",
+      "latitude": 45.95604,
+      "longitude": 13.64837,
+      "stationCount": 5
+    },
+    {
+      "id": "si-ormoz",
+      "name": "Ormož",
+      "countryId": "slovenia",
+      "timezone": "Europe/Ljubljana",
+      "latitude": 46.4121,
+      "longitude": 16.1522,
+      "stationCount": 1
+    },
+    {
+      "id": "si-osilnica",
+      "name": "Osilnica",
+      "countryId": "slovenia",
+      "timezone": "Europe/Ljubljana",
+      "latitude": 45.52914,
+      "longitude": 14.69838,
+      "stationCount": 3
+    },
+    {
+      "id": "si-piran",
+      "name": "Piran",
+      "countryId": "slovenia",
+      "timezone": "Europe/Ljubljana",
+      "latitude": 45.52778,
+      "longitude": 13.57056,
+      "stationCount": 2
+    },
+    {
+      "id": "si-podbrdo",
+      "name": "Podbrdo",
+      "countryId": "slovenia",
+      "timezone": "Europe/Ljubljana",
+      "latitude": 46.21,
+      "longitude": 13.96444,
+      "stationCount": 7
+    },
+    {
+      "id": "si-podgrad",
+      "name": "Podgrad",
+      "countryId": "slovenia",
+      "timezone": "Europe/Ljubljana",
+      "latitude": 45.52167,
+      "longitude": 14.14611,
+      "stationCount": 2
+    },
+    {
+      "id": "si-podljubelj",
+      "name": "Podljubelj",
+      "countryId": "slovenia",
+      "timezone": "Europe/Ljubljana",
+      "latitude": 46.412,
+      "longitude": 14.275,
+      "stationCount": 2
+    },
+    {
+      "id": "si-portoroz",
+      "name": "Portorož",
+      "countryId": "slovenia",
+      "timezone": "Europe/Ljubljana",
+      "latitude": 45.51429,
+      "longitude": 13.59206,
+      "stationCount": 1
+    },
+    {
+      "id": "si-postojna",
+      "name": "Postojna",
+      "countryId": "slovenia",
+      "timezone": "Europe/Ljubljana",
+      "latitude": 45.77435,
+      "longitude": 14.21528,
+      "stationCount": 5
+    },
+    {
+      "id": "si-ptuj",
+      "name": "Ptuj",
+      "countryId": "slovenia",
+      "timezone": "Europe/Ljubljana",
+      "latitude": 46.42005,
+      "longitude": 15.87018,
+      "stationCount": 3
+    },
+    {
+      "id": "si-radlje-ob-dravi",
+      "name": "Radlje ob Dravi",
+      "countryId": "slovenia",
+      "timezone": "Europe/Ljubljana",
+      "latitude": 46.61527,
+      "longitude": 15.22472,
+      "stationCount": 3
+    },
+    {
+      "id": "si-ravne-na-koroskem",
+      "name": "Ravne na Koroškem",
+      "countryId": "slovenia",
+      "timezone": "Europe/Ljubljana",
+      "latitude": 46.54315,
+      "longitude": 14.97053,
+      "stationCount": 1
+    },
+    {
+      "id": "si-ribnica",
+      "name": "Ribnica",
+      "countryId": "slovenia",
+      "timezone": "Europe/Ljubljana",
+      "latitude": 45.73861,
+      "longitude": 14.7275,
+      "stationCount": 2
+    },
+    {
+      "id": "si-rovte",
+      "name": "Rovte",
+      "countryId": "slovenia",
+      "timezone": "Europe/Ljubljana",
+      "latitude": 45.98528,
+      "longitude": 14.1775,
+      "stationCount": 1
+    },
+    {
+      "id": "si-selca",
+      "name": "Selca",
+      "countryId": "slovenia",
+      "timezone": "Europe/Ljubljana",
+      "latitude": 46.22444,
+      "longitude": 14.20556,
+      "stationCount": 1
+    },
+    {
+      "id": "si-sempeter-pri-gorici",
+      "name": "Šempeter pri Gorici",
+      "countryId": "slovenia",
+      "timezone": "Europe/Ljubljana",
+      "latitude": 45.92927,
+      "longitude": 13.64125,
+      "stationCount": 1
+    },
+    {
+      "id": "si-sezana",
+      "name": "Sežana",
+      "countryId": "slovenia",
+      "timezone": "Europe/Ljubljana",
+      "latitude": 45.70924,
+      "longitude": 13.87333,
+      "stationCount": 2
+    },
+    {
+      "id": "si-skofja-loka",
+      "name": "Škofja Loka",
+      "countryId": "slovenia",
+      "timezone": "Europe/Ljubljana",
+      "latitude": 46.16551,
+      "longitude": 14.30626,
+      "stationCount": 1
+    },
+    {
+      "id": "si-slovenj-gradec",
+      "name": "Slovenj Gradec",
+      "countryId": "slovenia",
+      "timezone": "Europe/Ljubljana",
+      "latitude": 46.51088,
+      "longitude": 15.08377,
+      "stationCount": 3
+    },
+    {
+      "id": "si-slovenske-konjice",
+      "name": "Slovenske Konjice",
+      "countryId": "slovenia",
+      "timezone": "Europe/Ljubljana",
+      "latitude": 46.33735,
+      "longitude": 15.42329,
+      "stationCount": 1
+    },
+    {
+      "id": "si-solcava",
+      "name": "Solčava",
+      "countryId": "slovenia",
+      "timezone": "Europe/Ljubljana",
+      "latitude": 46.41955,
+      "longitude": 14.69369,
+      "stationCount": 2
+    },
+    {
+      "id": "si-stari-trg-pri-lozu",
+      "name": "Stari Trg pri Ložu",
+      "countryId": "slovenia",
+      "timezone": "Europe/Ljubljana",
+      "latitude": 45.71484,
+      "longitude": 14.47097,
+      "stationCount": 3
+    },
+    {
+      "id": "si-tolmin",
+      "name": "Tolmin",
+      "countryId": "slovenia",
+      "timezone": "Europe/Ljubljana",
+      "latitude": 46.18304,
+      "longitude": 13.73321,
+      "stationCount": 3
+    },
+    {
+      "id": "si-topolsica",
+      "name": "Topolšica",
+      "countryId": "slovenia",
+      "timezone": "Europe/Ljubljana",
+      "latitude": 46.40028,
+      "longitude": 15.02157,
+      "stationCount": 3
+    },
+    {
+      "id": "si-trbovlje",
+      "name": "Trbovlje",
+      "countryId": "slovenia",
+      "timezone": "Europe/Ljubljana",
+      "latitude": 46.1541,
+      "longitude": 15.05178,
+      "stationCount": 2
+    },
+    {
+      "id": "si-trebnje",
+      "name": "Trebnje",
+      "countryId": "slovenia",
+      "timezone": "Europe/Ljubljana",
+      "latitude": 45.90424,
+      "longitude": 15.02238,
+      "stationCount": 2
+    },
+    {
+      "id": "si-trzic",
+      "name": "Tržič",
+      "countryId": "slovenia",
+      "timezone": "Europe/Ljubljana",
+      "latitude": 46.36357,
+      "longitude": 14.31046,
+      "stationCount": 6
+    },
+    {
+      "id": "si-velenje",
+      "name": "Velenje",
+      "countryId": "slovenia",
+      "timezone": "Europe/Ljubljana",
+      "latitude": 46.35719,
+      "longitude": 15.11277,
+      "stationCount": 3
+    },
+    {
+      "id": "si-vransko",
+      "name": "Vransko",
+      "countryId": "slovenia",
+      "timezone": "Europe/Ljubljana",
+      "latitude": 46.24436,
+      "longitude": 14.95098,
+      "stationCount": 1
+    },
+    {
+      "id": "si-vrhnika",
+      "name": "Vrhnika",
+      "countryId": "slovenia",
+      "timezone": "Europe/Ljubljana",
+      "latitude": 45.9635,
+      "longitude": 14.29484,
+      "stationCount": 1
+    },
+    {
+      "id": "si-ziri",
+      "name": "Žiri",
+      "countryId": "slovenia",
+      "timezone": "Europe/Ljubljana",
+      "latitude": 46.04405,
+      "longitude": 14.10736,
+      "stationCount": 1
+    },
+    {
+      "id": "si-zlatolicje",
+      "name": "Zlatoličje",
+      "countryId": "slovenia",
+      "timezone": "Europe/Ljubljana",
+      "latitude": 46.45556,
+      "longitude": 15.79111,
+      "stationCount": 1
+    },
+    {
+      "id": "si-zuzemberk",
+      "name": "Žužemberk",
+      "countryId": "slovenia",
+      "timezone": "Europe/Ljubljana",
+      "latitude": 45.83376,
+      "longitude": 14.92804,
+      "stationCount": 3
+    }
+  ],
+  "stations": [
+    {
+      "id": "si-ajdovscina-1-program-radia-slovenija-prvi-89-5",
+      "name": "1. program Radia Slovenija - Prvi",
+      "freqMhz": 89.5,
+      "cityId": "si-ajdovscina",
+      "description": "Slovenian FM register entry listed by AKOS for AJDOVŠČINA. Programme: 1. program Radia Slovenija - Prvi. Holder: RTV SLOVENIJA.",
+      "tags": [
+        "fm",
+        "official",
+        "slovenia",
+        "akos",
+        "rtv-slovenija",
+        "1-program-radia-slovenija-prvi"
+      ],
+      "source": "AKOS RA and TV frequencies register",
+      "sourceUrl": "https://www.akos-rs.si/en/registers/registers-list/ra-and-tv-frequencies",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "si-ajdovscina-radio-ognjisce-91-2",
+      "name": "RADIO OGNJIŠČE",
+      "freqMhz": 91.2,
+      "cityId": "si-ajdovscina",
+      "description": "Slovenian FM register entry listed by AKOS for AJDOVŠČINA. Programme: RADIO OGNJIŠČE. Holder: RADIO OGNJIŠČE d.o.o. Koper.",
+      "tags": [
+        "fm",
+        "official",
+        "slovenia",
+        "akos",
+        "radio-ognjisce-doo-koper",
+        "radio-ognjisce"
+      ],
+      "source": "AKOS RA and TV frequencies register",
+      "sourceUrl": "https://www.akos-rs.si/en/registers/registers-list/ra-and-tv-frequencies",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "si-ajdovscina-radio-robin-91-8",
+      "name": "RADIO ROBIN",
+      "freqMhz": 91.8,
+      "cityId": "si-ajdovscina",
+      "description": "Slovenian FM register entry listed by AKOS for AJDOVŠČINA. Programme: RADIO ROBIN. Holder: RADIO ROBIN d.o.o..",
+      "tags": [
+        "fm",
+        "official",
+        "slovenia",
+        "akos",
+        "radio-robin-doo",
+        "radio-robin"
+      ],
+      "source": "AKOS RA and TV frequencies register",
+      "sourceUrl": "https://www.akos-rs.si/en/registers/registers-list/ra-and-tv-frequencies",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "si-ajdovscina-radio-koper-radio-kp-92-3",
+      "name": "RADIO KOPER /RADIO KP/",
+      "freqMhz": 92.3,
+      "cityId": "si-ajdovscina",
+      "description": "Slovenian FM register entry listed by AKOS for AJDOVŠČINA. Programme: RADIO KOPER /RADIO KP/. Holder: RTV SLOVENIJA.",
+      "tags": [
+        "fm",
+        "official",
+        "slovenia",
+        "akos",
+        "rtv-slovenija",
+        "radio-koper-radio-kp"
+      ],
+      "source": "AKOS RA and TV frequencies register",
+      "sourceUrl": "https://www.akos-rs.si/en/registers/registers-list/ra-and-tv-frequencies",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "si-ajdovscina-radio-1-primorska-ena-ng-radio-1-93-9",
+      "name": "Radio 1 Primorska; ENA NG Radio 1",
+      "freqMhz": 93.9,
+      "cityId": "si-ajdovscina",
+      "description": "Slovenian FM register entry listed by AKOS for AJDOVŠČINA. Programme: Radio 1 Primorska; ENA NG Radio 1. Holder: RADIO PRO 1 d.o.o..",
+      "tags": [
+        "fm",
+        "official",
+        "slovenia",
+        "akos",
+        "radio-pro-1-doo",
+        "radio-1-primorska-ena-ng-radio-1"
+      ],
+      "source": "AKOS RA and TV frequencies register",
+      "sourceUrl": "https://www.akos-rs.si/en/registers/registers-list/ra-and-tv-frequencies",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "si-ajdovscina-radio-slovenia-internationalradio-si-94-8",
+      "name": "Radio Slovenia International/Radio SI",
+      "freqMhz": 94.8,
+      "cityId": "si-ajdovscina",
+      "description": "Slovenian FM register entry listed by AKOS for AJDOVŠČINA. Programme: Radio Slovenia International/Radio SI. Holder: RTV SLOVENIJA.",
+      "tags": [
+        "fm",
+        "official",
+        "slovenia",
+        "akos",
+        "rtv-slovenija",
+        "radio-slovenia-internationalradio-si"
+      ],
+      "source": "AKOS RA and TV frequencies register",
+      "sourceUrl": "https://www.akos-rs.si/en/registers/registers-list/ra-and-tv-frequencies",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "si-ajdovscina-radio-slovenija-drugi-program-program-val-202-val-202-96-3",
+      "name": "RADIO SLOVENIJA, drugi program - PROGRAM VAL 202 /VAL 202/",
+      "freqMhz": 96.3,
+      "cityId": "si-ajdovscina",
+      "description": "Slovenian FM register entry listed by AKOS for AJDOVŠČINA. Programme: RADIO SLOVENIJA, drugi program - PROGRAM VAL 202 /VAL 202/. Holder: RTV SLOVENIJA.",
+      "tags": [
+        "fm",
+        "official",
+        "slovenia",
+        "akos",
+        "rtv-slovenija",
+        "radio-slovenija-drugi-program-program-val-202-val-202"
+      ],
+      "source": "AKOS RA and TV frequencies register",
+      "sourceUrl": "https://www.akos-rs.si/en/registers/registers-list/ra-and-tv-frequencies",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "si-ajdovscina-radio-odmev-regionalna-radijska-mreza-primorski-val-97-9",
+      "name": "RADIO ODMEV Regionalna radijska mreža PRIMORSKI VAL",
+      "freqMhz": 97.9,
+      "cityId": "si-ajdovscina",
+      "description": "Slovenian FM register entry listed by AKOS for AJDOVŠČINA. Programme: RADIO ODMEV Regionalna radijska mreža PRIMORSKI VAL. Holder: RADIO CERKNO d.o.o..",
+      "tags": [
+        "fm",
+        "official",
+        "slovenia",
+        "akos",
+        "radio-cerkno-doo",
+        "radio-odmev-regionalna-radijska-mreza-primorski-val"
+      ],
+      "source": "AKOS RA and TV frequencies register",
+      "sourceUrl": "https://www.akos-rs.si/en/registers/registers-list/ra-and-tv-frequencies",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "si-ajdovscina-radio-slovenija-tretji-program-program-ars-ars-98-6",
+      "name": "RADIO SLOVENIJA, tretji program - PROGRAM ARS /ARS/",
+      "freqMhz": 98.6,
+      "cityId": "si-ajdovscina",
+      "description": "Slovenian FM register entry listed by AKOS for AJDOVŠČINA. Programme: RADIO SLOVENIJA, tretji program - PROGRAM ARS /ARS/. Holder: RTV SLOVENIJA.",
+      "tags": [
+        "fm",
+        "official",
+        "slovenia",
+        "akos",
+        "rtv-slovenija",
+        "radio-slovenija-tretji-program-program-ars-ars"
+      ],
+      "source": "AKOS RA and TV frequencies register",
+      "sourceUrl": "https://www.akos-rs.si/en/registers/registers-list/ra-and-tv-frequencies",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "si-ajdovscina-radio-center-primorska-radio-center-106-9",
+      "name": "Radio Center Primorska RADIO CENTER",
+      "freqMhz": 106.9,
+      "cityId": "si-ajdovscina",
+      "description": "Slovenian FM register entry listed by AKOS for AJDOVŠČINA. Programme: Radio Center Primorska RADIO CENTER. Holder: NEXT MEDIA, d.o.o..",
+      "tags": [
+        "fm",
+        "official",
+        "slovenia",
+        "akos",
+        "next-media-doo",
+        "radio-center-primorska-radio-center"
+      ],
+      "source": "AKOS RA and TV frequencies register",
+      "sourceUrl": "https://www.akos-rs.si/en/registers/registers-list/ra-and-tv-frequencies",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "si-ajdovscina-radio-center-primorska-radio-center-107-3",
+      "name": "Radio Center Primorska RADIO CENTER",
+      "freqMhz": 107.3,
+      "cityId": "si-ajdovscina",
+      "description": "Slovenian FM register entry listed by AKOS for AJDOVŠČINA. Programme: Radio Center Primorska RADIO CENTER. Holder: NEXT MEDIA, d.o.o..",
+      "tags": [
+        "fm",
+        "official",
+        "slovenia",
+        "akos",
+        "next-media-doo",
+        "radio-center-primorska-radio-center"
+      ],
+      "source": "AKOS RA and TV frequencies register",
+      "sourceUrl": "https://www.akos-rs.si/en/registers/registers-list/ra-and-tv-frequencies",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "si-begunje-na-gorenjskem-radio-1-gorenjska-ena-go-radio-1-94-4",
+      "name": "Radio 1 Gorenjska; ENA GO Radio 1",
+      "freqMhz": 94.4,
+      "cityId": "si-begunje-na-gorenjskem",
+      "description": "Slovenian FM register entry listed by AKOS for BEGUNJE. Programme: Radio 1 Gorenjska; ENA GO Radio 1. Holder: RADIO BELVI, d.o.o..",
+      "tags": [
+        "fm",
+        "official",
+        "slovenia",
+        "akos",
+        "radio-belvi-doo",
+        "radio-1-gorenjska-ena-go-radio-1"
+      ],
+      "source": "AKOS RA and TV frequencies register",
+      "sourceUrl": "https://www.akos-rs.si/en/registers/registers-list/ra-and-tv-frequencies",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "si-bizeljsko-1-program-radia-slovenija-prvi-92-7",
+      "name": "1. program Radia Slovenija - Prvi",
+      "freqMhz": 92.7,
+      "cityId": "si-bizeljsko",
+      "description": "Slovenian FM register entry listed by AKOS for BIZELJSKO. Programme: 1. program Radia Slovenija - Prvi. Holder: RTV SLOVENIJA.",
+      "tags": [
+        "fm",
+        "official",
+        "slovenia",
+        "akos",
+        "rtv-slovenija",
+        "1-program-radia-slovenija-prvi"
+      ],
+      "source": "AKOS RA and TV frequencies register",
+      "sourceUrl": "https://www.akos-rs.si/en/registers/registers-list/ra-and-tv-frequencies",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "si-bizeljsko-radio-slovenija-drugi-program-program-val-202-val-202-96-2",
+      "name": "RADIO SLOVENIJA, drugi program - PROGRAM VAL 202 /VAL 202/",
+      "freqMhz": 96.2,
+      "cityId": "si-bizeljsko",
+      "description": "Slovenian FM register entry listed by AKOS for BIZELJSKO. Programme: RADIO SLOVENIJA, drugi program - PROGRAM VAL 202 /VAL 202/. Holder: RTV SLOVENIJA.",
+      "tags": [
+        "fm",
+        "official",
+        "slovenia",
+        "akos",
+        "rtv-slovenija",
+        "radio-slovenija-drugi-program-program-val-202-val-202"
+      ],
+      "source": "AKOS RA and TV frequencies register",
+      "sourceUrl": "https://www.akos-rs.si/en/registers/registers-list/ra-and-tv-frequencies",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "si-bizeljsko-radio-slovenija-tretji-program-program-ars-ars-101-5",
+      "name": "RADIO SLOVENIJA, tretji program - PROGRAM ARS /ARS/",
+      "freqMhz": 101.5,
+      "cityId": "si-bizeljsko",
+      "description": "Slovenian FM register entry listed by AKOS for BIZELJSKO. Programme: RADIO SLOVENIJA, tretji program - PROGRAM ARS /ARS/. Holder: RTV SLOVENIJA.",
+      "tags": [
+        "fm",
+        "official",
+        "slovenia",
+        "akos",
+        "rtv-slovenija",
+        "radio-slovenija-tretji-program-program-ars-ars"
+      ],
+      "source": "AKOS RA and TV frequencies register",
+      "sourceUrl": "https://www.akos-rs.si/en/registers/registers-list/ra-and-tv-frequencies",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "si-blejska-dobrava-best-fm-ljubljana-best-lj-87-8",
+      "name": "Best FM Ljubljana; Best Lj",
+      "freqMhz": 87.8,
+      "cityId": "si-blejska-dobrava",
+      "description": "Slovenian FM register entry listed by AKOS for BLEJSKA DOBRAVA. Programme: Best FM Ljubljana; Best Lj. Holder: RGL, d.o.o, Ljubljana.",
+      "tags": [
+        "fm",
+        "official",
+        "slovenia",
+        "akos",
+        "rgl-doo-ljubljana",
+        "best-fm-ljubljana-best-lj"
+      ],
+      "source": "AKOS RA and TV frequencies register",
+      "sourceUrl": "https://www.akos-rs.si/en/registers/registers-list/ra-and-tv-frequencies",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "si-blejska-dobrava-radio-antena-89-5",
+      "name": "Radio Antena",
+      "freqMhz": 89.5,
+      "cityId": "si-blejska-dobrava",
+      "description": "Slovenian FM register entry listed by AKOS for BLEJSKA DOBRAVA. Programme: Radio Antena. Holder: RADIO ANTENA d.o.o., Ljubljana.",
+      "tags": [
+        "fm",
+        "official",
+        "slovenia",
+        "akos",
+        "radio-antena-doo-ljubljana",
+        "radio-antena"
+      ],
+      "source": "AKOS RA and TV frequencies register",
+      "sourceUrl": "https://www.akos-rs.si/en/registers/registers-list/ra-and-tv-frequencies",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "si-blejska-dobrava-1-program-radia-slovenija-prvi-90",
+      "name": "1. program Radia Slovenija - Prvi",
+      "freqMhz": 90,
+      "cityId": "si-blejska-dobrava",
+      "description": "Slovenian FM register entry listed by AKOS for BLEJSKA DOBRAVA. Programme: 1. program Radia Slovenija - Prvi. Holder: RTV SLOVENIJA.",
+      "tags": [
+        "fm",
+        "official",
+        "slovenia",
+        "akos",
+        "rtv-slovenija",
+        "1-program-radia-slovenija-prvi"
+      ],
+      "source": "AKOS RA and TV frequencies register",
+      "sourceUrl": "https://www.akos-rs.si/en/registers/registers-list/ra-and-tv-frequencies",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "si-blejska-dobrava-radio-slovenija-drugi-program-program-val-202-val-202-92-4",
+      "name": "RADIO SLOVENIJA, drugi program - PROGRAM VAL 202 /VAL 202/",
+      "freqMhz": 92.4,
+      "cityId": "si-blejska-dobrava",
+      "description": "Slovenian FM register entry listed by AKOS for BLEJSKA DOBRAVA. Programme: RADIO SLOVENIJA, drugi program - PROGRAM VAL 202 /VAL 202/. Holder: RTV SLOVENIJA.",
+      "tags": [
+        "fm",
+        "official",
+        "slovenia",
+        "akos",
+        "rtv-slovenija",
+        "radio-slovenija-drugi-program-program-val-202-val-202"
+      ],
+      "source": "AKOS RA and TV frequencies register",
+      "sourceUrl": "https://www.akos-rs.si/en/registers/registers-list/ra-and-tv-frequencies",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "si-blejska-dobrava-radio-slovenia-internationalradio-si-100-4",
+      "name": "Radio Slovenia International/Radio SI",
+      "freqMhz": 100.4,
+      "cityId": "si-blejska-dobrava",
+      "description": "Slovenian FM register entry listed by AKOS for BLEJSKA DOBRAVA. Programme: Radio Slovenia International/Radio SI. Holder: RTV SLOVENIJA.",
+      "tags": [
+        "fm",
+        "official",
+        "slovenia",
+        "akos",
+        "rtv-slovenija",
+        "radio-slovenia-internationalradio-si"
+      ],
+      "source": "AKOS RA and TV frequencies register",
+      "sourceUrl": "https://www.akos-rs.si/en/registers/registers-list/ra-and-tv-frequencies",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "si-bovec-radio-slovenia-internationalradio-si-92-5",
+      "name": "Radio Slovenia International/Radio SI",
+      "freqMhz": 92.5,
+      "cityId": "si-bovec",
+      "description": "Slovenian FM register entry listed by AKOS for BOVEC. Programme: Radio Slovenia International/Radio SI. Holder: RTV SLOVENIJA.",
+      "tags": [
+        "fm",
+        "official",
+        "slovenia",
+        "akos",
+        "rtv-slovenija",
+        "radio-slovenia-internationalradio-si"
+      ],
+      "source": "AKOS RA and TV frequencies register",
+      "sourceUrl": "https://www.akos-rs.si/en/registers/registers-list/ra-and-tv-frequencies",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "si-bovec-radio-1-primorska-ena-ng-radio-1-98-5",
+      "name": "Radio 1 Primorska; ENA NG Radio 1",
+      "freqMhz": 98.5,
+      "cityId": "si-bovec",
+      "description": "Slovenian FM register entry listed by AKOS for BOVEC. Programme: Radio 1 Primorska; ENA NG Radio 1. Holder: RADIO PRO 1 d.o.o..",
+      "tags": [
+        "fm",
+        "official",
+        "slovenia",
+        "akos",
+        "radio-pro-1-doo",
+        "radio-1-primorska-ena-ng-radio-1"
+      ],
+      "source": "AKOS RA and TV frequencies register",
+      "sourceUrl": "https://www.akos-rs.si/en/registers/registers-list/ra-and-tv-frequencies",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "si-bovec-radio-robin-99-5",
+      "name": "RADIO ROBIN",
+      "freqMhz": 99.5,
+      "cityId": "si-bovec",
+      "description": "Slovenian FM register entry listed by AKOS for BOVEC. Programme: RADIO ROBIN. Holder: RADIO ROBIN d.o.o..",
+      "tags": [
+        "fm",
+        "official",
+        "slovenia",
+        "akos",
+        "radio-robin-doo",
+        "radio-robin"
+      ],
+      "source": "AKOS RA and TV frequencies register",
+      "sourceUrl": "https://www.akos-rs.si/en/registers/registers-list/ra-and-tv-frequencies",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "si-bovec-radio-ognjisce-104-5",
+      "name": "RADIO OGNJIŠČE",
+      "freqMhz": 104.5,
+      "cityId": "si-bovec",
+      "description": "Slovenian FM register entry listed by AKOS for BOVEC. Programme: RADIO OGNJIŠČE. Holder: RADIO OGNJIŠČE d.o.o. Koper.",
+      "tags": [
+        "fm",
+        "official",
+        "slovenia",
+        "akos",
+        "radio-ognjisce-doo-koper",
+        "radio-ognjisce"
+      ],
+      "source": "AKOS RA and TV frequencies register",
+      "sourceUrl": "https://www.akos-rs.si/en/registers/registers-list/ra-and-tv-frequencies",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "si-bovec-radio-center-slovenija-radio-center-107-7",
+      "name": "RADIO CENTER SLOVENIJA RADIO CENTER",
+      "freqMhz": 107.7,
+      "cityId": "si-bovec",
+      "description": "Slovenian FM register entry listed by AKOS for BOVEC. Programme: RADIO CENTER SLOVENIJA RADIO CENTER. Holder: RADIO CENTER d.o.o..",
+      "tags": [
+        "fm",
+        "official",
+        "slovenia",
+        "akos",
+        "radio-center-doo",
+        "radio-center-slovenija-radio-center"
+      ],
+      "source": "AKOS RA and TV frequencies register",
+      "sourceUrl": "https://www.akos-rs.si/en/registers/registers-list/ra-and-tv-frequencies",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "si-cerknica-radio-1-krvavec-ena-kr-radio-1-100-4",
+      "name": "Radio 1 Krvavec; ENA KR Radio 1",
+      "freqMhz": 100.4,
+      "cityId": "si-cerknica",
+      "description": "Slovenian FM register entry listed by AKOS for CERKNICA. Programme: Radio 1 Krvavec; ENA KR Radio 1. Holder: RMA INVEST d.o.o..",
+      "tags": [
+        "fm",
+        "official",
+        "slovenia",
+        "akos",
+        "rma-invest-doo",
+        "radio-1-krvavec-ena-kr-radio-1"
+      ],
+      "source": "AKOS RA and TV frequencies register",
+      "sourceUrl": "https://www.akos-rs.si/en/registers/registers-list/ra-and-tv-frequencies",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "si-cerknica-radio-94-101",
+      "name": "Radio 94",
+      "freqMhz": 101,
+      "cityId": "si-cerknica",
+      "description": "Slovenian FM register entry listed by AKOS for CERKNICA. Programme: Radio 94. Holder: RADIO 94 d.o.o. Postojna.",
+      "tags": [
+        "fm",
+        "official",
+        "slovenia",
+        "akos",
+        "radio-94-doo-postojna",
+        "radio-94"
+      ],
+      "source": "AKOS RA and TV frequencies register",
+      "sourceUrl": "https://www.akos-rs.si/en/registers/registers-list/ra-and-tv-frequencies",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "si-cerkno-radio-slovenija-drugi-program-program-val-202-val-202-87-8",
+      "name": "RADIO SLOVENIJA, drugi program - PROGRAM VAL 202 /VAL 202/",
+      "freqMhz": 87.8,
+      "cityId": "si-cerkno",
+      "description": "Slovenian FM register entry listed by AKOS for CERKNO. Programme: RADIO SLOVENIJA, drugi program - PROGRAM VAL 202 /VAL 202/. Holder: RTV SLOVENIJA.",
+      "tags": [
+        "fm",
+        "official",
+        "slovenia",
+        "akos",
+        "rtv-slovenija",
+        "radio-slovenija-drugi-program-program-val-202-val-202"
+      ],
+      "source": "AKOS RA and TV frequencies register",
+      "sourceUrl": "https://www.akos-rs.si/en/registers/registers-list/ra-and-tv-frequencies",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "si-cerkno-radio-odmev-regionalna-radijska-mreza-primorski-val-89-6",
+      "name": "RADIO ODMEV Regionalna radijska mreža PRIMORSKI VAL",
+      "freqMhz": 89.6,
+      "cityId": "si-cerkno",
+      "description": "Slovenian FM register entry listed by AKOS for CERKNO. Programme: RADIO ODMEV Regionalna radijska mreža PRIMORSKI VAL. Holder: RADIO CERKNO d.o.o..",
+      "tags": [
+        "fm",
+        "official",
+        "slovenia",
+        "akos",
+        "radio-cerkno-doo",
+        "radio-odmev-regionalna-radijska-mreza-primorski-val"
+      ],
+      "source": "AKOS RA and TV frequencies register",
+      "sourceUrl": "https://www.akos-rs.si/en/registers/registers-list/ra-and-tv-frequencies",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "si-cerkno-1-program-radia-slovenija-prvi-90-8",
+      "name": "1. program Radia Slovenija - Prvi",
+      "freqMhz": 90.8,
+      "cityId": "si-cerkno",
+      "description": "Slovenian FM register entry listed by AKOS for CERKNO. Programme: 1. program Radia Slovenija - Prvi. Holder: RTV SLOVENIJA.",
+      "tags": [
+        "fm",
+        "official",
+        "slovenia",
+        "akos",
+        "rtv-slovenija",
+        "1-program-radia-slovenija-prvi"
+      ],
+      "source": "AKOS RA and TV frequencies register",
+      "sourceUrl": "https://www.akos-rs.si/en/registers/registers-list/ra-and-tv-frequencies",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "si-cerkno-radio-slovenija-drugi-program-program-val-202-val-202-92-4",
+      "name": "RADIO SLOVENIJA, drugi program - PROGRAM VAL 202 /VAL 202/",
+      "freqMhz": 92.4,
+      "cityId": "si-cerkno",
+      "description": "Slovenian FM register entry listed by AKOS for CERKNO. Programme: RADIO SLOVENIJA, drugi program - PROGRAM VAL 202 /VAL 202/. Holder: RTV SLOVENIJA.",
+      "tags": [
+        "fm",
+        "official",
+        "slovenia",
+        "akos",
+        "rtv-slovenija",
+        "radio-slovenija-drugi-program-program-val-202-val-202"
+      ],
+      "source": "AKOS RA and TV frequencies register",
+      "sourceUrl": "https://www.akos-rs.si/en/registers/registers-list/ra-and-tv-frequencies",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "si-cerkno-radio-slovenija-tretji-program-program-ars-ars-102-5",
+      "name": "RADIO SLOVENIJA, tretji program - PROGRAM ARS /ARS/",
+      "freqMhz": 102.5,
+      "cityId": "si-cerkno",
+      "description": "Slovenian FM register entry listed by AKOS for CERKNO. Programme: RADIO SLOVENIJA, tretji program - PROGRAM ARS /ARS/. Holder: RTV SLOVENIJA.",
+      "tags": [
+        "fm",
+        "official",
+        "slovenia",
+        "akos",
+        "rtv-slovenija",
+        "radio-slovenija-tretji-program-program-ars-ars"
+      ],
+      "source": "AKOS RA and TV frequencies register",
+      "sourceUrl": "https://www.akos-rs.si/en/registers/registers-list/ra-and-tv-frequencies",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "si-crnomelj-1-program-radia-slovenija-prvi-89",
+      "name": "1. program Radia Slovenija - Prvi",
+      "freqMhz": 89,
+      "cityId": "si-crnomelj",
+      "description": "Slovenian FM register entry listed by AKOS for ČRNOMELJ. Programme: 1. program Radia Slovenija - Prvi. Holder: RTV SLOVENIJA.",
+      "tags": [
+        "fm",
+        "official",
+        "slovenia",
+        "akos",
+        "rtv-slovenija",
+        "1-program-radia-slovenija-prvi"
+      ],
+      "source": "AKOS RA and TV frequencies register",
+      "sourceUrl": "https://www.akos-rs.si/en/registers/registers-list/ra-and-tv-frequencies",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "si-crnomelj-radio-1-bela-krajina-ena-bk-radio-1-89-5",
+      "name": "Radio 1 Bela Krajina; ENA BK Radio 1",
+      "freqMhz": 89.5,
+      "cityId": "si-crnomelj",
+      "description": "Slovenian FM register entry listed by AKOS for ČRNOMELJ. Programme: Radio 1 Bela Krajina; ENA BK Radio 1. Holder: RADIO PRO 1 d.o.o..",
+      "tags": [
+        "fm",
+        "official",
+        "slovenia",
+        "akos",
+        "radio-pro-1-doo",
+        "radio-1-bela-krajina-ena-bk-radio-1"
+      ],
+      "source": "AKOS RA and TV frequencies register",
+      "sourceUrl": "https://www.akos-rs.si/en/registers/registers-list/ra-and-tv-frequencies",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "si-crnomelj-radio-ognjisce-95-9",
+      "name": "RADIO OGNJIŠČE",
+      "freqMhz": 95.9,
+      "cityId": "si-crnomelj",
+      "description": "Slovenian FM register entry listed by AKOS for ČRNOMELJ. Programme: RADIO OGNJIŠČE. Holder: RADIO OGNJIŠČE d.o.o. Koper.",
+      "tags": [
+        "fm",
+        "official",
+        "slovenia",
+        "akos",
+        "radio-ognjisce-doo-koper",
+        "radio-ognjisce"
+      ],
+      "source": "AKOS RA and TV frequencies register",
+      "sourceUrl": "https://www.akos-rs.si/en/registers/registers-list/ra-and-tv-frequencies",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "si-crnomelj-radio-slovenija-tretji-program-program-ars-ars-96-5",
+      "name": "RADIO SLOVENIJA, tretji program - PROGRAM ARS /ARS/",
+      "freqMhz": 96.5,
+      "cityId": "si-crnomelj",
+      "description": "Slovenian FM register entry listed by AKOS for ČRNOMELJ. Programme: RADIO SLOVENIJA, tretji program - PROGRAM ARS /ARS/. Holder: RTV SLOVENIJA.",
+      "tags": [
+        "fm",
+        "official",
+        "slovenia",
+        "akos",
+        "rtv-slovenija",
+        "radio-slovenija-tretji-program-program-ars-ars"
+      ],
+      "source": "AKOS RA and TV frequencies register",
+      "sourceUrl": "https://www.akos-rs.si/en/registers/registers-list/ra-and-tv-frequencies",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "si-crnomelj-radio-slovenija-drugi-program-program-val-202-val-202-99-1",
+      "name": "RADIO SLOVENIJA, drugi program - PROGRAM VAL 202 /VAL 202/",
+      "freqMhz": 99.1,
+      "cityId": "si-crnomelj",
+      "description": "Slovenian FM register entry listed by AKOS for ČRNOMELJ. Programme: RADIO SLOVENIJA, drugi program - PROGRAM VAL 202 /VAL 202/. Holder: RTV SLOVENIJA.",
+      "tags": [
+        "fm",
+        "official",
+        "slovenia",
+        "akos",
+        "rtv-slovenija",
+        "radio-slovenija-drugi-program-program-val-202-val-202"
+      ],
+      "source": "AKOS RA and TV frequencies register",
+      "sourceUrl": "https://www.akos-rs.si/en/registers/registers-list/ra-and-tv-frequencies",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "si-crnomelj-radio-center-slovenija-radio-center-99-6",
+      "name": "RADIO CENTER SLOVENIJA RADIO CENTER",
+      "freqMhz": 99.6,
+      "cityId": "si-crnomelj",
+      "description": "Slovenian FM register entry listed by AKOS for ČRNOMELJ. Programme: RADIO CENTER SLOVENIJA RADIO CENTER. Holder: RADIO CENTER d.o.o..",
+      "tags": [
+        "fm",
+        "official",
+        "slovenia",
+        "akos",
+        "radio-center-doo",
+        "radio-center-slovenija-radio-center"
+      ],
+      "source": "AKOS RA and TV frequencies register",
+      "sourceUrl": "https://www.akos-rs.si/en/registers/registers-list/ra-and-tv-frequencies",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "si-crnomelj-radio-slovenia-internationalradio-si-107-7",
+      "name": "Radio Slovenia International/Radio SI",
+      "freqMhz": 107.7,
+      "cityId": "si-crnomelj",
+      "description": "Slovenian FM register entry listed by AKOS for ČRNOMELJ. Programme: Radio Slovenia International/Radio SI. Holder: RTV SLOVENIJA.",
+      "tags": [
+        "fm",
+        "official",
+        "slovenia",
+        "akos",
+        "rtv-slovenija",
+        "radio-slovenia-internationalradio-si"
+      ],
+      "source": "AKOS RA and TV frequencies register",
+      "sourceUrl": "https://www.akos-rs.si/en/registers/registers-list/ra-and-tv-frequencies",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "si-golnik-radio-slovenia-internationalradio-si-89",
+      "name": "Radio Slovenia International/Radio SI",
+      "freqMhz": 89,
+      "cityId": "si-golnik",
+      "description": "Slovenian FM register entry listed by AKOS for GOLNIK. Programme: Radio Slovenia International/Radio SI. Holder: RTV SLOVENIJA.",
+      "tags": [
+        "fm",
+        "official",
+        "slovenia",
+        "akos",
+        "rtv-slovenija",
+        "radio-slovenia-internationalradio-si"
+      ],
+      "source": "AKOS RA and TV frequencies register",
+      "sourceUrl": "https://www.akos-rs.si/en/registers/registers-list/ra-and-tv-frequencies",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "si-golnik-radio-gorenc-93-8",
+      "name": "RADIO GORENC",
+      "freqMhz": 93.8,
+      "cityId": "si-golnik",
+      "description": "Slovenian FM register entry listed by AKOS for GOLNIK. Programme: RADIO GORENC. Holder: RADIO GORENC d.o.o..",
+      "tags": [
+        "fm",
+        "official",
+        "slovenia",
+        "akos",
+        "radio-gorenc-doo",
+        "radio-gorenc"
+      ],
+      "source": "AKOS RA and TV frequencies register",
+      "sourceUrl": "https://www.akos-rs.si/en/registers/registers-list/ra-and-tv-frequencies",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "si-golnik-radio-center-slovenija-radio-center-102-6",
+      "name": "RADIO CENTER SLOVENIJA RADIO CENTER",
+      "freqMhz": 102.6,
+      "cityId": "si-golnik",
+      "description": "Slovenian FM register entry listed by AKOS for GOLNIK. Programme: RADIO CENTER SLOVENIJA RADIO CENTER. Holder: RADIO CENTER d.o.o..",
+      "tags": [
+        "fm",
+        "official",
+        "slovenia",
+        "akos",
+        "radio-center-doo",
+        "radio-center-slovenija-radio-center"
+      ],
+      "source": "AKOS RA and TV frequencies register",
+      "sourceUrl": "https://www.akos-rs.si/en/registers/registers-list/ra-and-tv-frequencies",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "si-gornja-radgona-radio-ognjisce-106",
+      "name": "RADIO OGNJIŠČE",
+      "freqMhz": 106,
+      "cityId": "si-gornja-radgona",
+      "description": "Slovenian FM register entry listed by AKOS for GORNJA RADGONA. Programme: RADIO OGNJIŠČE. Holder: RADIO OGNJIŠČE d.o.o. Koper.",
+      "tags": [
+        "fm",
+        "official",
+        "slovenia",
+        "akos",
+        "radio-ognjisce-doo-koper",
+        "radio-ognjisce"
+      ],
+      "source": "AKOS RA and TV frequencies register",
+      "sourceUrl": "https://www.akos-rs.si/en/registers/registers-list/ra-and-tv-frequencies",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "si-gornja-radgona-toti-maxi-toti-ms-toti-radio-toti-107-7",
+      "name": "TOTI MAXI; TOTI MS TOTI RADIO; TOTI",
+      "freqMhz": 107.7,
+      "cityId": "si-gornja-radgona",
+      "description": "Slovenian FM register entry listed by AKOS for GORNJA RADGONA. Programme: TOTI MAXI; TOTI MS TOTI RADIO; TOTI. Holder: RADIO MAKSI d.o.o..",
+      "tags": [
+        "fm",
+        "official",
+        "slovenia",
+        "akos",
+        "radio-maksi-doo",
+        "toti-maxi-toti-ms-toti-radio-toti"
+      ],
+      "source": "AKOS RA and TV frequencies register",
+      "sourceUrl": "https://www.akos-rs.si/en/registers/registers-list/ra-and-tv-frequencies",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "si-hotedrsica-1-program-radia-slovenija-prvi-91-5",
+      "name": "1. program Radia Slovenija - Prvi",
+      "freqMhz": 91.5,
+      "cityId": "si-hotedrsica",
+      "description": "Slovenian FM register entry listed by AKOS for HOTEDRŠICA. Programme: 1. program Radia Slovenija - Prvi. Holder: RTV SLOVENIJA.",
+      "tags": [
+        "fm",
+        "official",
+        "slovenia",
+        "akos",
+        "rtv-slovenija",
+        "1-program-radia-slovenija-prvi"
+      ],
+      "source": "AKOS RA and TV frequencies register",
+      "sourceUrl": "https://www.akos-rs.si/en/registers/registers-list/ra-and-tv-frequencies",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "si-hotedrsica-radio-slovenija-drugi-program-program-val-202-val-202-99-7",
+      "name": "RADIO SLOVENIJA, drugi program - PROGRAM VAL 202 /VAL 202/",
+      "freqMhz": 99.7,
+      "cityId": "si-hotedrsica",
+      "description": "Slovenian FM register entry listed by AKOS for HOTEDRŠICA. Programme: RADIO SLOVENIJA, drugi program - PROGRAM VAL 202 /VAL 202/. Holder: RTV SLOVENIJA.",
+      "tags": [
+        "fm",
+        "official",
+        "slovenia",
+        "akos",
+        "rtv-slovenija",
+        "radio-slovenija-drugi-program-program-val-202-val-202"
+      ],
+      "source": "AKOS RA and TV frequencies register",
+      "sourceUrl": "https://www.akos-rs.si/en/registers/registers-list/ra-and-tv-frequencies",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "si-hrvatini-radio-capris-95-6",
+      "name": "RADIO CAPRIS",
+      "freqMhz": 95.6,
+      "cityId": "si-hrvatini",
+      "description": "Slovenian FM register entry listed by AKOS for HRVATINI. Programme: RADIO CAPRIS. Holder: RADIO CAPRIS d.o.o..",
+      "tags": [
+        "fm",
+        "official",
+        "slovenia",
+        "akos",
+        "radio-capris-doo",
+        "radio-capris"
+      ],
+      "source": "AKOS RA and TV frequencies register",
+      "sourceUrl": "https://www.akos-rs.si/en/registers/registers-list/ra-and-tv-frequencies",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "si-hrvatini-radio-1-primorska-ena-ng-radio-1-97-3",
+      "name": "Radio 1 Primorska; ENA NG Radio 1",
+      "freqMhz": 97.3,
+      "cityId": "si-hrvatini",
+      "description": "Slovenian FM register entry listed by AKOS for HRVATINI. Programme: Radio 1 Primorska; ENA NG Radio 1. Holder: RADIO PRO 1 d.o.o..",
+      "tags": [
+        "fm",
+        "official",
+        "slovenia",
+        "akos",
+        "radio-pro-1-doo",
+        "radio-1-primorska-ena-ng-radio-1"
+      ],
+      "source": "AKOS RA and TV frequencies register",
+      "sourceUrl": "https://www.akos-rs.si/en/registers/registers-list/ra-and-tv-frequencies",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "si-hrvatini-radio-aktual-obala-102-4",
+      "name": "Radio Aktual Obala",
+      "freqMhz": 102.4,
+      "cityId": "si-hrvatini",
+      "description": "Slovenian FM register entry listed by AKOS for HRVATINI. Programme: Radio Aktual Obala. Holder: RGL, d.o.o, Ljubljana.",
+      "tags": [
+        "fm",
+        "official",
+        "slovenia",
+        "akos",
+        "rgl-doo-ljubljana",
+        "radio-aktual-obala"
+      ],
+      "source": "AKOS RA and TV frequencies register",
+      "sourceUrl": "https://www.akos-rs.si/en/registers/registers-list/ra-and-tv-frequencies",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "si-hrvatini-radio-center-slovenija-radio-center-106-4",
+      "name": "RADIO CENTER SLOVENIJA RADIO CENTER",
+      "freqMhz": 106.4,
+      "cityId": "si-hrvatini",
+      "description": "Slovenian FM register entry listed by AKOS for HRVATINI. Programme: RADIO CENTER SLOVENIJA RADIO CENTER. Holder: RADIO CENTER d.o.o..",
+      "tags": [
+        "fm",
+        "official",
+        "slovenia",
+        "akos",
+        "radio-center-doo",
+        "radio-center-slovenija-radio-center"
+      ],
+      "source": "AKOS RA and TV frequencies register",
+      "sourceUrl": "https://www.akos-rs.si/en/registers/registers-list/ra-and-tv-frequencies",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "si-idrija-radio-slovenija-drugi-program-program-val-202-val-202-88-9",
+      "name": "RADIO SLOVENIJA, drugi program - PROGRAM VAL 202 /VAL 202/",
+      "freqMhz": 88.9,
+      "cityId": "si-idrija",
+      "description": "Slovenian FM register entry listed by AKOS for IDRIJA. Programme: RADIO SLOVENIJA, drugi program - PROGRAM VAL 202 /VAL 202/. Holder: RTV SLOVENIJA.",
+      "tags": [
+        "fm",
+        "official",
+        "slovenia",
+        "akos",
+        "rtv-slovenija",
+        "radio-slovenija-drugi-program-program-val-202-val-202"
+      ],
+      "source": "AKOS RA and TV frequencies register",
+      "sourceUrl": "https://www.akos-rs.si/en/registers/registers-list/ra-and-tv-frequencies",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "si-idrija-1-program-radia-slovenija-prvi-90",
+      "name": "1. program Radia Slovenija - Prvi",
+      "freqMhz": 90,
+      "cityId": "si-idrija",
+      "description": "Slovenian FM register entry listed by AKOS for IDRIJA. Programme: 1. program Radia Slovenija - Prvi. Holder: RTV SLOVENIJA.",
+      "tags": [
+        "fm",
+        "official",
+        "slovenia",
+        "akos",
+        "rtv-slovenija",
+        "1-program-radia-slovenija-prvi"
+      ],
+      "source": "AKOS RA and TV frequencies register",
+      "sourceUrl": "https://www.akos-rs.si/en/registers/registers-list/ra-and-tv-frequencies",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "si-idrija-1-program-radia-slovenija-prvi-90-8",
+      "name": "1. program Radia Slovenija - Prvi",
+      "freqMhz": 90.8,
+      "cityId": "si-idrija",
+      "description": "Slovenian FM register entry listed by AKOS for IDRIJA. Programme: 1. program Radia Slovenija - Prvi. Holder: RTV SLOVENIJA.",
+      "tags": [
+        "fm",
+        "official",
+        "slovenia",
+        "akos",
+        "rtv-slovenija",
+        "1-program-radia-slovenija-prvi"
+      ],
+      "source": "AKOS RA and TV frequencies register",
+      "sourceUrl": "https://www.akos-rs.si/en/registers/registers-list/ra-and-tv-frequencies",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "si-idrija-radio-slovenija-drugi-program-program-val-202-val-202-92-4",
+      "name": "RADIO SLOVENIJA, drugi program - PROGRAM VAL 202 /VAL 202/",
+      "freqMhz": 92.4,
+      "cityId": "si-idrija",
+      "description": "Slovenian FM register entry listed by AKOS for IDRIJA. Programme: RADIO SLOVENIJA, drugi program - PROGRAM VAL 202 /VAL 202/. Holder: RTV SLOVENIJA.",
+      "tags": [
+        "fm",
+        "official",
+        "slovenia",
+        "akos",
+        "rtv-slovenija",
+        "radio-slovenija-drugi-program-program-val-202-val-202"
+      ],
+      "source": "AKOS RA and TV frequencies register",
+      "sourceUrl": "https://www.akos-rs.si/en/registers/registers-list/ra-and-tv-frequencies",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "si-idrija-radio-slovenija-tretji-program-program-ars-ars-93-9",
+      "name": "RADIO SLOVENIJA, tretji program - PROGRAM ARS /ARS/",
+      "freqMhz": 93.9,
+      "cityId": "si-idrija",
+      "description": "Slovenian FM register entry listed by AKOS for IDRIJA. Programme: RADIO SLOVENIJA, tretji program - PROGRAM ARS /ARS/. Holder: RTV SLOVENIJA.",
+      "tags": [
+        "fm",
+        "official",
+        "slovenia",
+        "akos",
+        "rtv-slovenija",
+        "radio-slovenija-tretji-program-program-ars-ars"
+      ],
+      "source": "AKOS RA and TV frequencies register",
+      "sourceUrl": "https://www.akos-rs.si/en/registers/registers-list/ra-and-tv-frequencies",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "si-idrija-radio-slovenija-tretji-program-program-ars-ars-94-7",
+      "name": "RADIO SLOVENIJA, tretji program - PROGRAM ARS /ARS/",
+      "freqMhz": 94.7,
+      "cityId": "si-idrija",
+      "description": "Slovenian FM register entry listed by AKOS for IDRIJA. Programme: RADIO SLOVENIJA, tretji program - PROGRAM ARS /ARS/. Holder: RTV SLOVENIJA.",
+      "tags": [
+        "fm",
+        "official",
+        "slovenia",
+        "akos",
+        "rtv-slovenija",
+        "radio-slovenija-tretji-program-program-ars-ars"
+      ],
+      "source": "AKOS RA and TV frequencies register",
+      "sourceUrl": "https://www.akos-rs.si/en/registers/registers-list/ra-and-tv-frequencies",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "si-idrija-radio-odmev-regionalna-radijska-mreza-primorski-val-97-2",
+      "name": "RADIO ODMEV Regionalna radijska mreža PRIMORSKI VAL",
+      "freqMhz": 97.2,
+      "cityId": "si-idrija",
+      "description": "Slovenian FM register entry listed by AKOS for IDRIJA. Programme: RADIO ODMEV Regionalna radijska mreža PRIMORSKI VAL. Holder: RADIO CERKNO d.o.o..",
+      "tags": [
+        "fm",
+        "official",
+        "slovenia",
+        "akos",
+        "radio-cerkno-doo",
+        "radio-odmev-regionalna-radijska-mreza-primorski-val"
+      ],
+      "source": "AKOS RA and TV frequencies register",
+      "sourceUrl": "https://www.akos-rs.si/en/registers/registers-list/ra-and-tv-frequencies",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "si-idrija-radio-ognjisce-98",
+      "name": "RADIO OGNJIŠČE",
+      "freqMhz": 98,
+      "cityId": "si-idrija",
+      "description": "Slovenian FM register entry listed by AKOS for IDRIJA. Programme: RADIO OGNJIŠČE. Holder: RADIO OGNJIŠČE d.o.o. Koper.",
+      "tags": [
+        "fm",
+        "official",
+        "slovenia",
+        "akos",
+        "radio-ognjisce-doo-koper",
+        "radio-ognjisce"
+      ],
+      "source": "AKOS RA and TV frequencies register",
+      "sourceUrl": "https://www.akos-rs.si/en/registers/registers-list/ra-and-tv-frequencies",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "si-idrija-radio-odmev-regionalna-radijska-mreza-primorski-val-99-5",
+      "name": "RADIO ODMEV Regionalna radijska mreža PRIMORSKI VAL",
+      "freqMhz": 99.5,
+      "cityId": "si-idrija",
+      "description": "Slovenian FM register entry listed by AKOS for IDRIJA. Programme: RADIO ODMEV Regionalna radijska mreža PRIMORSKI VAL. Holder: RADIO CERKNO d.o.o..",
+      "tags": [
+        "fm",
+        "official",
+        "slovenia",
+        "akos",
+        "radio-cerkno-doo",
+        "radio-odmev-regionalna-radijska-mreza-primorski-val"
+      ],
+      "source": "AKOS RA and TV frequencies register",
+      "sourceUrl": "https://www.akos-rs.si/en/registers/registers-list/ra-and-tv-frequencies",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "si-idrija-radio-ognjisce-101-6",
+      "name": "RADIO OGNJIŠČE",
+      "freqMhz": 101.6,
+      "cityId": "si-idrija",
+      "description": "Slovenian FM register entry listed by AKOS for IDRIJA. Programme: RADIO OGNJIŠČE. Holder: RADIO OGNJIŠČE d.o.o. Koper.",
+      "tags": [
+        "fm",
+        "official",
+        "slovenia",
+        "akos",
+        "radio-ognjisce-doo-koper",
+        "radio-ognjisce"
+      ],
+      "source": "AKOS RA and TV frequencies register",
+      "sourceUrl": "https://www.akos-rs.si/en/registers/registers-list/ra-and-tv-frequencies",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "si-ilirska-bistrica-radio-slovenia-internationalradio-si-94-4",
+      "name": "Radio Slovenia International/Radio SI",
+      "freqMhz": 94.4,
+      "cityId": "si-ilirska-bistrica",
+      "description": "Slovenian FM register entry listed by AKOS for ILIRSKA BISTRICA. Programme: Radio Slovenia International/Radio SI. Holder: RTV SLOVENIJA.",
+      "tags": [
+        "fm",
+        "official",
+        "slovenia",
+        "akos",
+        "rtv-slovenija",
+        "radio-slovenia-internationalradio-si"
+      ],
+      "source": "AKOS RA and TV frequencies register",
+      "sourceUrl": "https://www.akos-rs.si/en/registers/registers-list/ra-and-tv-frequencies",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "si-ilirska-bistrica-radio-94-100-2",
+      "name": "Radio 94",
+      "freqMhz": 100.2,
+      "cityId": "si-ilirska-bistrica",
+      "description": "Slovenian FM register entry listed by AKOS for ILIRSKA BISTRICA. Programme: Radio 94. Holder: RADIO 94 d.o.o. Postojna.",
+      "tags": [
+        "fm",
+        "official",
+        "slovenia",
+        "akos",
+        "radio-94-doo-postojna",
+        "radio-94"
+      ],
+      "source": "AKOS RA and TV frequencies register",
+      "sourceUrl": "https://www.akos-rs.si/en/registers/registers-list/ra-and-tv-frequencies",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "si-ilirska-bistrica-radio-94-104-1",
+      "name": "Radio 94",
+      "freqMhz": 104.1,
+      "cityId": "si-ilirska-bistrica",
+      "description": "Slovenian FM register entry listed by AKOS for ILIRSKA BISTRICA. Programme: Radio 94. Holder: RADIO 94 d.o.o. Postojna.",
+      "tags": [
+        "fm",
+        "official",
+        "slovenia",
+        "akos",
+        "radio-94-doo-postojna",
+        "radio-94"
+      ],
+      "source": "AKOS RA and TV frequencies register",
+      "sourceUrl": "https://www.akos-rs.si/en/registers/registers-list/ra-and-tv-frequencies",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "si-izola-radio-ognjisce-88-9",
+      "name": "RADIO OGNJIŠČE",
+      "freqMhz": 88.9,
+      "cityId": "si-izola",
+      "description": "Slovenian FM register entry listed by AKOS for IZOLA. Programme: RADIO OGNJIŠČE. Holder: RADIO OGNJIŠČE d.o.o. Koper.",
+      "tags": [
+        "fm",
+        "official",
+        "slovenia",
+        "akos",
+        "radio-ognjisce-doo-koper",
+        "radio-ognjisce"
+      ],
+      "source": "AKOS RA and TV frequencies register",
+      "sourceUrl": "https://www.akos-rs.si/en/registers/registers-list/ra-and-tv-frequencies",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "si-izola-1-program-radia-slovenija-prvi-90-8",
+      "name": "1. program Radia Slovenija - Prvi",
+      "freqMhz": 90.8,
+      "cityId": "si-izola",
+      "description": "Slovenian FM register entry listed by AKOS for IZOLA. Programme: 1. program Radia Slovenija - Prvi. Holder: RTV SLOVENIJA.",
+      "tags": [
+        "fm",
+        "official",
+        "slovenia",
+        "akos",
+        "rtv-slovenija",
+        "1-program-radia-slovenija-prvi"
+      ],
+      "source": "AKOS RA and TV frequencies register",
+      "sourceUrl": "https://www.akos-rs.si/en/registers/registers-list/ra-and-tv-frequencies",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "si-izola-radio-slovenia-internationalradio-si-94-8",
+      "name": "Radio Slovenia International/Radio SI",
+      "freqMhz": 94.8,
+      "cityId": "si-izola",
+      "description": "Slovenian FM register entry listed by AKOS for IZOLA. Programme: Radio Slovenia International/Radio SI. Holder: RTV SLOVENIJA.",
+      "tags": [
+        "fm",
+        "official",
+        "slovenia",
+        "akos",
+        "rtv-slovenija",
+        "radio-slovenia-internationalradio-si"
+      ],
+      "source": "AKOS RA and TV frequencies register",
+      "sourceUrl": "https://www.akos-rs.si/en/registers/registers-list/ra-and-tv-frequencies",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "si-izola-radio-koper-radio-kp-96-6",
+      "name": "RADIO KOPER /RADIO KP/",
+      "freqMhz": 96.6,
+      "cityId": "si-izola",
+      "description": "Slovenian FM register entry listed by AKOS for IZOLA. Programme: RADIO KOPER /RADIO KP/. Holder: RTV SLOVENIJA.",
+      "tags": [
+        "fm",
+        "official",
+        "slovenia",
+        "akos",
+        "rtv-slovenija",
+        "radio-koper-radio-kp"
+      ],
+      "source": "AKOS RA and TV frequencies register",
+      "sourceUrl": "https://www.akos-rs.si/en/registers/registers-list/ra-and-tv-frequencies",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "si-izola-radio-1-portoroz-ena-po-radio-1-100-8",
+      "name": "Radio 1 Portorož; ENA PO Radio 1",
+      "freqMhz": 100.8,
+      "cityId": "si-izola",
+      "description": "Slovenian FM register entry listed by AKOS for IZOLA. Programme: Radio 1 Portorož; ENA PO Radio 1. Holder: RADIO PRO 1 d.o.o..",
+      "tags": [
+        "fm",
+        "official",
+        "slovenia",
+        "akos",
+        "radio-pro-1-doo",
+        "radio-1-portoroz-ena-po-radio-1"
+      ],
+      "source": "AKOS RA and TV frequencies register",
+      "sourceUrl": "https://www.akos-rs.si/en/registers/registers-list/ra-and-tv-frequencies",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "si-jesenice-radio-ognjisce-89-8",
+      "name": "RADIO OGNJIŠČE",
+      "freqMhz": 89.8,
+      "cityId": "si-jesenice",
+      "description": "Slovenian FM register entry listed by AKOS for JESENICE. Programme: RADIO OGNJIŠČE. Holder: RADIO OGNJIŠČE d.o.o. Koper.",
+      "tags": [
+        "fm",
+        "official",
+        "slovenia",
+        "akos",
+        "radio-ognjisce-doo-koper",
+        "radio-ognjisce"
+      ],
+      "source": "AKOS RA and TV frequencies register",
+      "sourceUrl": "https://www.akos-rs.si/en/registers/registers-list/ra-and-tv-frequencies",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "si-jesenice-radio-slovenija-drugi-program-program-val-202-val-202-95-3",
+      "name": "RADIO SLOVENIJA, drugi program - PROGRAM VAL 202 /VAL 202/",
+      "freqMhz": 95.3,
+      "cityId": "si-jesenice",
+      "description": "Slovenian FM register entry listed by AKOS for JESENICE. Programme: RADIO SLOVENIJA, drugi program - PROGRAM VAL 202 /VAL 202/. Holder: RTV SLOVENIJA.",
+      "tags": [
+        "fm",
+        "official",
+        "slovenia",
+        "akos",
+        "rtv-slovenija",
+        "radio-slovenija-drugi-program-program-val-202-val-202"
+      ],
+      "source": "AKOS RA and TV frequencies register",
+      "sourceUrl": "https://www.akos-rs.si/en/registers/registers-list/ra-and-tv-frequencies",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "si-jesenice-radio-kranj-98",
+      "name": "RADIO KRANJ",
+      "freqMhz": 98,
+      "cityId": "si-jesenice",
+      "description": "Slovenian FM register entry listed by AKOS for JESENICE. Programme: RADIO KRANJ. Holder: RADIO KRANJ, d.o.o..",
+      "tags": [
+        "fm",
+        "official",
+        "slovenia",
+        "akos",
+        "radio-kranj-doo",
+        "radio-kranj"
+      ],
+      "source": "AKOS RA and TV frequencies register",
+      "sourceUrl": "https://www.akos-rs.si/en/registers/registers-list/ra-and-tv-frequencies",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "si-kocevje-radio-1-ribnica-ena-rib-radio-1-88-7",
+      "name": "Radio 1 Ribnica; ENA RIB Radio 1",
+      "freqMhz": 88.7,
+      "cityId": "si-kocevje",
+      "description": "Slovenian FM register entry listed by AKOS for KOČEVJE. Programme: Radio 1 Ribnica; ENA RIB Radio 1. Holder: RADIO URBAN d.o.o..",
+      "tags": [
+        "fm",
+        "official",
+        "slovenia",
+        "akos",
+        "radio-urban-doo",
+        "radio-1-ribnica-ena-rib-radio-1"
+      ],
+      "source": "AKOS RA and TV frequencies register",
+      "sourceUrl": "https://www.akos-rs.si/en/registers/registers-list/ra-and-tv-frequencies",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "si-kocevje-radio-slovenija-drugi-program-program-val-202-val-202-92-6",
+      "name": "RADIO SLOVENIJA, drugi program - PROGRAM VAL 202 /VAL 202/",
+      "freqMhz": 92.6,
+      "cityId": "si-kocevje",
+      "description": "Slovenian FM register entry listed by AKOS for KOČEVJE. Programme: RADIO SLOVENIJA, drugi program - PROGRAM VAL 202 /VAL 202/. Holder: RTV SLOVENIJA.",
+      "tags": [
+        "fm",
+        "official",
+        "slovenia",
+        "akos",
+        "rtv-slovenija",
+        "radio-slovenija-drugi-program-program-val-202-val-202"
+      ],
+      "source": "AKOS RA and TV frequencies register",
+      "sourceUrl": "https://www.akos-rs.si/en/registers/registers-list/ra-and-tv-frequencies",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "si-kocevje-radio-1-ribnica-ena-rib-radio-1-93-7",
+      "name": "Radio 1 Ribnica; ENA RIB Radio 1",
+      "freqMhz": 93.7,
+      "cityId": "si-kocevje",
+      "description": "Slovenian FM register entry listed by AKOS for KOČEVJE. Programme: Radio 1 Ribnica; ENA RIB Radio 1. Holder: RADIO URBAN d.o.o..",
+      "tags": [
+        "fm",
+        "official",
+        "slovenia",
+        "akos",
+        "radio-urban-doo",
+        "radio-1-ribnica-ena-rib-radio-1"
+      ],
+      "source": "AKOS RA and TV frequencies register",
+      "sourceUrl": "https://www.akos-rs.si/en/registers/registers-list/ra-and-tv-frequencies",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "si-kocevje-1-program-radia-slovenija-prvi-95-8",
+      "name": "1. program Radia Slovenija - Prvi",
+      "freqMhz": 95.8,
+      "cityId": "si-kocevje",
+      "description": "Slovenian FM register entry listed by AKOS for KOČEVJE. Programme: 1. program Radia Slovenija - Prvi. Holder: RTV SLOVENIJA.",
+      "tags": [
+        "fm",
+        "official",
+        "slovenia",
+        "akos",
+        "rtv-slovenija",
+        "1-program-radia-slovenija-prvi"
+      ],
+      "source": "AKOS RA and TV frequencies register",
+      "sourceUrl": "https://www.akos-rs.si/en/registers/registers-list/ra-and-tv-frequencies",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "si-kocevje-radio-ognjisce-102-5",
+      "name": "RADIO OGNJIŠČE",
+      "freqMhz": 102.5,
+      "cityId": "si-kocevje",
+      "description": "Slovenian FM register entry listed by AKOS for KOČEVJE. Programme: RADIO OGNJIŠČE. Holder: RADIO OGNJIŠČE d.o.o. Koper.",
+      "tags": [
+        "fm",
+        "official",
+        "slovenia",
+        "akos",
+        "radio-ognjisce-doo-koper",
+        "radio-ognjisce"
+      ],
+      "source": "AKOS RA and TV frequencies register",
+      "sourceUrl": "https://www.akos-rs.si/en/registers/registers-list/ra-and-tv-frequencies",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "si-kocevje-radio-center-slovenija-radio-center-103-6",
+      "name": "RADIO CENTER SLOVENIJA RADIO CENTER",
+      "freqMhz": 103.6,
+      "cityId": "si-kocevje",
+      "description": "Slovenian FM register entry listed by AKOS for KOČEVJE. Programme: RADIO CENTER SLOVENIJA RADIO CENTER. Holder: RADIO CENTER d.o.o..",
+      "tags": [
+        "fm",
+        "official",
+        "slovenia",
+        "akos",
+        "radio-center-doo",
+        "radio-center-slovenija-radio-center"
+      ],
+      "source": "AKOS RA and TV frequencies register",
+      "sourceUrl": "https://www.akos-rs.si/en/registers/registers-list/ra-and-tv-frequencies",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "si-kocevje-radio-univox-107-5",
+      "name": "RADIO UNIVOX",
+      "freqMhz": 107.5,
+      "cityId": "si-kocevje",
+      "description": "Slovenian FM register entry listed by AKOS for KOČEVJE. Programme: RADIO UNIVOX. Holder: UNIVOX d.o.o..",
+      "tags": [
+        "fm",
+        "official",
+        "slovenia",
+        "akos",
+        "univox-doo",
+        "radio-univox"
+      ],
+      "source": "AKOS RA and TV frequencies register",
+      "sourceUrl": "https://www.akos-rs.si/en/registers/registers-list/ra-and-tv-frequencies",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "si-koper-radio-slovenija-drugi-program-program-val-202-val-202-90",
+      "name": "RADIO SLOVENIJA, drugi program - PROGRAM VAL 202 /VAL 202/",
+      "freqMhz": 90,
+      "cityId": "si-koper",
+      "description": "Slovenian FM register entry listed by AKOS for KOPER. Programme: RADIO SLOVENIJA, drugi program - PROGRAM VAL 202 /VAL 202/. Holder: RTV SLOVENIJA.",
+      "tags": [
+        "fm",
+        "official",
+        "slovenia",
+        "akos",
+        "rtv-slovenija",
+        "radio-slovenija-drugi-program-program-val-202-val-202"
+      ],
+      "source": "AKOS RA and TV frequencies register",
+      "sourceUrl": "https://www.akos-rs.si/en/registers/registers-list/ra-and-tv-frequencies",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "si-koper-radio-1-primorska-ena-ng-radio-1-90-5",
+      "name": "Radio 1 Primorska; ENA NG Radio 1",
+      "freqMhz": 90.5,
+      "cityId": "si-koper",
+      "description": "Slovenian FM register entry listed by AKOS for KOPER. Programme: Radio 1 Primorska; ENA NG Radio 1. Holder: RADIO PRO 1 d.o.o..",
+      "tags": [
+        "fm",
+        "official",
+        "slovenia",
+        "akos",
+        "radio-pro-1-doo",
+        "radio-1-primorska-ena-ng-radio-1"
+      ],
+      "source": "AKOS RA and TV frequencies register",
+      "sourceUrl": "https://www.akos-rs.si/en/registers/registers-list/ra-and-tv-frequencies",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "si-koper-1-program-radia-slovenija-prvi-92-2",
+      "name": "1. program Radia Slovenija - Prvi",
+      "freqMhz": 92.2,
+      "cityId": "si-koper",
+      "description": "Slovenian FM register entry listed by AKOS for KOPER. Programme: 1. program Radia Slovenija - Prvi. Holder: RTV SLOVENIJA.",
+      "tags": [
+        "fm",
+        "official",
+        "slovenia",
+        "akos",
+        "rtv-slovenija",
+        "1-program-radia-slovenija-prvi"
+      ],
+      "source": "AKOS RA and TV frequencies register",
+      "sourceUrl": "https://www.akos-rs.si/en/registers/registers-list/ra-and-tv-frequencies",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "si-koper-radio-1-obala-ena-kp-radio-1-93-4",
+      "name": "Radio 1 Obala; ENA KP Radio 1",
+      "freqMhz": 93.4,
+      "cityId": "si-koper",
+      "description": "Slovenian FM register entry listed by AKOS for KOPER. Programme: Radio 1 Obala; ENA KP Radio 1. Holder: RADIO PRO 1 d.o.o..",
+      "tags": [
+        "fm",
+        "official",
+        "slovenia",
+        "akos",
+        "radio-pro-1-doo",
+        "radio-1-obala-ena-kp-radio-1"
+      ],
+      "source": "AKOS RA and TV frequencies register",
+      "sourceUrl": "https://www.akos-rs.si/en/registers/registers-list/ra-and-tv-frequencies",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "si-koper-radio-koper-radio-kp-104-1",
+      "name": "RADIO KOPER /RADIO KP/",
+      "freqMhz": 104.1,
+      "cityId": "si-koper",
+      "description": "Slovenian FM register entry listed by AKOS for KOPER. Programme: RADIO KOPER /RADIO KP/. Holder: RTV SLOVENIJA.",
+      "tags": [
+        "fm",
+        "official",
+        "slovenia",
+        "akos",
+        "rtv-slovenija",
+        "radio-koper-radio-kp"
+      ],
+      "source": "AKOS RA and TV frequencies register",
+      "sourceUrl": "https://www.akos-rs.si/en/registers/registers-list/ra-and-tv-frequencies",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "si-koper-radio-ognjisce-105-9",
+      "name": "RADIO OGNJIŠČE",
+      "freqMhz": 105.9,
+      "cityId": "si-koper",
+      "description": "Slovenian FM register entry listed by AKOS for KOPER. Programme: RADIO OGNJIŠČE. Holder: RADIO OGNJIŠČE d.o.o. Koper.",
+      "tags": [
+        "fm",
+        "official",
+        "slovenia",
+        "akos",
+        "radio-ognjisce-doo-koper",
+        "radio-ognjisce"
+      ],
+      "source": "AKOS RA and TV frequencies register",
+      "sourceUrl": "https://www.akos-rs.si/en/registers/registers-list/ra-and-tv-frequencies",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "si-koper-radio-capris-107-9",
+      "name": "RADIO CAPRIS",
+      "freqMhz": 107.9,
+      "cityId": "si-koper",
+      "description": "Slovenian FM register entry listed by AKOS for KOPER. Programme: RADIO CAPRIS. Holder: RADIO CAPRIS d.o.o..",
+      "tags": [
+        "fm",
+        "official",
+        "slovenia",
+        "akos",
+        "radio-capris-doo",
+        "radio-capris"
+      ],
+      "source": "AKOS RA and TV frequencies register",
+      "sourceUrl": "https://www.akos-rs.si/en/registers/registers-list/ra-and-tv-frequencies",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "si-kozina-radio-1-primorska-ena-ng-radio-1-94-9",
+      "name": "Radio 1 Primorska; ENA NG Radio 1",
+      "freqMhz": 94.9,
+      "cityId": "si-kozina",
+      "description": "Slovenian FM register entry listed by AKOS for KOZINA. Programme: Radio 1 Primorska; ENA NG Radio 1. Holder: RADIO PRO 1 d.o.o..",
+      "tags": [
+        "fm",
+        "official",
+        "slovenia",
+        "akos",
+        "radio-pro-1-doo",
+        "radio-1-primorska-ena-ng-radio-1"
+      ],
+      "source": "AKOS RA and TV frequencies register",
+      "sourceUrl": "https://www.akos-rs.si/en/registers/registers-list/ra-and-tv-frequencies",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "si-kozina-radio-ognjisce-107-9",
+      "name": "RADIO OGNJIŠČE",
+      "freqMhz": 107.9,
+      "cityId": "si-kozina",
+      "description": "Slovenian FM register entry listed by AKOS for KOZINA. Programme: RADIO OGNJIŠČE. Holder: RADIO OGNJIŠČE d.o.o. Koper.",
+      "tags": [
+        "fm",
+        "official",
+        "slovenia",
+        "akos",
+        "radio-ognjisce-doo-koper",
+        "radio-ognjisce"
+      ],
+      "source": "AKOS RA and TV frequencies register",
+      "sourceUrl": "https://www.akos-rs.si/en/registers/registers-list/ra-and-tv-frequencies",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "si-kozje-1-program-radia-slovenija-prvi-89-6",
+      "name": "1. program Radia Slovenija - Prvi",
+      "freqMhz": 89.6,
+      "cityId": "si-kozje",
+      "description": "Slovenian FM register entry listed by AKOS for KOZJE. Programme: 1. program Radia Slovenija - Prvi. Holder: RTV SLOVENIJA.",
+      "tags": [
+        "fm",
+        "official",
+        "slovenia",
+        "akos",
+        "rtv-slovenija",
+        "1-program-radia-slovenija-prvi"
+      ],
+      "source": "AKOS RA and TV frequencies register",
+      "sourceUrl": "https://www.akos-rs.si/en/registers/registers-list/ra-and-tv-frequencies",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "si-kozje-radio-slovenija-drugi-program-program-val-202-val-202-100-3",
+      "name": "RADIO SLOVENIJA, drugi program - PROGRAM VAL 202 /VAL 202/",
+      "freqMhz": 100.3,
+      "cityId": "si-kozje",
+      "description": "Slovenian FM register entry listed by AKOS for KOZJE. Programme: RADIO SLOVENIJA, drugi program - PROGRAM VAL 202 /VAL 202/. Holder: RTV SLOVENIJA.",
+      "tags": [
+        "fm",
+        "official",
+        "slovenia",
+        "akos",
+        "rtv-slovenija",
+        "radio-slovenija-drugi-program-program-val-202-val-202"
+      ],
+      "source": "AKOS RA and TV frequencies register",
+      "sourceUrl": "https://www.akos-rs.si/en/registers/registers-list/ra-and-tv-frequencies",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "si-kranj-radio-antena-96-8",
+      "name": "Radio Antena",
+      "freqMhz": 96.8,
+      "cityId": "si-kranj",
+      "description": "Slovenian FM register entry listed by AKOS for KRANJ. Programme: Radio Antena. Holder: RADIO ANTENA d.o.o., Ljubljana.",
+      "tags": [
+        "fm",
+        "official",
+        "slovenia",
+        "akos",
+        "radio-antena-doo-ljubljana",
+        "radio-antena"
+      ],
+      "source": "AKOS RA and TV frequencies register",
+      "sourceUrl": "https://www.akos-rs.si/en/registers/registers-list/ra-and-tv-frequencies",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "si-kranj-radio-1-gorenjska-ena-go-radio-1-98-3",
+      "name": "Radio 1 Gorenjska; ENA GO Radio 1",
+      "freqMhz": 98.3,
+      "cityId": "si-kranj",
+      "description": "Slovenian FM register entry listed by AKOS for KRANJ. Programme: Radio 1 Gorenjska; ENA GO Radio 1. Holder: RADIO BELVI, d.o.o..",
+      "tags": [
+        "fm",
+        "official",
+        "slovenia",
+        "akos",
+        "radio-belvi-doo",
+        "radio-1-gorenjska-ena-go-radio-1"
+      ],
+      "source": "AKOS RA and TV frequencies register",
+      "sourceUrl": "https://www.akos-rs.si/en/registers/registers-list/ra-and-tv-frequencies",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "si-kranjska-gora-radio-kranj-88-6",
+      "name": "RADIO KRANJ",
+      "freqMhz": 88.6,
+      "cityId": "si-kranjska-gora",
+      "description": "Slovenian FM register entry listed by AKOS for KRANJSKA GORA. Programme: RADIO KRANJ. Holder: RADIO KRANJ, d.o.o..",
+      "tags": [
+        "fm",
+        "official",
+        "slovenia",
+        "akos",
+        "radio-kranj-doo",
+        "radio-kranj"
+      ],
+      "source": "AKOS RA and TV frequencies register",
+      "sourceUrl": "https://www.akos-rs.si/en/registers/registers-list/ra-and-tv-frequencies",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "si-kranjska-gora-radio-1-gorenjska-ena-go-radio-1-93-3",
+      "name": "Radio 1 Gorenjska; ENA GO Radio 1",
+      "freqMhz": 93.3,
+      "cityId": "si-kranjska-gora",
+      "description": "Slovenian FM register entry listed by AKOS for KRANJSKA GORA. Programme: Radio 1 Gorenjska; ENA GO Radio 1. Holder: RADIO BELVI, d.o.o..",
+      "tags": [
+        "fm",
+        "official",
+        "slovenia",
+        "akos",
+        "radio-belvi-doo",
+        "radio-1-gorenjska-ena-go-radio-1"
+      ],
+      "source": "AKOS RA and TV frequencies register",
+      "sourceUrl": "https://www.akos-rs.si/en/registers/registers-list/ra-and-tv-frequencies",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "si-kranjska-gora-1-program-radia-slovenija-prvi-94-7",
+      "name": "1. program Radia Slovenija - Prvi",
+      "freqMhz": 94.7,
+      "cityId": "si-kranjska-gora",
+      "description": "Slovenian FM register entry listed by AKOS for KRANJSKA GORA. Programme: 1. program Radia Slovenija - Prvi. Holder: RTV SLOVENIJA.",
+      "tags": [
+        "fm",
+        "official",
+        "slovenia",
+        "akos",
+        "rtv-slovenija",
+        "1-program-radia-slovenija-prvi"
+      ],
+      "source": "AKOS RA and TV frequencies register",
+      "sourceUrl": "https://www.akos-rs.si/en/registers/registers-list/ra-and-tv-frequencies",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "si-kranjska-gora-radio-slovenija-drugi-program-program-val-202-val-202-96-7",
+      "name": "RADIO SLOVENIJA, drugi program - PROGRAM VAL 202 /VAL 202/",
+      "freqMhz": 96.7,
+      "cityId": "si-kranjska-gora",
+      "description": "Slovenian FM register entry listed by AKOS for KRANJSKA GORA. Programme: RADIO SLOVENIJA, drugi program - PROGRAM VAL 202 /VAL 202/. Holder: RTV SLOVENIJA.",
+      "tags": [
+        "fm",
+        "official",
+        "slovenia",
+        "akos",
+        "rtv-slovenija",
+        "radio-slovenija-drugi-program-program-val-202-val-202"
+      ],
+      "source": "AKOS RA and TV frequencies register",
+      "sourceUrl": "https://www.akos-rs.si/en/registers/registers-list/ra-and-tv-frequencies",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "si-kranjska-gora-radio-triglav-101-5",
+      "name": "RADIO TRIGLAV",
+      "freqMhz": 101.5,
+      "cityId": "si-kranjska-gora",
+      "description": "Slovenian FM register entry listed by AKOS for KRANJSKA GORA. Programme: RADIO TRIGLAV. Holder: RADIO TRIGLAV JESENICE, D.O.O..",
+      "tags": [
+        "fm",
+        "official",
+        "slovenia",
+        "akos",
+        "radio-triglav-jesenice-doo",
+        "radio-triglav"
+      ],
+      "source": "AKOS RA and TV frequencies register",
+      "sourceUrl": "https://www.akos-rs.si/en/registers/registers-list/ra-and-tv-frequencies",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "si-kranjska-gora-radio-ognjisce-102-3",
+      "name": "RADIO OGNJIŠČE",
+      "freqMhz": 102.3,
+      "cityId": "si-kranjska-gora",
+      "description": "Slovenian FM register entry listed by AKOS for KRANJSKA GORA. Programme: RADIO OGNJIŠČE. Holder: RADIO OGNJIŠČE d.o.o. Koper.",
+      "tags": [
+        "fm",
+        "official",
+        "slovenia",
+        "akos",
+        "radio-ognjisce-doo-koper",
+        "radio-ognjisce"
+      ],
+      "source": "AKOS RA and TV frequencies register",
+      "sourceUrl": "https://www.akos-rs.si/en/registers/registers-list/ra-and-tv-frequencies",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "si-kranjska-gora-radio-slovenia-internationalradio-si-106-8",
+      "name": "Radio Slovenia International/Radio SI",
+      "freqMhz": 106.8,
+      "cityId": "si-kranjska-gora",
+      "description": "Slovenian FM register entry listed by AKOS for KRANJSKA GORA. Programme: Radio Slovenia International/Radio SI. Holder: RTV SLOVENIJA.",
+      "tags": [
+        "fm",
+        "official",
+        "slovenia",
+        "akos",
+        "rtv-slovenija",
+        "radio-slovenia-internationalradio-si"
+      ],
+      "source": "AKOS RA and TV frequencies register",
+      "sourceUrl": "https://www.akos-rs.si/en/registers/registers-list/ra-and-tv-frequencies",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "si-krsko-rock-radio-celje-rock-radio-88-4",
+      "name": "Rock Radio Celje Rock Radio",
+      "freqMhz": 88.4,
+      "cityId": "si-krsko",
+      "description": "Slovenian FM register entry listed by AKOS for KRŠKO. Programme: Rock Radio Celje Rock Radio. Holder: NEXT MEDIA, d.o.o..",
+      "tags": [
+        "fm",
+        "official",
+        "slovenia",
+        "akos",
+        "next-media-doo",
+        "rock-radio-celje-rock-radio"
+      ],
+      "source": "AKOS RA and TV frequencies register",
+      "sourceUrl": "https://www.akos-rs.si/en/registers/registers-list/ra-and-tv-frequencies",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "si-krsko-radio-center-dolenjska-radio-center-89-3",
+      "name": "Radio Center Dolenjska RADIO CENTER",
+      "freqMhz": 89.3,
+      "cityId": "si-krsko",
+      "description": "Slovenian FM register entry listed by AKOS for KRŠKO. Programme: Radio Center Dolenjska RADIO CENTER. Holder: NEXT MEDIA, d.o.o..",
+      "tags": [
+        "fm",
+        "official",
+        "slovenia",
+        "akos",
+        "next-media-doo",
+        "radio-center-dolenjska-radio-center"
+      ],
+      "source": "AKOS RA and TV frequencies register",
+      "sourceUrl": "https://www.akos-rs.si/en/registers/registers-list/ra-and-tv-frequencies",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "si-krsko-radio-slovenia-internationalradio-si-93-4",
+      "name": "Radio Slovenia International/Radio SI",
+      "freqMhz": 93.4,
+      "cityId": "si-krsko",
+      "description": "Slovenian FM register entry listed by AKOS for KRŠKO. Programme: Radio Slovenia International/Radio SI. Holder: RTV SLOVENIJA.",
+      "tags": [
+        "fm",
+        "official",
+        "slovenia",
+        "akos",
+        "rtv-slovenija",
+        "radio-slovenia-internationalradio-si"
+      ],
+      "source": "AKOS RA and TV frequencies register",
+      "sourceUrl": "https://www.akos-rs.si/en/registers/registers-list/ra-and-tv-frequencies",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "si-krsko-radio-veseljak-posavje-95-9",
+      "name": "Radio Veseljak Posavje",
+      "freqMhz": 95.9,
+      "cityId": "si-krsko",
+      "description": "Slovenian FM register entry listed by AKOS for KRŠKO. Programme: Radio Veseljak Posavje. Holder: RGL, d.o.o, Ljubljana.",
+      "tags": [
+        "fm",
+        "official",
+        "slovenia",
+        "akos",
+        "rgl-doo-ljubljana",
+        "radio-veseljak-posavje"
+      ],
+      "source": "AKOS RA and TV frequencies register",
+      "sourceUrl": "https://www.akos-rs.si/en/registers/registers-list/ra-and-tv-frequencies",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "si-krsko-best-fm-celje-best-ce-96-9",
+      "name": "Best FM Celje; Best CE",
+      "freqMhz": 96.9,
+      "cityId": "si-krsko",
+      "description": "Slovenian FM register entry listed by AKOS for KRŠKO. Programme: Best FM Celje; Best CE. Holder: RADIO PRO 1 d.o.o..",
+      "tags": [
+        "fm",
+        "official",
+        "slovenia",
+        "akos",
+        "radio-pro-1-doo",
+        "best-fm-celje-best-ce"
+      ],
+      "source": "AKOS RA and TV frequencies register",
+      "sourceUrl": "https://www.akos-rs.si/en/registers/registers-list/ra-and-tv-frequencies",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "si-krsko-radio-aktual-kum-104-4",
+      "name": "Radio Aktual Kum",
+      "freqMhz": 104.4,
+      "cityId": "si-krsko",
+      "description": "Slovenian FM register entry listed by AKOS for KRŠKO. Programme: Radio Aktual Kum. Holder: Radio Kum Trbovlje, d.o.o..",
+      "tags": [
+        "fm",
+        "official",
+        "slovenia",
+        "akos",
+        "radio-kum-trbovlje-doo",
+        "radio-aktual-kum"
+      ],
+      "source": "AKOS RA and TV frequencies register",
+      "sourceUrl": "https://www.akos-rs.si/en/registers/registers-list/ra-and-tv-frequencies",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "si-krsko-radio-1-dolenjska-ena-nm-radio-1-105",
+      "name": "Radio 1 Dolenjska; ENA NM Radio 1",
+      "freqMhz": 105,
+      "cityId": "si-krsko",
+      "description": "Slovenian FM register entry listed by AKOS for KRŠKO. Programme: Radio 1 Dolenjska; ENA NM Radio 1. Holder: RADIO PRO 1 d.o.o..",
+      "tags": [
+        "fm",
+        "official",
+        "slovenia",
+        "akos",
+        "radio-pro-1-doo",
+        "radio-1-dolenjska-ena-nm-radio-1"
+      ],
+      "source": "AKOS RA and TV frequencies register",
+      "sourceUrl": "https://www.akos-rs.si/en/registers/registers-list/ra-and-tv-frequencies",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "si-krsko-radio-ognjisce-107-3",
+      "name": "RADIO OGNJIŠČE",
+      "freqMhz": 107.3,
+      "cityId": "si-krsko",
+      "description": "Slovenian FM register entry listed by AKOS for KRŠKO. Programme: RADIO OGNJIŠČE. Holder: RADIO OGNJIŠČE d.o.o. Koper.",
+      "tags": [
+        "fm",
+        "official",
+        "slovenia",
+        "akos",
+        "radio-ognjisce-doo-koper",
+        "radio-ognjisce"
+      ],
+      "source": "AKOS RA and TV frequencies register",
+      "sourceUrl": "https://www.akos-rs.si/en/registers/registers-list/ra-and-tv-frequencies",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "si-lasko-radio-slovenia-internationalradio-si-100-6",
+      "name": "Radio Slovenia International/Radio SI",
+      "freqMhz": 100.6,
+      "cityId": "si-lasko",
+      "description": "Slovenian FM register entry listed by AKOS for LAŠKO. Programme: Radio Slovenia International/Radio SI. Holder: RTV SLOVENIJA.",
+      "tags": [
+        "fm",
+        "official",
+        "slovenia",
+        "akos",
+        "rtv-slovenija",
+        "radio-slovenia-internationalradio-si"
+      ],
+      "source": "AKOS RA and TV frequencies register",
+      "sourceUrl": "https://www.akos-rs.si/en/registers/registers-list/ra-and-tv-frequencies",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "si-lenart-v-slovenskih-goricah-radio-slovenske-gorice-96-4",
+      "name": "RADIO SLOVENSKE GORICE",
+      "freqMhz": 96.4,
+      "cityId": "si-lenart-v-slovenskih-goricah",
+      "description": "Slovenian FM register entry listed by AKOS for LENART. Programme: RADIO SLOVENSKE GORICE. Holder: RADIO SLOVENSKE GORICE d.o.o..",
+      "tags": [
+        "fm",
+        "official",
+        "slovenia",
+        "akos",
+        "radio-slovenske-gorice-doo",
+        "radio-slovenske-gorice"
+      ],
+      "source": "AKOS RA and TV frequencies register",
+      "sourceUrl": "https://www.akos-rs.si/en/registers/registers-list/ra-and-tv-frequencies",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "si-lendava-pomurski-madzarski-radio-muravideki-magyar-radio-92-7",
+      "name": "Pomurski madžarski radio - Muravidéki magyar rádió",
+      "freqMhz": 92.7,
+      "cityId": "si-lendava",
+      "description": "Slovenian FM register entry listed by AKOS for LENDAVA. Programme: Pomurski madžarski radio - Muravidéki magyar rádió. Holder: RTV SLOVENIJA.",
+      "tags": [
+        "fm",
+        "official",
+        "slovenia",
+        "akos",
+        "rtv-slovenija",
+        "pomurski-madzarski-radio-muravideki-magyar-radio"
+      ],
+      "source": "AKOS RA and TV frequencies register",
+      "sourceUrl": "https://www.akos-rs.si/en/registers/registers-list/ra-and-tv-frequencies",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "si-lendava-radio-murski-val-103-3",
+      "name": "RADIO MURSKI VAL",
+      "freqMhz": 103.3,
+      "cityId": "si-lendava",
+      "description": "Slovenian FM register entry listed by AKOS for LENDAVA. Programme: RADIO MURSKI VAL. Holder: RADIO MURSKI VAL, d.o.o..",
+      "tags": [
+        "fm",
+        "official",
+        "slovenia",
+        "akos",
+        "radio-murski-val-doo",
+        "radio-murski-val"
+      ],
+      "source": "AKOS RA and TV frequencies register",
+      "sourceUrl": "https://www.akos-rs.si/en/registers/registers-list/ra-and-tv-frequencies",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "si-litija-radio-geoss-radio-1-89-7",
+      "name": "Radio Geoss Radio 1",
+      "freqMhz": 89.7,
+      "cityId": "si-litija",
+      "description": "Slovenian FM register entry listed by AKOS for LITIJA. Programme: Radio Geoss Radio 1. Holder: Radio GEOSS, d.o.o..",
+      "tags": [
+        "fm",
+        "official",
+        "slovenia",
+        "akos",
+        "radio-geoss-doo",
+        "radio-geoss-radio-1"
+      ],
+      "source": "AKOS RA and TV frequencies register",
+      "sourceUrl": "https://www.akos-rs.si/en/registers/registers-list/ra-and-tv-frequencies",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "si-ljubljana-radio-1-rock-fm-rock-fm-radio-1-rock-r1-rock-87-6",
+      "name": "Radio 1 Rock FM; ROCK FM RADIO 1 ROCK; R1 ROCK",
+      "freqMhz": 87.6,
+      "cityId": "si-ljubljana",
+      "description": "Slovenian FM register entry listed by AKOS for LJUBLJANA. Programme: Radio 1 Rock FM; ROCK FM RADIO 1 ROCK; R1 ROCK. Holder: RADIO 3, d.o.o..",
+      "tags": [
+        "fm",
+        "official",
+        "slovenia",
+        "akos",
+        "radio-3-doo",
+        "radio-1-rock-fm-rock-fm-radio-1-rock-r1-rock"
+      ],
+      "source": "AKOS RA and TV frequencies register",
+      "sourceUrl": "https://www.akos-rs.si/en/registers/registers-list/ra-and-tv-frequencies",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "si-ljubljana-radio-student-89-3",
+      "name": "Radio Študent",
+      "freqMhz": 89.3,
+      "cityId": "si-ljubljana",
+      "description": "Slovenian FM register entry listed by AKOS for LJUBLJANA. Programme: Radio Študent. Holder: Zavod RŠ.",
+      "tags": [
+        "fm",
+        "official",
+        "slovenia",
+        "akos",
+        "zavod-rs",
+        "radio-student"
+      ],
+      "source": "AKOS RA and TV frequencies register",
+      "sourceUrl": "https://www.akos-rs.si/en/registers/registers-list/ra-and-tv-frequencies",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "si-ljubljana-radio-1-80-a-ra-1-80-92-6",
+      "name": "Radio 1 80-a; RA 1 80",
+      "freqMhz": 92.6,
+      "cityId": "si-ljubljana",
+      "description": "Slovenian FM register entry listed by AKOS for LJUBLJANA. Programme: Radio 1 80-a; RA 1 80. Holder: Radio 2 d.o.o..",
+      "tags": [
+        "fm",
+        "official",
+        "slovenia",
+        "akos",
+        "radio-2-doo",
+        "radio-1-80-a-ra-1-80"
+      ],
+      "source": "AKOS RA and TV frequencies register",
+      "sourceUrl": "https://www.akos-rs.si/en/registers/registers-list/ra-and-tv-frequencies",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "si-ljubljana-radio-veseljak-94-9",
+      "name": "Radio Veseljak",
+      "freqMhz": 94.9,
+      "cityId": "si-ljubljana",
+      "description": "Slovenian FM register entry listed by AKOS for LJUBLJANA. Programme: Radio Veseljak. Holder: RGL, d.o.o, Ljubljana.",
+      "tags": [
+        "fm",
+        "official",
+        "slovenia",
+        "akos",
+        "rgl-doo-ljubljana",
+        "radio-veseljak"
+      ],
+      "source": "AKOS RA and TV frequencies register",
+      "sourceUrl": "https://www.akos-rs.si/en/registers/registers-list/ra-and-tv-frequencies",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "si-ljubljana-radio-city-99-5",
+      "name": "RADIO CITY",
+      "freqMhz": 99.5,
+      "cityId": "si-ljubljana",
+      "description": "Slovenian FM register entry listed by AKOS for LJUBLJANA. Programme: RADIO CITY. Holder: RADIO CITY d.o.o..",
+      "tags": [
+        "fm",
+        "official",
+        "slovenia",
+        "akos",
+        "radio-city-doo",
+        "radio-city"
+      ],
+      "source": "AKOS RA and TV frequencies register",
+      "sourceUrl": "https://www.akos-rs.si/en/registers/registers-list/ra-and-tv-frequencies",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "si-ljubljana-radio-slovenia-internationalradio-si-100-8",
+      "name": "Radio Slovenia International/Radio SI",
+      "freqMhz": 100.8,
+      "cityId": "si-ljubljana",
+      "description": "Slovenian FM register entry listed by AKOS for LJUBLJANA. Programme: Radio Slovenia International/Radio SI. Holder: RTV SLOVENIJA.",
+      "tags": [
+        "fm",
+        "official",
+        "slovenia",
+        "akos",
+        "rtv-slovenija",
+        "radio-slovenia-internationalradio-si"
+      ],
+      "source": "AKOS RA and TV frequencies register",
+      "sourceUrl": "https://www.akos-rs.si/en/registers/registers-list/ra-and-tv-frequencies",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "si-ljubljana-best-fm-ljubljana-best-lj-101-6",
+      "name": "Best FM Ljubljana; Best Lj",
+      "freqMhz": 101.6,
+      "cityId": "si-ljubljana",
+      "description": "Slovenian FM register entry listed by AKOS for LJUBLJANA. Programme: Best FM Ljubljana; Best Lj. Holder: RGL, d.o.o, Ljubljana.",
+      "tags": [
+        "fm",
+        "official",
+        "slovenia",
+        "akos",
+        "rgl-doo-ljubljana",
+        "best-fm-ljubljana-best-lj"
+      ],
+      "source": "AKOS RA and TV frequencies register",
+      "sourceUrl": "https://www.akos-rs.si/en/registers/registers-list/ra-and-tv-frequencies",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "si-ljubljana-radio-center-slovenija-radio-center-102-4",
+      "name": "RADIO CENTER SLOVENIJA RADIO CENTER",
+      "freqMhz": 102.4,
+      "cityId": "si-ljubljana",
+      "description": "Slovenian FM register entry listed by AKOS for LJUBLJANA. Programme: RADIO CENTER SLOVENIJA RADIO CENTER. Holder: RADIO CENTER d.o.o..",
+      "tags": [
+        "fm",
+        "official",
+        "slovenia",
+        "akos",
+        "radio-center-doo",
+        "radio-center-slovenija-radio-center"
+      ],
+      "source": "AKOS RA and TV frequencies register",
+      "sourceUrl": "https://www.akos-rs.si/en/registers/registers-list/ra-and-tv-frequencies",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "si-ljubljana-radio-ognjisce-104-8",
+      "name": "RADIO OGNJIŠČE",
+      "freqMhz": 104.8,
+      "cityId": "si-ljubljana",
+      "description": "Slovenian FM register entry listed by AKOS for LJUBLJANA. Programme: RADIO OGNJIŠČE. Holder: RADIO OGNJIŠČE d.o.o. Koper.",
+      "tags": [
+        "fm",
+        "official",
+        "slovenia",
+        "akos",
+        "radio-ognjisce-doo-koper",
+        "radio-ognjisce"
+      ],
+      "source": "AKOS RA and TV frequencies register",
+      "sourceUrl": "https://www.akos-rs.si/en/registers/registers-list/ra-and-tv-frequencies",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "si-ljubljana-radio-antena-105-2",
+      "name": "Radio Antena",
+      "freqMhz": 105.2,
+      "cityId": "si-ljubljana",
+      "description": "Slovenian FM register entry listed by AKOS for LJUBLJANA. Programme: Radio Antena. Holder: RADIO ANTENA d.o.o., Ljubljana.",
+      "tags": [
+        "fm",
+        "official",
+        "slovenia",
+        "akos",
+        "radio-antena-doo-ljubljana",
+        "radio-antena"
+      ],
+      "source": "AKOS RA and TV frequencies register",
+      "sourceUrl": "https://www.akos-rs.si/en/registers/registers-list/ra-and-tv-frequencies",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "si-ljubljana-radio-ekspres-106-1",
+      "name": "Radio Ekspres",
+      "freqMhz": 106.1,
+      "cityId": "si-ljubljana",
+      "description": "Slovenian FM register entry listed by AKOS for LJUBLJANA. Programme: Radio Ekspres. Holder: R GAMA - MM d.o.o., Ljubljana.",
+      "tags": [
+        "fm",
+        "official",
+        "slovenia",
+        "akos",
+        "r-gama-mm-doo-ljubljana",
+        "radio-ekspres"
+      ],
+      "source": "AKOS RA and TV frequencies register",
+      "sourceUrl": "https://www.akos-rs.si/en/registers/registers-list/ra-and-tv-frequencies",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "si-ljubljana-radio-1-1079-ena-lj-radio-1-107-9",
+      "name": "Radio 1 107.9; ENA LJ Radio 1",
+      "freqMhz": 107.9,
+      "cityId": "si-ljubljana",
+      "description": "Slovenian FM register entry listed by AKOS for LJUBLJANA. Programme: Radio 1 107.9; ENA LJ Radio 1. Holder: RADIO PRO 1 d.o.o..",
+      "tags": [
+        "fm",
+        "official",
+        "slovenia",
+        "akos",
+        "radio-pro-1-doo",
+        "radio-1-1079-ena-lj-radio-1"
+      ],
+      "source": "AKOS RA and TV frequencies register",
+      "sourceUrl": "https://www.akos-rs.si/en/registers/registers-list/ra-and-tv-frequencies",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "si-logatec-radio-94-notranjska-91-1",
+      "name": "Radio 94 - Notranjska",
+      "freqMhz": 91.1,
+      "cityId": "si-logatec",
+      "description": "Slovenian FM register entry listed by AKOS for LOGATEC. Programme: Radio 94 - Notranjska. Holder: RADIO 94 d.o.o. Postojna.",
+      "tags": [
+        "fm",
+        "official",
+        "slovenia",
+        "akos",
+        "radio-94-doo-postojna",
+        "radio-94-notranjska"
+      ],
+      "source": "AKOS RA and TV frequencies register",
+      "sourceUrl": "https://www.akos-rs.si/en/registers/registers-list/ra-and-tv-frequencies",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "si-logatec-radio-1-krim-ena-vr-radio-1-95-8",
+      "name": "Radio 1 Krim; ENA VR Radio 1",
+      "freqMhz": 95.8,
+      "cityId": "si-logatec",
+      "description": "Slovenian FM register entry listed by AKOS for LOGATEC. Programme: Radio 1 Krim; ENA VR Radio 1. Holder: INTERTEH, d.o.o..",
+      "tags": [
+        "fm",
+        "official",
+        "slovenia",
+        "akos",
+        "interteh-doo",
+        "radio-1-krim-ena-vr-radio-1"
+      ],
+      "source": "AKOS RA and TV frequencies register",
+      "sourceUrl": "https://www.akos-rs.si/en/registers/registers-list/ra-and-tv-frequencies",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "si-loz-radio-ognjisce-94-8",
+      "name": "RADIO OGNJIŠČE",
+      "freqMhz": 94.8,
+      "cityId": "si-loz",
+      "description": "Slovenian FM register entry listed by AKOS for LOŽ. Programme: RADIO OGNJIŠČE. Holder: RADIO OGNJIŠČE d.o.o. Koper.",
+      "tags": [
+        "fm",
+        "official",
+        "slovenia",
+        "akos",
+        "radio-ognjisce-doo-koper",
+        "radio-ognjisce"
+      ],
+      "source": "AKOS RA and TV frequencies register",
+      "sourceUrl": "https://www.akos-rs.si/en/registers/registers-list/ra-and-tv-frequencies",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "si-loz-radio-94-97-8",
+      "name": "Radio 94",
+      "freqMhz": 97.8,
+      "cityId": "si-loz",
+      "description": "Slovenian FM register entry listed by AKOS for LOŽ. Programme: Radio 94. Holder: RADIO 94 d.o.o. Postojna.",
+      "tags": [
+        "fm",
+        "official",
+        "slovenia",
+        "akos",
+        "radio-94-doo-postojna",
+        "radio-94"
+      ],
+      "source": "AKOS RA and TV frequencies register",
+      "sourceUrl": "https://www.akos-rs.si/en/registers/registers-list/ra-and-tv-frequencies",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "si-luce-1-program-radia-slovenija-prvi-88-6",
+      "name": "1. program Radia Slovenija - Prvi",
+      "freqMhz": 88.6,
+      "cityId": "si-luce",
+      "description": "Slovenian FM register entry listed by AKOS for LUČE. Programme: 1. program Radia Slovenija - Prvi. Holder: RTV SLOVENIJA.",
+      "tags": [
+        "fm",
+        "official",
+        "slovenia",
+        "akos",
+        "rtv-slovenija",
+        "1-program-radia-slovenija-prvi"
+      ],
+      "source": "AKOS RA and TV frequencies register",
+      "sourceUrl": "https://www.akos-rs.si/en/registers/registers-list/ra-and-tv-frequencies",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "si-luce-radio-slovenija-drugi-program-program-val-202-val-202-93-1",
+      "name": "RADIO SLOVENIJA, drugi program - PROGRAM VAL 202 /VAL 202/",
+      "freqMhz": 93.1,
+      "cityId": "si-luce",
+      "description": "Slovenian FM register entry listed by AKOS for LUČE. Programme: RADIO SLOVENIJA, drugi program - PROGRAM VAL 202 /VAL 202/. Holder: RTV SLOVENIJA.",
+      "tags": [
+        "fm",
+        "official",
+        "slovenia",
+        "akos",
+        "rtv-slovenija",
+        "radio-slovenija-drugi-program-program-val-202-val-202"
+      ],
+      "source": "AKOS RA and TV frequencies register",
+      "sourceUrl": "https://www.akos-rs.si/en/registers/registers-list/ra-and-tv-frequencies",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "si-majsperk-radio-ptuj-89-8",
+      "name": "RADIO PTUJ",
+      "freqMhz": 89.8,
+      "cityId": "si-majsperk",
+      "description": "Slovenian FM register entry listed by AKOS for MAJŠPERK. Programme: RADIO PTUJ. Holder: RADIO TEDNIK Ptuj d.o.o..",
+      "tags": [
+        "fm",
+        "official",
+        "slovenia",
+        "akos",
+        "radio-tednik-ptuj-doo",
+        "radio-ptuj"
+      ],
+      "source": "AKOS RA and TV frequencies register",
+      "sourceUrl": "https://www.akos-rs.si/en/registers/registers-list/ra-and-tv-frequencies",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "si-majsperk-radio-1-dab-radio-1-98-7",
+      "name": "Radio 1 DAB Radio 1",
+      "freqMhz": 98.7,
+      "cityId": "si-majsperk",
+      "description": "Slovenian FM register entry listed by AKOS for MAJŠPERK. Programme: Radio 1 DAB Radio 1. Holder: RADIO MAKSI d.o.o..",
+      "tags": [
+        "fm",
+        "official",
+        "slovenia",
+        "akos",
+        "radio-maksi-doo",
+        "radio-1-dab-radio-1"
+      ],
+      "source": "AKOS RA and TV frequencies register",
+      "sourceUrl": "https://www.akos-rs.si/en/registers/registers-list/ra-and-tv-frequencies",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "si-maribor-rock-radio-slovenija-rock-radio-90-8",
+      "name": "Rock Radio Slovenija Rock Radio",
+      "freqMhz": 90.8,
+      "cityId": "si-maribor",
+      "description": "Slovenian FM register entry listed by AKOS for MARIBOR. Programme: Rock Radio Slovenija Rock Radio. Holder: ROCK RADIO, d.o.o..",
+      "tags": [
+        "fm",
+        "official",
+        "slovenia",
+        "akos",
+        "rock-radio-doo",
+        "rock-radio-slovenija-rock-radio"
+      ],
+      "source": "AKOS RA and TV frequencies register",
+      "sourceUrl": "https://www.akos-rs.si/en/registers/registers-list/ra-and-tv-frequencies",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "si-maribor-rock-maribor-radio-1-rock-r1-rock-94-4",
+      "name": "Rock Maribor RADIO 1 ROCK; R1 ROCK",
+      "freqMhz": 94.4,
+      "cityId": "si-maribor",
+      "description": "Slovenian FM register entry listed by AKOS for MARIBOR. Programme: Rock Maribor RADIO 1 ROCK; R1 ROCK. Holder: D PRODUKCIJA d.o.o..",
+      "tags": [
+        "fm",
+        "official",
+        "slovenia",
+        "akos",
+        "d-produkcija-doo",
+        "rock-maribor-radio-1-rock-r1-rock"
+      ],
+      "source": "AKOS RA and TV frequencies register",
+      "sourceUrl": "https://www.akos-rs.si/en/registers/registers-list/ra-and-tv-frequencies",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "si-maribor-mariborski-radio-student-mars-95-9",
+      "name": "Mariborski radio Študent - Marš",
+      "freqMhz": 95.9,
+      "cityId": "si-maribor",
+      "description": "Slovenian FM register entry listed by AKOS for MARIBOR. Programme: Mariborski radio Študent - Marš. Holder: ZAVOD MARŠ.",
+      "tags": [
+        "fm",
+        "official",
+        "slovenia",
+        "akos",
+        "zavod-mars",
+        "mariborski-radio-student-mars"
+      ],
+      "source": "AKOS RA and TV frequencies register",
+      "sourceUrl": "https://www.akos-rs.si/en/registers/registers-list/ra-and-tv-frequencies",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "si-maribor-radio-net-fm-100-2",
+      "name": "Radio NET FM",
+      "freqMhz": 100.2,
+      "cityId": "si-maribor",
+      "description": "Slovenian FM register entry listed by AKOS for MARIBOR. Programme: Radio NET FM. Holder: RADIO NET d.o.o..",
+      "tags": [
+        "fm",
+        "official",
+        "slovenia",
+        "akos",
+        "radio-net-doo",
+        "radio-net-fm"
+      ],
+      "source": "AKOS RA and TV frequencies register",
+      "sourceUrl": "https://www.akos-rs.si/en/registers/registers-list/ra-and-tv-frequencies",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "si-maribor-radio-city-100-6",
+      "name": "RADIO CITY",
+      "freqMhz": 100.6,
+      "cityId": "si-maribor",
+      "description": "Slovenian FM register entry listed by AKOS for MARIBOR. Programme: RADIO CITY. Holder: RADIO CITY d.o.o..",
+      "tags": [
+        "fm",
+        "official",
+        "slovenia",
+        "akos",
+        "radio-city-doo",
+        "radio-city"
+      ],
+      "source": "AKOS RA and TV frequencies register",
+      "sourceUrl": "https://www.akos-rs.si/en/registers/registers-list/ra-and-tv-frequencies",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "si-maribor-radio-ognjisce-104-5",
+      "name": "RADIO OGNJIŠČE",
+      "freqMhz": 104.5,
+      "cityId": "si-maribor",
+      "description": "Slovenian FM register entry listed by AKOS for MARIBOR. Programme: RADIO OGNJIŠČE. Holder: RADIO OGNJIŠČE d.o.o. Koper.",
+      "tags": [
+        "fm",
+        "official",
+        "slovenia",
+        "akos",
+        "radio-ognjisce-doo-koper",
+        "radio-ognjisce"
+      ],
+      "source": "AKOS RA and TV frequencies register",
+      "sourceUrl": "https://www.akos-rs.si/en/registers/registers-list/ra-and-tv-frequencies",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "si-maribor-radio-1-stajerska-ena-mb-radio-1-107-9",
+      "name": "Radio 1 Štajerska; ENA MB Radio 1",
+      "freqMhz": 107.9,
+      "cityId": "si-maribor",
+      "description": "Slovenian FM register entry listed by AKOS for MARIBOR. Programme: Radio 1 Štajerska; ENA MB Radio 1. Holder: RADIO PRO 1 d.o.o..",
+      "tags": [
+        "fm",
+        "official",
+        "slovenia",
+        "akos",
+        "radio-pro-1-doo",
+        "radio-1-stajerska-ena-mb-radio-1"
+      ],
+      "source": "AKOS RA and TV frequencies register",
+      "sourceUrl": "https://www.akos-rs.si/en/registers/registers-list/ra-and-tv-frequencies",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "si-metlika-radio-center-slovenija-radio-center-95-1",
+      "name": "RADIO CENTER SLOVENIJA RADIO CENTER",
+      "freqMhz": 95.1,
+      "cityId": "si-metlika",
+      "description": "Slovenian FM register entry listed by AKOS for METLIKA. Programme: RADIO CENTER SLOVENIJA RADIO CENTER. Holder: RADIO CENTER d.o.o..",
+      "tags": [
+        "fm",
+        "official",
+        "slovenia",
+        "akos",
+        "radio-center-doo",
+        "radio-center-slovenija-radio-center"
+      ],
+      "source": "AKOS RA and TV frequencies register",
+      "sourceUrl": "https://www.akos-rs.si/en/registers/registers-list/ra-and-tv-frequencies",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "si-mozirje-1-program-radia-slovenija-prvi-87-6",
+      "name": "1. program Radia Slovenija - Prvi",
+      "freqMhz": 87.6,
+      "cityId": "si-mozirje",
+      "description": "Slovenian FM register entry listed by AKOS for MOZIRJE. Programme: 1. program Radia Slovenija - Prvi. Holder: RTV SLOVENIJA.",
+      "tags": [
+        "fm",
+        "official",
+        "slovenia",
+        "akos",
+        "rtv-slovenija",
+        "1-program-radia-slovenija-prvi"
+      ],
+      "source": "AKOS RA and TV frequencies register",
+      "sourceUrl": "https://www.akos-rs.si/en/registers/registers-list/ra-and-tv-frequencies",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "si-mozirje-radio-1-savinjska-ena-sav-radio-1-88-3",
+      "name": "Radio 1 Savinjska; ENA SAV Radio 1",
+      "freqMhz": 88.3,
+      "cityId": "si-mozirje",
+      "description": "Slovenian FM register entry listed by AKOS for MOZIRJE. Programme: Radio 1 Savinjska; ENA SAV Radio 1. Holder: RADIO PRO 1 d.o.o..",
+      "tags": [
+        "fm",
+        "official",
+        "slovenia",
+        "akos",
+        "radio-pro-1-doo",
+        "radio-1-savinjska-ena-sav-radio-1"
+      ],
+      "source": "AKOS RA and TV frequencies register",
+      "sourceUrl": "https://www.akos-rs.si/en/registers/registers-list/ra-and-tv-frequencies",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "si-mozirje-radio-celje-90-6",
+      "name": "RADIO CELJE",
+      "freqMhz": 90.6,
+      "cityId": "si-mozirje",
+      "description": "Slovenian FM register entry listed by AKOS for MOZIRJE. Programme: RADIO CELJE. Holder: NT&RC d.o.o. Celje.",
+      "tags": [
+        "fm",
+        "official",
+        "slovenia",
+        "akos",
+        "ntrc-doo-celje",
+        "radio-celje"
+      ],
+      "source": "AKOS RA and TV frequencies register",
+      "sourceUrl": "https://www.akos-rs.si/en/registers/registers-list/ra-and-tv-frequencies",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "si-mozirje-radio-slovenija-drugi-program-program-val-202-val-202-94-7",
+      "name": "RADIO SLOVENIJA, drugi program - PROGRAM VAL 202 /VAL 202/",
+      "freqMhz": 94.7,
+      "cityId": "si-mozirje",
+      "description": "Slovenian FM register entry listed by AKOS for MOZIRJE. Programme: RADIO SLOVENIJA, drugi program - PROGRAM VAL 202 /VAL 202/. Holder: RTV SLOVENIJA.",
+      "tags": [
+        "fm",
+        "official",
+        "slovenia",
+        "akos",
+        "rtv-slovenija",
+        "radio-slovenija-drugi-program-program-val-202-val-202"
+      ],
+      "source": "AKOS RA and TV frequencies register",
+      "sourceUrl": "https://www.akos-rs.si/en/registers/registers-list/ra-and-tv-frequencies",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "si-mozirje-radio-slovenija-tretji-program-program-ars-ars-96-2",
+      "name": "RADIO SLOVENIJA, tretji program - PROGRAM ARS /ARS/",
+      "freqMhz": 96.2,
+      "cityId": "si-mozirje",
+      "description": "Slovenian FM register entry listed by AKOS for MOZIRJE. Programme: RADIO SLOVENIJA, tretji program - PROGRAM ARS /ARS/. Holder: RTV SLOVENIJA.",
+      "tags": [
+        "fm",
+        "official",
+        "slovenia",
+        "akos",
+        "rtv-slovenija",
+        "radio-slovenija-tretji-program-program-ars-ars"
+      ],
+      "source": "AKOS RA and TV frequencies register",
+      "sourceUrl": "https://www.akos-rs.si/en/registers/registers-list/ra-and-tv-frequencies",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "si-mozirje-rock-radio-celje-rock-radio-98-3",
+      "name": "Rock Radio Celje Rock Radio",
+      "freqMhz": 98.3,
+      "cityId": "si-mozirje",
+      "description": "Slovenian FM register entry listed by AKOS for MOZIRJE. Programme: Rock Radio Celje Rock Radio. Holder: NEXT MEDIA, d.o.o..",
+      "tags": [
+        "fm",
+        "official",
+        "slovenia",
+        "akos",
+        "next-media-doo",
+        "rock-radio-celje-rock-radio"
+      ],
+      "source": "AKOS RA and TV frequencies register",
+      "sourceUrl": "https://www.akos-rs.si/en/registers/registers-list/ra-and-tv-frequencies",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "si-mozirje-radio-ognjisce-105-7",
+      "name": "RADIO OGNJIŠČE",
+      "freqMhz": 105.7,
+      "cityId": "si-mozirje",
+      "description": "Slovenian FM register entry listed by AKOS for MOZIRJE. Programme: RADIO OGNJIŠČE. Holder: RADIO OGNJIŠČE d.o.o. Koper.",
+      "tags": [
+        "fm",
+        "official",
+        "slovenia",
+        "akos",
+        "radio-ognjisce-doo-koper",
+        "radio-ognjisce"
+      ],
+      "source": "AKOS RA and TV frequencies register",
+      "sourceUrl": "https://www.akos-rs.si/en/registers/registers-list/ra-and-tv-frequencies",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "si-murska-sobota-radio-ognjisce-91-8",
+      "name": "RADIO OGNJIŠČE",
+      "freqMhz": 91.8,
+      "cityId": "si-murska-sobota",
+      "description": "Slovenian FM register entry listed by AKOS for MURSKA SOBOTA. Programme: RADIO OGNJIŠČE. Holder: RADIO OGNJIŠČE d.o.o. Koper.",
+      "tags": [
+        "fm",
+        "official",
+        "slovenia",
+        "akos",
+        "radio-ognjisce-doo-koper",
+        "radio-ognjisce"
+      ],
+      "source": "AKOS RA and TV frequencies register",
+      "sourceUrl": "https://www.akos-rs.si/en/registers/registers-list/ra-and-tv-frequencies",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "si-murska-sobota-radio-romic-97-6",
+      "name": "Radio Romic",
+      "freqMhz": 97.6,
+      "cityId": "si-murska-sobota",
+      "description": "Slovenian FM register entry listed by AKOS for MURSKA SOBOTA. Programme: Radio Romic. Holder: ZVEZA ROMOV SLOVENIJE.",
+      "tags": [
+        "fm",
+        "official",
+        "slovenia",
+        "akos",
+        "zveza-romov-slovenije",
+        "radio-romic"
+      ],
+      "source": "AKOS RA and TV frequencies register",
+      "sourceUrl": "https://www.akos-rs.si/en/registers/registers-list/ra-and-tv-frequencies",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "si-nova-gorica-radio-1-primorska-ena-ng-radio-1-90-6",
+      "name": "Radio 1 Primorska; ENA NG Radio 1",
+      "freqMhz": 90.6,
+      "cityId": "si-nova-gorica",
+      "description": "Slovenian FM register entry listed by AKOS for NOVA GORICA. Programme: Radio 1 Primorska; ENA NG Radio 1. Holder: RADIO PRO 1 d.o.o..",
+      "tags": [
+        "fm",
+        "official",
+        "slovenia",
+        "akos",
+        "radio-pro-1-doo",
+        "radio-1-primorska-ena-ng-radio-1"
+      ],
+      "source": "AKOS RA and TV frequencies register",
+      "sourceUrl": "https://www.akos-rs.si/en/registers/registers-list/ra-and-tv-frequencies",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "si-nova-gorica-radio-ognjisce-95-9",
+      "name": "RADIO OGNJIŠČE",
+      "freqMhz": 95.9,
+      "cityId": "si-nova-gorica",
+      "description": "Slovenian FM register entry listed by AKOS for NOVA GORICA. Programme: RADIO OGNJIŠČE. Holder: RADIO OGNJIŠČE d.o.o. Koper.",
+      "tags": [
+        "fm",
+        "official",
+        "slovenia",
+        "akos",
+        "radio-ognjisce-doo-koper",
+        "radio-ognjisce"
+      ],
+      "source": "AKOS RA and TV frequencies register",
+      "sourceUrl": "https://www.akos-rs.si/en/registers/registers-list/ra-and-tv-frequencies",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "si-nova-gorica-radio-robin-99-5",
+      "name": "RADIO ROBIN",
+      "freqMhz": 99.5,
+      "cityId": "si-nova-gorica",
+      "description": "Slovenian FM register entry listed by AKOS for NOVA GORICA. Programme: RADIO ROBIN. Holder: RADIO ROBIN d.o.o..",
+      "tags": [
+        "fm",
+        "official",
+        "slovenia",
+        "akos",
+        "radio-robin-doo",
+        "radio-robin"
+      ],
+      "source": "AKOS RA and TV frequencies register",
+      "sourceUrl": "https://www.akos-rs.si/en/registers/registers-list/ra-and-tv-frequencies",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "si-nova-gorica-radio-center-slovenija-radio-center-101-5",
+      "name": "RADIO CENTER SLOVENIJA RADIO CENTER",
+      "freqMhz": 101.5,
+      "cityId": "si-nova-gorica",
+      "description": "Slovenian FM register entry listed by AKOS for NOVA GORICA. Programme: RADIO CENTER SLOVENIJA RADIO CENTER. Holder: RADIO CENTER d.o.o..",
+      "tags": [
+        "fm",
+        "official",
+        "slovenia",
+        "akos",
+        "radio-center-doo",
+        "radio-center-slovenija-radio-center"
+      ],
+      "source": "AKOS RA and TV frequencies register",
+      "sourceUrl": "https://www.akos-rs.si/en/registers/registers-list/ra-and-tv-frequencies",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "si-nova-gorica-radio-center-slovenija-radio-center-104-9",
+      "name": "RADIO CENTER SLOVENIJA RADIO CENTER",
+      "freqMhz": 104.9,
+      "cityId": "si-nova-gorica",
+      "description": "Slovenian FM register entry listed by AKOS for NOVA GORICA. Programme: RADIO CENTER SLOVENIJA RADIO CENTER. Holder: RADIO CENTER d.o.o..",
+      "tags": [
+        "fm",
+        "official",
+        "slovenia",
+        "akos",
+        "radio-center-doo",
+        "radio-center-slovenija-radio-center"
+      ],
+      "source": "AKOS RA and TV frequencies register",
+      "sourceUrl": "https://www.akos-rs.si/en/registers/registers-list/ra-and-tv-frequencies",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "si-ormoz-radio-prlek-88-9",
+      "name": "RADIO PRLEK",
+      "freqMhz": 88.9,
+      "cityId": "si-ormoz",
+      "description": "Slovenian FM register entry listed by AKOS for ORMOŽ. Programme: RADIO PRLEK. Holder: ZAVOD ZA INFORMIRANJE ORMOŽ.",
+      "tags": [
+        "fm",
+        "official",
+        "slovenia",
+        "akos",
+        "zavod-za-informiranje-ormoz",
+        "radio-prlek"
+      ],
+      "source": "AKOS RA and TV frequencies register",
+      "sourceUrl": "https://www.akos-rs.si/en/registers/registers-list/ra-and-tv-frequencies",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "si-osilnica-radio-univox-89-5",
+      "name": "RADIO UNIVOX",
+      "freqMhz": 89.5,
+      "cityId": "si-osilnica",
+      "description": "Slovenian FM register entry listed by AKOS for OSILNICA. Programme: RADIO UNIVOX. Holder: UNIVOX d.o.o..",
+      "tags": [
+        "fm",
+        "official",
+        "slovenia",
+        "akos",
+        "univox-doo",
+        "radio-univox"
+      ],
+      "source": "AKOS RA and TV frequencies register",
+      "sourceUrl": "https://www.akos-rs.si/en/registers/registers-list/ra-and-tv-frequencies",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "si-osilnica-1-program-radia-slovenija-prvi-90-9",
+      "name": "1. program Radia Slovenija - Prvi",
+      "freqMhz": 90.9,
+      "cityId": "si-osilnica",
+      "description": "Slovenian FM register entry listed by AKOS for OSILNICA. Programme: 1. program Radia Slovenija - Prvi. Holder: RTV SLOVENIJA.",
+      "tags": [
+        "fm",
+        "official",
+        "slovenia",
+        "akos",
+        "rtv-slovenija",
+        "1-program-radia-slovenija-prvi"
+      ],
+      "source": "AKOS RA and TV frequencies register",
+      "sourceUrl": "https://www.akos-rs.si/en/registers/registers-list/ra-and-tv-frequencies",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "si-osilnica-radio-slovenija-drugi-program-program-val-202-val-202-96-3",
+      "name": "RADIO SLOVENIJA, drugi program - PROGRAM VAL 202 /VAL 202/",
+      "freqMhz": 96.3,
+      "cityId": "si-osilnica",
+      "description": "Slovenian FM register entry listed by AKOS for OSILNICA. Programme: RADIO SLOVENIJA, drugi program - PROGRAM VAL 202 /VAL 202/. Holder: RTV SLOVENIJA.",
+      "tags": [
+        "fm",
+        "official",
+        "slovenia",
+        "akos",
+        "rtv-slovenija",
+        "radio-slovenija-drugi-program-program-val-202-val-202"
+      ],
+      "source": "AKOS RA and TV frequencies register",
+      "sourceUrl": "https://www.akos-rs.si/en/registers/registers-list/ra-and-tv-frequencies",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "si-piran-radio-aktual-obala-87-6",
+      "name": "Radio Aktual Obala",
+      "freqMhz": 87.6,
+      "cityId": "si-piran",
+      "description": "Slovenian FM register entry listed by AKOS for PIRAN. Programme: Radio Aktual Obala. Holder: RGL, d.o.o, Ljubljana.",
+      "tags": [
+        "fm",
+        "official",
+        "slovenia",
+        "akos",
+        "rgl-doo-ljubljana",
+        "radio-aktual-obala"
+      ],
+      "source": "AKOS RA and TV frequencies register",
+      "sourceUrl": "https://www.akos-rs.si/en/registers/registers-list/ra-and-tv-frequencies",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "si-piran-radio-1-portoroz-ena-po-radio-1-100-1",
+      "name": "Radio 1 Portorož; ENA PO Radio 1",
+      "freqMhz": 100.1,
+      "cityId": "si-piran",
+      "description": "Slovenian FM register entry listed by AKOS for PIRAN. Programme: Radio 1 Portorož; ENA PO Radio 1. Holder: RADIO PRO 1 d.o.o..",
+      "tags": [
+        "fm",
+        "official",
+        "slovenia",
+        "akos",
+        "radio-pro-1-doo",
+        "radio-1-portoroz-ena-po-radio-1"
+      ],
+      "source": "AKOS RA and TV frequencies register",
+      "sourceUrl": "https://www.akos-rs.si/en/registers/registers-list/ra-and-tv-frequencies",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "si-podbrdo-1-program-radia-slovenija-prvi-89-3",
+      "name": "1. program Radia Slovenija - Prvi",
+      "freqMhz": 89.3,
+      "cityId": "si-podbrdo",
+      "description": "Slovenian FM register entry listed by AKOS for PODBRDO. Programme: 1. program Radia Slovenija - Prvi. Holder: RTV SLOVENIJA.",
+      "tags": [
+        "fm",
+        "official",
+        "slovenia",
+        "akos",
+        "rtv-slovenija",
+        "1-program-radia-slovenija-prvi"
+      ],
+      "source": "AKOS RA and TV frequencies register",
+      "sourceUrl": "https://www.akos-rs.si/en/registers/registers-list/ra-and-tv-frequencies",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "si-podbrdo-radio-1-primorska-ena-ng-radio-1-91-2",
+      "name": "Radio 1 Primorska; ENA NG Radio 1",
+      "freqMhz": 91.2,
+      "cityId": "si-podbrdo",
+      "description": "Slovenian FM register entry listed by AKOS for PODBRDO. Programme: Radio 1 Primorska; ENA NG Radio 1. Holder: RADIO PRO 1 d.o.o..",
+      "tags": [
+        "fm",
+        "official",
+        "slovenia",
+        "akos",
+        "radio-pro-1-doo",
+        "radio-1-primorska-ena-ng-radio-1"
+      ],
+      "source": "AKOS RA and TV frequencies register",
+      "sourceUrl": "https://www.akos-rs.si/en/registers/registers-list/ra-and-tv-frequencies",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "si-podbrdo-radio-robin-92-8",
+      "name": "RADIO ROBIN",
+      "freqMhz": 92.8,
+      "cityId": "si-podbrdo",
+      "description": "Slovenian FM register entry listed by AKOS for PODBRDO. Programme: RADIO ROBIN. Holder: RADIO ROBIN d.o.o..",
+      "tags": [
+        "fm",
+        "official",
+        "slovenia",
+        "akos",
+        "radio-robin-doo",
+        "radio-robin"
+      ],
+      "source": "AKOS RA and TV frequencies register",
+      "sourceUrl": "https://www.akos-rs.si/en/registers/registers-list/ra-and-tv-frequencies",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "si-podbrdo-radio-slovenija-drugi-program-program-val-202-val-202-95-7",
+      "name": "RADIO SLOVENIJA, drugi program - PROGRAM VAL 202 /VAL 202/",
+      "freqMhz": 95.7,
+      "cityId": "si-podbrdo",
+      "description": "Slovenian FM register entry listed by AKOS for PODBRDO. Programme: RADIO SLOVENIJA, drugi program - PROGRAM VAL 202 /VAL 202/. Holder: RTV SLOVENIJA.",
+      "tags": [
+        "fm",
+        "official",
+        "slovenia",
+        "akos",
+        "rtv-slovenija",
+        "radio-slovenija-drugi-program-program-val-202-val-202"
+      ],
+      "source": "AKOS RA and TV frequencies register",
+      "sourceUrl": "https://www.akos-rs.si/en/registers/registers-list/ra-and-tv-frequencies",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "si-podbrdo-radio-center-slovenija-radio-center-99-5",
+      "name": "RADIO CENTER SLOVENIJA RADIO CENTER",
+      "freqMhz": 99.5,
+      "cityId": "si-podbrdo",
+      "description": "Slovenian FM register entry listed by AKOS for PODBRDO. Programme: RADIO CENTER SLOVENIJA RADIO CENTER. Holder: RADIO CENTER d.o.o..",
+      "tags": [
+        "fm",
+        "official",
+        "slovenia",
+        "akos",
+        "radio-center-doo",
+        "radio-center-slovenija-radio-center"
+      ],
+      "source": "AKOS RA and TV frequencies register",
+      "sourceUrl": "https://www.akos-rs.si/en/registers/registers-list/ra-and-tv-frequencies",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "si-podbrdo-radio-odmev-regionalna-radijska-mreza-primorski-val-105",
+      "name": "RADIO ODMEV Regionalna radijska mreža PRIMORSKI VAL",
+      "freqMhz": 105,
+      "cityId": "si-podbrdo",
+      "description": "Slovenian FM register entry listed by AKOS for PODBRDO. Programme: RADIO ODMEV Regionalna radijska mreža PRIMORSKI VAL. Holder: RADIO CERKNO d.o.o..",
+      "tags": [
+        "fm",
+        "official",
+        "slovenia",
+        "akos",
+        "radio-cerkno-doo",
+        "radio-odmev-regionalna-radijska-mreza-primorski-val"
+      ],
+      "source": "AKOS RA and TV frequencies register",
+      "sourceUrl": "https://www.akos-rs.si/en/registers/registers-list/ra-and-tv-frequencies",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "si-podbrdo-radio-ognjisce-106-5",
+      "name": "RADIO OGNJIŠČE",
+      "freqMhz": 106.5,
+      "cityId": "si-podbrdo",
+      "description": "Slovenian FM register entry listed by AKOS for PODBRDO. Programme: RADIO OGNJIŠČE. Holder: RADIO OGNJIŠČE d.o.o. Koper.",
+      "tags": [
+        "fm",
+        "official",
+        "slovenia",
+        "akos",
+        "radio-ognjisce-doo-koper",
+        "radio-ognjisce"
+      ],
+      "source": "AKOS RA and TV frequencies register",
+      "sourceUrl": "https://www.akos-rs.si/en/registers/registers-list/ra-and-tv-frequencies",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "si-podgrad-radio-koper-radio-kp-89-5",
+      "name": "RADIO KOPER /RADIO KP/",
+      "freqMhz": 89.5,
+      "cityId": "si-podgrad",
+      "description": "Slovenian FM register entry listed by AKOS for PODGRAD. Programme: RADIO KOPER /RADIO KP/. Holder: RTV SLOVENIJA.",
+      "tags": [
+        "fm",
+        "official",
+        "slovenia",
+        "akos",
+        "rtv-slovenija",
+        "radio-koper-radio-kp"
+      ],
+      "source": "AKOS RA and TV frequencies register",
+      "sourceUrl": "https://www.akos-rs.si/en/registers/registers-list/ra-and-tv-frequencies",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "si-podgrad-radio-slovenija-drugi-program-program-val-202-val-202-99-8",
+      "name": "RADIO SLOVENIJA, drugi program - PROGRAM VAL 202 /VAL 202/",
+      "freqMhz": 99.8,
+      "cityId": "si-podgrad",
+      "description": "Slovenian FM register entry listed by AKOS for PODGRAD. Programme: RADIO SLOVENIJA, drugi program - PROGRAM VAL 202 /VAL 202/. Holder: RTV SLOVENIJA.",
+      "tags": [
+        "fm",
+        "official",
+        "slovenia",
+        "akos",
+        "rtv-slovenija",
+        "radio-slovenija-drugi-program-program-val-202-val-202"
+      ],
+      "source": "AKOS RA and TV frequencies register",
+      "sourceUrl": "https://www.akos-rs.si/en/registers/registers-list/ra-and-tv-frequencies",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "si-podljubelj-1-program-radia-slovenija-prvi-91-5",
+      "name": "1. program Radia Slovenija - Prvi",
+      "freqMhz": 91.5,
+      "cityId": "si-podljubelj",
+      "description": "Slovenian FM register entry listed by AKOS for PODLJUBELJ. Programme: 1. program Radia Slovenija - Prvi. Holder: RTV SLOVENIJA.",
+      "tags": [
+        "fm",
+        "official",
+        "slovenia",
+        "akos",
+        "rtv-slovenija",
+        "1-program-radia-slovenija-prvi"
+      ],
+      "source": "AKOS RA and TV frequencies register",
+      "sourceUrl": "https://www.akos-rs.si/en/registers/registers-list/ra-and-tv-frequencies",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "si-podljubelj-radio-slovenija-drugi-program-program-val-202-val-202-98-6",
+      "name": "RADIO SLOVENIJA, drugi program - PROGRAM VAL 202 /VAL 202/",
+      "freqMhz": 98.6,
+      "cityId": "si-podljubelj",
+      "description": "Slovenian FM register entry listed by AKOS for PODLJUBELJ. Programme: RADIO SLOVENIJA, drugi program - PROGRAM VAL 202 /VAL 202/. Holder: RTV SLOVENIJA.",
+      "tags": [
+        "fm",
+        "official",
+        "slovenia",
+        "akos",
+        "rtv-slovenija",
+        "radio-slovenija-drugi-program-program-val-202-val-202"
+      ],
+      "source": "AKOS RA and TV frequencies register",
+      "sourceUrl": "https://www.akos-rs.si/en/registers/registers-list/ra-and-tv-frequencies",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "si-portoroz-radio-capris-106-2",
+      "name": "RADIO CAPRIS",
+      "freqMhz": 106.2,
+      "cityId": "si-portoroz",
+      "description": "Slovenian FM register entry listed by AKOS for PORTOROŽ. Programme: RADIO CAPRIS. Holder: RADIO CAPRIS d.o.o..",
+      "tags": [
+        "fm",
+        "official",
+        "slovenia",
+        "akos",
+        "radio-capris-doo",
+        "radio-capris"
+      ],
+      "source": "AKOS RA and TV frequencies register",
+      "sourceUrl": "https://www.akos-rs.si/en/registers/registers-list/ra-and-tv-frequencies",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "si-postojna-radio-ognjisce-89-1",
+      "name": "RADIO OGNJIŠČE",
+      "freqMhz": 89.1,
+      "cityId": "si-postojna",
+      "description": "Slovenian FM register entry listed by AKOS for POSTOJNA. Programme: RADIO OGNJIŠČE. Holder: RADIO OGNJIŠČE d.o.o. Koper.",
+      "tags": [
+        "fm",
+        "official",
+        "slovenia",
+        "akos",
+        "radio-ognjisce-doo-koper",
+        "radio-ognjisce"
+      ],
+      "source": "AKOS RA and TV frequencies register",
+      "sourceUrl": "https://www.akos-rs.si/en/registers/registers-list/ra-and-tv-frequencies",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "si-postojna-radio-capris-94-7",
+      "name": "RADIO CAPRIS",
+      "freqMhz": 94.7,
+      "cityId": "si-postojna",
+      "description": "Slovenian FM register entry listed by AKOS for POSTOJNA. Programme: RADIO CAPRIS. Holder: RADIO CAPRIS d.o.o..",
+      "tags": [
+        "fm",
+        "official",
+        "slovenia",
+        "akos",
+        "radio-capris-doo",
+        "radio-capris"
+      ],
+      "source": "AKOS RA and TV frequencies register",
+      "sourceUrl": "https://www.akos-rs.si/en/registers/registers-list/ra-and-tv-frequencies",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "si-postojna-radio-94-98-2",
+      "name": "Radio 94",
+      "freqMhz": 98.2,
+      "cityId": "si-postojna",
+      "description": "Slovenian FM register entry listed by AKOS for POSTOJNA. Programme: Radio 94. Holder: RADIO 94 d.o.o. Postojna.",
+      "tags": [
+        "fm",
+        "official",
+        "slovenia",
+        "akos",
+        "radio-94-doo-postojna",
+        "radio-94"
+      ],
+      "source": "AKOS RA and TV frequencies register",
+      "sourceUrl": "https://www.akos-rs.si/en/registers/registers-list/ra-and-tv-frequencies",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "si-postojna-radio-1-primorska-ena-ng-radio-1-101-8",
+      "name": "Radio 1 Primorska; ENA NG Radio 1",
+      "freqMhz": 101.8,
+      "cityId": "si-postojna",
+      "description": "Slovenian FM register entry listed by AKOS for POSTOJNA. Programme: Radio 1 Primorska; ENA NG Radio 1. Holder: RADIO PRO 1 d.o.o..",
+      "tags": [
+        "fm",
+        "official",
+        "slovenia",
+        "akos",
+        "radio-pro-1-doo",
+        "radio-1-primorska-ena-ng-radio-1"
+      ],
+      "source": "AKOS RA and TV frequencies register",
+      "sourceUrl": "https://www.akos-rs.si/en/registers/registers-list/ra-and-tv-frequencies",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "si-postojna-radio-slovenia-internationalradio-si-107-7",
+      "name": "Radio Slovenia International/Radio SI",
+      "freqMhz": 107.7,
+      "cityId": "si-postojna",
+      "description": "Slovenian FM register entry listed by AKOS for POSTOJNA. Programme: Radio Slovenia International/Radio SI. Holder: RTV SLOVENIJA.",
+      "tags": [
+        "fm",
+        "official",
+        "slovenia",
+        "akos",
+        "rtv-slovenija",
+        "radio-slovenia-internationalradio-si"
+      ],
+      "source": "AKOS RA and TV frequencies register",
+      "sourceUrl": "https://www.akos-rs.si/en/registers/registers-list/ra-and-tv-frequencies",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "si-ptuj-radio-1-ptuj-ena-ptuj-radio-1-92-3",
+      "name": "Radio 1 Ptuj; ENA PTUJ Radio 1",
+      "freqMhz": 92.3,
+      "cityId": "si-ptuj",
+      "description": "Slovenian FM register entry listed by AKOS for PTUJ. Programme: Radio 1 Ptuj; ENA PTUJ Radio 1. Holder: RADIO PRO 1 d.o.o..",
+      "tags": [
+        "fm",
+        "official",
+        "slovenia",
+        "akos",
+        "radio-pro-1-doo",
+        "radio-1-ptuj-ena-ptuj-radio-1"
+      ],
+      "source": "AKOS RA and TV frequencies register",
+      "sourceUrl": "https://www.akos-rs.si/en/registers/registers-list/ra-and-tv-frequencies",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "si-ptuj-radio-ptuj-98-2",
+      "name": "RADIO PTUJ",
+      "freqMhz": 98.2,
+      "cityId": "si-ptuj",
+      "description": "Slovenian FM register entry listed by AKOS for PTUJ. Programme: RADIO PTUJ. Holder: RADIO TEDNIK Ptuj d.o.o..",
+      "tags": [
+        "fm",
+        "official",
+        "slovenia",
+        "akos",
+        "radio-tednik-ptuj-doo",
+        "radio-ptuj"
+      ],
+      "source": "AKOS RA and TV frequencies register",
+      "sourceUrl": "https://www.akos-rs.si/en/registers/registers-list/ra-and-tv-frequencies",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "si-ptuj-radio-ptuj-104-3",
+      "name": "RADIO PTUJ",
+      "freqMhz": 104.3,
+      "cityId": "si-ptuj",
+      "description": "Slovenian FM register entry listed by AKOS for PTUJ. Programme: RADIO PTUJ. Holder: RADIO TEDNIK Ptuj d.o.o..",
+      "tags": [
+        "fm",
+        "official",
+        "slovenia",
+        "akos",
+        "radio-tednik-ptuj-doo",
+        "radio-ptuj"
+      ],
+      "source": "AKOS RA and TV frequencies register",
+      "sourceUrl": "https://www.akos-rs.si/en/registers/registers-list/ra-and-tv-frequencies",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "si-radlje-ob-dravi-radio-1-koroska-ena-kor-radio-1-89-2",
+      "name": "RADIO 1 KOROŠKA; ENA KOR Radio 1",
+      "freqMhz": 89.2,
+      "cityId": "si-radlje-ob-dravi",
+      "description": "Slovenian FM register entry listed by AKOS for RADLJE. Programme: RADIO 1 KOROŠKA; ENA KOR Radio 1. Holder: RADIO PRO 1 d.o.o..",
+      "tags": [
+        "fm",
+        "official",
+        "slovenia",
+        "akos",
+        "radio-pro-1-doo",
+        "radio-1-koroska-ena-kor-radio-1"
+      ],
+      "source": "AKOS RA and TV frequencies register",
+      "sourceUrl": "https://www.akos-rs.si/en/registers/registers-list/ra-and-tv-frequencies",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "si-radlje-ob-dravi-radio-1-koroska-ena-kor-radio-1-89-5",
+      "name": "RADIO 1 KOROŠKA; ENA KOR Radio 1",
+      "freqMhz": 89.5,
+      "cityId": "si-radlje-ob-dravi",
+      "description": "Slovenian FM register entry listed by AKOS for RADLJE. Programme: RADIO 1 KOROŠKA; ENA KOR Radio 1. Holder: RADIO PRO 1 d.o.o..",
+      "tags": [
+        "fm",
+        "official",
+        "slovenia",
+        "akos",
+        "radio-pro-1-doo",
+        "radio-1-koroska-ena-kor-radio-1"
+      ],
+      "source": "AKOS RA and TV frequencies register",
+      "sourceUrl": "https://www.akos-rs.si/en/registers/registers-list/ra-and-tv-frequencies",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "si-radlje-ob-dravi-radio-ognjisce-96-5",
+      "name": "RADIO OGNJIŠČE",
+      "freqMhz": 96.5,
+      "cityId": "si-radlje-ob-dravi",
+      "description": "Slovenian FM register entry listed by AKOS for RADLJE. Programme: RADIO OGNJIŠČE. Holder: RADIO OGNJIŠČE d.o.o. Koper.",
+      "tags": [
+        "fm",
+        "official",
+        "slovenia",
+        "akos",
+        "radio-ognjisce-doo-koper",
+        "radio-ognjisce"
+      ],
+      "source": "AKOS RA and TV frequencies register",
+      "sourceUrl": "https://www.akos-rs.si/en/registers/registers-list/ra-and-tv-frequencies",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "si-ravne-na-koroskem-radio-ognjisce-95-7",
+      "name": "RADIO OGNJIŠČE",
+      "freqMhz": 95.7,
+      "cityId": "si-ravne-na-koroskem",
+      "description": "Slovenian FM register entry listed by AKOS for RAVNE. Programme: RADIO OGNJIŠČE. Holder: RADIO OGNJIŠČE d.o.o. Koper.",
+      "tags": [
+        "fm",
+        "official",
+        "slovenia",
+        "akos",
+        "radio-ognjisce-doo-koper",
+        "radio-ognjisce"
+      ],
+      "source": "AKOS RA and TV frequencies register",
+      "sourceUrl": "https://www.akos-rs.si/en/registers/registers-list/ra-and-tv-frequencies",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "si-ribnica-radio-ognjisce-104-2",
+      "name": "RADIO OGNJIŠČE",
+      "freqMhz": 104.2,
+      "cityId": "si-ribnica",
+      "description": "Slovenian FM register entry listed by AKOS for RIBNICA. Programme: RADIO OGNJIŠČE. Holder: RADIO OGNJIŠČE d.o.o. Koper.",
+      "tags": [
+        "fm",
+        "official",
+        "slovenia",
+        "akos",
+        "radio-ognjisce-doo-koper",
+        "radio-ognjisce"
+      ],
+      "source": "AKOS RA and TV frequencies register",
+      "sourceUrl": "https://www.akos-rs.si/en/registers/registers-list/ra-and-tv-frequencies",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "si-ribnica-radio-univox-107",
+      "name": "RADIO UNIVOX",
+      "freqMhz": 107,
+      "cityId": "si-ribnica",
+      "description": "Slovenian FM register entry listed by AKOS for RIBNICA. Programme: RADIO UNIVOX. Holder: UNIVOX d.o.o..",
+      "tags": [
+        "fm",
+        "official",
+        "slovenia",
+        "akos",
+        "univox-doo",
+        "radio-univox"
+      ],
+      "source": "AKOS RA and TV frequencies register",
+      "sourceUrl": "https://www.akos-rs.si/en/registers/registers-list/ra-and-tv-frequencies",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "si-rovte-radio-94-notranjska-107-1",
+      "name": "Radio 94 - Notranjska",
+      "freqMhz": 107.1,
+      "cityId": "si-rovte",
+      "description": "Slovenian FM register entry listed by AKOS for ROVTE. Programme: Radio 94 - Notranjska. Holder: RADIO 94 d.o.o. Postojna.",
+      "tags": [
+        "fm",
+        "official",
+        "slovenia",
+        "akos",
+        "radio-94-doo-postojna",
+        "radio-94-notranjska"
+      ],
+      "source": "AKOS RA and TV frequencies register",
+      "sourceUrl": "https://www.akos-rs.si/en/registers/registers-list/ra-and-tv-frequencies",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "si-selca-radio-sora-96-3",
+      "name": "RADIO SORA",
+      "freqMhz": 96.3,
+      "cityId": "si-selca",
+      "description": "Slovenian FM register entry listed by AKOS for SELCA. Programme: RADIO SORA. Holder: RADIO SORA, d.o.o..",
+      "tags": [
+        "fm",
+        "official",
+        "slovenia",
+        "akos",
+        "radio-sora-doo",
+        "radio-sora"
+      ],
+      "source": "AKOS RA and TV frequencies register",
+      "sourceUrl": "https://www.akos-rs.si/en/registers/registers-list/ra-and-tv-frequencies",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "si-sempeter-pri-gorici-radio-1-primorska-ena-ng-radio-1-107-1",
+      "name": "Radio 1 Primorska; ENA NG Radio 1",
+      "freqMhz": 107.1,
+      "cityId": "si-sempeter-pri-gorici",
+      "description": "Slovenian FM register entry listed by AKOS for ŠEMPETER PRI GORICI. Programme: Radio 1 Primorska; ENA NG Radio 1. Holder: RADIO PRO 1 d.o.o..",
+      "tags": [
+        "fm",
+        "official",
+        "slovenia",
+        "akos",
+        "radio-pro-1-doo",
+        "radio-1-primorska-ena-ng-radio-1"
+      ],
+      "source": "AKOS RA and TV frequencies register",
+      "sourceUrl": "https://www.akos-rs.si/en/registers/registers-list/ra-and-tv-frequencies",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "si-sezana-radio-1-primorska-ena-ng-radio-1-90-3",
+      "name": "Radio 1 Primorska; ENA NG Radio 1",
+      "freqMhz": 90.3,
+      "cityId": "si-sezana",
+      "description": "Slovenian FM register entry listed by AKOS for SEŽANA. Programme: Radio 1 Primorska; ENA NG Radio 1. Holder: RADIO PRO 1 d.o.o..",
+      "tags": [
+        "fm",
+        "official",
+        "slovenia",
+        "akos",
+        "radio-pro-1-doo",
+        "radio-1-primorska-ena-ng-radio-1"
+      ],
+      "source": "AKOS RA and TV frequencies register",
+      "sourceUrl": "https://www.akos-rs.si/en/registers/registers-list/ra-and-tv-frequencies",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "si-sezana-radio-1-primorska-ena-ng-radio-1-101-7",
+      "name": "Radio 1 Primorska; ENA NG Radio 1",
+      "freqMhz": 101.7,
+      "cityId": "si-sezana",
+      "description": "Slovenian FM register entry listed by AKOS for SEŽANA. Programme: Radio 1 Primorska; ENA NG Radio 1. Holder: RADIO PRO 1 d.o.o..",
+      "tags": [
+        "fm",
+        "official",
+        "slovenia",
+        "akos",
+        "radio-pro-1-doo",
+        "radio-1-primorska-ena-ng-radio-1"
+      ],
+      "source": "AKOS RA and TV frequencies register",
+      "sourceUrl": "https://www.akos-rs.si/en/registers/registers-list/ra-and-tv-frequencies",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "si-skofja-loka-radio-1-gorenjska-ena-go-radio-1-94-7",
+      "name": "Radio 1 Gorenjska; ENA GO Radio 1",
+      "freqMhz": 94.7,
+      "cityId": "si-skofja-loka",
+      "description": "Slovenian FM register entry listed by AKOS for ŠKOFJA LOKA. Programme: Radio 1 Gorenjska; ENA GO Radio 1. Holder: RADIO BELVI, d.o.o..",
+      "tags": [
+        "fm",
+        "official",
+        "slovenia",
+        "akos",
+        "radio-belvi-doo",
+        "radio-1-gorenjska-ena-go-radio-1"
+      ],
+      "source": "AKOS RA and TV frequencies register",
+      "sourceUrl": "https://www.akos-rs.si/en/registers/registers-list/ra-and-tv-frequencies",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "si-slovenj-gradec-radio-center-koroska-radio-center-103-2",
+      "name": "Radio Center Koroška RADIO CENTER",
+      "freqMhz": 103.2,
+      "cityId": "si-slovenj-gradec",
+      "description": "Slovenian FM register entry listed by AKOS for SLOVENJ GRADEC. Programme: Radio Center Koroška RADIO CENTER. Holder: NEXT MEDIA, d.o.o..",
+      "tags": [
+        "fm",
+        "official",
+        "slovenia",
+        "akos",
+        "next-media-doo",
+        "radio-center-koroska-radio-center"
+      ],
+      "source": "AKOS RA and TV frequencies register",
+      "sourceUrl": "https://www.akos-rs.si/en/registers/registers-list/ra-and-tv-frequencies",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "si-slovenj-gradec-radio-1-savinjska-ena-sav-radio-1-104-6",
+      "name": "Radio 1 Savinjska; ENA SAV Radio 1",
+      "freqMhz": 104.6,
+      "cityId": "si-slovenj-gradec",
+      "description": "Slovenian FM register entry listed by AKOS for SLOVENJ GRADEC. Programme: Radio 1 Savinjska; ENA SAV Radio 1. Holder: RADIO PRO 1 d.o.o..",
+      "tags": [
+        "fm",
+        "official",
+        "slovenia",
+        "akos",
+        "radio-pro-1-doo",
+        "radio-1-savinjska-ena-sav-radio-1"
+      ],
+      "source": "AKOS RA and TV frequencies register",
+      "sourceUrl": "https://www.akos-rs.si/en/registers/registers-list/ra-and-tv-frequencies",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "si-slovenj-gradec-radio-celje-105-4",
+      "name": "RADIO CELJE",
+      "freqMhz": 105.4,
+      "cityId": "si-slovenj-gradec",
+      "description": "Slovenian FM register entry listed by AKOS for SLOVENJ GRADEC. Programme: RADIO CELJE. Holder: NT&RC d.o.o. Celje.",
+      "tags": [
+        "fm",
+        "official",
+        "slovenia",
+        "akos",
+        "ntrc-doo-celje",
+        "radio-celje"
+      ],
+      "source": "AKOS RA and TV frequencies register",
+      "sourceUrl": "https://www.akos-rs.si/en/registers/registers-list/ra-and-tv-frequencies",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "si-slovenske-konjice-radio-rogla-89-1",
+      "name": "Radio Rogla",
+      "freqMhz": 89.1,
+      "cityId": "si-slovenske-konjice",
+      "description": "Slovenian FM register entry listed by AKOS for SLOVENSKE KONJICE. Programme: Radio Rogla. Holder: RADIO ROGLA, d.o.o..",
+      "tags": [
+        "fm",
+        "official",
+        "slovenia",
+        "akos",
+        "radio-rogla-doo",
+        "radio-rogla"
+      ],
+      "source": "AKOS RA and TV frequencies register",
+      "sourceUrl": "https://www.akos-rs.si/en/registers/registers-list/ra-and-tv-frequencies",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "si-solcava-1-program-radia-slovenija-prvi-88-1",
+      "name": "1. program Radia Slovenija - Prvi",
+      "freqMhz": 88.1,
+      "cityId": "si-solcava",
+      "description": "Slovenian FM register entry listed by AKOS for SOLČAVA. Programme: 1. program Radia Slovenija - Prvi. Holder: RTV SLOVENIJA.",
+      "tags": [
+        "fm",
+        "official",
+        "slovenia",
+        "akos",
+        "rtv-slovenija",
+        "1-program-radia-slovenija-prvi"
+      ],
+      "source": "AKOS RA and TV frequencies register",
+      "sourceUrl": "https://www.akos-rs.si/en/registers/registers-list/ra-and-tv-frequencies",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "si-solcava-radio-slovenija-drugi-program-program-val-202-val-202-98",
+      "name": "RADIO SLOVENIJA, drugi program - PROGRAM VAL 202 /VAL 202/",
+      "freqMhz": 98,
+      "cityId": "si-solcava",
+      "description": "Slovenian FM register entry listed by AKOS for SOLČAVA. Programme: RADIO SLOVENIJA, drugi program - PROGRAM VAL 202 /VAL 202/. Holder: RTV SLOVENIJA.",
+      "tags": [
+        "fm",
+        "official",
+        "slovenia",
+        "akos",
+        "rtv-slovenija",
+        "radio-slovenija-drugi-program-program-val-202-val-202"
+      ],
+      "source": "AKOS RA and TV frequencies register",
+      "sourceUrl": "https://www.akos-rs.si/en/registers/registers-list/ra-and-tv-frequencies",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "si-stari-trg-pri-lozu-radio-univox-87-9",
+      "name": "RADIO UNIVOX",
+      "freqMhz": 87.9,
+      "cityId": "si-stari-trg-pri-lozu",
+      "description": "Slovenian FM register entry listed by AKOS for STARI TRG. Programme: RADIO UNIVOX. Holder: UNIVOX d.o.o..",
+      "tags": [
+        "fm",
+        "official",
+        "slovenia",
+        "akos",
+        "univox-doo",
+        "radio-univox"
+      ],
+      "source": "AKOS RA and TV frequencies register",
+      "sourceUrl": "https://www.akos-rs.si/en/registers/registers-list/ra-and-tv-frequencies",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "si-stari-trg-pri-lozu-1-program-radia-slovenija-prvi-88-6",
+      "name": "1. program Radia Slovenija - Prvi",
+      "freqMhz": 88.6,
+      "cityId": "si-stari-trg-pri-lozu",
+      "description": "Slovenian FM register entry listed by AKOS for STARI TRG. Programme: 1. program Radia Slovenija - Prvi. Holder: RTV SLOVENIJA.",
+      "tags": [
+        "fm",
+        "official",
+        "slovenia",
+        "akos",
+        "rtv-slovenija",
+        "1-program-radia-slovenija-prvi"
+      ],
+      "source": "AKOS RA and TV frequencies register",
+      "sourceUrl": "https://www.akos-rs.si/en/registers/registers-list/ra-and-tv-frequencies",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "si-stari-trg-pri-lozu-radio-slovenija-drugi-program-program-val-202-val-202-94",
+      "name": "RADIO SLOVENIJA, drugi program - PROGRAM VAL 202 /VAL 202/",
+      "freqMhz": 94,
+      "cityId": "si-stari-trg-pri-lozu",
+      "description": "Slovenian FM register entry listed by AKOS for STARI TRG. Programme: RADIO SLOVENIJA, drugi program - PROGRAM VAL 202 /VAL 202/. Holder: RTV SLOVENIJA.",
+      "tags": [
+        "fm",
+        "official",
+        "slovenia",
+        "akos",
+        "rtv-slovenija",
+        "radio-slovenija-drugi-program-program-val-202-val-202"
+      ],
+      "source": "AKOS RA and TV frequencies register",
+      "sourceUrl": "https://www.akos-rs.si/en/registers/registers-list/ra-and-tv-frequencies",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "si-tolmin-alpski-val-regionalna-radijska-mreza-primorski-val-88-3",
+      "name": "Alpski val Regionalna radijska mreža PRIMORSKI VAL",
+      "freqMhz": 88.3,
+      "cityId": "si-tolmin",
+      "description": "Slovenian FM register entry listed by AKOS for TOLMIN. Programme: Alpski val Regionalna radijska mreža PRIMORSKI VAL. Holder: RADIO KOBARID d.o.o..",
+      "tags": [
+        "fm",
+        "official",
+        "slovenia",
+        "akos",
+        "radio-kobarid-doo",
+        "alpski-val-regionalna-radijska-mreza-primorski-val"
+      ],
+      "source": "AKOS RA and TV frequencies register",
+      "sourceUrl": "https://www.akos-rs.si/en/registers/registers-list/ra-and-tv-frequencies",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "si-tolmin-radio-ognjisce-91-2",
+      "name": "RADIO OGNJIŠČE",
+      "freqMhz": 91.2,
+      "cityId": "si-tolmin",
+      "description": "Slovenian FM register entry listed by AKOS for TOLMIN. Programme: RADIO OGNJIŠČE. Holder: RADIO OGNJIŠČE d.o.o. Koper.",
+      "tags": [
+        "fm",
+        "official",
+        "slovenia",
+        "akos",
+        "radio-ognjisce-doo-koper",
+        "radio-ognjisce"
+      ],
+      "source": "AKOS RA and TV frequencies register",
+      "sourceUrl": "https://www.akos-rs.si/en/registers/registers-list/ra-and-tv-frequencies",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "si-tolmin-radio-slovenia-internationalradio-si-101-3",
+      "name": "Radio Slovenia International/Radio SI",
+      "freqMhz": 101.3,
+      "cityId": "si-tolmin",
+      "description": "Slovenian FM register entry listed by AKOS for TOLMIN. Programme: Radio Slovenia International/Radio SI. Holder: RTV SLOVENIJA.",
+      "tags": [
+        "fm",
+        "official",
+        "slovenia",
+        "akos",
+        "rtv-slovenija",
+        "radio-slovenia-internationalradio-si"
+      ],
+      "source": "AKOS RA and TV frequencies register",
+      "sourceUrl": "https://www.akos-rs.si/en/registers/registers-list/ra-and-tv-frequencies",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "si-topolsica-radio-city-100-8",
+      "name": "RADIO CITY",
+      "freqMhz": 100.8,
+      "cityId": "si-topolsica",
+      "description": "Slovenian FM register entry listed by AKOS for TOPOLŠICA. Programme: RADIO CITY. Holder: RADIO CITY d.o.o..",
+      "tags": [
+        "fm",
+        "official",
+        "slovenia",
+        "akos",
+        "radio-city-doo",
+        "radio-city"
+      ],
+      "source": "AKOS RA and TV frequencies register",
+      "sourceUrl": "https://www.akos-rs.si/en/registers/registers-list/ra-and-tv-frequencies",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "si-topolsica-radio-center-koroska-radio-center-105-2",
+      "name": "Radio Center Koroška RADIO CENTER",
+      "freqMhz": 105.2,
+      "cityId": "si-topolsica",
+      "description": "Slovenian FM register entry listed by AKOS for TOPOLŠICA. Programme: Radio Center Koroška RADIO CENTER. Holder: NEXT MEDIA, d.o.o..",
+      "tags": [
+        "fm",
+        "official",
+        "slovenia",
+        "akos",
+        "next-media-doo",
+        "radio-center-koroska-radio-center"
+      ],
+      "source": "AKOS RA and TV frequencies register",
+      "sourceUrl": "https://www.akos-rs.si/en/registers/registers-list/ra-and-tv-frequencies",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "si-topolsica-mojradio-107",
+      "name": "MojRadio",
+      "freqMhz": 107,
+      "cityId": "si-topolsica",
+      "description": "Slovenian FM register entry listed by AKOS for TOPOLŠICA. Programme: MojRadio. Holder: Moj Radio, d. o. o..",
+      "tags": [
+        "fm",
+        "official",
+        "slovenia",
+        "akos",
+        "moj-radio-d-o-o",
+        "mojradio"
+      ],
+      "source": "AKOS RA and TV frequencies register",
+      "sourceUrl": "https://www.akos-rs.si/en/registers/registers-list/ra-and-tv-frequencies",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "si-trbovlje-radio-center-zasavje-radio-center-88-2",
+      "name": "RADIO CENTER ZASAVJE RADIO CENTER",
+      "freqMhz": 88.2,
+      "cityId": "si-trbovlje",
+      "description": "Slovenian FM register entry listed by AKOS for TRBOVLJE. Programme: RADIO CENTER ZASAVJE RADIO CENTER. Holder: NEXT MEDIA, d.o.o..",
+      "tags": [
+        "fm",
+        "official",
+        "slovenia",
+        "akos",
+        "next-media-doo",
+        "radio-center-zasavje-radio-center"
+      ],
+      "source": "AKOS RA and TV frequencies register",
+      "sourceUrl": "https://www.akos-rs.si/en/registers/registers-list/ra-and-tv-frequencies",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "si-trbovlje-radio-slovenia-internationalradio-si-100-8",
+      "name": "Radio Slovenia International/Radio SI",
+      "freqMhz": 100.8,
+      "cityId": "si-trbovlje",
+      "description": "Slovenian FM register entry listed by AKOS for TRBOVLJE. Programme: Radio Slovenia International/Radio SI. Holder: RTV SLOVENIJA.",
+      "tags": [
+        "fm",
+        "official",
+        "slovenia",
+        "akos",
+        "rtv-slovenija",
+        "radio-slovenia-internationalradio-si"
+      ],
+      "source": "AKOS RA and TV frequencies register",
+      "sourceUrl": "https://www.akos-rs.si/en/registers/registers-list/ra-and-tv-frequencies",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "si-trebnje-radio-1-dolenjska-ena-nm-radio-1-88-9",
+      "name": "Radio 1 Dolenjska; ENA NM Radio 1",
+      "freqMhz": 88.9,
+      "cityId": "si-trebnje",
+      "description": "Slovenian FM register entry listed by AKOS for TREBNJE. Programme: Radio 1 Dolenjska; ENA NM Radio 1. Holder: RADIO PRO 1 d.o.o..",
+      "tags": [
+        "fm",
+        "official",
+        "slovenia",
+        "akos",
+        "radio-pro-1-doo",
+        "radio-1-dolenjska-ena-nm-radio-1"
+      ],
+      "source": "AKOS RA and TV frequencies register",
+      "sourceUrl": "https://www.akos-rs.si/en/registers/registers-list/ra-and-tv-frequencies",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "si-trebnje-radio-zeleni-val-96-2",
+      "name": "RADIO ZELENI VAL",
+      "freqMhz": 96.2,
+      "cityId": "si-trebnje",
+      "description": "Slovenian FM register entry listed by AKOS for TREBNJE. Programme: RADIO ZELENI VAL. Holder: ALPE ADRIA \"ZELENI VAL\" d.o.o..",
+      "tags": [
+        "fm",
+        "official",
+        "slovenia",
+        "akos",
+        "alpe-adria-zeleni-val-doo",
+        "radio-zeleni-val"
+      ],
+      "source": "AKOS RA and TV frequencies register",
+      "sourceUrl": "https://www.akos-rs.si/en/registers/registers-list/ra-and-tv-frequencies",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "si-trzic-1-program-radia-slovenija-prvi-90",
+      "name": "1. program Radia Slovenija - Prvi",
+      "freqMhz": 90,
+      "cityId": "si-trzic",
+      "description": "Slovenian FM register entry listed by AKOS for TRŽIČ. Programme: 1. program Radia Slovenija - Prvi. Holder: RTV SLOVENIJA.",
+      "tags": [
+        "fm",
+        "official",
+        "slovenia",
+        "akos",
+        "rtv-slovenija",
+        "1-program-radia-slovenija-prvi"
+      ],
+      "source": "AKOS RA and TV frequencies register",
+      "sourceUrl": "https://www.akos-rs.si/en/registers/registers-list/ra-and-tv-frequencies",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "si-trzic-radio-slovenija-drugi-program-program-val-202-val-202-92-4",
+      "name": "RADIO SLOVENIJA, drugi program - PROGRAM VAL 202 /VAL 202/",
+      "freqMhz": 92.4,
+      "cityId": "si-trzic",
+      "description": "Slovenian FM register entry listed by AKOS for TRŽIČ. Programme: RADIO SLOVENIJA, drugi program - PROGRAM VAL 202 /VAL 202/. Holder: RTV SLOVENIJA.",
+      "tags": [
+        "fm",
+        "official",
+        "slovenia",
+        "akos",
+        "rtv-slovenija",
+        "radio-slovenija-drugi-program-program-val-202-val-202"
+      ],
+      "source": "AKOS RA and TV frequencies register",
+      "sourceUrl": "https://www.akos-rs.si/en/registers/registers-list/ra-and-tv-frequencies",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "si-trzic-radio-gorenc-95-1",
+      "name": "RADIO GORENC",
+      "freqMhz": 95.1,
+      "cityId": "si-trzic",
+      "description": "Slovenian FM register entry listed by AKOS for TRŽIČ. Programme: RADIO GORENC. Holder: RADIO GORENC d.o.o..",
+      "tags": [
+        "fm",
+        "official",
+        "slovenia",
+        "akos",
+        "radio-gorenc-doo",
+        "radio-gorenc"
+      ],
+      "source": "AKOS RA and TV frequencies register",
+      "sourceUrl": "https://www.akos-rs.si/en/registers/registers-list/ra-and-tv-frequencies",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "si-trzic-radio-slovenija-drugi-program-program-val-202-val-202-96-9",
+      "name": "RADIO SLOVENIJA, drugi program - PROGRAM VAL 202 /VAL 202/",
+      "freqMhz": 96.9,
+      "cityId": "si-trzic",
+      "description": "Slovenian FM register entry listed by AKOS for TRŽIČ. Programme: RADIO SLOVENIJA, drugi program - PROGRAM VAL 202 /VAL 202/. Holder: RTV SLOVENIJA.",
+      "tags": [
+        "fm",
+        "official",
+        "slovenia",
+        "akos",
+        "rtv-slovenija",
+        "radio-slovenija-drugi-program-program-val-202-val-202"
+      ],
+      "source": "AKOS RA and TV frequencies register",
+      "sourceUrl": "https://www.akos-rs.si/en/registers/registers-list/ra-and-tv-frequencies",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "si-trzic-1-program-radia-slovenija-prvi-100-7",
+      "name": "1. program Radia Slovenija - Prvi",
+      "freqMhz": 100.7,
+      "cityId": "si-trzic",
+      "description": "Slovenian FM register entry listed by AKOS for TRŽIČ. Programme: 1. program Radia Slovenija - Prvi. Holder: RTV SLOVENIJA.",
+      "tags": [
+        "fm",
+        "official",
+        "slovenia",
+        "akos",
+        "rtv-slovenija",
+        "1-program-radia-slovenija-prvi"
+      ],
+      "source": "AKOS RA and TV frequencies register",
+      "sourceUrl": "https://www.akos-rs.si/en/registers/registers-list/ra-and-tv-frequencies",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "si-trzic-radio-slovenija-tretji-program-program-ars-ars-101-4",
+      "name": "RADIO SLOVENIJA, tretji program - PROGRAM ARS /ARS/",
+      "freqMhz": 101.4,
+      "cityId": "si-trzic",
+      "description": "Slovenian FM register entry listed by AKOS for TRŽIČ. Programme: RADIO SLOVENIJA, tretji program - PROGRAM ARS /ARS/. Holder: RTV SLOVENIJA.",
+      "tags": [
+        "fm",
+        "official",
+        "slovenia",
+        "akos",
+        "rtv-slovenija",
+        "radio-slovenija-tretji-program-program-ars-ars"
+      ],
+      "source": "AKOS RA and TV frequencies register",
+      "sourceUrl": "https://www.akos-rs.si/en/registers/registers-list/ra-and-tv-frequencies",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "si-velenje-radio-ognjisce-88-5",
+      "name": "RADIO OGNJIŠČE",
+      "freqMhz": 88.5,
+      "cityId": "si-velenje",
+      "description": "Slovenian FM register entry listed by AKOS for VELENJE. Programme: RADIO OGNJIŠČE. Holder: RADIO OGNJIŠČE d.o.o. Koper.",
+      "tags": [
+        "fm",
+        "official",
+        "slovenia",
+        "akos",
+        "radio-ognjisce-doo-koper",
+        "radio-ognjisce"
+      ],
+      "source": "AKOS RA and TV frequencies register",
+      "sourceUrl": "https://www.akos-rs.si/en/registers/registers-list/ra-and-tv-frequencies",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "si-velenje-fantasi-velenje-fntsi-ve-radio-fantasi-91-6",
+      "name": "FANTASI VELENJE; FNTSI VE RADIO FANTASI",
+      "freqMhz": 91.6,
+      "cityId": "si-velenje",
+      "description": "Slovenian FM register entry listed by AKOS for VELENJE. Programme: FANTASI VELENJE; FNTSI VE RADIO FANTASI. Holder: ŠPRAH d.o.o., Škofja vas.",
+      "tags": [
+        "fm",
+        "official",
+        "slovenia",
+        "akos",
+        "sprah-doo-skofja-vas",
+        "fantasi-velenje-fntsi-ve-radio-fantasi"
+      ],
+      "source": "AKOS RA and TV frequencies register",
+      "sourceUrl": "https://www.akos-rs.si/en/registers/registers-list/ra-and-tv-frequencies",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "si-velenje-radio-1-savinjska-ena-sav-radio-1-99-1",
+      "name": "Radio 1 Savinjska; ENA SAV Radio 1",
+      "freqMhz": 99.1,
+      "cityId": "si-velenje",
+      "description": "Slovenian FM register entry listed by AKOS for VELENJE. Programme: Radio 1 Savinjska; ENA SAV Radio 1. Holder: RADIO PRO 1 d.o.o..",
+      "tags": [
+        "fm",
+        "official",
+        "slovenia",
+        "akos",
+        "radio-pro-1-doo",
+        "radio-1-savinjska-ena-sav-radio-1"
+      ],
+      "source": "AKOS RA and TV frequencies register",
+      "sourceUrl": "https://www.akos-rs.si/en/registers/registers-list/ra-and-tv-frequencies",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "si-vransko-radio-slovenia-internationalradio-si-105-5",
+      "name": "Radio Slovenia International/Radio SI",
+      "freqMhz": 105.5,
+      "cityId": "si-vransko",
+      "description": "Slovenian FM register entry listed by AKOS for VRANSKO. Programme: Radio Slovenia International/Radio SI. Holder: RTV SLOVENIJA.",
+      "tags": [
+        "fm",
+        "official",
+        "slovenia",
+        "akos",
+        "rtv-slovenija",
+        "radio-slovenia-internationalradio-si"
+      ],
+      "source": "AKOS RA and TV frequencies register",
+      "sourceUrl": "https://www.akos-rs.si/en/registers/registers-list/ra-and-tv-frequencies",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "si-vrhnika-radio-hit-90-2",
+      "name": "RADIO HIT",
+      "freqMhz": 90.2,
+      "cityId": "si-vrhnika",
+      "description": "Slovenian FM register entry listed by AKOS for VRHNIKA. Programme: RADIO HIT. Holder: HIT FM d.o.o..",
+      "tags": [
+        "fm",
+        "official",
+        "slovenia",
+        "akos",
+        "hit-fm-doo",
+        "radio-hit"
+      ],
+      "source": "AKOS RA and TV frequencies register",
+      "sourceUrl": "https://www.akos-rs.si/en/registers/registers-list/ra-and-tv-frequencies",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "si-ziri-radio-sora-89-8",
+      "name": "RADIO SORA",
+      "freqMhz": 89.8,
+      "cityId": "si-ziri",
+      "description": "Slovenian FM register entry listed by AKOS for ŽIRI. Programme: RADIO SORA. Holder: RADIO SORA, d.o.o..",
+      "tags": [
+        "fm",
+        "official",
+        "slovenia",
+        "akos",
+        "radio-sora-doo",
+        "radio-sora"
+      ],
+      "source": "AKOS RA and TV frequencies register",
+      "sourceUrl": "https://www.akos-rs.si/en/registers/registers-list/ra-and-tv-frequencies",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "si-zlatolicje-radio-murski-val-105-7",
+      "name": "RADIO MURSKI VAL",
+      "freqMhz": 105.7,
+      "cityId": "si-zlatolicje",
+      "description": "Slovenian FM register entry listed by AKOS for ZLATOLIČJE. Programme: RADIO MURSKI VAL. Holder: RADIO MURSKI VAL, d.o.o..",
+      "tags": [
+        "fm",
+        "official",
+        "slovenia",
+        "akos",
+        "radio-murski-val-doo",
+        "radio-murski-val"
+      ],
+      "source": "AKOS RA and TV frequencies register",
+      "sourceUrl": "https://www.akos-rs.si/en/registers/registers-list/ra-and-tv-frequencies",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "si-zuzemberk-radio-slovenija-drugi-program-program-val-202-val-202-95-2",
+      "name": "RADIO SLOVENIJA, drugi program - PROGRAM VAL 202 /VAL 202/",
+      "freqMhz": 95.2,
+      "cityId": "si-zuzemberk",
+      "description": "Slovenian FM register entry listed by AKOS for ŽUŽEMBERK. Programme: RADIO SLOVENIJA, drugi program - PROGRAM VAL 202 /VAL 202/. Holder: RTV SLOVENIJA.",
+      "tags": [
+        "fm",
+        "official",
+        "slovenia",
+        "akos",
+        "rtv-slovenija",
+        "radio-slovenija-drugi-program-program-val-202-val-202"
+      ],
+      "source": "AKOS RA and TV frequencies register",
+      "sourceUrl": "https://www.akos-rs.si/en/registers/registers-list/ra-and-tv-frequencies",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "si-zuzemberk-1-program-radia-slovenija-prvi-102-3",
+      "name": "1. program Radia Slovenija - Prvi",
+      "freqMhz": 102.3,
+      "cityId": "si-zuzemberk",
+      "description": "Slovenian FM register entry listed by AKOS for ŽUŽEMBERK. Programme: 1. program Radia Slovenija - Prvi. Holder: RTV SLOVENIJA.",
+      "tags": [
+        "fm",
+        "official",
+        "slovenia",
+        "akos",
+        "rtv-slovenija",
+        "1-program-radia-slovenija-prvi"
+      ],
+      "source": "AKOS RA and TV frequencies register",
+      "sourceUrl": "https://www.akos-rs.si/en/registers/registers-list/ra-and-tv-frequencies",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "si-zuzemberk-radio-slovenia-internationalradio-si-107-6",
+      "name": "Radio Slovenia International/Radio SI",
+      "freqMhz": 107.6,
+      "cityId": "si-zuzemberk",
+      "description": "Slovenian FM register entry listed by AKOS for ŽUŽEMBERK. Programme: Radio Slovenia International/Radio SI. Holder: RTV SLOVENIJA.",
+      "tags": [
+        "fm",
+        "official",
+        "slovenia",
+        "akos",
+        "rtv-slovenija",
+        "radio-slovenia-internationalradio-si"
+      ],
+      "source": "AKOS RA and TV frequencies register",
+      "sourceUrl": "https://www.akos-rs.si/en/registers/registers-list/ra-and-tv-frequencies",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    }
+  ]
+}

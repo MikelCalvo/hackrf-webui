@@ -1,0 +1,262 @@
+{
+  "country": {
+    "id": "american-samoa",
+    "code": "AS",
+    "name": "American Samoa",
+    "regionId": "oceania",
+    "cityCount": 6,
+    "stationCount": 10,
+    "sourceCount": 1,
+    "sources": [
+      {
+        "name": "FCC LMS Public Database",
+        "url": "https://enterpriseefiling.fcc.gov/dataentry/public/tv/lmsDatabase.html"
+      }
+    ],
+    "lastImportedAt": "2026-03-24",
+    "coverageStatus": "active",
+    "coverageTier": "official-substantial",
+    "coverageScope": "national",
+    "sourceQuality": "official-regulator",
+    "hasOfficialImporter": true,
+    "coverageScore": 88
+  },
+  "cities": [
+    {
+      "id": "as-iliili",
+      "name": "Ili‘ili",
+      "countryId": "american-samoa",
+      "timezone": "Pacific/Pago_Pago",
+      "latitude": -14.35167,
+      "longitude": -170.74694,
+      "stationCount": 1
+    },
+    {
+      "id": "as-leone",
+      "name": "Leone",
+      "countryId": "american-samoa",
+      "timezone": "Pacific/Pago_Pago",
+      "latitude": -14.34389,
+      "longitude": -170.785,
+      "stationCount": 1
+    },
+    {
+      "id": "as-mapusaga",
+      "name": "Mapusaga",
+      "countryId": "american-samoa",
+      "timezone": "Pacific/Pago_Pago",
+      "latitude": -14.323,
+      "longitude": -170.7553,
+      "stationCount": 1
+    },
+    {
+      "id": "as-nuuuli",
+      "name": "Nu‘uuli",
+      "countryId": "american-samoa",
+      "timezone": "Pacific/Pago_Pago",
+      "latitude": -14.31583,
+      "longitude": -170.6975,
+      "stationCount": 1
+    },
+    {
+      "id": "as-pago-pago",
+      "name": "Pago Pago",
+      "countryId": "american-samoa",
+      "timezone": "Pacific/Pago_Pago",
+      "latitude": -14.27806,
+      "longitude": -170.7025,
+      "stationCount": 4
+    },
+    {
+      "id": "as-tafuna",
+      "name": "Tāfuna",
+      "countryId": "american-samoa",
+      "timezone": "Pacific/Pago_Pago",
+      "latitude": -14.33583,
+      "longitude": -170.72,
+      "stationCount": 2
+    }
+  ],
+  "stations": [
+    {
+      "id": "as-iliili-kula-lp-95-1",
+      "name": "KULA-LP",
+      "freqMhz": 95.1,
+      "cityId": "as-iliili",
+      "description": "Low Power FM service listed by FCC for ILI'ILI, American Samoa. Callsign: KULA-LP.",
+      "tags": [
+        "fm",
+        "official",
+        "fcc",
+        "american-samoa",
+        "low-power"
+      ],
+      "source": "FCC LMS Public Database",
+      "sourceUrl": "https://enterpriseefiling.fcc.gov/dataentry/public/tv/lmsDatabase.html",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "as-leone-kkbt-104-7",
+      "name": "KKBT",
+      "freqMhz": 104.7,
+      "cityId": "as-leone",
+      "description": "Full Power FM service listed by FCC for LEONE, American Samoa. Callsign: KKBT.",
+      "tags": [
+        "fm",
+        "official",
+        "fcc",
+        "american-samoa",
+        "full-power"
+      ],
+      "source": "FCC LMS Public Database",
+      "sourceUrl": "https://enterpriseefiling.fcc.gov/dataentry/public/tv/lmsDatabase.html",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "as-mapusaga-kppo-90-5",
+      "name": "KPPO",
+      "freqMhz": 90.5,
+      "cityId": "as-mapusaga",
+      "description": "Full Power FM service listed by FCC for MAPUSAGA, American Samoa. Callsign: KPPO.",
+      "tags": [
+        "fm",
+        "official",
+        "fcc",
+        "american-samoa",
+        "full-power"
+      ],
+      "source": "FCC LMS Public Database",
+      "sourceUrl": "https://enterpriseefiling.fcc.gov/dataentry/public/tv/lmsDatabase.html",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "as-nuuuli-kmoa-89-7",
+      "name": "KMOA",
+      "freqMhz": 89.7,
+      "cityId": "as-nuuuli",
+      "description": "Full Power FM service listed by FCC for NU'UULI, American Samoa. Callsign: KMOA.",
+      "tags": [
+        "fm",
+        "official",
+        "fcc",
+        "american-samoa",
+        "full-power"
+      ],
+      "source": "FCC LMS Public Database",
+      "sourceUrl": "https://enterpriseefiling.fcc.gov/dataentry/public/tv/lmsDatabase.html",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "as-pago-pago-kvpp-88-9",
+      "name": "KVPP",
+      "freqMhz": 88.9,
+      "cityId": "as-pago-pago",
+      "description": "Full Power FM service listed by FCC for PAGO PAGO, American Samoa. Callsign: KVPP.",
+      "tags": [
+        "fm",
+        "official",
+        "fcc",
+        "american-samoa",
+        "full-power"
+      ],
+      "source": "FCC LMS Public Database",
+      "sourceUrl": "https://enterpriseefiling.fcc.gov/dataentry/public/tv/lmsDatabase.html",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "as-pago-pago-ksbs-fm-92-1",
+      "name": "KSBS-FM",
+      "freqMhz": 92.1,
+      "cityId": "as-pago-pago",
+      "description": "Full Power FM service listed by FCC for PAGO PAGO, American Samoa. Callsign: KSBS-FM.",
+      "tags": [
+        "fm",
+        "official",
+        "fcc",
+        "american-samoa",
+        "full-power"
+      ],
+      "source": "FCC LMS Public Database",
+      "sourceUrl": "https://enterpriseefiling.fcc.gov/dataentry/public/tv/lmsDatabase.html",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "as-pago-pago-kkhj-fm-93-1",
+      "name": "KKHJ-FM",
+      "freqMhz": 93.1,
+      "cityId": "as-pago-pago",
+      "description": "Full Power FM service listed by FCC for PAGO PAGO, American Samoa. Callsign: KKHJ-FM.",
+      "tags": [
+        "fm",
+        "official",
+        "fcc",
+        "american-samoa",
+        "full-power"
+      ],
+      "source": "FCC LMS Public Database",
+      "sourceUrl": "https://enterpriseefiling.fcc.gov/dataentry/public/tv/lmsDatabase.html",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "as-pago-pago-kkhj-fm1-93-1",
+      "name": "KKHJ-FM1",
+      "freqMhz": 93.1,
+      "cityId": "as-pago-pago",
+      "description": "FM booster service listed by FCC for PAGO PAGO, American Samoa. Callsign: KKHJ-FM1.",
+      "tags": [
+        "fm",
+        "official",
+        "fcc",
+        "american-samoa",
+        "booster"
+      ],
+      "source": "FCC LMS Public Database",
+      "sourceUrl": "https://enterpriseefiling.fcc.gov/dataentry/public/tv/lmsDatabase.html",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "as-tafuna-kgif-88-1",
+      "name": "KGIF",
+      "freqMhz": 88.1,
+      "cityId": "as-tafuna",
+      "description": "Full Power FM service listed by FCC for TAFUNA, American Samoa. Callsign: KGIF.",
+      "tags": [
+        "fm",
+        "official",
+        "fcc",
+        "american-samoa",
+        "full-power"
+      ],
+      "source": "FCC LMS Public Database",
+      "sourceUrl": "https://enterpriseefiling.fcc.gov/dataentry/public/tv/lmsDatabase.html",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "as-tafuna-kkas-lp-94-5",
+      "name": "KKAS-LP",
+      "freqMhz": 94.5,
+      "cityId": "as-tafuna",
+      "description": "Low Power FM service listed by FCC for TAFUNA, American Samoa. Callsign: KKAS-LP.",
+      "tags": [
+        "fm",
+        "official",
+        "fcc",
+        "american-samoa",
+        "low-power"
+      ],
+      "source": "FCC LMS Public Database",
+      "sourceUrl": "https://enterpriseefiling.fcc.gov/dataentry/public/tv/lmsDatabase.html",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    }
+  ]
+}

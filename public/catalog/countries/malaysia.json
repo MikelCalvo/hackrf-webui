@@ -1,0 +1,750 @@
+{
+  "country": {
+    "id": "malaysia",
+    "code": "MY",
+    "name": "Malaysia",
+    "regionId": "asia",
+    "cityCount": 21,
+    "stationCount": 28,
+    "sourceCount": 1,
+    "sources": [
+      {
+        "name": "RTM stations API",
+        "url": "https://radio.rtm.gov.my/api/frontend/stations"
+      }
+    ],
+    "lastImportedAt": "2026-03-24",
+    "coverageStatus": "partial",
+    "coverageTier": "official-partial",
+    "coverageScope": "public-service-only",
+    "sourceQuality": "official-public-sector",
+    "hasOfficialImporter": true,
+    "coverageNotes": "Current Malaysia coverage is derived from RTM station data only.",
+    "coverageScore": 42
+  },
+  "cities": [
+    {
+      "id": "my-alor-setar",
+      "name": "Alor Setar",
+      "countryId": "malaysia",
+      "timezone": "Asia/Kuala_Lumpur",
+      "latitude": 6.12104,
+      "longitude": 100.36014,
+      "stationCount": 1
+    },
+    {
+      "id": "my-bintulu",
+      "name": "Bintulu",
+      "countryId": "malaysia",
+      "timezone": "Asia/Kuching",
+      "latitude": 3.16667,
+      "longitude": 113.03333,
+      "stationCount": 1
+    },
+    {
+      "id": "my-george-town",
+      "name": "George Town",
+      "countryId": "malaysia",
+      "timezone": "Asia/Kuala_Lumpur",
+      "latitude": 5.41123,
+      "longitude": 100.33543,
+      "stationCount": 1
+    },
+    {
+      "id": "my-ipoh",
+      "name": "Ipoh",
+      "countryId": "malaysia",
+      "timezone": "Asia/Kuala_Lumpur",
+      "latitude": 4.5841,
+      "longitude": 101.0829,
+      "stationCount": 1
+    },
+    {
+      "id": "my-johor-bahru",
+      "name": "Johor Bahru",
+      "countryId": "malaysia",
+      "timezone": "Asia/Kuala_Lumpur",
+      "latitude": 1.4655,
+      "longitude": 103.7578,
+      "stationCount": 1
+    },
+    {
+      "id": "my-kangar",
+      "name": "Kangar",
+      "countryId": "malaysia",
+      "timezone": "Asia/Kuala_Lumpur",
+      "latitude": 6.4414,
+      "longitude": 100.19862,
+      "stationCount": 1
+    },
+    {
+      "id": "my-keningau",
+      "name": "Keningau",
+      "countryId": "malaysia",
+      "timezone": "Asia/Kuching",
+      "latitude": 5.3378,
+      "longitude": 116.1602,
+      "stationCount": 1
+    },
+    {
+      "id": "my-kota-bharu",
+      "name": "Kota Bharu",
+      "countryId": "malaysia",
+      "timezone": "Asia/Kuala_Lumpur",
+      "latitude": 6.12361,
+      "longitude": 102.24333,
+      "stationCount": 1
+    },
+    {
+      "id": "my-kuah",
+      "name": "Kuah",
+      "countryId": "malaysia",
+      "timezone": "Asia/Kuala_Lumpur",
+      "latitude": 6.32649,
+      "longitude": 99.8432,
+      "stationCount": 1
+    },
+    {
+      "id": "my-kuala-lumpur",
+      "name": "Kuala Lumpur",
+      "countryId": "malaysia",
+      "timezone": "Asia/Kuala_Lumpur",
+      "latitude": 3.1412,
+      "longitude": 101.68653,
+      "stationCount": 8
+    },
+    {
+      "id": "my-kuala-terengganu",
+      "name": "Kuala Terengganu",
+      "countryId": "malaysia",
+      "timezone": "Asia/Kuala_Lumpur",
+      "latitude": 5.3302,
+      "longitude": 103.1408,
+      "stationCount": 1
+    },
+    {
+      "id": "my-kuantan",
+      "name": "Kuantan",
+      "countryId": "malaysia",
+      "timezone": "Asia/Kuala_Lumpur",
+      "latitude": 3.8077,
+      "longitude": 103.326,
+      "stationCount": 1
+    },
+    {
+      "id": "my-labuan",
+      "name": "Labuan",
+      "countryId": "malaysia",
+      "timezone": "Asia/Kuala_Lumpur",
+      "latitude": 5.28028,
+      "longitude": 115.2475,
+      "stationCount": 1
+    },
+    {
+      "id": "my-limbang",
+      "name": "Limbang",
+      "countryId": "malaysia",
+      "timezone": "Asia/Kuching",
+      "latitude": 4.75477,
+      "longitude": 115.01011,
+      "stationCount": 1
+    },
+    {
+      "id": "my-miri",
+      "name": "Miri",
+      "countryId": "malaysia",
+      "timezone": "Asia/Kuching",
+      "latitude": 4.39928,
+      "longitude": 113.99163,
+      "stationCount": 1
+    },
+    {
+      "id": "my-sandakan",
+      "name": "Sandakan",
+      "countryId": "malaysia",
+      "timezone": "Asia/Kuching",
+      "latitude": 5.8402,
+      "longitude": 118.1179,
+      "stationCount": 1
+    },
+    {
+      "id": "my-seremban",
+      "name": "Seremban",
+      "countryId": "malaysia",
+      "timezone": "Asia/Kuala_Lumpur",
+      "latitude": 2.7297,
+      "longitude": 101.9381,
+      "stationCount": 1
+    },
+    {
+      "id": "my-shah-alam",
+      "name": "Shah Alam",
+      "countryId": "malaysia",
+      "timezone": "Asia/Kuala_Lumpur",
+      "latitude": 3.08507,
+      "longitude": 101.53281,
+      "stationCount": 1
+    },
+    {
+      "id": "my-sibu",
+      "name": "Sibu",
+      "countryId": "malaysia",
+      "timezone": "Asia/Kuching",
+      "latitude": 2.3,
+      "longitude": 111.81667,
+      "stationCount": 1
+    },
+    {
+      "id": "my-sri-aman",
+      "name": "Sri Aman",
+      "countryId": "malaysia",
+      "timezone": "Asia/Kuching",
+      "latitude": 1.24722,
+      "longitude": 111.45278,
+      "stationCount": 1
+    },
+    {
+      "id": "my-tawau",
+      "name": "Tawau",
+      "countryId": "malaysia",
+      "timezone": "Asia/Kuching",
+      "latitude": 4.24482,
+      "longitude": 117.89115,
+      "stationCount": 1
+    }
+  ],
+  "stations": [
+    {
+      "id": "my-alor-setar-kedahfm-97-5",
+      "name": "KEDAHfm",
+      "freqMhz": 97.5,
+      "cityId": "my-alor-setar",
+      "description": "RTM station listed in the official station API for Alor Setar. Category: Radio Negeri. Frequency listing: 97.5 FM. City grouping is inferred from the station service area name. Station: KEDAHfm.",
+      "tags": [
+        "fm",
+        "official",
+        "malaysia",
+        "negeri",
+        "kedahfm",
+        "inferred-city"
+      ],
+      "source": "RTM stations API",
+      "sourceUrl": "https://radio.rtm.gov.my/api/frontend/stations",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "my-bintulu-bintulufm-97-5",
+      "name": "BINTULUfm",
+      "freqMhz": 97.5,
+      "cityId": "my-bintulu",
+      "description": "RTM station listed in the official station API for Bintulu. Category: Radio Tempatan. Frequency listing: 97.5 FM. City grouping is inferred from the station service area name. Station: BINTULUfm.",
+      "tags": [
+        "fm",
+        "official",
+        "malaysia",
+        "radio-tempatan",
+        "bintulufm",
+        "inferred-city"
+      ],
+      "source": "RTM stations API",
+      "sourceUrl": "https://radio.rtm.gov.my/api/frontend/stations",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "my-george-town-mutiarafm-95-7",
+      "name": "MUTIARAfm",
+      "freqMhz": 95.7,
+      "cityId": "my-george-town",
+      "description": "RTM station listed in the official station API for George Town. Category: Radio Negeri. Frequency listing: 95.7 FM. City grouping is inferred from the station service area name. Station: MUTIARAfm.",
+      "tags": [
+        "fm",
+        "official",
+        "malaysia",
+        "negeri",
+        "mutiarafm",
+        "inferred-city"
+      ],
+      "source": "RTM stations API",
+      "sourceUrl": "https://radio.rtm.gov.my/api/frontend/stations",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "my-ipoh-perakfm-95-6",
+      "name": "PERAKfm",
+      "freqMhz": 95.6,
+      "cityId": "my-ipoh",
+      "description": "RTM station listed in the official station API for Ipoh. Category: Radio Negeri. Frequency listing: 95.6 FM. City grouping is inferred from the station service area name. Station: PERAKfm.",
+      "tags": [
+        "fm",
+        "official",
+        "malaysia",
+        "negeri",
+        "perakfm",
+        "inferred-city"
+      ],
+      "source": "RTM stations API",
+      "sourceUrl": "https://radio.rtm.gov.my/api/frontend/stations",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "my-johor-bahru-johorfm-101-9",
+      "name": "JOHORfm",
+      "freqMhz": 101.9,
+      "cityId": "my-johor-bahru",
+      "description": "RTM station listed in the official station API for Johor Bahru. Category: Radio Negeri. Frequency listing: 101.9 FM. City grouping is inferred from the station service area name. Station: JOHORfm.",
+      "tags": [
+        "fm",
+        "official",
+        "malaysia",
+        "negeri",
+        "johorfm",
+        "inferred-city"
+      ],
+      "source": "RTM stations API",
+      "sourceUrl": "https://radio.rtm.gov.my/api/frontend/stations",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "my-kangar-perlisfm-102-9",
+      "name": "PERLISfm",
+      "freqMhz": 102.9,
+      "cityId": "my-kangar",
+      "description": "RTM station listed in the official station API for Kangar. Category: Radio Negeri. Frequency listing: 102.9 FM. City grouping is inferred from the station service area name. Station: PERLISfm.",
+      "tags": [
+        "fm",
+        "official",
+        "malaysia",
+        "negeri",
+        "perlisfm",
+        "inferred-city"
+      ],
+      "source": "RTM stations API",
+      "sourceUrl": "https://radio.rtm.gov.my/api/frontend/stations",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "my-keningau-keningaufm-98-4",
+      "name": "KENINGAUfm",
+      "freqMhz": 98.4,
+      "cityId": "my-keningau",
+      "description": "RTM station listed in the official station API for Keningau. Category: Radio Tempatan. Frequency listing: 98.4 FM. City grouping is inferred from the station service area name. Station: KENINGAUfm.",
+      "tags": [
+        "fm",
+        "official",
+        "malaysia",
+        "radio-tempatan",
+        "keningaufm",
+        "inferred-city"
+      ],
+      "source": "RTM stations API",
+      "sourceUrl": "https://radio.rtm.gov.my/api/frontend/stations",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "my-kota-bharu-kelantanfm-102-9",
+      "name": "KELANTANfm",
+      "freqMhz": 102.9,
+      "cityId": "my-kota-bharu",
+      "description": "RTM station listed in the official station API for Kota Bharu. Category: Radio Negeri. Frequency listing: 102.9 FM. City grouping is inferred from the station service area name. Station: KELANTANfm.",
+      "tags": [
+        "fm",
+        "official",
+        "malaysia",
+        "negeri",
+        "kelantanfm",
+        "inferred-city"
+      ],
+      "source": "RTM stations API",
+      "sourceUrl": "https://radio.rtm.gov.my/api/frontend/stations",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "my-kuah-langkawifm-104-8",
+      "name": "LANGKAWIfm",
+      "freqMhz": 104.8,
+      "cityId": "my-kuah",
+      "description": "RTM station listed in the official station API for Langkawi. Category: Radio Tempatan. Frequency listing: 104.8. City grouping is inferred from the station service area name. Station: LANGKAWIfm.",
+      "tags": [
+        "fm",
+        "official",
+        "malaysia",
+        "radio-tempatan",
+        "langkawifm",
+        "inferred-city"
+      ],
+      "source": "RTM stations API",
+      "sourceUrl": "https://radio.rtm.gov.my/api/frontend/stations",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "my-kuala-lumpur-nasionalfm-88-5",
+      "name": "NASIONALfm",
+      "freqMhz": 88.5,
+      "cityId": "my-kuala-lumpur",
+      "description": "RTM station listed in the official station API for Kuala Lumpur. Category: Nasional. Frequency listing: 88.5 FM. City grouping is inferred from the station service area name. Station: NASIONALfm.",
+      "tags": [
+        "fm",
+        "official",
+        "malaysia",
+        "nasional",
+        "nasionalfm",
+        "inferred-city"
+      ],
+      "source": "RTM stations API",
+      "sourceUrl": "https://radio.rtm.gov.my/api/frontend/stations",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "my-kuala-lumpur-aifm-89-3",
+      "name": "AIfm",
+      "freqMhz": 89.3,
+      "cityId": "my-kuala-lumpur",
+      "description": "RTM station listed in the official station API for Kuala Lumpur. Category: Nasional. Frequency listing: 89.3 FM & 106.7 FM. City grouping is inferred from the station service area name. Station: AIfm.",
+      "tags": [
+        "fm",
+        "official",
+        "malaysia",
+        "nasional",
+        "aifm",
+        "inferred-city"
+      ],
+      "source": "RTM stations API",
+      "sourceUrl": "https://radio.rtm.gov.my/api/frontend/stations",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "my-kuala-lumpur-traxxfm-90-3",
+      "name": "TRAXXfm",
+      "freqMhz": 90.3,
+      "cityId": "my-kuala-lumpur",
+      "description": "RTM station listed in the official station API for Kuala Lumpur. Category: Nasional. Frequency listing: 90.3. City grouping is inferred from the station service area name. Station: TRAXXfm.",
+      "tags": [
+        "fm",
+        "official",
+        "malaysia",
+        "nasional",
+        "traxxfm",
+        "inferred-city"
+      ],
+      "source": "RTM stations API",
+      "sourceUrl": "https://radio.rtm.gov.my/api/frontend/stations",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "my-kuala-lumpur-asyikfm-91-1",
+      "name": "ASYIKfm",
+      "freqMhz": 91.1,
+      "cityId": "my-kuala-lumpur",
+      "description": "RTM station listed in the official station API for Kuala Lumpur. Category: Nasional. Frequency listing: 91.1 FM. City grouping is inferred from the station service area name. Station: ASYIKfm.",
+      "tags": [
+        "fm",
+        "official",
+        "malaysia",
+        "nasional",
+        "asyikfm",
+        "inferred-city"
+      ],
+      "source": "RTM stations API",
+      "sourceUrl": "https://radio.rtm.gov.my/api/frontend/stations",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "my-kuala-lumpur-minnalfm-92-3",
+      "name": "MINNALfm",
+      "freqMhz": 92.3,
+      "cityId": "my-kuala-lumpur",
+      "description": "RTM station listed in the official station API for Kuala Lumpur. Category: Nasional. Frequency listing: 92.3 FM. City grouping is inferred from the station service area name. Station: MINNALfm.",
+      "tags": [
+        "fm",
+        "official",
+        "malaysia",
+        "nasional",
+        "minnalfm",
+        "inferred-city"
+      ],
+      "source": "RTM stations API",
+      "sourceUrl": "https://radio.rtm.gov.my/api/frontend/stations",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "my-kuala-lumpur-radio-klasik-92-7",
+      "name": "Radio KLASIK",
+      "freqMhz": 92.7,
+      "cityId": "my-kuala-lumpur",
+      "description": "RTM station listed in the official station API for Kuala Lumpur. Category: Nasional. Frequency listing: 92.7 FM. City grouping is inferred from the station service area name. Station: Radio KLASIK.",
+      "tags": [
+        "fm",
+        "official",
+        "malaysia",
+        "nasional",
+        "radio-klasik",
+        "inferred-city"
+      ],
+      "source": "RTM stations API",
+      "sourceUrl": "https://radio.rtm.gov.my/api/frontend/stations",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "my-kuala-lumpur-klfm-97-2",
+      "name": "KLfm",
+      "freqMhz": 97.2,
+      "cityId": "my-kuala-lumpur",
+      "description": "RTM station listed in the official station API for Kuala Lumpur. Category: Radio Negeri. Frequency listing: 97.2 FM. City grouping is inferred from the station service area name. Station: KLfm.",
+      "tags": [
+        "fm",
+        "official",
+        "malaysia",
+        "negeri",
+        "klfm",
+        "inferred-city"
+      ],
+      "source": "RTM stations API",
+      "sourceUrl": "https://radio.rtm.gov.my/api/frontend/stations",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "my-kuala-lumpur-aifm-106-7",
+      "name": "AIfm",
+      "freqMhz": 106.7,
+      "cityId": "my-kuala-lumpur",
+      "description": "RTM station listed in the official station API for Kuala Lumpur. Category: Nasional. Frequency listing: 89.3 FM & 106.7 FM. City grouping is inferred from the station service area name. Station: AIfm.",
+      "tags": [
+        "fm",
+        "official",
+        "malaysia",
+        "nasional",
+        "aifm",
+        "inferred-city"
+      ],
+      "source": "RTM stations API",
+      "sourceUrl": "https://radio.rtm.gov.my/api/frontend/stations",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "my-kuala-terengganu-terengganufm-88-7",
+      "name": "TERENGGANUfm",
+      "freqMhz": 88.7,
+      "cityId": "my-kuala-terengganu",
+      "description": "RTM station listed in the official station API for Kuala Terengganu. Category: Radio Negeri. Frequency listing: 88.7 FM. City grouping is inferred from the station service area name. Station: TERENGGANUfm.",
+      "tags": [
+        "fm",
+        "official",
+        "malaysia",
+        "negeri",
+        "terengganufm",
+        "inferred-city"
+      ],
+      "source": "RTM stations API",
+      "sourceUrl": "https://radio.rtm.gov.my/api/frontend/stations",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "my-kuantan-pahangfm-104-1",
+      "name": "PAHANGfm",
+      "freqMhz": 104.1,
+      "cityId": "my-kuantan",
+      "description": "RTM station listed in the official station API for Kuantan. Category: Radio Negeri. Frequency listing: 104.1 FM. City grouping is inferred from the station service area name. Station: PAHANGfm.",
+      "tags": [
+        "fm",
+        "official",
+        "malaysia",
+        "negeri",
+        "pahangfm",
+        "inferred-city"
+      ],
+      "source": "RTM stations API",
+      "sourceUrl": "https://radio.rtm.gov.my/api/frontend/stations",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "my-labuan-labuanfm-103-7",
+      "name": "LABUANfm",
+      "freqMhz": 103.7,
+      "cityId": "my-labuan",
+      "description": "RTM station listed in the official station API for Labuan. Category: Radio Tempatan. Frequency listing: 103.7 FM. City grouping is inferred from the station service area name. Station: LABUANfm.",
+      "tags": [
+        "fm",
+        "official",
+        "malaysia",
+        "radio-tempatan",
+        "labuanfm",
+        "inferred-city"
+      ],
+      "source": "RTM stations API",
+      "sourceUrl": "https://radio.rtm.gov.my/api/frontend/stations",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "my-limbang-limbangfm-104-9",
+      "name": "LIMBANGfm",
+      "freqMhz": 104.9,
+      "cityId": "my-limbang",
+      "description": "RTM station listed in the official station API for Limbang. Category: Radio Tempatan. Frequency listing: 104.9 FM. City grouping is inferred from the station service area name. Station: LIMBANGfm.",
+      "tags": [
+        "fm",
+        "official",
+        "malaysia",
+        "radio-tempatan",
+        "limbangfm",
+        "inferred-city"
+      ],
+      "source": "RTM stations API",
+      "sourceUrl": "https://radio.rtm.gov.my/api/frontend/stations",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "my-miri-mirifm-95-7",
+      "name": "MIRIfm",
+      "freqMhz": 95.7,
+      "cityId": "my-miri",
+      "description": "RTM station listed in the official station API for Miri. Category: Radio Tempatan. Frequency listing: 95.7 FM. City grouping is inferred from the station service area name. Station: MIRIfm.",
+      "tags": [
+        "fm",
+        "official",
+        "malaysia",
+        "radio-tempatan",
+        "mirifm",
+        "inferred-city"
+      ],
+      "source": "RTM stations API",
+      "sourceUrl": "https://radio.rtm.gov.my/api/frontend/stations",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "my-sandakan-sandakanfm-90-1",
+      "name": "SANDAKANfm",
+      "freqMhz": 90.1,
+      "cityId": "my-sandakan",
+      "description": "RTM station listed in the official station API for Sandakan. Category: Radio Tempatan. Frequency listing: 90.1 FM. City grouping is inferred from the station service area name. Station: SANDAKANfm.",
+      "tags": [
+        "fm",
+        "official",
+        "malaysia",
+        "radio-tempatan",
+        "sandakanfm",
+        "inferred-city"
+      ],
+      "source": "RTM stations API",
+      "sourceUrl": "https://radio.rtm.gov.my/api/frontend/stations",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "my-seremban-negerifm-92-6",
+      "name": "NEGERIfm",
+      "freqMhz": 92.6,
+      "cityId": "my-seremban",
+      "description": "RTM station listed in the official station API for Seremban. Category: Radio Negeri. Frequency listing: 92.6 FM. City grouping is inferred from the station service area name. Station: NEGERIfm.",
+      "tags": [
+        "fm",
+        "official",
+        "malaysia",
+        "negeri",
+        "negerifm",
+        "inferred-city"
+      ],
+      "source": "RTM stations API",
+      "sourceUrl": "https://radio.rtm.gov.my/api/frontend/stations",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "my-shah-alam-selangorfm-100-9",
+      "name": "SELANGORfm",
+      "freqMhz": 100.9,
+      "cityId": "my-shah-alam",
+      "description": "RTM station listed in the official station API for Shah Alam. Category: Radio Negeri. Frequency listing: 100.9 FM. City grouping is inferred from the station service area name. Station: SELANGORfm.",
+      "tags": [
+        "fm",
+        "official",
+        "malaysia",
+        "negeri",
+        "selangorfm",
+        "inferred-city"
+      ],
+      "source": "RTM stations API",
+      "sourceUrl": "https://radio.rtm.gov.my/api/frontend/stations",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "my-sibu-sibufm-87-6",
+      "name": "SIBUfm",
+      "freqMhz": 87.6,
+      "cityId": "my-sibu",
+      "description": "RTM station listed in the official station API for Sibu. Category: Radio Tempatan. Frequency listing: 87.6 FM. City grouping is inferred from the station service area name. Station: SIBUfm.",
+      "tags": [
+        "fm",
+        "official",
+        "malaysia",
+        "radio-tempatan",
+        "sibufm",
+        "inferred-city"
+      ],
+      "source": "RTM stations API",
+      "sourceUrl": "https://radio.rtm.gov.my/api/frontend/stations",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "my-sri-aman-sri-amanfm-89-5",
+      "name": "SRI AMANfm",
+      "freqMhz": 89.5,
+      "cityId": "my-sri-aman",
+      "description": "RTM station listed in the official station API for Sri Aman. Category: Radio Tempatan. Frequency listing: 89.5 FM. City grouping is inferred from the station service area name. Station: SRI AMANfm.",
+      "tags": [
+        "fm",
+        "official",
+        "malaysia",
+        "radio-tempatan",
+        "sri-amanfm",
+        "inferred-city"
+      ],
+      "source": "RTM stations API",
+      "sourceUrl": "https://radio.rtm.gov.my/api/frontend/stations",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "my-tawau-tawaufm-100-1",
+      "name": "TAWAUfm",
+      "freqMhz": 100.1,
+      "cityId": "my-tawau",
+      "description": "RTM station listed in the official station API for Tawau. Category: Radio Tempatan. Frequency listing: 100.1 FM. City grouping is inferred from the station service area name. Station: TAWAUfm.",
+      "tags": [
+        "fm",
+        "official",
+        "malaysia",
+        "radio-tempatan",
+        "tawaufm",
+        "inferred-city"
+      ],
+      "source": "RTM stations API",
+      "sourceUrl": "https://radio.rtm.gov.my/api/frontend/stations",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    }
+  ]
+}

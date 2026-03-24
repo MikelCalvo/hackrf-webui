@@ -1,0 +1,1154 @@
+{
+  "country": {
+    "id": "philippines",
+    "code": "PH",
+    "name": "Philippines",
+    "regionId": "asia",
+    "cityCount": 15,
+    "stationCount": 55,
+    "sourceCount": 1,
+    "sources": [
+      {
+        "name": "NTC Region VII broadcast stations",
+        "url": "https://region7.ntc.gov.ph/regional-profile/radio-and-tv-broadcast-station/"
+      }
+    ],
+    "lastImportedAt": "2026-03-24",
+    "coverageStatus": "partial",
+    "coverageTier": "official-partial",
+    "coverageScope": "regional",
+    "sourceQuality": "official-regulator",
+    "hasOfficialImporter": true,
+    "coverageNotes": "Only the official NTC Region VII FM table is landed so far; the broader national path remains blocked from this environment.",
+    "coverageScore": 36
+  },
+  "cities": [
+    {
+      "id": "ph-argao",
+      "name": "Argao",
+      "countryId": "philippines",
+      "timezone": "Asia/Manila",
+      "latitude": 9.87944,
+      "longitude": 123.59556,
+      "stationCount": 2
+    },
+    {
+      "id": "ph-bais",
+      "name": "Bais",
+      "countryId": "philippines",
+      "timezone": "Asia/Manila",
+      "latitude": 9.59111,
+      "longitude": 123.12278,
+      "stationCount": 1
+    },
+    {
+      "id": "ph-balamban",
+      "name": "Balamban",
+      "countryId": "philippines",
+      "timezone": "Asia/Manila",
+      "latitude": 10.5039,
+      "longitude": 123.7156,
+      "stationCount": 2
+    },
+    {
+      "id": "ph-bantayan",
+      "name": "Bantayan",
+      "countryId": "philippines",
+      "timezone": "Asia/Manila",
+      "latitude": 11.1683,
+      "longitude": 123.7223,
+      "stationCount": 1
+    },
+    {
+      "id": "ph-barili",
+      "name": "Barili",
+      "countryId": "philippines",
+      "timezone": "Asia/Manila",
+      "latitude": 10.115,
+      "longitude": 123.5103,
+      "stationCount": 1
+    },
+    {
+      "id": "ph-bogo",
+      "name": "Bogo",
+      "countryId": "philippines",
+      "timezone": "Asia/Manila",
+      "latitude": 11.0517,
+      "longitude": 124.0055,
+      "stationCount": 4
+    },
+    {
+      "id": "ph-cebu-city",
+      "name": "Cebu City",
+      "countryId": "philippines",
+      "timezone": "Asia/Manila",
+      "latitude": 10.31672,
+      "longitude": 123.89071,
+      "stationCount": 26
+    },
+    {
+      "id": "ph-cogan",
+      "name": "Cogan",
+      "countryId": "philippines",
+      "timezone": "Asia/Manila",
+      "latitude": 10.59306,
+      "longitude": 124.01778,
+      "stationCount": 1
+    },
+    {
+      "id": "ph-dumaguete",
+      "name": "Dumaguete",
+      "countryId": "philippines",
+      "timezone": "Asia/Manila",
+      "latitude": 9.30646,
+      "longitude": 123.30769,
+      "stationCount": 5
+    },
+    {
+      "id": "ph-moalboal",
+      "name": "Moalboal",
+      "countryId": "philippines",
+      "timezone": "Asia/Manila",
+      "latitude": 9.94333,
+      "longitude": 123.39917,
+      "stationCount": 1
+    },
+    {
+      "id": "ph-pinamungahan",
+      "name": "Pinamungahan",
+      "countryId": "philippines",
+      "timezone": "Asia/Manila",
+      "latitude": 10.2708,
+      "longitude": 123.5839,
+      "stationCount": 1
+    },
+    {
+      "id": "ph-siquijor",
+      "name": "Siquijor",
+      "countryId": "philippines",
+      "timezone": "Asia/Manila",
+      "latitude": 9.2142,
+      "longitude": 123.515,
+      "stationCount": 1
+    },
+    {
+      "id": "ph-tagbilaran-city",
+      "name": "Tagbilaran City",
+      "countryId": "philippines",
+      "timezone": "Asia/Manila",
+      "latitude": 9.65556,
+      "longitude": 123.85219,
+      "stationCount": 2
+    },
+    {
+      "id": "ph-toledo",
+      "name": "Toledo",
+      "countryId": "philippines",
+      "timezone": "Asia/Manila",
+      "latitude": 10.3773,
+      "longitude": 123.6386,
+      "stationCount": 6
+    },
+    {
+      "id": "ph-ubay",
+      "name": "Ubay",
+      "countryId": "philippines",
+      "timezone": "Asia/Manila",
+      "latitude": 10.056,
+      "longitude": 124.47294,
+      "stationCount": 1
+    }
+  ],
+  "stations": [
+    {
+      "id": "ph-argao-allied-broadcasting-center-102-9",
+      "name": "Allied Broadcasting Center",
+      "freqMhz": 102.9,
+      "cityId": "ph-argao",
+      "description": "Region VII FM station listed by the Philippine NTC for Cebu. Licensee: Allied Broadcasting Center. Studio: Argao, Cebu. Transmitter: Argao, Cebu.",
+      "tags": [
+        "fm",
+        "official",
+        "philippines",
+        "region-vii",
+        "cebu"
+      ],
+      "source": "NTC Region VII broadcast stations",
+      "sourceUrl": "https://region7.ntc.gov.ph/regional-profile/radio-and-tv-broadcast-station/",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "ph-argao-dyrw-fm-104-5",
+      "name": "DYRW-FM",
+      "freqMhz": 104.5,
+      "cityId": "ph-argao",
+      "description": "Region VII FM station listed by the Philippine NTC for Cebu. Call sign: DYRW-FM. Licensee: Phil. Bctg. Corp.. Studio: Argao, Cebu. Transmitter: Argao, Cebu.",
+      "tags": [
+        "fm",
+        "official",
+        "philippines",
+        "region-vii",
+        "cebu"
+      ],
+      "source": "NTC Region VII broadcast stations",
+      "sourceUrl": "https://region7.ntc.gov.ph/regional-profile/radio-and-tv-broadcast-station/",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "ph-bais-dysj-fm-105-5",
+      "name": "DYSJ-FM",
+      "freqMhz": 105.5,
+      "cityId": "ph-bais",
+      "description": "Region VII FM station listed by the Philippine NTC for Bohol. Call sign: DYSJ-FM. Licensee: Manila Broadcasting , Company. Studio: Roxas St., Bais City, Negros Oriental. Transmitter: Roxas St., Bais City, Negros Oriental.",
+      "tags": [
+        "fm",
+        "official",
+        "philippines",
+        "region-vii",
+        "bohol"
+      ],
+      "source": "NTC Region VII broadcast stations",
+      "sourceUrl": "https://region7.ntc.gov.ph/regional-profile/radio-and-tv-broadcast-station/",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "ph-balamban-dyrl-fm-94-9",
+      "name": "DYRL-FM",
+      "freqMhz": 94.9,
+      "cityId": "ph-balamban",
+      "description": "Region VII FM station listed by the Philippine NTC for Cebu. Call sign: DYRL-FM. Licensee: Manila Broadcasting Company. Studio: Baliwagan, Balamban Cebu. Transmitter: Baliwagan, Balamban Cebu.",
+      "tags": [
+        "fm",
+        "official",
+        "philippines",
+        "region-vii",
+        "cebu"
+      ],
+      "source": "NTC Region VII broadcast stations",
+      "sourceUrl": "https://region7.ntc.gov.ph/regional-profile/radio-and-tv-broadcast-station/",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "ph-balamban-times-broadcasting-network-corp-100-7",
+      "name": "Times Broadcasting Network Corp.",
+      "freqMhz": 100.7,
+      "cityId": "ph-balamban",
+      "description": "Region VII FM station listed by the Philippine NTC for Cebu. Licensee: Times Broadcasting Network Corp.. Studio: Balamban, Cebu. Transmitter: Balamban, Cebu.",
+      "tags": [
+        "fm",
+        "official",
+        "philippines",
+        "region-vii",
+        "cebu"
+      ],
+      "source": "NTC Region VII broadcast stations",
+      "sourceUrl": "https://region7.ntc.gov.ph/regional-profile/radio-and-tv-broadcast-station/",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "ph-bantayan-manila-broadcasting-company-89-5",
+      "name": "Manila Broadcasting Company",
+      "freqMhz": 89.5,
+      "cityId": "ph-bantayan",
+      "description": "Region VII FM station listed by the Philippine NTC for Cebu. Licensee: Manila Broadcasting Company. Studio: Madridejos, Bantayan Island. Transmitter: Madridejos, Bantayan Island.",
+      "tags": [
+        "fm",
+        "official",
+        "philippines",
+        "region-vii",
+        "cebu"
+      ],
+      "source": "NTC Region VII broadcast stations",
+      "sourceUrl": "https://region7.ntc.gov.ph/regional-profile/radio-and-tv-broadcast-station/",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "ph-barili-dyne-fm-97-5",
+      "name": "DYNE-FM",
+      "freqMhz": 97.5,
+      "cityId": "ph-barili",
+      "description": "Region VII FM station listed by the Philippine NTC for Cebu. Call sign: DYNE-FM. Licensee: National Nutrition Council. Studio: Barili, Cebu. Transmitter: Barili, Cebu.",
+      "tags": [
+        "fm",
+        "official",
+        "philippines",
+        "region-vii",
+        "cebu"
+      ],
+      "source": "NTC Region VII broadcast stations",
+      "sourceUrl": "https://region7.ntc.gov.ph/regional-profile/radio-and-tv-broadcast-station/",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "ph-bogo-dymm-fm-90-9",
+      "name": "DYMM-FM",
+      "freqMhz": 90.9,
+      "cityId": "ph-bogo",
+      "description": "Region VII FM station listed by the Philippine NTC for Cebu. Call sign: DYMM-FM. Licensee: Baycomms Broadcasting Corporation. Studio: Gairan, Bogo City, Cebu. Transmitter: Gairan, Bogo City, Cebu.",
+      "tags": [
+        "fm",
+        "official",
+        "philippines",
+        "region-vii",
+        "cebu"
+      ],
+      "source": "NTC Region VII broadcast stations",
+      "sourceUrl": "https://region7.ntc.gov.ph/regional-profile/radio-and-tv-broadcast-station/",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "ph-bogo-dyjs-fm-93-3",
+      "name": "DYJS-FM",
+      "freqMhz": 93.3,
+      "cityId": "ph-bogo",
+      "description": "Region VII FM station listed by the Philippine NTC for Cebu. Call sign: DYJS-FM. Licensee: Vimcotu Bctg. Company. Studio: Karesh Commercial Complex, Pamintao, Cogon, Bogo City. Transmitter: Karesh Commercial Complex, Pamintao, Cogon, Bogo City.",
+      "tags": [
+        "fm",
+        "official",
+        "philippines",
+        "region-vii",
+        "cebu"
+      ],
+      "source": "NTC Region VII broadcast stations",
+      "sourceUrl": "https://region7.ntc.gov.ph/regional-profile/radio-and-tv-broadcast-station/",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "ph-bogo-dygb-fm-94-1",
+      "name": "DYGB-FM",
+      "freqMhz": 94.1,
+      "cityId": "ph-bogo",
+      "description": "Region VII FM station listed by the Philippine NTC for Cebu. Call sign: DYGB-FM. Licensee: DXRA-RMC (Rizal Memorial Colleges). Studio: Bogo City. Transmitter: San Vicente St., Bogo City.",
+      "tags": [
+        "fm",
+        "official",
+        "philippines",
+        "region-vii",
+        "cebu"
+      ],
+      "source": "NTC Region VII broadcast stations",
+      "sourceUrl": "https://region7.ntc.gov.ph/regional-profile/radio-and-tv-broadcast-station/",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "ph-bogo-times-broadcasting-network-corp-97-3",
+      "name": "Times Broadcasting Network Corp.",
+      "freqMhz": 97.3,
+      "cityId": "ph-bogo",
+      "description": "Region VII FM station listed by the Philippine NTC for Cebu. Licensee: Times Broadcasting Network Corp.. Studio: Bogo City.",
+      "tags": [
+        "fm",
+        "official",
+        "philippines",
+        "region-vii",
+        "cebu"
+      ],
+      "source": "NTC Region VII broadcast stations",
+      "sourceUrl": "https://region7.ntc.gov.ph/regional-profile/radio-and-tv-broadcast-station/",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "ph-cebu-city-dyap-fm-88-3",
+      "name": "DYAP-FM",
+      "freqMhz": 88.3,
+      "cityId": "ph-cebu-city",
+      "description": "Region VII FM station listed by the Philippine NTC for Cebu. Call sign: DYAP-FM. Licensee: Southern Broadcasting Network, Inc.. Studio: 5th flr. Krizia bldg.Gerordo Ave., Cebu City. Transmitter: San Carlos Wigths, Quiot, Pardo, C.C..",
+      "tags": [
+        "fm",
+        "official",
+        "philippines",
+        "region-vii",
+        "cebu"
+      ],
+      "source": "NTC Region VII broadcast stations",
+      "sourceUrl": "https://region7.ntc.gov.ph/regional-profile/radio-and-tv-broadcast-station/",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "ph-cebu-city-dydw-fm-89-1",
+      "name": "DYDW-FM",
+      "freqMhz": 89.1,
+      "cityId": "ph-cebu-city",
+      "description": "Region VII FM station listed by the Philippine NTC for Cebu. Call sign: DYDW-FM. Licensee: Word broadcasting Corp.. Studio: 3Rd Fl Gallardo Bldg, Gen Maxilom & Manalo St. Cebu City. Transmitter: Upper Kalunasan, Guadalupe, Cebu City.",
+      "tags": [
+        "fm",
+        "official",
+        "philippines",
+        "region-vii",
+        "cebu"
+      ],
+      "source": "NTC Region VII broadcast stations",
+      "sourceUrl": "https://region7.ntc.gov.ph/regional-profile/radio-and-tv-broadcast-station/",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "ph-cebu-city-dyki-fm-89-9",
+      "name": "DYKI-FM",
+      "freqMhz": 89.9,
+      "cityId": "ph-cebu-city",
+      "description": "Region VII FM station listed by the Philippine NTC for Cebu. Call sign: DYKI-FM. Licensee: Primax Broadcasting Network, Inc.. Studio: Vacation Hotel Cebu,Osmeňa blvd., Cebu City. Transmitter: Vacation Hotel Cebu,Osmeňa blvd., Cebu City.",
+      "tags": [
+        "fm",
+        "official",
+        "philippines",
+        "region-vii",
+        "cebu"
+      ],
+      "source": "NTC Region VII broadcast stations",
+      "sourceUrl": "https://region7.ntc.gov.ph/regional-profile/radio-and-tv-broadcast-station/",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "ph-cebu-city-dyac-fm-90-7",
+      "name": "DYAC-FM",
+      "freqMhz": 90.7,
+      "cityId": "ph-cebu-city",
+      "description": "Region VII FM station listed by the Philippine NTC for Cebu. Call sign: DYAC-FM. Licensee: Mareco Broadcasting Network, Inc.. Studio: RM.210,Dona Luisa bldg., Fuente Osmeňa, Cebu City. Transmitter: RM.210,Dona Luisa bldg. Fuente Osmeňa, Cebu City.",
+      "tags": [
+        "fm",
+        "official",
+        "philippines",
+        "region-vii",
+        "cebu"
+      ],
+      "source": "NTC Region VII broadcast stations",
+      "sourceUrl": "https://region7.ntc.gov.ph/regional-profile/radio-and-tv-broadcast-station/",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "ph-cebu-city-dyhr-fm-91-5",
+      "name": "DYHR-FM",
+      "freqMhz": 91.5,
+      "cityId": "ph-cebu-city",
+      "description": "Region VII FM station listed by the Philippine NTC for Cebu. Call sign: DYHR-FM. Licensee: Cebu Broadcasting Company. Studio: Busay Hills, Cebu City. Transmitter: 20th flr.,Golden Peak Hotel,Escario St., Cebu City.",
+      "tags": [
+        "fm",
+        "official",
+        "philippines",
+        "region-vii",
+        "cebu"
+      ],
+      "source": "NTC Region VII broadcast stations",
+      "sourceUrl": "https://region7.ntc.gov.ph/regional-profile/radio-and-tv-broadcast-station/",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "ph-cebu-city-dybg-fm-91-7",
+      "name": "DYBG-FM",
+      "freqMhz": 91.7,
+      "cityId": "ph-cebu-city",
+      "description": "Region VII FM station listed by the Philippine NTC for Cebu. Call sign: DYBG-FM. Licensee: Manila Broadcasting Company. Studio: Cantecson St. Bogo, Cebu. Transmitter: Cantecson St. Bogo, Cebu.",
+      "tags": [
+        "fm",
+        "official",
+        "philippines",
+        "region-vii",
+        "cebu"
+      ],
+      "source": "NTC Region VII broadcast stations",
+      "sourceUrl": "https://region7.ntc.gov.ph/regional-profile/radio-and-tv-broadcast-station/",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "ph-cebu-city-dybn-fm-92-3",
+      "name": "DYBN-FM",
+      "freqMhz": 92.3,
+      "cityId": "ph-cebu-city",
+      "description": "Region VII FM station listed by the Philippine NTC for Cebu. Call sign: DYBN-FM. Licensee: Quest Broadcasting, Inc. (formerly SBS Radio Network, Inc.). Studio: BSP Camp, Capitol Hills, Cebu City. Transmitter: BSP Camp, Capitol Hills, Cebu City.",
+      "tags": [
+        "fm",
+        "official",
+        "philippines",
+        "region-vii",
+        "cebu"
+      ],
+      "source": "NTC Region VII broadcast stations",
+      "sourceUrl": "https://region7.ntc.gov.ph/regional-profile/radio-and-tv-broadcast-station/",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "ph-cebu-city-dywf-fm-93-1",
+      "name": "DYWF-FM",
+      "freqMhz": 93.1,
+      "cityId": "ph-cebu-city",
+      "description": "Region VII FM station listed by the Philippine NTC for Cebu. Call sign: DYWF-FM. Licensee: Vimcotu Bctg. Company. Studio: Welfare Center., Port Area, Cebu City. Transmitter: Welfare Center., Port Area, Cebu City.",
+      "tags": [
+        "fm",
+        "official",
+        "philippines",
+        "region-vii",
+        "cebu"
+      ],
+      "source": "NTC Region VII broadcast stations",
+      "sourceUrl": "https://region7.ntc.gov.ph/regional-profile/radio-and-tv-broadcast-station/",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "ph-cebu-city-dyxl-fm-93-9",
+      "name": "DYXL-FM",
+      "freqMhz": 93.9,
+      "cityId": "ph-cebu-city",
+      "description": "Region VII FM station listed by the Philippine NTC for Cebu. Call sign: DYXL-FM. Licensee: Radio Mindanao Network. Studio: Gold Palace Bldg., Osmeña Blvd.Cebu City. Transmitter: Upper Kalunasan, Guadalupe, Cebu City.",
+      "tags": [
+        "fm",
+        "official",
+        "philippines",
+        "region-vii",
+        "cebu"
+      ],
+      "source": "NTC Region VII broadcast stations",
+      "sourceUrl": "https://region7.ntc.gov.ph/regional-profile/radio-and-tv-broadcast-station/",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "ph-cebu-city-dyll-fm-94-7",
+      "name": "DYLL-FM",
+      "freqMhz": 94.7,
+      "cityId": "ph-cebu-city",
+      "description": "Region VII FM station listed by the Philippine NTC for Cebu. Call sign: DYLL-FM. Licensee: Ultrasonic Broadcasting System. Studio: Boy Scout Camp Capitol Hills, Cebu City. Transmitter: Boy Scout Camp Capitol Hills, Cebu City.",
+      "tags": [
+        "fm",
+        "official",
+        "philippines",
+        "region-vii",
+        "cebu"
+      ],
+      "source": "NTC Region VII broadcast stations",
+      "sourceUrl": "https://region7.ntc.gov.ph/regional-profile/radio-and-tv-broadcast-station/",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "ph-cebu-city-dymx-fm-95-5",
+      "name": "DYMX-FM",
+      "freqMhz": 95.5,
+      "cityId": "ph-cebu-city",
+      "description": "Region VII FM station listed by the Philippine NTC for Cebu. Call sign: DYMX-FM. Licensee: People's Broadcasting Service Inc.. Studio: 140 M.Velez St.,Capitol Site , Cebu City. Transmitter: 140 M.Velez St.,Capitol Site , Cebu City.",
+      "tags": [
+        "fm",
+        "official",
+        "philippines",
+        "region-vii",
+        "cebu"
+      ],
+      "source": "NTC Region VII broadcast stations",
+      "sourceUrl": "https://region7.ntc.gov.ph/regional-profile/radio-and-tv-broadcast-station/",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "ph-cebu-city-dyrk-fm-96-3",
+      "name": "DYRK-FM",
+      "freqMhz": 96.3,
+      "cityId": "ph-cebu-city",
+      "description": "Region VII FM station listed by the Philippine NTC for Cebu. Call sign: DYRK-FM. Licensee: Exodus Broadcasting Company. Studio: 20th flr.,Golden Peak Hotel, Escario St. , Cebu City. Transmitter: 20th flr.,Golden Peak Hotel, Escario St. , Cebu City.",
+      "tags": [
+        "fm",
+        "official",
+        "philippines",
+        "region-vii",
+        "cebu"
+      ],
+      "source": "NTC Region VII broadcast stations",
+      "sourceUrl": "https://region7.ntc.gov.ph/regional-profile/radio-and-tv-broadcast-station/",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "ph-cebu-city-dyls-fm-97-1",
+      "name": "DYLS-FM",
+      "freqMhz": 97.1,
+      "cityId": "ph-cebu-city",
+      "description": "Region VII FM station listed by the Philippine NTC for Cebu. Call sign: DYLS-FM. Licensee: ABS-CBN Broadcasting Corp.. Studio: Jagobiao Mandaue City. Transmitter: MT.Busay Babag-1 , Cebu City.",
+      "tags": [
+        "fm",
+        "official",
+        "philippines",
+        "region-vii",
+        "cebu"
+      ],
+      "source": "NTC Region VII broadcast stations",
+      "sourceUrl": "https://region7.ntc.gov.ph/regional-profile/radio-and-tv-broadcast-station/",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "ph-cebu-city-dybu-fm-97-9",
+      "name": "DYBU-FM",
+      "freqMhz": 97.9,
+      "cityId": "ph-cebu-city",
+      "description": "Region VII FM station listed by the Philippine NTC for Cebu. Call sign: DYBU-FM. Licensee: Manila Bctg Company. Studio: Boys Scout Camp, Kalunasan, Cebu City. Transmitter: 20th flr.,Golden Peak Hotel,Escario St., Cebu City.",
+      "tags": [
+        "fm",
+        "official",
+        "philippines",
+        "region-vii",
+        "cebu"
+      ],
+      "source": "NTC Region VII broadcast stations",
+      "sourceUrl": "https://region7.ntc.gov.ph/regional-profile/radio-and-tv-broadcast-station/",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "ph-cebu-city-dyfr-fm-98-7",
+      "name": "DYFR-FM",
+      "freqMhz": 98.7,
+      "cityId": "ph-cebu-city",
+      "description": "Region VII FM station listed by the Philippine NTC for Cebu. Call sign: DYFR-FM. Licensee: Far East Broadcasting Co., Inc. Studio: IBP Compound, Cebu City. Transmitter: IBP Compound,Cebu City.",
+      "tags": [
+        "fm",
+        "official",
+        "philippines",
+        "region-vii",
+        "cebu"
+      ],
+      "source": "NTC Region VII broadcast stations",
+      "sourceUrl": "https://region7.ntc.gov.ph/regional-profile/radio-and-tv-broadcast-station/",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "ph-cebu-city-dyrt-fm-99-5",
+      "name": "DYRT-FM",
+      "freqMhz": 99.5,
+      "cityId": "ph-cebu-city",
+      "description": "Region VII FM station listed by the Philippine NTC for Cebu. Call sign: DYRT-FM. Licensee: GMA Network, Inc.. Studio: GMA Cebu Complex, Nivel Hills, Lahug, Cebu City. Transmitter: Mt. Bonbon, Babag, Cebu City.",
+      "tags": [
+        "fm",
+        "official",
+        "philippines",
+        "region-vii",
+        "cebu"
+      ],
+      "source": "NTC Region VII broadcast stations",
+      "sourceUrl": "https://region7.ntc.gov.ph/regional-profile/radio-and-tv-broadcast-station/",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "ph-cebu-city-dyrj-fm-100-3",
+      "name": "DYRJ-FM",
+      "freqMhz": 100.3,
+      "cityId": "ph-cebu-city",
+      "description": "Region VII FM station listed by the Philippine NTC for Cebu. Call sign: DYRJ-FM. Licensee: Rajah Broadcasting Network Inc.. Studio: 10TH flr Luym bldg.,Plaridel St.Cebu City. Transmitter: 10TH flr Luym bldg.,Plaridel St.Cebu City.",
+      "tags": [
+        "fm",
+        "official",
+        "philippines",
+        "region-vii",
+        "cebu"
+      ],
+      "source": "NTC Region VII broadcast stations",
+      "sourceUrl": "https://region7.ntc.gov.ph/regional-profile/radio-and-tv-broadcast-station/",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "ph-cebu-city-dyio-fm-101-1",
+      "name": "DYIO-FM",
+      "freqMhz": 101.1,
+      "cityId": "ph-cebu-city",
+      "description": "Region VII FM station listed by the Philippine NTC for Cebu. Call sign: DYIO-FM. Licensee: GVM Radio/TV Corp.. Studio: 2nd flr. Gaisano Country Mall Bldg., Apas, Cebu City. Transmitter: 9th flr.UC-Banilad,bldg. Kasambagan, Cebu City.",
+      "tags": [
+        "fm",
+        "official",
+        "philippines",
+        "region-vii",
+        "cebu"
+      ],
+      "source": "NTC Region VII broadcast stations",
+      "sourceUrl": "https://region7.ntc.gov.ph/regional-profile/radio-and-tv-broadcast-station/",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "ph-cebu-city-dyfm-fm-101-9",
+      "name": "DYFM-FM",
+      "freqMhz": 101.9,
+      "cityId": "ph-cebu-city",
+      "description": "Region VII FM station listed by the Philippine NTC for Cebu. Call sign: DYFM-FM. Licensee: Nation Broadcasting Corp.. Studio: RM-510 Krizia bldg. Gorordo Ave. Cebu City. Transmitter: San Carlos Heigth Quiot, Pardo, Cebu City.",
+      "tags": [
+        "fm",
+        "official",
+        "philippines",
+        "region-vii",
+        "cebu"
+      ],
+      "source": "NTC Region VII broadcast stations",
+      "sourceUrl": "https://region7.ntc.gov.ph/regional-profile/radio-and-tv-broadcast-station/",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "ph-cebu-city-dyes-fm-102-7",
+      "name": "DYES-FM",
+      "freqMhz": 102.7,
+      "cityId": "ph-cebu-city",
+      "description": "Region VII FM station listed by the Philippine NTC for Cebu. Call sign: DYES-FM. Licensee: Pacific Bctg System, Inc.. Studio: Nivel Hills, Lahug, Cebu. Transmitter: 20Th Flr., Golden Peak Hotel, Escario St., Cebu City.",
+      "tags": [
+        "fm",
+        "official",
+        "philippines",
+        "region-vii",
+        "cebu"
+      ],
+      "source": "NTC Region VII broadcast stations",
+      "sourceUrl": "https://region7.ntc.gov.ph/regional-profile/radio-and-tv-broadcast-station/",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "ph-cebu-city-dycd-fm-103-5",
+      "name": "DYCD-FM",
+      "freqMhz": 103.5,
+      "cityId": "ph-cebu-city",
+      "description": "Region VII FM station listed by the Philippine NTC for Cebu. Call sign: DYCD-FM. Licensee: University of Mindanao Bctg., Network. Studio: RM.309, Dona Luisa bldg. Fuente Osmeňa Blvd., Cebu City. Transmitter: Upper Kalunasan, Guadalupe, Cebu City.",
+      "tags": [
+        "fm",
+        "official",
+        "philippines",
+        "region-vii",
+        "cebu"
+      ],
+      "source": "NTC Region VII broadcast stations",
+      "sourceUrl": "https://region7.ntc.gov.ph/regional-profile/radio-and-tv-broadcast-station/",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "ph-cebu-city-dyez-fm-104-3",
+      "name": "DYEZ-FM",
+      "freqMhz": 104.3,
+      "cityId": "ph-cebu-city",
+      "description": "Region VII FM station listed by the Philippine NTC for Cebu. Call sign: DYEZ-FM. Licensee: United Visayan Bctg. Network. Studio: Uv Compound Colon Street , Cebu City. Transmitter: Busay Hills Cebu City.",
+      "tags": [
+        "fm",
+        "official",
+        "philippines",
+        "region-vii",
+        "cebu"
+      ],
+      "source": "NTC Region VII broadcast stations",
+      "sourceUrl": "https://region7.ntc.gov.ph/regional-profile/radio-and-tv-broadcast-station/",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "ph-cebu-city-dyur-fm-105-1",
+      "name": "DYUR-FM",
+      "freqMhz": 105.1,
+      "cityId": "ph-cebu-city",
+      "description": "Region VII FM station listed by the Philippine NTC for Cebu. Call sign: DYUR-FM. Licensee: Ultimate Entertianment Inc.. Studio: 4F JRDC bldg.,Osmeňa Blvd. Capitol Site, Cebu City. Transmitter: 4F JRDC bldg.,Osmeňa Blvd. Capitol Site, Cebu City.",
+      "tags": [
+        "fm",
+        "official",
+        "philippines",
+        "region-vii",
+        "cebu"
+      ],
+      "source": "NTC Region VII broadcast stations",
+      "sourceUrl": "https://region7.ntc.gov.ph/regional-profile/radio-and-tv-broadcast-station/",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "ph-cebu-city-dybt-fm-105-9",
+      "name": "DYBT-FM",
+      "freqMhz": 105.9,
+      "cityId": "ph-cebu-city",
+      "description": "Region VII FM station listed by the Philippine NTC for Cebu. Call sign: DYBT-FM. Licensee: Audiovisual Communicators, Inc.. Studio: 2nd Level Mango Square. Transmitter: 3Rd Flr Luym Bldg.,Plaridel St. Cebu City.",
+      "tags": [
+        "fm",
+        "official",
+        "philippines",
+        "region-vii",
+        "cebu"
+      ],
+      "source": "NTC Region VII broadcast stations",
+      "sourceUrl": "https://region7.ntc.gov.ph/regional-profile/radio-and-tv-broadcast-station/",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "ph-cebu-city-dyqc-fm-106-7",
+      "name": "DYQC-FM",
+      "freqMhz": 106.7,
+      "cityId": "ph-cebu-city",
+      "description": "Region VII FM station listed by the Philippine NTC for Cebu. Call sign: DYQC-FM. Licensee: Aliw Broadcasting Corporation. Studio: G/F Fortune Life Bldg., Osmena Blvd., Cebu City. Transmitter: 10TH flr Luym bldg.,Plaridel St. Cebu City.",
+      "tags": [
+        "fm",
+        "official",
+        "philippines",
+        "region-vii",
+        "cebu"
+      ],
+      "source": "NTC Region VII broadcast stations",
+      "sourceUrl": "https://region7.ntc.gov.ph/regional-profile/radio-and-tv-broadcast-station/",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "ph-cebu-city-dynu-fm-107-5",
+      "name": "DYNU-FM",
+      "freqMhz": 107.5,
+      "cityId": "ph-cebu-city",
+      "description": "Region VII FM station listed by the Philippine NTC for Cebu. Call sign: DYNU-FM. Licensee: Progressive Broadcasting Corp.. Studio: 10th flr Luym bldg.,Plaridel St. Cebu City. Transmitter: 10TH flr Luym bldg.,Plaridel St. Cebu City.",
+      "tags": [
+        "fm",
+        "official",
+        "philippines",
+        "region-vii",
+        "cebu"
+      ],
+      "source": "NTC Region VII broadcast stations",
+      "sourceUrl": "https://region7.ntc.gov.ph/regional-profile/radio-and-tv-broadcast-station/",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "ph-cogan-dydl-fm-103-9",
+      "name": "DYDL-FM",
+      "freqMhz": 103.9,
+      "cityId": "ph-cogan",
+      "description": "Region VII FM station listed by the Philippine NTC for Bohol. Call sign: DYDL-FM. Licensee: PEC Broadcasting Corporation. Studio: BIT Bldg, Carmen , Bohol. Transmitter: BIT Bldg, Carmen , Bohol.",
+      "tags": [
+        "fm",
+        "official",
+        "philippines",
+        "region-vii",
+        "bohol"
+      ],
+      "source": "NTC Region VII broadcast stations",
+      "sourceUrl": "https://region7.ntc.gov.ph/regional-profile/radio-and-tv-broadcast-station/",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "ph-dumaguete-dysr-fm-95-1",
+      "name": "DYSR-FM",
+      "freqMhz": 95.1,
+      "cityId": "ph-dumaguete",
+      "description": "Region VII FM station listed by the Philippine NTC for Bohol. Call sign: DYSR-FM. Licensee: National Council of Churhes in the Phils.. Studio: Camp Seasite,Brgy.Banilad, Dumaguete City, Negros Oriental. Transmitter: Camp Seasite,Brgy.Banilad, Dumaguete City, Negros Oriental.",
+      "tags": [
+        "fm",
+        "official",
+        "philippines",
+        "region-vii",
+        "bohol"
+      ],
+      "source": "NTC Region VII broadcast stations",
+      "sourceUrl": "https://region7.ntc.gov.ph/regional-profile/radio-and-tv-broadcast-station/",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "ph-dumaguete-dyem-fm-96-7",
+      "name": "DYEM-FM",
+      "freqMhz": 96.7,
+      "cityId": "ph-dumaguete",
+      "description": "Region VII FM station listed by the Philippine NTC for Bohol. Call sign: DYEM-FM. Licensee: Emmanuel Dejaesco. Studio: E.J.Blanco Drive,Dumaguete City , Negros Oriental. Transmitter: E.J.Blanco Drive,Dumaguete City , Negros Oriental.",
+      "tags": [
+        "fm",
+        "official",
+        "philippines",
+        "region-vii",
+        "bohol"
+      ],
+      "source": "NTC Region VII broadcast stations",
+      "sourceUrl": "https://region7.ntc.gov.ph/regional-profile/radio-and-tv-broadcast-station/",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "ph-dumaguete-dyfu-fm-101-3",
+      "name": "DYFU-FM",
+      "freqMhz": 101.3,
+      "cityId": "ph-dumaguete",
+      "description": "Region VII FM station listed by the Philippine NTC for Bohol. Call sign: DYFU-FM. Licensee: Vicente & Sofia Sinco. Studio: Foundation University,Dr. Meciano Road, Dumaguete City, Negros Or.. Transmitter: Foundation University,Dr. Meciano Road, Dumaguete City, Negros Or..",
+      "tags": [
+        "fm",
+        "official",
+        "philippines",
+        "region-vii",
+        "bohol"
+      ],
+      "source": "NTC Region VII broadcast stations",
+      "sourceUrl": "https://region7.ntc.gov.ph/regional-profile/radio-and-tv-broadcast-station/",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "ph-dumaguete-dywc-am-801",
+      "name": "DYWC-AM",
+      "freqMhz": 801,
+      "cityId": "ph-dumaguete",
+      "description": "Region VII FM station listed by the Philippine NTC for Bohol. Call sign: DYWC-AM. Licensee: Franciscan Broadcasting Corp. (Dioces of Dumaguete). Studio: POB.Sibulan, Negros Oriental. Transmitter: POB.Sibulan,Dumaguete City.",
+      "tags": [
+        "fm",
+        "official",
+        "philippines",
+        "region-vii",
+        "bohol"
+      ],
+      "source": "NTC Region VII broadcast stations",
+      "sourceUrl": "https://region7.ntc.gov.ph/regional-profile/radio-and-tv-broadcast-station/",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "ph-dumaguete-dysr-am-891",
+      "name": "DYSR-AM",
+      "freqMhz": 891,
+      "cityId": "ph-dumaguete",
+      "description": "Region VII FM station listed by the Philippine NTC for Bohol. Call sign: DYSR-AM. Licensee: Nat'l Council of Churches Inc.. Studio: Bo.Banilad, Dumaguete. Transmitter: Bo.Banilad, Dumaguete.",
+      "tags": [
+        "fm",
+        "official",
+        "philippines",
+        "region-vii",
+        "bohol"
+      ],
+      "source": "NTC Region VII broadcast stations",
+      "sourceUrl": "https://region7.ntc.gov.ph/regional-profile/radio-and-tv-broadcast-station/",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "ph-moalboal-dyrh-fm-102-5",
+      "name": "DYRH-FM",
+      "freqMhz": 102.5,
+      "cityId": "ph-moalboal",
+      "description": "Region VII FM station listed by the Philippine NTC for Cebu. Call sign: DYRH-FM. Licensee: Manila Bctg Company. Studio: Moalboal, Cebu. Transmitter: Moalboal, Cebu.",
+      "tags": [
+        "fm",
+        "official",
+        "philippines",
+        "region-vii",
+        "cebu"
+      ],
+      "source": "NTC Region VII broadcast stations",
+      "sourceUrl": "https://region7.ntc.gov.ph/regional-profile/radio-and-tv-broadcast-station/",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "ph-pinamungahan-dyrr-fm-103-9",
+      "name": "DYRR-FM",
+      "freqMhz": 103.9,
+      "cityId": "ph-pinamungahan",
+      "description": "Region VII FM station listed by the Philippine NTC for Cebu. Call sign: DYRR-FM. Licensee: Manila Bctg Company. Studio: Pinamungahan, Cebu. Transmitter: Pinamungahan, Cebu.",
+      "tags": [
+        "fm",
+        "official",
+        "philippines",
+        "region-vii",
+        "cebu"
+      ],
+      "source": "NTC Region VII broadcast stations",
+      "sourceUrl": "https://region7.ntc.gov.ph/regional-profile/radio-and-tv-broadcast-station/",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "ph-siquijor-dyws-fm-106-9",
+      "name": "DYWS-FM",
+      "freqMhz": 106.9,
+      "cityId": "ph-siquijor",
+      "description": "Region VII FM station listed by the Philippine NTC for Cebu. Call sign: DYWS-FM. Licensee: Pacific Bctg. System, Inc. Studio: Siquijor, Siquijor. Transmitter: Siquijor, Siquijor.",
+      "tags": [
+        "fm",
+        "official",
+        "philippines",
+        "region-vii",
+        "cebu"
+      ],
+      "source": "NTC Region VII broadcast stations",
+      "sourceUrl": "https://region7.ntc.gov.ph/regional-profile/radio-and-tv-broadcast-station/",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "ph-tagbilaran-city-dytr-fm-91-1",
+      "name": "DYTR-FM",
+      "freqMhz": 91.1,
+      "cityId": "ph-tagbilaran-city",
+      "description": "Region VII FM station listed by the Philippine NTC for Bohol. Call sign: DYTR-FM. Licensee: Community Media Network, Inc.. Studio: Cap bldg,CPG N.Ave.Cor. Borja Street, Tagbilaran City. Transmitter: DAO District, Tagbilaran City.",
+      "tags": [
+        "fm",
+        "official",
+        "philippines",
+        "region-vii",
+        "bohol"
+      ],
+      "source": "NTC Region VII broadcast stations",
+      "sourceUrl": "https://region7.ntc.gov.ph/regional-profile/radio-and-tv-broadcast-station/",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "ph-tagbilaran-city-dyrd-fm-102-3",
+      "name": "DYRD-FM",
+      "freqMhz": 102.3,
+      "cityId": "ph-tagbilaran-city",
+      "description": "Region VII FM station listed by the Philippine NTC for Bohol. Call sign: DYRD-FM. Licensee: Bohol Chronicle Radio. Studio: #56 Bernardino, Inting St. Tagbilaran City. Transmitter: #56 Bernardino, Inting St. Tagbilaran City.",
+      "tags": [
+        "fm",
+        "official",
+        "philippines",
+        "region-vii",
+        "bohol"
+      ],
+      "source": "NTC Region VII broadcast stations",
+      "sourceUrl": "https://region7.ntc.gov.ph/regional-profile/radio-and-tv-broadcast-station/",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "ph-toledo-baycomms-broadcasting-corporation-88-5",
+      "name": "Baycomms Broadcasting Corporation",
+      "freqMhz": 88.5,
+      "cityId": "ph-toledo",
+      "description": "Region VII FM station listed by the Philippine NTC for Cebu. Licensee: Baycomms Broadcasting Corporation. Studio: Toledo City, Cebu. Transmitter: 3Rd Flr. Prima Rosalita Bldg., Hi-Way Macapagal, Toledo City, Cebu.",
+      "tags": [
+        "fm",
+        "official",
+        "philippines",
+        "region-vii",
+        "cebu"
+      ],
+      "source": "NTC Region VII broadcast stations",
+      "sourceUrl": "https://region7.ntc.gov.ph/regional-profile/radio-and-tv-broadcast-station/",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "ph-toledo-soundstream-broadcasting-corp-90-1",
+      "name": "Soundstream Broadcasting Corp.",
+      "freqMhz": 90.1,
+      "cityId": "ph-toledo",
+      "description": "Region VII FM station listed by the Philippine NTC for Cebu. Licensee: Soundstream Broadcasting Corp.. Studio: Toledo City, Cebu.",
+      "tags": [
+        "fm",
+        "official",
+        "philippines",
+        "region-vii",
+        "cebu"
+      ],
+      "source": "NTC Region VII broadcast stations",
+      "sourceUrl": "https://region7.ntc.gov.ph/regional-profile/radio-and-tv-broadcast-station/",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "ph-toledo-ultrasonic-broadcasting-system-92-7",
+      "name": "Ultrasonic Broadcasting System",
+      "freqMhz": 92.7,
+      "cityId": "ph-toledo",
+      "description": "Region VII FM station listed by the Philippine NTC for Cebu. Licensee: Ultrasonic Broadcasting System. Studio: Toledo City, Cebu.",
+      "tags": [
+        "fm",
+        "official",
+        "philippines",
+        "region-vii",
+        "cebu"
+      ],
+      "source": "NTC Region VII broadcast stations",
+      "sourceUrl": "https://region7.ntc.gov.ph/regional-profile/radio-and-tv-broadcast-station/",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "ph-toledo-prime-broadcasting-network-inc-104-7",
+      "name": "Prime Broadcasting Network, Inc.",
+      "freqMhz": 104.7,
+      "cityId": "ph-toledo",
+      "description": "Region VII FM station listed by the Philippine NTC for Cebu. Licensee: Prime Broadcasting Network, Inc.. Studio: 4Th Flr. R & C Trade Center Bldg., Across Toledo Public Market, Toledo City, Cebu. Transmitter: 4Th Flr. R & C Trade Center Bldg., Across Toledo Public Market, Toledo City, Cebu.",
+      "tags": [
+        "fm",
+        "official",
+        "philippines",
+        "region-vii",
+        "cebu"
+      ],
+      "source": "NTC Region VII broadcast stations",
+      "sourceUrl": "https://region7.ntc.gov.ph/regional-profile/radio-and-tv-broadcast-station/",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "ph-toledo-dype-fm-107-1",
+      "name": "DYPE-FM",
+      "freqMhz": 107.1,
+      "cityId": "ph-toledo",
+      "description": "Region VII FM station listed by the Philippine NTC for Cebu. Call sign: DYPE-FM. Licensee: PEC Broadcasting Corp.. Studio: Toledo City, Cebu. Transmitter: Toledo City, Cebu.",
+      "tags": [
+        "fm",
+        "official",
+        "philippines",
+        "region-vii",
+        "cebu"
+      ],
+      "source": "NTC Region VII broadcast stations",
+      "sourceUrl": "https://region7.ntc.gov.ph/regional-profile/radio-and-tv-broadcast-station/",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "ph-toledo-prime-broadcasting-network-inc-107-9",
+      "name": "Prime Broadcasting Network, Inc.",
+      "freqMhz": 107.9,
+      "cityId": "ph-toledo",
+      "description": "Region VII FM station listed by the Philippine NTC for Cebu. Licensee: Prime Broadcasting Network, Inc.. Studio: Toledo City, Cebu.",
+      "tags": [
+        "fm",
+        "official",
+        "philippines",
+        "region-vii",
+        "cebu"
+      ],
+      "source": "NTC Region VII broadcast stations",
+      "sourceUrl": "https://region7.ntc.gov.ph/regional-profile/radio-and-tv-broadcast-station/",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "ph-ubay-dyzt-fm-102-3",
+      "name": "DYZT-FM",
+      "freqMhz": 102.3,
+      "cityId": "ph-ubay",
+      "description": "Region VII FM station listed by the Philippine NTC for Bohol. Call sign: DYZT-FM. Licensee: Manila Broadcasting Company. Studio: Poblacion Ubay, Bohol. Transmitter: Poblacion Ubay, Bohol.",
+      "tags": [
+        "fm",
+        "official",
+        "philippines",
+        "region-vii",
+        "bohol"
+      ],
+      "source": "NTC Region VII broadcast stations",
+      "sourceUrl": "https://region7.ntc.gov.ph/regional-profile/radio-and-tv-broadcast-station/",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    }
+  ]
+}

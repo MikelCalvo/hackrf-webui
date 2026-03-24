@@ -1,0 +1,145 @@
+{
+  "country": {
+    "id": "northern-mariana-islands",
+    "code": "MP",
+    "name": "Northern Mariana Islands",
+    "regionId": "oceania",
+    "cityCount": 3,
+    "stationCount": 5,
+    "sourceCount": 1,
+    "sources": [
+      {
+        "name": "FCC LMS Public Database",
+        "url": "https://enterpriseefiling.fcc.gov/dataentry/public/tv/lmsDatabase.html"
+      }
+    ],
+    "lastImportedAt": "2026-03-24",
+    "coverageStatus": "active",
+    "coverageTier": "official-substantial",
+    "coverageScope": "national",
+    "sourceQuality": "official-regulator",
+    "hasOfficialImporter": true,
+    "coverageScore": 88
+  },
+  "cities": [
+    {
+      "id": "mp-garapan",
+      "name": "Garapan",
+      "countryId": "northern-mariana-islands",
+      "timezone": "Pacific/Saipan",
+      "latitude": 15.21107,
+      "longitude": 145.72038,
+      "stationCount": 3
+    },
+    {
+      "id": "mp-san-jose-village",
+      "name": "San Jose Village",
+      "countryId": "northern-mariana-islands",
+      "timezone": "Pacific/Saipan",
+      "latitude": 14.96823,
+      "longitude": 145.61998,
+      "stationCount": 1
+    },
+    {
+      "id": "mp-songsong",
+      "name": "Songsong",
+      "countryId": "northern-mariana-islands",
+      "timezone": "Pacific/Saipan",
+      "latitude": 14.13972,
+      "longitude": 145.14111,
+      "stationCount": 1
+    }
+  ],
+  "stations": [
+    {
+      "id": "mp-garapan-kckd-90-7",
+      "name": "KCKD",
+      "freqMhz": 90.7,
+      "cityId": "mp-garapan",
+      "description": "Full Power FM service listed by FCC for GARAPAN, Northern Mariana Islands. Callsign: KCKD.",
+      "tags": [
+        "fm",
+        "official",
+        "fcc",
+        "northern-mariana-islands",
+        "full-power"
+      ],
+      "source": "FCC LMS Public Database",
+      "sourceUrl": "https://enterpriseefiling.fcc.gov/dataentry/public/tv/lmsDatabase.html",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "mp-garapan-kmop-91-5",
+      "name": "KMOP",
+      "freqMhz": 91.5,
+      "cityId": "mp-garapan",
+      "description": "Full Power FM service listed by FCC for GARAPAN, Northern Mariana Islands. Callsign: KMOP.",
+      "tags": [
+        "fm",
+        "official",
+        "fcc",
+        "northern-mariana-islands",
+        "full-power"
+      ],
+      "source": "FCC LMS Public Database",
+      "sourceUrl": "https://enterpriseefiling.fcc.gov/dataentry/public/tv/lmsDatabase.html",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "mp-garapan-k221ef-92-1",
+      "name": "K221EF",
+      "freqMhz": 92.1,
+      "cityId": "mp-garapan",
+      "description": "FM translator service listed by FCC for GARAPAN, Northern Mariana Islands. Callsign: K221EF.",
+      "tags": [
+        "fm",
+        "official",
+        "fcc",
+        "northern-mariana-islands",
+        "translator"
+      ],
+      "source": "FCC LMS Public Database",
+      "sourceUrl": "https://enterpriseefiling.fcc.gov/dataentry/public/tv/lmsDatabase.html",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "mp-san-jose-village-kpmg-88-9",
+      "name": "KPMG",
+      "freqMhz": 88.9,
+      "cityId": "mp-san-jose-village",
+      "description": "Full Power FM service listed by FCC for San Jose, Northern Mariana Islands. Callsign: KPMG.",
+      "tags": [
+        "fm",
+        "official",
+        "fcc",
+        "northern-mariana-islands",
+        "full-power"
+      ],
+      "source": "FCC LMS Public Database",
+      "sourceUrl": "https://enterpriseefiling.fcc.gov/dataentry/public/tv/lmsDatabase.html",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "mp-songsong-kgmp-89-7",
+      "name": "KGMP",
+      "freqMhz": 89.7,
+      "cityId": "mp-songsong",
+      "description": "Full Power FM service listed by FCC for Songsong, Northern Mariana Islands. Callsign: KGMP.",
+      "tags": [
+        "fm",
+        "official",
+        "fcc",
+        "northern-mariana-islands",
+        "full-power"
+      ],
+      "source": "FCC LMS Public Database",
+      "sourceUrl": "https://enterpriseefiling.fcc.gov/dataentry/public/tv/lmsDatabase.html",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    }
+  ]
+}

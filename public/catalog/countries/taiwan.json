@@ -1,0 +1,5482 @@
+{
+  "country": {
+    "id": "taiwan",
+    "code": "TW",
+    "name": "Taiwan",
+    "regionId": "asia",
+    "cityCount": 26,
+    "stationCount": 290,
+    "sourceCount": 1,
+    "sources": [
+      {
+        "name": "NCC FM transmitter dataset",
+        "url": "https://data.gov.tw/en/datasets/6445"
+      }
+    ],
+    "lastImportedAt": "2026-03-24",
+    "coverageStatus": "active",
+    "coverageTier": "official-substantial",
+    "coverageScope": "national",
+    "sourceQuality": "official-regulator",
+    "hasOfficialImporter": true,
+    "coverageScore": 88
+  },
+  "cities": [
+    {
+      "id": "tw-changhua",
+      "name": "Changhua",
+      "countryId": "taiwan",
+      "timezone": "Asia/Taipei",
+      "latitude": 24.0692,
+      "longitude": 120.5512,
+      "stationCount": 2
+    },
+    {
+      "id": "tw-chaozhou",
+      "name": "Chaozhou",
+      "countryId": "taiwan",
+      "timezone": "Asia/Taipei",
+      "latitude": 22.54987,
+      "longitude": 120.54067,
+      "stationCount": 18
+    },
+    {
+      "id": "tw-chaozhou-2",
+      "name": "Chaozhou",
+      "countryId": "taiwan",
+      "timezone": "Asia/Taipei",
+      "latitude": 22.54987,
+      "longitude": 120.54067,
+      "stationCount": 1
+    },
+    {
+      "id": "tw-chiayi-city",
+      "name": "Chiayi City",
+      "countryId": "taiwan",
+      "timezone": "Asia/Taipei",
+      "latitude": 23.47917,
+      "longitude": 120.44889,
+      "stationCount": 2
+    },
+    {
+      "id": "tw-chishang",
+      "name": "Chishang",
+      "countryId": "taiwan",
+      "timezone": "Asia/Taipei",
+      "latitude": 23.125,
+      "longitude": 121.21667,
+      "stationCount": 19
+    },
+    {
+      "id": "tw-daxi",
+      "name": "Daxi",
+      "countryId": "taiwan",
+      "timezone": "Asia/Taipei",
+      "latitude": 24.88373,
+      "longitude": 121.29043,
+      "stationCount": 13
+    },
+    {
+      "id": "tw-douliu",
+      "name": "Douliu",
+      "countryId": "taiwan",
+      "timezone": "Asia/Taipei",
+      "latitude": 23.70944,
+      "longitude": 120.54333,
+      "stationCount": 6
+    },
+    {
+      "id": "tw-hualien-city",
+      "name": "Hualien City",
+      "countryId": "taiwan",
+      "timezone": "Asia/Taipei",
+      "latitude": 23.97694,
+      "longitude": 121.60444,
+      "stationCount": 7
+    },
+    {
+      "id": "tw-jieshoucun",
+      "name": "Jieshoucun",
+      "countryId": "taiwan",
+      "timezone": "Asia/Taipei",
+      "latitude": 26.15485,
+      "longitude": 119.95159,
+      "stationCount": 2
+    },
+    {
+      "id": "tw-jinhu",
+      "name": "Jinhu",
+      "countryId": "taiwan",
+      "timezone": "Asia/Taipei",
+      "latitude": 24.43944,
+      "longitude": 118.42111,
+      "stationCount": 8
+    },
+    {
+      "id": "tw-kaohsiung",
+      "name": "Kaohsiung",
+      "countryId": "taiwan",
+      "timezone": "Asia/Taipei",
+      "latitude": 22.61626,
+      "longitude": 120.31333,
+      "stationCount": 21
+    },
+    {
+      "id": "tw-keelung",
+      "name": "Keelung",
+      "countryId": "taiwan",
+      "timezone": "Asia/Taipei",
+      "latitude": 25.13089,
+      "longitude": 121.74094,
+      "stationCount": 1
+    },
+    {
+      "id": "tw-magong",
+      "name": "Magong",
+      "countryId": "taiwan",
+      "timezone": "Asia/Taipei",
+      "latitude": 23.5654,
+      "longitude": 119.58627,
+      "stationCount": 6
+    },
+    {
+      "id": "tw-miaoli",
+      "name": "Miaoli",
+      "countryId": "taiwan",
+      "timezone": "Asia/Taipei",
+      "latitude": 24.56427,
+      "longitude": 120.82367,
+      "stationCount": 2
+    },
+    {
+      "id": "tw-nantou",
+      "name": "Nantou",
+      "countryId": "taiwan",
+      "timezone": "Asia/Taipei",
+      "latitude": 23.91566,
+      "longitude": 120.66387,
+      "stationCount": 13
+    },
+    {
+      "id": "tw-new-taipei-city",
+      "name": "New Taipei City",
+      "countryId": "taiwan",
+      "timezone": "Asia/Taipei",
+      "latitude": 25.06199,
+      "longitude": 121.45703,
+      "stationCount": 16
+    },
+    {
+      "id": "tw-pizitou",
+      "name": "Pizitou",
+      "countryId": "taiwan",
+      "timezone": "Asia/Taipei",
+      "latitude": 23.48556,
+      "longitude": 120.44472,
+      "stationCount": 13
+    },
+    {
+      "id": "tw-taichung",
+      "name": "Taichung",
+      "countryId": "taiwan",
+      "timezone": "Asia/Taipei",
+      "latitude": 24.1469,
+      "longitude": 120.6839,
+      "stationCount": 14
+    },
+    {
+      "id": "tw-tainan",
+      "name": "Tainan",
+      "countryId": "taiwan",
+      "timezone": "Asia/Taipei",
+      "latitude": 22.99083,
+      "longitude": 120.21333,
+      "stationCount": 22
+    },
+    {
+      "id": "tw-taipei",
+      "name": "Taipei",
+      "countryId": "taiwan",
+      "timezone": "Asia/Taipei",
+      "latitude": 25.05306,
+      "longitude": 121.52639,
+      "stationCount": 25
+    },
+    {
+      "id": "tw-taitung",
+      "name": "Taitung",
+      "countryId": "taiwan",
+      "timezone": "Asia/Taipei",
+      "latitude": 22.75991,
+      "longitude": 121.14457,
+      "stationCount": 4
+    },
+    {
+      "id": "tw-taitung-2",
+      "name": "Taitung",
+      "countryId": "taiwan",
+      "timezone": "Asia/Taipei",
+      "latitude": 22.75991,
+      "longitude": 121.14457,
+      "stationCount": 18
+    },
+    {
+      "id": "tw-xizhou",
+      "name": "Xizhou",
+      "countryId": "taiwan",
+      "timezone": "Asia/Taipei",
+      "latitude": 24.27667,
+      "longitude": 120.68917,
+      "stationCount": 16
+    },
+    {
+      "id": "tw-yilan",
+      "name": "Yilan",
+      "countryId": "taiwan",
+      "timezone": "Asia/Taipei",
+      "latitude": 24.757,
+      "longitude": 121.753,
+      "stationCount": 27
+    },
+    {
+      "id": "tw-yuanlin",
+      "name": "Yuanlin",
+      "countryId": "taiwan",
+      "timezone": "Asia/Taipei",
+      "latitude": 23.95671,
+      "longitude": 120.57608,
+      "stationCount": 5
+    },
+    {
+      "id": "tw-zhudong",
+      "name": "Zhudong",
+      "countryId": "taiwan",
+      "timezone": "Asia/Taipei",
+      "latitude": 24.73167,
+      "longitude": 121.09083,
+      "stationCount": 9
+    }
+  ],
+  "stations": [
+    {
+      "id": "tw-changhua-城市調頻廣播電臺-92-9",
+      "name": "城市調頻廣播電臺",
+      "freqMhz": 92.9,
+      "cityId": "tw-changhua",
+      "description": "Taiwan FM station listed by NCC for 彰化市. Station: 城市調頻廣播電臺. Category: class-b. Transmitter address: 彰化市石牌庄 60之3號.",
+      "tags": [
+        "fm",
+        "official",
+        "ncc",
+        "taiwan",
+        "class-b"
+      ],
+      "source": "NCC FM transmitter dataset",
+      "sourceUrl": "https://data.gov.tw/en/datasets/6445",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "tw-changhua-國立教育廣播電臺八卦山發射臺-103-5",
+      "name": "國立教育廣播電臺八卦山發射臺",
+      "freqMhz": 103.5,
+      "cityId": "tw-changhua",
+      "description": "Taiwan FM station listed by NCC for 彰化市. Station: 國立教育廣播電臺八卦山發射臺. Category: class-c. Transmitter address: 彰化市虎崗路5-1號.",
+      "tags": [
+        "fm",
+        "official",
+        "ncc",
+        "taiwan",
+        "class-c"
+      ],
+      "source": "NCC FM transmitter dataset",
+      "sourceUrl": "https://data.gov.tw/en/datasets/6445",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "tw-chaozhou-金台灣廣播電臺-88-9",
+      "name": "金台灣廣播電臺",
+      "freqMhz": 88.9,
+      "cityId": "tw-chaozhou",
+      "description": "Taiwan FM station listed by NCC for 屏東縣. Station: 金台灣廣播電臺. Category: class-a. Transmitter address: 屏東縣泰武鄉佳平段974號.",
+      "tags": [
+        "fm",
+        "official",
+        "ncc",
+        "taiwan",
+        "class-a"
+      ],
+      "source": "NCC FM transmitter dataset",
+      "sourceUrl": "https://data.gov.tw/en/datasets/6445",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "tw-chaozhou-南方之音廣播電臺-89-3",
+      "name": "南方之音廣播電臺",
+      "freqMhz": 89.3,
+      "cityId": "tw-chaozhou",
+      "description": "Taiwan FM station listed by NCC for 屏東縣. Station: 南方之音廣播電臺. Category: class-a. Transmitter address: 屏東縣三地門鄉三地村三地段231號.",
+      "tags": [
+        "fm",
+        "official",
+        "ncc",
+        "taiwan",
+        "class-a"
+      ],
+      "source": "NCC FM transmitter dataset",
+      "sourceUrl": "https://data.gov.tw/en/datasets/6445",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "tw-chaozhou-潮州之聲廣播電臺-90-9",
+      "name": "潮州之聲廣播電臺",
+      "freqMhz": 90.9,
+      "cityId": "tw-chaozhou",
+      "description": "Taiwan FM station listed by NCC for 屏東縣. Station: 潮州之聲廣播電臺. Category: class-a. Transmitter address: 屏東縣泰武鄉舊武潭老潭巷33號.",
+      "tags": [
+        "fm",
+        "official",
+        "ncc",
+        "taiwan",
+        "class-a"
+      ],
+      "source": "NCC FM transmitter dataset",
+      "sourceUrl": "https://data.gov.tw/en/datasets/6445",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "tw-chaozhou-大武山廣播電臺-91-3",
+      "name": "大武山廣播電臺",
+      "freqMhz": 91.3,
+      "cityId": "tw-chaozhou",
+      "description": "Taiwan FM station listed by NCC for 屏東縣. Station: 大武山廣播電臺. Category: class-a. Transmitter address: 屏東縣三地門鄉三地村中正路一段6巷30號.",
+      "tags": [
+        "fm",
+        "official",
+        "ncc",
+        "taiwan",
+        "class-a"
+      ],
+      "source": "NCC FM transmitter dataset",
+      "sourceUrl": "https://data.gov.tw/en/datasets/6445",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "tw-chaozhou-鄉土之聲廣播電臺-91-7",
+      "name": "鄉土之聲廣播電臺",
+      "freqMhz": 91.7,
+      "cityId": "tw-chaozhou",
+      "description": "Taiwan FM station listed by NCC for 屏東縣. Station: 鄉土之聲廣播電臺. Category: class-a. Transmitter address: 屏東縣來義鄉古樓村老潭巷39號.",
+      "tags": [
+        "fm",
+        "official",
+        "ncc",
+        "taiwan",
+        "class-a"
+      ],
+      "source": "NCC FM transmitter dataset",
+      "sourceUrl": "https://data.gov.tw/en/datasets/6445",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "tw-chaozhou-屏東之聲廣播電臺-92-5",
+      "name": "屏東之聲廣播電臺",
+      "freqMhz": 92.5,
+      "cityId": "tw-chaozhou",
+      "description": "Taiwan FM station listed by NCC for 屏東縣. Station: 屏東之聲廣播電臺. Category: class-a. Transmitter address: 屏東縣三地門鄉三地村中正路一段6巷30號.",
+      "tags": [
+        "fm",
+        "official",
+        "ncc",
+        "taiwan",
+        "class-a"
+      ],
+      "source": "NCC FM transmitter dataset",
+      "sourceUrl": "https://data.gov.tw/en/datasets/6445",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "tw-chaozhou-內政部警政署警察廣播電臺恆春轉播站-93-1",
+      "name": "內政部警政署警察廣播電臺恆春轉播站",
+      "freqMhz": 93.1,
+      "cityId": "tw-chaozhou",
+      "description": "Taiwan FM station listed by NCC for 屏東縣. Station: 內政部警政署警察廣播電臺恆春轉播站. Category: class-b. Transmitter address: 屏東縣恆春鎮崁頭路5之3號.",
+      "tags": [
+        "fm",
+        "official",
+        "ncc",
+        "taiwan",
+        "class-b"
+      ],
+      "source": "NCC FM transmitter dataset",
+      "sourceUrl": "https://data.gov.tw/en/datasets/6445",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "tw-chaozhou-內政部警政署警察廣播電臺草埔轉播站-93-1",
+      "name": "內政部警政署警察廣播電臺草埔轉播站",
+      "freqMhz": 93.1,
+      "cityId": "tw-chaozhou",
+      "description": "Taiwan FM station listed by NCC for 屏東縣. Station: 內政部警政署警察廣播電臺草埔轉播站. Category: class-a. Transmitter address: 屏東縣獅子鄉草埔村7巷50號.",
+      "tags": [
+        "fm",
+        "official",
+        "ncc",
+        "taiwan",
+        "class-a"
+      ],
+      "source": "NCC FM transmitter dataset",
+      "sourceUrl": "https://data.gov.tw/en/datasets/6445",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "tw-chaozhou-alian原住民族廣播電臺北里龍山轉播站-96-1",
+      "name": "Alian原住民族廣播電臺北里龍山轉播站",
+      "freqMhz": 96.1,
+      "cityId": "tw-chaozhou",
+      "description": "Taiwan FM station listed by NCC for 屏東縣. Station: Alian原住民族廣播電臺北里龍山轉播站. Category: class-a. Transmitter address: 屏東縣獅子鄉新路段155地號.",
+      "tags": [
+        "fm",
+        "official",
+        "ncc",
+        "taiwan",
+        "class-a"
+      ],
+      "source": "NCC FM transmitter dataset",
+      "sourceUrl": "https://data.gov.tw/en/datasets/6445",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "tw-chaozhou-alian原住民族廣播電臺春日轉播站-96-1",
+      "name": "Alian原住民族廣播電臺春日轉播站",
+      "freqMhz": 96.1,
+      "cityId": "tw-chaozhou",
+      "description": "Taiwan FM station listed by NCC for 屏東縣. Station: Alian原住民族廣播電臺春日轉播站. Category: class-a. Transmitter address: 屏東縣春日鄉歸崇段400地號.",
+      "tags": [
+        "fm",
+        "official",
+        "ncc",
+        "taiwan",
+        "class-a"
+      ],
+      "source": "NCC FM transmitter dataset",
+      "sourceUrl": "https://data.gov.tw/en/datasets/6445",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "tw-chaozhou-alian原住民族廣播電臺赤牛嶺轉播站-96-1",
+      "name": "Alian原住民族廣播電臺赤牛嶺轉播站",
+      "freqMhz": 96.1,
+      "cityId": "tw-chaozhou",
+      "description": "Taiwan FM station listed by NCC for 屏東縣. Station: Alian原住民族廣播電臺赤牛嶺轉播站. Category: class-b. Transmitter address: 屏東縣恆春鎮山腳里山腳路28-2號.",
+      "tags": [
+        "fm",
+        "official",
+        "ncc",
+        "taiwan",
+        "class-b"
+      ],
+      "source": "NCC FM transmitter dataset",
+      "sourceUrl": "https://data.gov.tw/en/datasets/6445",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "tw-chaozhou-alian原住民族廣播電臺霧台轉播站-96-1",
+      "name": "Alian原住民族廣播電臺霧台轉播站",
+      "freqMhz": 96.1,
+      "cityId": "tw-chaozhou",
+      "description": "Taiwan FM station listed by NCC for 屏東縣. Station: Alian原住民族廣播電臺霧台轉播站. Category: class-a. Transmitter address: 屏東縣霧臺鄉霧台村神山巷72號.",
+      "tags": [
+        "fm",
+        "official",
+        "ncc",
+        "taiwan",
+        "class-a"
+      ],
+      "source": "NCC FM transmitter dataset",
+      "sourceUrl": "https://data.gov.tw/en/datasets/6445",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "tw-chaozhou-alian原住民族廣播電臺牡丹轉播站-96-3",
+      "name": "Alian原住民族廣播電臺牡丹轉播站",
+      "freqMhz": 96.3,
+      "cityId": "tw-chaozhou",
+      "description": "Taiwan FM station listed by NCC for 屏東縣. Station: Alian原住民族廣播電臺牡丹轉播站. Category: class-a. Transmitter address: 屏東縣牡丹鄉牡丹村251號.",
+      "tags": [
+        "fm",
+        "official",
+        "ncc",
+        "taiwan",
+        "class-a"
+      ],
+      "source": "NCC FM transmitter dataset",
+      "sourceUrl": "https://data.gov.tw/en/datasets/6445",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "tw-chaozhou-主人廣播電臺-96-9",
+      "name": "主人廣播電臺",
+      "freqMhz": 96.9,
+      "cityId": "tw-chaozhou",
+      "description": "Taiwan FM station listed by NCC for 屏東縣. Station: 主人廣播電臺. Category: class-b. Transmitter address: 屏東縣恆春鎮恆南路29之6號12F.",
+      "tags": [
+        "fm",
+        "official",
+        "ncc",
+        "taiwan",
+        "class-b"
+      ],
+      "source": "NCC FM transmitter dataset",
+      "sourceUrl": "https://data.gov.tw/en/datasets/6445",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "tw-chaozhou-主人廣播電臺泰武轉播站-96-9",
+      "name": "主人廣播電臺泰武轉播站",
+      "freqMhz": 96.9,
+      "cityId": "tw-chaozhou",
+      "description": "Taiwan FM station listed by NCC for 屏東縣. Station: 主人廣播電臺泰武轉播站. Category: class-b. Transmitter address: 屏東縣泰武鄉武潭村7鄰老潭巷125號.",
+      "tags": [
+        "fm",
+        "official",
+        "ncc",
+        "taiwan",
+        "class-b"
+      ],
+      "source": "NCC FM transmitter dataset",
+      "sourceUrl": "https://data.gov.tw/en/datasets/6445",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "tw-chaozhou-國立教育廣播電臺恆春轉播站-99-3",
+      "name": "國立教育廣播電臺恆春轉播站",
+      "freqMhz": 99.3,
+      "cityId": "tw-chaozhou",
+      "description": "Taiwan FM station listed by NCC for 屏東縣. Station: 國立教育廣播電臺恆春轉播站. Category: class-c. Transmitter address: 屏東縣恆春鎮崁頭路5之3號.",
+      "tags": [
+        "fm",
+        "official",
+        "ncc",
+        "taiwan",
+        "class-c"
+      ],
+      "source": "NCC FM transmitter dataset",
+      "sourceUrl": "https://data.gov.tw/en/datasets/6445",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "tw-chaozhou-雲端新廣播電臺-99-5",
+      "name": "雲端新廣播電臺",
+      "freqMhz": 99.5,
+      "cityId": "tw-chaozhou",
+      "description": "Taiwan FM station listed by NCC for 屏東縣. Station: 雲端新廣播電臺. Category: class-b. Transmitter address: 屏東縣瑪家鄉北葉段0762-0000地號.",
+      "tags": [
+        "fm",
+        "official",
+        "ncc",
+        "taiwan",
+        "class-b"
+      ],
+      "source": "NCC FM transmitter dataset",
+      "sourceUrl": "https://data.gov.tw/en/datasets/6445",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "tw-chaozhou-內政部警政署警察廣播電臺恆春轉播站-104-9",
+      "name": "內政部警政署警察廣播電臺恆春轉播站",
+      "freqMhz": 104.9,
+      "cityId": "tw-chaozhou",
+      "description": "Taiwan FM station listed by NCC for 屏東縣. Station: 內政部警政署警察廣播電臺恆春轉播站. Category: class-b. Transmitter address: 屏東縣恆春鎮崁頭路5之3號.",
+      "tags": [
+        "fm",
+        "official",
+        "ncc",
+        "taiwan",
+        "class-b"
+      ],
+      "source": "NCC FM transmitter dataset",
+      "sourceUrl": "https://data.gov.tw/en/datasets/6445",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "tw-chaozhou-2-高屏溪廣播電臺-106-7",
+      "name": "高屏溪廣播電臺",
+      "freqMhz": 106.7,
+      "cityId": "tw-chaozhou-2",
+      "description": "Taiwan FM station listed by NCC for wu . Station: 高屏溪廣播電臺. Category: class-b. Transmitter address: wu grbg.",
+      "tags": [
+        "fm",
+        "official",
+        "ncc",
+        "taiwan",
+        "class-b"
+      ],
+      "source": "NCC FM transmitter dataset",
+      "sourceUrl": "https://data.gov.tw/en/datasets/6445",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "tw-chiayi-city-嘉雲廣播電臺-88-9",
+      "name": "嘉雲廣播電臺",
+      "freqMhz": 88.9,
+      "cityId": "tw-chiayi-city",
+      "description": "Taiwan FM station listed by NCC for 嘉義市. Station: 嘉雲廣播電臺. Category: class-a. Transmitter address: 嘉義市東區日新街195號21樓之2.",
+      "tags": [
+        "fm",
+        "official",
+        "ncc",
+        "taiwan",
+        "class-a"
+      ],
+      "source": "NCC FM transmitter dataset",
+      "sourceUrl": "https://data.gov.tw/en/datasets/6445",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "tw-chiayi-city-嘉義之音廣播電臺-91-3",
+      "name": "嘉義之音廣播電臺",
+      "freqMhz": 91.3,
+      "cityId": "tw-chiayi-city",
+      "description": "Taiwan FM station listed by NCC for 嘉義市. Station: 嘉義之音廣播電臺. Category: class-a. Transmitter address: 嘉義市東區番路鄉番路段0052-0027地號.",
+      "tags": [
+        "fm",
+        "official",
+        "ncc",
+        "taiwan",
+        "class-a"
+      ],
+      "source": "NCC FM transmitter dataset",
+      "sourceUrl": "https://data.gov.tw/en/datasets/6445",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "tw-chishang-國立教育廣播電臺舞鶴轉播臺-88-9",
+      "name": "國立教育廣播電臺舞鶴轉播臺",
+      "freqMhz": 88.9,
+      "cityId": "tw-chishang",
+      "description": "Taiwan FM station listed by NCC for 花蓮縣. Station: 國立教育廣播電臺舞鶴轉播臺. Category: class-a. Transmitter address: 花蓮縣瑞穗鄉舞鶴村掃叭頂二路280號.",
+      "tags": [
+        "fm",
+        "official",
+        "ncc",
+        "taiwan",
+        "class-a"
+      ],
+      "source": "NCC FM transmitter dataset",
+      "sourceUrl": "https://data.gov.tw/en/datasets/6445",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "tw-chishang-後山廣播電臺-89-7",
+      "name": "後山廣播電臺",
+      "freqMhz": 89.7,
+      "cityId": "tw-chishang",
+      "description": "Taiwan FM station listed by NCC for 花蓮縣. Station: 後山廣播電臺. Category: class-a. Transmitter address: 花蓮縣花蓮市中正路446號3樓.",
+      "tags": [
+        "fm",
+        "official",
+        "ncc",
+        "taiwan",
+        "class-a"
+      ],
+      "source": "NCC FM transmitter dataset",
+      "sourceUrl": "https://data.gov.tw/en/datasets/6445",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "tw-chishang-合歡山廣播電臺-90-1",
+      "name": "合歡山廣播電臺",
+      "freqMhz": 90.1,
+      "cityId": "tw-chishang",
+      "description": "Taiwan FM station listed by NCC for 花蓮縣. Station: 合歡山廣播電臺. Category: class-a. Transmitter address: 花蓮縣壽豐鄉池南村轉播台2號.",
+      "tags": [
+        "fm",
+        "official",
+        "ncc",
+        "taiwan",
+        "class-a"
+      ],
+      "source": "NCC FM transmitter dataset",
+      "sourceUrl": "https://data.gov.tw/en/datasets/6445",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "tw-chishang-希望之聲廣播電臺-90-5",
+      "name": "希望之聲廣播電臺",
+      "freqMhz": 90.5,
+      "cityId": "tw-chishang",
+      "description": "Taiwan FM station listed by NCC for 花蓮縣. Station: 希望之聲廣播電臺. Category: class-a. Transmitter address: 花蓮縣壽豐鄉池南村轉播台3號.",
+      "tags": [
+        "fm",
+        "official",
+        "ncc",
+        "taiwan",
+        "class-a"
+      ],
+      "source": "NCC FM transmitter dataset",
+      "sourceUrl": "https://data.gov.tw/en/datasets/6445",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "tw-chishang-花蓮之聲廣播電臺-91-7",
+      "name": "花蓮之聲廣播電臺",
+      "freqMhz": 91.7,
+      "cityId": "tw-chishang",
+      "description": "Taiwan FM station listed by NCC for 花蓮縣. Station: 花蓮之聲廣播電臺. Category: class-a. Transmitter address: 花蓮縣壽豐鄉鹽寮村山嶺路80號.",
+      "tags": [
+        "fm",
+        "official",
+        "ncc",
+        "taiwan",
+        "class-a"
+      ],
+      "source": "NCC FM transmitter dataset",
+      "sourceUrl": "https://data.gov.tw/en/datasets/6445",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "tw-chishang-蓮友廣播電臺-92-5",
+      "name": "蓮友廣播電臺",
+      "freqMhz": 92.5,
+      "cityId": "tw-chishang",
+      "description": "Taiwan FM station listed by NCC for 花蓮縣. Station: 蓮友廣播電臺. Category: class-a. Transmitter address: 花蓮縣壽豐鄉鹽寮村山嶺路80號.",
+      "tags": [
+        "fm",
+        "official",
+        "ncc",
+        "taiwan",
+        "class-a"
+      ],
+      "source": "NCC FM transmitter dataset",
+      "sourceUrl": "https://data.gov.tw/en/datasets/6445",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "tw-chishang-連花廣播電臺-93-5",
+      "name": "連花廣播電臺",
+      "freqMhz": 93.5,
+      "cityId": "tw-chishang",
+      "description": "Taiwan FM station listed by NCC for 花蓮縣. Station: 連花廣播電臺. Category: class-b. Transmitter address: 花蓮縣壽豐鄉池南村轉播台3號.",
+      "tags": [
+        "fm",
+        "official",
+        "ncc",
+        "taiwan",
+        "class-b"
+      ],
+      "source": "NCC FM transmitter dataset",
+      "sourceUrl": "https://data.gov.tw/en/datasets/6445",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "tw-chishang-alian原住民族廣播電臺富里轉播站-96-1",
+      "name": "Alian原住民族廣播電臺富里轉播站",
+      "freqMhz": 96.1,
+      "cityId": "tw-chishang",
+      "description": "Taiwan FM station listed by NCC for 花蓮縣. Station: Alian原住民族廣播電臺富里轉播站. Category: class-b. Transmitter address: 花蓮縣富里鄉富南村三台58之3號.",
+      "tags": [
+        "fm",
+        "official",
+        "ncc",
+        "taiwan",
+        "class-b"
+      ],
+      "source": "NCC FM transmitter dataset",
+      "sourceUrl": "https://data.gov.tw/en/datasets/6445",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "tw-chishang-alian原住民族廣播電臺秀林轉播站-96-1",
+      "name": "Alian原住民族廣播電臺秀林轉播站",
+      "freqMhz": 96.1,
+      "cityId": "tw-chishang",
+      "description": "Taiwan FM station listed by NCC for 花蓮縣. Station: Alian原住民族廣播電臺秀林轉播站. Category: class-a. Transmitter address: 花蓮縣秀林鄉秀林村民有80號.",
+      "tags": [
+        "fm",
+        "official",
+        "ncc",
+        "taiwan",
+        "class-a"
+      ],
+      "source": "NCC FM transmitter dataset",
+      "sourceUrl": "https://data.gov.tw/en/datasets/6445",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "tw-chishang-alian原住民廣播電臺花蓮鯉魚山轉播站-96-3",
+      "name": "Alian原住民廣播電臺花蓮鯉魚山轉播站",
+      "freqMhz": 96.3,
+      "cityId": "tw-chishang",
+      "description": "Taiwan FM station listed by NCC for 花蓮縣. Station: Alian原住民廣播電臺花蓮鯉魚山轉播站. Category: class-c. Transmitter address: 花蓮縣壽豐鄉池南村轉播站路1號之1.",
+      "tags": [
+        "fm",
+        "official",
+        "ncc",
+        "taiwan",
+        "class-c"
+      ],
+      "source": "NCC FM transmitter dataset",
+      "sourceUrl": "https://data.gov.tw/en/datasets/6445",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "tw-chishang-alian原住民族廣播電臺舞鶴轉播站-96-3",
+      "name": "Alian原住民族廣播電臺舞鶴轉播站",
+      "freqMhz": 96.3,
+      "cityId": "tw-chishang",
+      "description": "Taiwan FM station listed by NCC for 花蓮縣. Station: Alian原住民族廣播電臺舞鶴轉播站. Category: class-b. Transmitter address: 花蓮縣瑞穗鄉舞鶴243之1號.",
+      "tags": [
+        "fm",
+        "official",
+        "ncc",
+        "taiwan",
+        "class-b"
+      ],
+      "source": "NCC FM transmitter dataset",
+      "sourceUrl": "https://data.gov.tw/en/datasets/6445",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "tw-chishang-歡樂廣播電臺-98-3",
+      "name": "歡樂廣播電臺",
+      "freqMhz": 98.3,
+      "cityId": "tw-chishang",
+      "description": "Taiwan FM station listed by NCC for 花蓮縣. Station: 歡樂廣播電臺. Category: class-b. Transmitter address: 花蓮縣壽豐鄉池南村轉播台1-1號.",
+      "tags": [
+        "fm",
+        "official",
+        "ncc",
+        "taiwan",
+        "class-b"
+      ],
+      "source": "NCC FM transmitter dataset",
+      "sourceUrl": "https://data.gov.tw/en/datasets/6445",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "tw-chishang-國立教育廣播電臺玉里舞鶴轉播臺-100-3",
+      "name": "國立教育廣播電臺玉里舞鶴轉播臺",
+      "freqMhz": 100.3,
+      "cityId": "tw-chishang",
+      "description": "Taiwan FM station listed by NCC for 花蓮縣. Station: 國立教育廣播電臺玉里舞鶴轉播臺. Category: class-c. Transmitter address: 花蓮縣瑞穗鄉舞鶴村掃叭頂二路280號.",
+      "tags": [
+        "fm",
+        "official",
+        "ncc",
+        "taiwan",
+        "class-c"
+      ],
+      "source": "NCC FM transmitter dataset",
+      "sourceUrl": "https://data.gov.tw/en/datasets/6445",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "tw-chishang-中國廣播股份有限公司花蓮調頻廣播電臺-102-1",
+      "name": "中國廣播股份有限公司花蓮調頻廣播電臺",
+      "freqMhz": 102.1,
+      "cityId": "tw-chishang",
+      "description": "Taiwan FM station listed by NCC for 花蓮縣. Station: 中國廣播股份有限公司花蓮調頻廣播電臺. Category: class-c. Transmitter address: 花蓮縣壽豐鄉賀田段41地號.",
+      "tags": [
+        "fm",
+        "official",
+        "ncc",
+        "taiwan",
+        "class-c"
+      ],
+      "source": "NCC FM transmitter dataset",
+      "sourceUrl": "https://data.gov.tw/en/datasets/6445",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "tw-chishang-中國廣播股份有限公司玉里調頻廣播電臺-103-3",
+      "name": "中國廣播股份有限公司玉里調頻廣播電臺",
+      "freqMhz": 103.3,
+      "cityId": "tw-chishang",
+      "description": "Taiwan FM station listed by NCC for 花蓮縣. Station: 中國廣播股份有限公司玉里調頻廣播電臺. Category: class-c. Transmitter address: 花蓮縣玉里鎮大禹里大禹165號.",
+      "tags": [
+        "fm",
+        "official",
+        "ncc",
+        "taiwan",
+        "class-c"
+      ],
+      "source": "NCC FM transmitter dataset",
+      "sourceUrl": "https://data.gov.tw/en/datasets/6445",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "tw-chishang-講客廣播電臺舞鶴轉播站-105-7",
+      "name": "講客廣播電臺舞鶴轉播站",
+      "freqMhz": 105.7,
+      "cityId": "tw-chishang",
+      "description": "Taiwan FM station listed by NCC for 花蓮縣. Station: 講客廣播電臺舞鶴轉播站. Category: class-c. Transmitter address: 花蓮縣瑞穗鄉舞鹤村舞鶴59之1號.",
+      "tags": [
+        "fm",
+        "official",
+        "ncc",
+        "taiwan",
+        "class-c"
+      ],
+      "source": "NCC FM transmitter dataset",
+      "sourceUrl": "https://data.gov.tw/en/datasets/6445",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "tw-chishang-內政部警政署警察廣播電臺舞鶴轉播站全國網-106-5",
+      "name": "內政部警政署警察廣播電臺舞鶴轉播站(全國網)",
+      "freqMhz": 106.5,
+      "cityId": "tw-chishang",
+      "description": "Taiwan FM station listed by NCC for 花蓮縣. Station: 內政部警政署警察廣播電臺舞鶴轉播站(全國網). Category: class-a. Transmitter address: 花蓮縣瑞穗鄉舞鶴村59號之1(警察通訊所).",
+      "tags": [
+        "fm",
+        "official",
+        "ncc",
+        "taiwan",
+        "class-a"
+      ],
+      "source": "NCC FM transmitter dataset",
+      "sourceUrl": "https://data.gov.tw/en/datasets/6445",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "tw-chishang-講客廣播電臺鯉魚山轉播站-106-9",
+      "name": "講客廣播電臺鯉魚山轉播站",
+      "freqMhz": 106.9,
+      "cityId": "tw-chishang",
+      "description": "Taiwan FM station listed by NCC for 花蓮縣. Station: 講客廣播電臺鯉魚山轉播站. Category: class-c. Transmitter address: 花蓮縣壽豐鄉池南村轉播台1號.",
+      "tags": [
+        "fm",
+        "official",
+        "ncc",
+        "taiwan",
+        "class-c"
+      ],
+      "source": "NCC FM transmitter dataset",
+      "sourceUrl": "https://data.gov.tw/en/datasets/6445",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "tw-chishang-東臺灣廣播電臺-107-7",
+      "name": "東臺灣廣播電臺",
+      "freqMhz": 107.7,
+      "cityId": "tw-chishang",
+      "description": "Taiwan FM station listed by NCC for 花蓮縣. Station: 東臺灣廣播電臺. Category: class-b. Transmitter address: 花蓮縣吉安鄉南濱路1段31號(燕聲廣播電臺).",
+      "tags": [
+        "fm",
+        "official",
+        "ncc",
+        "taiwan",
+        "class-b"
+      ],
+      "source": "NCC FM transmitter dataset",
+      "sourceUrl": "https://data.gov.tw/en/datasets/6445",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "tw-daxi-飛揚廣播電臺-89-5",
+      "name": "飛揚廣播電臺",
+      "freqMhz": 89.5,
+      "cityId": "tw-daxi",
+      "description": "Taiwan FM station listed by NCC for 桃園市. Station: 飛揚廣播電臺. Category: class-a. Transmitter address: 桃園市龍潭區三洽水段1013-4地號.",
+      "tags": [
+        "fm",
+        "official",
+        "ncc",
+        "taiwan",
+        "class-a"
+      ],
+      "source": "NCC FM transmitter dataset",
+      "sourceUrl": "https://data.gov.tw/en/datasets/6445",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "tw-daxi-好聽廣播電臺-90-7",
+      "name": "好聽廣播電臺",
+      "freqMhz": 90.7,
+      "cityId": "tw-daxi",
+      "description": "Taiwan FM station listed by NCC for 桃園市. Station: 好聽廣播電臺. Category: class-a. Transmitter address: 桃園市楊梅區大北坑街1段1號.",
+      "tags": [
+        "fm",
+        "official",
+        "ncc",
+        "taiwan",
+        "class-a"
+      ],
+      "source": "NCC FM transmitter dataset",
+      "sourceUrl": "https://data.gov.tw/en/datasets/6445",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "tw-daxi-大溪廣播電臺-91-1",
+      "name": "大溪廣播電臺",
+      "freqMhz": 91.1,
+      "cityId": "tw-daxi",
+      "description": "Taiwan FM station listed by NCC for 桃園市. Station: 大溪廣播電臺. Category: class-a. Transmitter address: 桃園市大溪區美華里22鄰金山路392巷280號.",
+      "tags": [
+        "fm",
+        "official",
+        "ncc",
+        "taiwan",
+        "class-a"
+      ],
+      "source": "NCC FM transmitter dataset",
+      "sourceUrl": "https://data.gov.tw/en/datasets/6445",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "tw-daxi-美聲廣播電臺-91-5",
+      "name": "美聲廣播電臺",
+      "freqMhz": 91.5,
+      "cityId": "tw-daxi",
+      "description": "Taiwan FM station listed by NCC for 桃園市. Station: 美聲廣播電臺. Category: class-a. Transmitter address: 桃園市桃園區中平路98號17樓之2.",
+      "tags": [
+        "fm",
+        "official",
+        "ncc",
+        "taiwan",
+        "class-a"
+      ],
+      "source": "NCC FM transmitter dataset",
+      "sourceUrl": "https://data.gov.tw/en/datasets/6445",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "tw-daxi-鄉親廣播電臺-91-9",
+      "name": "鄉親廣播電臺",
+      "freqMhz": 91.9,
+      "cityId": "tw-daxi",
+      "description": "Taiwan FM station listed by NCC for 桃園市. Station: 鄉親廣播電臺. Category: class-a. Transmitter address: 桃園市桃園區中正路1247號21樓.",
+      "tags": [
+        "fm",
+        "official",
+        "ncc",
+        "taiwan",
+        "class-a"
+      ],
+      "source": "NCC FM transmitter dataset",
+      "sourceUrl": "https://data.gov.tw/en/datasets/6445",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "tw-daxi-新客家廣播電台-93-5",
+      "name": "新客家廣播電台",
+      "freqMhz": 93.5,
+      "cityId": "tw-daxi",
+      "description": "Taiwan FM station listed by NCC for 桃園市. Station: 新客家廣播電台. Category: class-b. Transmitter address: 桃園市龍潭區楊銅路2段660號.",
+      "tags": [
+        "fm",
+        "official",
+        "ncc",
+        "taiwan",
+        "class-b"
+      ],
+      "source": "NCC FM transmitter dataset",
+      "sourceUrl": "https://data.gov.tw/en/datasets/6445",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "tw-daxi-alian原住民族廣播電臺復興轉播站-96-3",
+      "name": "Alian原住民族廣播電臺復興轉播站",
+      "freqMhz": 96.3,
+      "cityId": "tw-daxi",
+      "description": "Taiwan FM station listed by NCC for 桃園市. Station: Alian原住民族廣播電臺復興轉播站. Category: class-b. Transmitter address: 桃園市復興區巴崚79號.",
+      "tags": [
+        "fm",
+        "official",
+        "ncc",
+        "taiwan",
+        "class-b"
+      ],
+      "source": "NCC FM transmitter dataset",
+      "sourceUrl": "https://data.gov.tw/en/datasets/6445",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "tw-daxi-環宇廣播電臺-96-7",
+      "name": "環宇廣播電臺",
+      "freqMhz": 96.7,
+      "cityId": "tw-daxi",
+      "description": "Taiwan FM station listed by NCC for 桃園市. Station: 環宇廣播電臺. Category: class-b. Transmitter address: 桃園市龍潭區楊銅路2段792號2樓.",
+      "tags": [
+        "fm",
+        "official",
+        "ncc",
+        "taiwan",
+        "class-b"
+      ],
+      "source": "NCC FM transmitter dataset",
+      "sourceUrl": "https://data.gov.tw/en/datasets/6445",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "tw-daxi-ic之音調頻廣播電臺-97-5",
+      "name": "IC之音調頻廣播電臺",
+      "freqMhz": 97.5,
+      "cityId": "tw-daxi",
+      "description": "Taiwan FM station listed by NCC for 桃園市. Station: IC之音調頻廣播電臺. Category: class-b. Transmitter address: 桃園市楊梅區大北坑街1段1號.",
+      "tags": [
+        "fm",
+        "official",
+        "ncc",
+        "taiwan",
+        "class-b"
+      ],
+      "source": "NCC FM transmitter dataset",
+      "sourceUrl": "https://data.gov.tw/en/datasets/6445",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "tw-daxi-風城廣播電臺-98-7",
+      "name": "風城廣播電臺",
+      "freqMhz": 98.7,
+      "cityId": "tw-daxi",
+      "description": "Taiwan FM station listed by NCC for 桃園市. Station: 風城廣播電臺. Category: class-b. Transmitter address: 桃園市龍潭區楊銅路2段658之1號.",
+      "tags": [
+        "fm",
+        "official",
+        "ncc",
+        "taiwan",
+        "class-b"
+      ],
+      "source": "NCC FM transmitter dataset",
+      "sourceUrl": "https://data.gov.tw/en/datasets/6445",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "tw-daxi-青山廣播電臺-101-1",
+      "name": "青山廣播電臺",
+      "freqMhz": 101.1,
+      "cityId": "tw-daxi",
+      "description": "Taiwan FM station listed by NCC for 桃園市. Station: 青山廣播電臺. Category: class-b. Transmitter address: 桃園市龍潭區楊銅路2段658-1號.",
+      "tags": [
+        "fm",
+        "official",
+        "ncc",
+        "taiwan",
+        "class-b"
+      ],
+      "source": "NCC FM transmitter dataset",
+      "sourceUrl": "https://data.gov.tw/en/datasets/6445",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "tw-daxi-桃花源鄉廣播電臺-104-3",
+      "name": "桃花源鄉廣播電臺",
+      "freqMhz": 104.3,
+      "cityId": "tw-daxi",
+      "description": "Taiwan FM station listed by NCC for 桃園市. Station: 桃花源鄉廣播電臺. Category: class-a. Transmitter address: 桃園市龍潭區楊銅路2段792號.",
+      "tags": [
+        "fm",
+        "official",
+        "ncc",
+        "taiwan",
+        "class-a"
+      ],
+      "source": "NCC FM transmitter dataset",
+      "sourceUrl": "https://data.gov.tw/en/datasets/6445",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "tw-daxi-桃園廣播電臺-106-9",
+      "name": "桃園廣播電臺",
+      "freqMhz": 106.9,
+      "cityId": "tw-daxi",
+      "description": "Taiwan FM station listed by NCC for 桃園市. Station: 桃園廣播電臺. Category: class-b. Transmitter address: 桃園市龍潭區三洽水段1012-0003地號.",
+      "tags": [
+        "fm",
+        "official",
+        "ncc",
+        "taiwan",
+        "class-b"
+      ],
+      "source": "NCC FM transmitter dataset",
+      "sourceUrl": "https://data.gov.tw/en/datasets/6445",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "tw-douliu-新雲林之聲廣播電臺-89-3",
+      "name": "新雲林之聲廣播電臺",
+      "freqMhz": 89.3,
+      "cityId": "tw-douliu",
+      "description": "Taiwan FM station listed by NCC for 雲林縣. Station: 新雲林之聲廣播電臺. Category: class-a. Transmitter address: 雲林縣古坑鄉大湖底段263-345號.",
+      "tags": [
+        "fm",
+        "official",
+        "ncc",
+        "taiwan",
+        "class-a"
+      ],
+      "source": "NCC FM transmitter dataset",
+      "sourceUrl": "https://data.gov.tw/en/datasets/6445",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "tw-douliu-草嶺之聲廣播電臺-89-7",
+      "name": "草嶺之聲廣播電臺",
+      "freqMhz": 89.7,
+      "cityId": "tw-douliu",
+      "description": "Taiwan FM station listed by NCC for 雲林縣. Station: 草嶺之聲廣播電臺. Category: class-a. Transmitter address: 雲林縣古坑鄉永光村光山1-20號.",
+      "tags": [
+        "fm",
+        "official",
+        "ncc",
+        "taiwan",
+        "class-a"
+      ],
+      "source": "NCC FM transmitter dataset",
+      "sourceUrl": "https://data.gov.tw/en/datasets/6445",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "tw-douliu-濁水溪廣播電臺-90-1",
+      "name": "濁水溪廣播電臺",
+      "freqMhz": 90.1,
+      "cityId": "tw-douliu",
+      "description": "Taiwan FM station listed by NCC for 雲林縣. Station: 濁水溪廣播電臺. Category: class-a. Transmitter address: 雲林縣古坑鄉大湖底段263-345地號.",
+      "tags": [
+        "fm",
+        "official",
+        "ncc",
+        "taiwan",
+        "class-a"
+      ],
+      "source": "NCC FM transmitter dataset",
+      "sourceUrl": "https://data.gov.tw/en/datasets/6445",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "tw-douliu-民生展望廣播電臺-90-5",
+      "name": "民生展望廣播電臺",
+      "freqMhz": 90.5,
+      "cityId": "tw-douliu",
+      "description": "Taiwan FM station listed by NCC for 雲林縣. Station: 民生展望廣播電臺. Category: class-a. Transmitter address: 雲林縣古坑鄉大湖底段202-11地號.",
+      "tags": [
+        "fm",
+        "official",
+        "ncc",
+        "taiwan",
+        "class-a"
+      ],
+      "source": "NCC FM transmitter dataset",
+      "sourceUrl": "https://data.gov.tw/en/datasets/6445",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "tw-douliu-神農廣播電臺-99-5",
+      "name": "神農廣播電臺",
+      "freqMhz": 99.5,
+      "cityId": "tw-douliu",
+      "description": "Taiwan FM station listed by NCC for 雲林縣. Station: 神農廣播電臺. Category: class-b. Transmitter address: 雲林縣古坑鄉大湖底段263-346地號.",
+      "tags": [
+        "fm",
+        "official",
+        "ncc",
+        "taiwan",
+        "class-b"
+      ],
+      "source": "NCC FM transmitter dataset",
+      "sourceUrl": "https://data.gov.tw/en/datasets/6445",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "tw-douliu-農鄉廣播電臺-106-3",
+      "name": "農鄉廣播電臺",
+      "freqMhz": 106.3,
+      "cityId": "tw-douliu",
+      "description": "Taiwan FM station listed by NCC for 雲林縣. Station: 農鄉廣播電臺. Category: class-a. Transmitter address: 雲林縣古坑鄉桂林村18鄰桃源1-28號.",
+      "tags": [
+        "fm",
+        "official",
+        "ncc",
+        "taiwan",
+        "class-a"
+      ],
+      "source": "NCC FM transmitter dataset",
+      "sourceUrl": "https://data.gov.tw/en/datasets/6445",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "tw-hualien-city-慈濟大學實習廣播電臺-88-3",
+      "name": "慈濟大學實習廣播電臺",
+      "freqMhz": 88.3,
+      "cityId": "tw-hualien-city",
+      "description": "Taiwan FM station listed by NCC for 花蓮市. Station: 慈濟大學實習廣播電臺. Category: school. Transmitter address: 花蓮市中央路三段701號E區9樓頂.",
+      "tags": [
+        "fm",
+        "official",
+        "ncc",
+        "taiwan",
+        "school"
+      ],
+      "source": "NCC FM transmitter dataset",
+      "sourceUrl": "https://data.gov.tw/en/datasets/6445",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "tw-hualien-city-太魯閣之音廣播電臺-91-3",
+      "name": "太魯閣之音廣播電臺",
+      "freqMhz": 91.3,
+      "cityId": "tw-hualien-city",
+      "description": "Taiwan FM station listed by NCC for 花蓮市. Station: 太魯閣之音廣播電臺. Category: class-a. Transmitter address: 花蓮市中華路212號9樓之1.",
+      "tags": [
+        "fm",
+        "official",
+        "ncc",
+        "taiwan",
+        "class-a"
+      ],
+      "source": "NCC FM transmitter dataset",
+      "sourceUrl": "https://data.gov.tw/en/datasets/6445",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "tw-hualien-city-內政部警政署警察廣播電臺花蓮分臺-94-3",
+      "name": "內政部警政署警察廣播電臺花蓮分臺",
+      "freqMhz": 94.3,
+      "cityId": "tw-hualien-city",
+      "description": "Taiwan FM station listed by NCC for 花蓮市. Station: 內政部警政署警察廣播電臺花蓮分臺. Category: class-c. Transmitter address: 花蓮市府前路21-2號.",
+      "tags": [
+        "fm",
+        "official",
+        "ncc",
+        "taiwan",
+        "class-c"
+      ],
+      "source": "NCC FM transmitter dataset",
+      "sourceUrl": "https://data.gov.tw/en/datasets/6445",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "tw-hualien-city-國立教育廣播電臺花蓮發射臺-97-3",
+      "name": "國立教育廣播電臺花蓮發射臺",
+      "freqMhz": 97.3,
+      "cityId": "tw-hualien-city",
+      "description": "Taiwan FM station listed by NCC for 花蓮市. Station: 國立教育廣播電臺花蓮發射臺. Category: class-c. Transmitter address: 花蓮市中正路643號.",
+      "tags": [
+        "fm",
+        "official",
+        "ncc",
+        "taiwan",
+        "class-c"
+      ],
+      "source": "NCC FM transmitter dataset",
+      "sourceUrl": "https://data.gov.tw/en/datasets/6445",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "tw-hualien-city-內政部警政署警察廣播電臺花蓮發射站全國網-101-3",
+      "name": "內政部警政署警察廣播電臺花蓮發射站(全國網)",
+      "freqMhz": 101.3,
+      "cityId": "tw-hualien-city",
+      "description": "Taiwan FM station listed by NCC for 花蓮市. Station: 內政部警政署警察廣播電臺花蓮發射站(全國網). Category: class-c. Transmitter address: 花蓮市府前路21之2號.",
+      "tags": [
+        "fm",
+        "official",
+        "ncc",
+        "taiwan",
+        "class-c"
+      ],
+      "source": "NCC FM transmitter dataset",
+      "sourceUrl": "https://data.gov.tw/en/datasets/6445",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "tw-hualien-city-國立教育廣播電臺美崙發射臺-103-7",
+      "name": "國立教育廣播電臺美崙發射臺",
+      "freqMhz": 103.7,
+      "cityId": "tw-hualien-city",
+      "description": "Taiwan FM station listed by NCC for 花蓮市. Station: 國立教育廣播電臺美崙發射臺. Category: class-c. Transmitter address: 花蓮市民孝里東興路457號.",
+      "tags": [
+        "fm",
+        "official",
+        "ncc",
+        "taiwan",
+        "class-c"
+      ],
+      "source": "NCC FM transmitter dataset",
+      "sourceUrl": "https://data.gov.tw/en/datasets/6445",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "tw-hualien-city-漢聲廣播電臺花蓮臺-104-5",
+      "name": "漢聲廣播電臺花蓮臺",
+      "freqMhz": 104.5,
+      "cityId": "tw-hualien-city",
+      "description": "Taiwan FM station listed by NCC for 花蓮市. Station: 漢聲廣播電臺花蓮臺. Category: class-c. Transmitter address: 花蓮市中正路643號.",
+      "tags": [
+        "fm",
+        "official",
+        "ncc",
+        "taiwan",
+        "class-c"
+      ],
+      "source": "NCC FM transmitter dataset",
+      "sourceUrl": "https://data.gov.tw/en/datasets/6445",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "tw-jieshoucun-國立教育廣播電臺馬祖轉播站-91-5",
+      "name": "國立教育廣播電臺馬祖轉播站",
+      "freqMhz": 91.5,
+      "cityId": "tw-jieshoucun",
+      "description": "Taiwan FM station listed by NCC for 連江縣. Station: 國立教育廣播電臺馬祖轉播站. Category: class-b. Transmitter address: 連江縣南竿鄉復興村218-1號.",
+      "tags": [
+        "fm",
+        "official",
+        "ncc",
+        "taiwan",
+        "class-b"
+      ],
+      "source": "NCC FM transmitter dataset",
+      "sourceUrl": "https://data.gov.tw/en/datasets/6445",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "tw-jieshoucun-非凡音廣播電台-98-5",
+      "name": "非凡音廣播電台",
+      "freqMhz": 98.5,
+      "cityId": "tw-jieshoucun",
+      "description": "Taiwan FM station listed by NCC for 連江縣. Station: 非凡音廣播電台. Category: class-b. Transmitter address: 連江縣南竿鄉仁愛村仁愛段0006-3496地號.",
+      "tags": [
+        "fm",
+        "official",
+        "ncc",
+        "taiwan",
+        "class-b"
+      ],
+      "source": "NCC FM transmitter dataset",
+      "sourceUrl": "https://data.gov.tw/en/datasets/6445",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "tw-jinhu-銘傳大學實習調頻廣播電臺金門分臺-88-3",
+      "name": "銘傳大學實習調頻廣播電臺金門分臺",
+      "freqMhz": 88.3,
+      "cityId": "tw-jinhu",
+      "description": "Taiwan FM station listed by NCC for 金門縣. Station: 銘傳大學實習調頻廣播電臺金門分臺. Category: school. Transmitter address: 金門縣金沙鎮德明路105號.",
+      "tags": [
+        "fm",
+        "official",
+        "ncc",
+        "taiwan",
+        "school"
+      ],
+      "source": "NCC FM transmitter dataset",
+      "sourceUrl": "https://data.gov.tw/en/datasets/6445",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "tw-jinhu-國立教育廣播電臺金門轉播站-88-9",
+      "name": "國立教育廣播電臺金門轉播站",
+      "freqMhz": 88.9,
+      "cityId": "tw-jinhu",
+      "description": "Taiwan FM station listed by NCC for 金門縣. Station: 國立教育廣播電臺金門轉播站. Category: class-b. Transmitter address: 金門縣金沙鎮擎天段428-3地號.",
+      "tags": [
+        "fm",
+        "official",
+        "ncc",
+        "taiwan",
+        "class-b"
+      ],
+      "source": "NCC FM transmitter dataset",
+      "sourceUrl": "https://data.gov.tw/en/datasets/6445",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "tw-jinhu-金馬之聲廣播電臺-91-7",
+      "name": "金馬之聲廣播電臺",
+      "freqMhz": 91.7,
+      "cityId": "tw-jinhu",
+      "description": "Taiwan FM station listed by NCC for 金門縣. Station: 金馬之聲廣播電臺. Category: class-a. Transmitter address: 金門縣金湖鎮太武山100號.",
+      "tags": [
+        "fm",
+        "official",
+        "ncc",
+        "taiwan",
+        "class-a"
+      ],
+      "source": "NCC FM transmitter dataset",
+      "sourceUrl": "https://data.gov.tw/en/datasets/6445",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "tw-jinhu-太武之春調頻廣播電臺-92-9",
+      "name": "太武之春調頻廣播電臺",
+      "freqMhz": 92.9,
+      "cityId": "tw-jinhu",
+      "description": "Taiwan FM station listed by NCC for 金門縣. Station: 太武之春調頻廣播電臺. Category: class-b. Transmitter address: 金門縣金湖鎮山外里太武山100號.",
+      "tags": [
+        "fm",
+        "official",
+        "ncc",
+        "taiwan",
+        "class-b"
+      ],
+      "source": "NCC FM transmitter dataset",
+      "sourceUrl": "https://data.gov.tw/en/datasets/6445",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "tw-jinhu-中國廣播股份有限公司金門轉播站-96-3",
+      "name": "中國廣播股份有限公司金門轉播站",
+      "freqMhz": 96.3,
+      "cityId": "tw-jinhu",
+      "description": "Taiwan FM station listed by NCC for 金門縣. Station: 中國廣播股份有限公司金門轉播站. Category: class-c. Transmitter address: 金門縣金湖鎮太武山100號.",
+      "tags": [
+        "fm",
+        "official",
+        "ncc",
+        "taiwan",
+        "class-c"
+      ],
+      "source": "NCC FM transmitter dataset",
+      "sourceUrl": "https://data.gov.tw/en/datasets/6445",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "tw-jinhu-金馬之聲廣播電臺-99-3",
+      "name": "金馬之聲廣播電臺",
+      "freqMhz": 99.3,
+      "cityId": "tw-jinhu",
+      "description": "Taiwan FM station listed by NCC for 金門縣. Station: 金馬之聲廣播電臺. Category: class-a. Transmitter address: 金門縣金湖鎮太武山100號.",
+      "tags": [
+        "fm",
+        "official",
+        "ncc",
+        "taiwan",
+        "class-a"
+      ],
+      "source": "NCC FM transmitter dataset",
+      "sourceUrl": "https://data.gov.tw/en/datasets/6445",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "tw-jinhu-大金廣播電臺-106-3",
+      "name": "大金廣播電臺",
+      "freqMhz": 106.3,
+      "cityId": "tw-jinhu",
+      "description": "Taiwan FM station listed by NCC for 金門縣. Station: 大金廣播電臺. Category: class-b. Transmitter address: 金門縣金湖鎮山外里太武山100號.",
+      "tags": [
+        "fm",
+        "official",
+        "ncc",
+        "taiwan",
+        "class-b"
+      ],
+      "source": "NCC FM transmitter dataset",
+      "sourceUrl": "https://data.gov.tw/en/datasets/6445",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "tw-jinhu-漢聲廣播電臺金門轉播站-107-3",
+      "name": "漢聲廣播電臺金門轉播站",
+      "freqMhz": 107.3,
+      "cityId": "tw-jinhu",
+      "description": "Taiwan FM station listed by NCC for 金門縣. Station: 漢聲廣播電臺金門轉播站. Category: class-c. Transmitter address: 金門縣金沙鎮擎天段428-3地號.",
+      "tags": [
+        "fm",
+        "official",
+        "ncc",
+        "taiwan",
+        "class-c"
+      ],
+      "source": "NCC FM transmitter dataset",
+      "sourceUrl": "https://data.gov.tw/en/datasets/6445",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "tw-kaohsiung-民生之聲廣播電臺-89-7",
+      "name": "民生之聲廣播電臺",
+      "freqMhz": 89.7,
+      "cityId": "tw-kaohsiung",
+      "description": "Taiwan FM station listed by NCC for 高雄市. Station: 民生之聲廣播電臺. Category: class-a. Transmitter address: 高雄市苓雅區自強三路1號81樓.",
+      "tags": [
+        "fm",
+        "official",
+        "ncc",
+        "taiwan",
+        "class-a"
+      ],
+      "source": "NCC FM transmitter dataset",
+      "sourceUrl": "https://data.gov.tw/en/datasets/6445",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "tw-kaohsiung-高屏廣播電臺-90-1",
+      "name": "高屏廣播電臺",
+      "freqMhz": 90.1,
+      "cityId": "tw-kaohsiung",
+      "description": "Taiwan FM station listed by NCC for 高雄市. Station: 高屏廣播電臺. Category: class-a. Transmitter address: 高雄市苓雅區自強三路1號81樓.",
+      "tags": [
+        "fm",
+        "official",
+        "ncc",
+        "taiwan",
+        "class-a"
+      ],
+      "source": "NCC FM transmitter dataset",
+      "sourceUrl": "https://data.gov.tw/en/datasets/6445",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "tw-kaohsiung-下港之聲放送頭廣播電臺-90-5",
+      "name": "下港之聲放送頭廣播電臺",
+      "freqMhz": 90.5,
+      "cityId": "tw-kaohsiung",
+      "description": "Taiwan FM station listed by NCC for 高雄市. Station: 下港之聲放送頭廣播電臺. Category: class-a. Transmitter address: 高雄市苓雅區自強三路１號81樓.",
+      "tags": [
+        "fm",
+        "official",
+        "ncc",
+        "taiwan",
+        "class-a"
+      ],
+      "source": "NCC FM transmitter dataset",
+      "sourceUrl": "https://data.gov.tw/en/datasets/6445",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "tw-kaohsiung-金聲廣播電臺-92-1",
+      "name": "金聲廣播電臺",
+      "freqMhz": 92.1,
+      "cityId": "tw-kaohsiung",
+      "description": "Taiwan FM station listed by NCC for 高雄市. Station: 金聲廣播電臺. Category: class-b. Transmitter address: 高雄市鼓山區忠義路3號(公視壽山轉播站).",
+      "tags": [
+        "fm",
+        "official",
+        "ncc",
+        "taiwan",
+        "class-b"
+      ],
+      "source": "NCC FM transmitter dataset",
+      "sourceUrl": "https://data.gov.tw/en/datasets/6445",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "tw-kaohsiung-內政部警政署警察廣播電臺高雄分臺-93-1",
+      "name": "內政部警政署警察廣播電臺高雄分臺",
+      "freqMhz": 93.1,
+      "cityId": "tw-kaohsiung",
+      "description": "Taiwan FM station listed by NCC for 高雄市. Station: 內政部警政署警察廣播電臺高雄分臺. Category: class-c. Transmitter address: 高雄市旗山區中寮里中寮二路100號.",
+      "tags": [
+        "fm",
+        "official",
+        "ncc",
+        "taiwan",
+        "class-c"
+      ],
+      "source": "NCC FM transmitter dataset",
+      "sourceUrl": "https://data.gov.tw/en/datasets/6445",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "tw-kaohsiung-高雄廣播電臺-94-3",
+      "name": "高雄廣播電臺",
+      "freqMhz": 94.3,
+      "cityId": "tw-kaohsiung",
+      "description": "Taiwan FM station listed by NCC for 高雄市. Station: 高雄廣播電臺. Category: class-c. Transmitter address: 高雄市旗山區中寮里中寮二路11號.",
+      "tags": [
+        "fm",
+        "official",
+        "ncc",
+        "taiwan",
+        "class-c"
+      ],
+      "source": "NCC FM transmitter dataset",
+      "sourceUrl": "https://data.gov.tw/en/datasets/6445",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "tw-kaohsiung-alian原住民族廣播電臺美瓏山轉播站-96-1",
+      "name": "Alian原住民族廣播電臺美瓏山轉播站",
+      "freqMhz": 96.1,
+      "cityId": "tw-kaohsiung",
+      "description": "Taiwan FM station listed by NCC for 高雄市. Station: Alian原住民族廣播電臺美瓏山轉播站. Category: class-a. Transmitter address: 高雄市桃源區美瓏山撒拉望31地號.",
+      "tags": [
+        "fm",
+        "official",
+        "ncc",
+        "taiwan",
+        "class-a"
+      ],
+      "source": "NCC FM transmitter dataset",
+      "sourceUrl": "https://data.gov.tw/en/datasets/6445",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "tw-kaohsiung-alian原住民族廣播電臺茂林轉播站-96-1",
+      "name": "Alian原住民族廣播電臺茂林轉播站",
+      "freqMhz": 96.1,
+      "cityId": "tw-kaohsiung",
+      "description": "Taiwan FM station listed by NCC for 高雄市. Station: Alian原住民族廣播電臺茂林轉播站. Category: class-a. Transmitter address: 高雄市茂林區多納段364地號.",
+      "tags": [
+        "fm",
+        "official",
+        "ncc",
+        "taiwan",
+        "class-a"
+      ],
+      "source": "NCC FM transmitter dataset",
+      "sourceUrl": "https://data.gov.tw/en/datasets/6445",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "tw-kaohsiung-alian原住民族廣播電臺那瑪夏轉播站-96-1",
+      "name": "Alian原住民族廣播電臺那瑪夏轉播站",
+      "freqMhz": 96.1,
+      "cityId": "tw-kaohsiung",
+      "description": "Taiwan FM station listed by NCC for 高雄市. Station: Alian原住民族廣播電臺那瑪夏轉播站. Category: class-a. Transmitter address: 高雄市那瑪夏區達卡奴瓦段975地號.",
+      "tags": [
+        "fm",
+        "official",
+        "ncc",
+        "taiwan",
+        "class-a"
+      ],
+      "source": "NCC FM transmitter dataset",
+      "sourceUrl": "https://data.gov.tw/en/datasets/6445",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "tw-kaohsiung-alian原住民廣播電臺高雄中寮轉播站-96-3",
+      "name": "Alian原住民廣播電臺高雄中寮轉播站",
+      "freqMhz": 96.3,
+      "cityId": "tw-kaohsiung",
+      "description": "Taiwan FM station listed by NCC for 高雄市. Station: Alian原住民廣播電臺高雄中寮轉播站. Category: class-c. Transmitter address: 高雄市旗山區中寮二路13號之1.",
+      "tags": [
+        "fm",
+        "official",
+        "ncc",
+        "taiwan",
+        "class-c"
+      ],
+      "source": "NCC FM transmitter dataset",
+      "sourceUrl": "https://data.gov.tw/en/datasets/6445",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "tw-kaohsiung-快樂廣播電臺-97-5",
+      "name": "快樂廣播電臺",
+      "freqMhz": 97.5,
+      "cityId": "tw-kaohsiung",
+      "description": "Taiwan FM station listed by NCC for 高雄市. Station: 快樂廣播電臺. Category: class-b. Transmitter address: 高雄市鼓山區忠義路3號(公視壽山轉播站).",
+      "tags": [
+        "fm",
+        "official",
+        "ncc",
+        "taiwan",
+        "class-b"
+      ],
+      "source": "NCC FM transmitter dataset",
+      "sourceUrl": "https://data.gov.tw/en/datasets/6445",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "tw-kaohsiung-港都廣播電臺-98-3",
+      "name": "港都廣播電臺",
+      "freqMhz": 98.3,
+      "cityId": "tw-kaohsiung",
+      "description": "Taiwan FM station listed by NCC for 高雄市. Station: 港都廣播電臺. Category: class-b. Transmitter address: 高雄市三民區民族一路80號46樓之1.",
+      "tags": [
+        "fm",
+        "official",
+        "ncc",
+        "taiwan",
+        "class-b"
+      ],
+      "source": "NCC FM transmitter dataset",
+      "sourceUrl": "https://data.gov.tw/en/datasets/6445",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "tw-kaohsiung-陽光廣播電臺-99-1",
+      "name": "陽光廣播電臺",
+      "freqMhz": 99.1,
+      "cityId": "tw-kaohsiung",
+      "description": "Taiwan FM station listed by NCC for 高雄市. Station: 陽光廣播電臺. Category: class-b. Transmitter address: 高雄市苓雅區自強三路1號81樓A3室.",
+      "tags": [
+        "fm",
+        "official",
+        "ncc",
+        "taiwan",
+        "class-b"
+      ],
+      "source": "NCC FM transmitter dataset",
+      "sourceUrl": "https://data.gov.tw/en/datasets/6445",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "tw-kaohsiung-大眾廣播電臺-99-9",
+      "name": "大眾廣播電臺",
+      "freqMhz": 99.9,
+      "cityId": "tw-kaohsiung",
+      "description": "Taiwan FM station listed by NCC for 高雄市. Station: 大眾廣播電臺. Category: class-b. Transmitter address: 高雄市苓雅區自強三路1號81樓.",
+      "tags": [
+        "fm",
+        "official",
+        "ncc",
+        "taiwan",
+        "class-b"
+      ],
+      "source": "NCC FM transmitter dataset",
+      "sourceUrl": "https://data.gov.tw/en/datasets/6445",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "tw-kaohsiung-臺北國際社區調頻廣播電臺高雄轉播臺-100-7",
+      "name": "臺北國際社區調頻廣播電臺高雄轉播臺",
+      "freqMhz": 100.7,
+      "cityId": "tw-kaohsiung",
+      "description": "Taiwan FM station listed by NCC for 高雄市. Station: 臺北國際社區調頻廣播電臺高雄轉播臺. Category: class-c. Transmitter address: 高雄市旗山區中寮里中寮二路96號.",
+      "tags": [
+        "fm",
+        "official",
+        "ncc",
+        "taiwan",
+        "class-c"
+      ],
+      "source": "NCC FM transmitter dataset",
+      "sourceUrl": "https://data.gov.tw/en/datasets/6445",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "tw-kaohsiung-國立教育廣播電臺壽山發射臺-101-7",
+      "name": "國立教育廣播電臺壽山發射臺",
+      "freqMhz": 101.7,
+      "cityId": "tw-kaohsiung",
+      "description": "Taiwan FM station listed by NCC for 高雄市. Station: 國立教育廣播電臺壽山發射臺. Category: class-c. Transmitter address: 高雄市鼓山區忠義路7號.",
+      "tags": [
+        "fm",
+        "official",
+        "ncc",
+        "taiwan",
+        "class-c"
+      ],
+      "source": "NCC FM transmitter dataset",
+      "sourceUrl": "https://data.gov.tw/en/datasets/6445",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "tw-kaohsiung-中國廣播股份有限公司高雄調頻廣播電臺-103-3",
+      "name": "中國廣播股份有限公司高雄調頻廣播電臺",
+      "freqMhz": 103.3,
+      "cityId": "tw-kaohsiung",
+      "description": "Taiwan FM station listed by NCC for 高雄市. Station: 中國廣播股份有限公司高雄調頻廣播電臺. Category: class-c. Transmitter address: 高雄市萬壽山.",
+      "tags": [
+        "fm",
+        "official",
+        "ncc",
+        "taiwan",
+        "class-c"
+      ],
+      "source": "NCC FM transmitter dataset",
+      "sourceUrl": "https://data.gov.tw/en/datasets/6445",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "tw-kaohsiung-南臺灣之聲廣播電臺-103-9",
+      "name": "南臺灣之聲廣播電臺",
+      "freqMhz": 103.9,
+      "cityId": "tw-kaohsiung",
+      "description": "Taiwan FM station listed by NCC for 高雄市. Station: 南臺灣之聲廣播電臺. Category: class-b. Transmitter address: 高雄市苓雅區新光路38號38樓之1.",
+      "tags": [
+        "fm",
+        "official",
+        "ncc",
+        "taiwan",
+        "class-b"
+      ],
+      "source": "NCC FM transmitter dataset",
+      "sourceUrl": "https://data.gov.tw/en/datasets/6445",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "tw-kaohsiung-內政部警政署警察廣播電臺中寮發射站全國網-104-9",
+      "name": "內政部警政署警察廣播電臺中寮發射站(全國網)",
+      "freqMhz": 104.9,
+      "cityId": "tw-kaohsiung",
+      "description": "Taiwan FM station listed by NCC for 高雄市. Station: 內政部警政署警察廣播電臺中寮發射站(全國網). Category: class-c. Transmitter address: 高雄市旗山區中寮里中寮二路100號.",
+      "tags": [
+        "fm",
+        "official",
+        "ncc",
+        "taiwan",
+        "class-c"
+      ],
+      "source": "NCC FM transmitter dataset",
+      "sourceUrl": "https://data.gov.tw/en/datasets/6445",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "tw-kaohsiung-講客廣播電臺中寮轉播站-105-9",
+      "name": "講客廣播電臺中寮轉播站",
+      "freqMhz": 105.9,
+      "cityId": "tw-kaohsiung",
+      "description": "Taiwan FM station listed by NCC for 高雄市. Station: 講客廣播電臺中寮轉播站. Category: class-c. Transmitter address: 高雄市田寮區七星里鹽水路15號(公視中寮轉播站共站共塔).",
+      "tags": [
+        "fm",
+        "official",
+        "ncc",
+        "taiwan",
+        "class-c"
+      ],
+      "source": "NCC FM transmitter dataset",
+      "sourceUrl": "https://data.gov.tw/en/datasets/6445",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "tw-kaohsiung-漢聲廣播電臺旗山分臺-107-3",
+      "name": "漢聲廣播電臺旗山分臺",
+      "freqMhz": 107.3,
+      "cityId": "tw-kaohsiung",
+      "description": "Taiwan FM station listed by NCC for 高雄市. Station: 漢聲廣播電臺旗山分臺. Category: class-c. Transmitter address: 高雄市旗山區中寮里獅子頭山統指部營區.",
+      "tags": [
+        "fm",
+        "official",
+        "ncc",
+        "taiwan",
+        "class-c"
+      ],
+      "source": "NCC FM transmitter dataset",
+      "sourceUrl": "https://data.gov.tw/en/datasets/6445",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "tw-keelung-國立教育廣播電臺基隆轉播站-100-1",
+      "name": "國立教育廣播電臺基隆轉播站",
+      "freqMhz": 100.1,
+      "cityId": "tw-keelung",
+      "description": "Taiwan FM station listed by NCC for 基隆市. Station: 國立教育廣播電臺基隆轉播站. Category: class-c. Transmitter address: 基隆市中山區華興街293號.",
+      "tags": [
+        "fm",
+        "official",
+        "ncc",
+        "taiwan",
+        "class-c"
+      ],
+      "source": "NCC FM transmitter dataset",
+      "sourceUrl": "https://data.gov.tw/en/datasets/6445",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "tw-magong-澎湖社區廣播電臺-89-7",
+      "name": "澎湖社區廣播電臺",
+      "freqMhz": 89.7,
+      "cityId": "tw-magong",
+      "description": "Taiwan FM station listed by NCC for 澎湖縣. Station: 澎湖社區廣播電臺. Category: class-a. Transmitter address: 澎湖縣馬公市水源路2-1號6樓之2.",
+      "tags": [
+        "fm",
+        "official",
+        "ncc",
+        "taiwan",
+        "class-a"
+      ],
+      "source": "NCC FM transmitter dataset",
+      "sourceUrl": "https://data.gov.tw/en/datasets/6445",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "tw-magong-澎湖風聲廣播電臺-91-3",
+      "name": "澎湖風聲廣播電臺",
+      "freqMhz": 91.3,
+      "cityId": "tw-magong",
+      "description": "Taiwan FM station listed by NCC for 澎湖縣. Station: 澎湖風聲廣播電臺. Category: class-a. Transmitter address: 澎湖縣馬公市石泉里1-14號.",
+      "tags": [
+        "fm",
+        "official",
+        "ncc",
+        "taiwan",
+        "class-a"
+      ],
+      "source": "NCC FM transmitter dataset",
+      "sourceUrl": "https://data.gov.tw/en/datasets/6445",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "tw-magong-大地之聲廣播電臺-93-9",
+      "name": "大地之聲廣播電臺",
+      "freqMhz": 93.9,
+      "cityId": "tw-magong",
+      "description": "Taiwan FM station listed by NCC for 澎湖縣. Station: 大地之聲廣播電臺. Category: class-b. Transmitter address: 澎湖縣湖西鄉城北村5-3號.",
+      "tags": [
+        "fm",
+        "official",
+        "ncc",
+        "taiwan",
+        "class-b"
+      ],
+      "source": "NCC FM transmitter dataset",
+      "sourceUrl": "https://data.gov.tw/en/datasets/6445",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "tw-magong-澎湖廣播電臺-96-7",
+      "name": "澎湖廣播電臺",
+      "freqMhz": 96.7,
+      "cityId": "tw-magong",
+      "description": "Taiwan FM station listed by NCC for 澎湖縣. Station: 澎湖廣播電臺. Category: class-b. Transmitter address: 澎湖縣馬公市石泉里1-14號.",
+      "tags": [
+        "fm",
+        "official",
+        "ncc",
+        "taiwan",
+        "class-b"
+      ],
+      "source": "NCC FM transmitter dataset",
+      "sourceUrl": "https://data.gov.tw/en/datasets/6445",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "tw-magong-國立教育廣播電臺澎湖轉播站-99-1",
+      "name": "國立教育廣播電臺澎湖轉播站",
+      "freqMhz": 99.1,
+      "cityId": "tw-magong",
+      "description": "Taiwan FM station listed by NCC for 澎湖縣. Station: 國立教育廣播電臺澎湖轉播站. Category: class-c. Transmitter address: 澎湖縣馬公市案山里大案山25-11號.",
+      "tags": [
+        "fm",
+        "official",
+        "ncc",
+        "taiwan",
+        "class-c"
+      ],
+      "source": "NCC FM transmitter dataset",
+      "sourceUrl": "https://data.gov.tw/en/datasets/6445",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "tw-magong-國立教育廣播電臺澎湖轉播站-105-3",
+      "name": "國立教育廣播電臺澎湖轉播站",
+      "freqMhz": 105.3,
+      "cityId": "tw-magong",
+      "description": "Taiwan FM station listed by NCC for 澎湖縣. Station: 國立教育廣播電臺澎湖轉播站. Category: class-c. Transmitter address: 澎湖縣馬公市案山里大案山25-11號.",
+      "tags": [
+        "fm",
+        "official",
+        "ncc",
+        "taiwan",
+        "class-c"
+      ],
+      "source": "NCC FM transmitter dataset",
+      "sourceUrl": "https://data.gov.tw/en/datasets/6445",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "tw-miaoli-貓貍廣播電臺-90-9",
+      "name": "貓貍廣播電臺",
+      "freqMhz": 90.9,
+      "cityId": "tw-miaoli",
+      "description": "Taiwan FM station listed by NCC for 苗栗市. Station: 貓貍廣播電臺. Category: class-a. Transmitter address: 苗栗市南勢里19鄰大坪營88號.",
+      "tags": [
+        "fm",
+        "official",
+        "ncc",
+        "taiwan",
+        "class-a"
+      ],
+      "source": "NCC FM transmitter dataset",
+      "sourceUrl": "https://data.gov.tw/en/datasets/6445",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "tw-miaoli-苗栗客家文化廣播電臺-91-7",
+      "name": "苗栗客家文化廣播電臺",
+      "freqMhz": 91.7,
+      "cityId": "tw-miaoli",
+      "description": "Taiwan FM station listed by NCC for 苗栗市. Station: 苗栗客家文化廣播電臺. Category: class-a. Transmitter address: 苗栗市水源里20鄰陽明141號3樓.",
+      "tags": [
+        "fm",
+        "official",
+        "ncc",
+        "taiwan",
+        "class-a"
+      ],
+      "source": "NCC FM transmitter dataset",
+      "sourceUrl": "https://data.gov.tw/en/datasets/6445",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "tw-nantou-山城廣播電臺-90-7",
+      "name": "山城廣播電臺",
+      "freqMhz": 90.7,
+      "cityId": "tw-nantou",
+      "description": "Taiwan FM station listed by NCC for 南投縣. Station: 山城廣播電臺. Category: class-a. Transmitter address: 南投縣南投市八卦路870巷29-3號.",
+      "tags": [
+        "fm",
+        "official",
+        "ncc",
+        "taiwan",
+        "class-a"
+      ],
+      "source": "NCC FM transmitter dataset",
+      "sourceUrl": "https://data.gov.tw/en/datasets/6445",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "tw-nantou-省都廣播電臺-93-7",
+      "name": "省都廣播電臺",
+      "freqMhz": 93.7,
+      "cityId": "tw-nantou",
+      "description": "Taiwan FM station listed by NCC for 南投縣. Station: 省都廣播電臺. Category: class-b. Transmitter address: 南投縣南投市鳳鳴路31號.",
+      "tags": [
+        "fm",
+        "official",
+        "ncc",
+        "taiwan",
+        "class-b"
+      ],
+      "source": "NCC FM transmitter dataset",
+      "sourceUrl": "https://data.gov.tw/en/datasets/6445",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "tw-nantou-地理中心廣播電臺-94-1",
+      "name": "地理中心廣播電臺",
+      "freqMhz": 94.1,
+      "cityId": "tw-nantou",
+      "description": "Taiwan FM station listed by NCC for 南投縣. Station: 地理中心廣播電臺. Category: class-a. Transmitter address: 南投縣埔里鎮桃米里桃米坑段5-1133地號.",
+      "tags": [
+        "fm",
+        "official",
+        "ncc",
+        "taiwan",
+        "class-a"
+      ],
+      "source": "NCC FM transmitter dataset",
+      "sourceUrl": "https://data.gov.tw/en/datasets/6445",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "tw-nantou-alian原住民族廣播電臺仁愛轉播站-96-1",
+      "name": "Alian原住民族廣播電臺仁愛轉播站",
+      "freqMhz": 96.1,
+      "cityId": "tw-nantou",
+      "description": "Taiwan FM station listed by NCC for 南投縣. Station: Alian原住民族廣播電臺仁愛轉播站. Category: class-a. Transmitter address: 南投縣仁愛鄉北東眼山127林班地.",
+      "tags": [
+        "fm",
+        "official",
+        "ncc",
+        "taiwan",
+        "class-a"
+      ],
+      "source": "NCC FM transmitter dataset",
+      "sourceUrl": "https://data.gov.tw/en/datasets/6445",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "tw-nantou-alian原住民族廣播電臺信義轉播站-96-1",
+      "name": "Alian原住民族廣播電臺信義轉播站",
+      "freqMhz": 96.1,
+      "cityId": "tw-nantou",
+      "description": "Taiwan FM station listed by NCC for 南投縣. Station: Alian原住民族廣播電臺信義轉播站. Category: class-a. Transmitter address: 南投縣信義鄉東埔段35地號.",
+      "tags": [
+        "fm",
+        "official",
+        "ncc",
+        "taiwan",
+        "class-a"
+      ],
+      "source": "NCC FM transmitter dataset",
+      "sourceUrl": "https://data.gov.tw/en/datasets/6445",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "tw-nantou-alian原住民族廣播電臺魚池轉播站-96-1",
+      "name": "Alian原住民族廣播電臺魚池轉播站",
+      "freqMhz": 96.1,
+      "cityId": "tw-nantou",
+      "description": "Taiwan FM station listed by NCC for 南投縣. Station: Alian原住民族廣播電臺魚池轉播站. Category: class-a. Transmitter address: 南投縣魚池鄉香茶段981地號.",
+      "tags": [
+        "fm",
+        "official",
+        "ncc",
+        "taiwan",
+        "class-a"
+      ],
+      "source": "NCC FM transmitter dataset",
+      "sourceUrl": "https://data.gov.tw/en/datasets/6445",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "tw-nantou-alian原住民族廣播電臺南投轉播站-96-3",
+      "name": "Alian原住民族廣播電臺南投轉播站",
+      "freqMhz": 96.3,
+      "cityId": "tw-nantou",
+      "description": "Taiwan FM station listed by NCC for 南投縣. Station: Alian原住民族廣播電臺南投轉播站. Category: class-b. Transmitter address: 南投縣中寮鄉福盛村福山巷1之2號.",
+      "tags": [
+        "fm",
+        "official",
+        "ncc",
+        "taiwan",
+        "class-b"
+      ],
+      "source": "NCC FM transmitter dataset",
+      "sourceUrl": "https://data.gov.tw/en/datasets/6445",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "tw-nantou-國立教育廣播電臺南投轉播站-98-1",
+      "name": "國立教育廣播電臺南投轉播站",
+      "freqMhz": 98.1,
+      "cityId": "tw-nantou",
+      "description": "Taiwan FM station listed by NCC for 南投縣. Station: 國立教育廣播電臺南投轉播站. Category: class-c. Transmitter address: 南投縣中寮鄉福盛村21鄰福山巷1之1號.",
+      "tags": [
+        "fm",
+        "official",
+        "ncc",
+        "taiwan",
+        "class-c"
+      ],
+      "source": "NCC FM transmitter dataset",
+      "sourceUrl": "https://data.gov.tw/en/datasets/6445",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "tw-nantou-每日廣播電臺-98-7",
+      "name": "每日廣播電臺",
+      "freqMhz": 98.7,
+      "cityId": "tw-nantou",
+      "description": "Taiwan FM station listed by NCC for 南投縣. Station: 每日廣播電臺. Category: class-b. Transmitter address: 南投縣南投市八卦路1319號.",
+      "tags": [
+        "fm",
+        "official",
+        "ncc",
+        "taiwan",
+        "class-b"
+      ],
+      "source": "NCC FM transmitter dataset",
+      "sourceUrl": "https://data.gov.tw/en/datasets/6445",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "tw-nantou-南投廣播電臺-99-7",
+      "name": "南投廣播電臺",
+      "freqMhz": 99.7,
+      "cityId": "tw-nantou",
+      "description": "Taiwan FM station listed by NCC for 南投縣. Station: 南投廣播電臺. Category: class-b. Transmitter address: 南投縣南投市鳳山里八卦路1381巷21號.",
+      "tags": [
+        "fm",
+        "official",
+        "ncc",
+        "taiwan",
+        "class-b"
+      ],
+      "source": "NCC FM transmitter dataset",
+      "sourceUrl": "https://data.gov.tw/en/datasets/6445",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "tw-nantou-國際廣播電臺-101-1",
+      "name": "國際廣播電臺",
+      "freqMhz": 101.1,
+      "cityId": "tw-nantou",
+      "description": "Taiwan FM station listed by NCC for 南投縣. Station: 國際廣播電臺. Category: class-b. Transmitter address: 南投縣中寮鄉福山巷1之2號.",
+      "tags": [
+        "fm",
+        "official",
+        "ncc",
+        "taiwan",
+        "class-b"
+      ],
+      "source": "NCC FM transmitter dataset",
+      "sourceUrl": "https://data.gov.tw/en/datasets/6445",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "tw-nantou-歡喜之聲廣播電臺-105-5",
+      "name": "歡喜之聲廣播電臺",
+      "freqMhz": 105.5,
+      "cityId": "tw-nantou",
+      "description": "Taiwan FM station listed by NCC for 南投縣. Station: 歡喜之聲廣播電臺. Category: class-b. Transmitter address: 南投縣南投市八卦路1447巷28弄19號.",
+      "tags": [
+        "fm",
+        "official",
+        "ncc",
+        "taiwan",
+        "class-b"
+      ],
+      "source": "NCC FM transmitter dataset",
+      "sourceUrl": "https://data.gov.tw/en/datasets/6445",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "tw-nantou-中國廣播股份有限公司埔里轉播站第一調頻網-107-3",
+      "name": "中國廣播股份有限公司埔里轉播站第一調頻網",
+      "freqMhz": 107.3,
+      "cityId": "tw-nantou",
+      "description": "Taiwan FM station listed by NCC for 南投縣. Station: 中國廣播股份有限公司埔里轉播站第一調頻網. Category: class-c. Transmitter address: 南投縣埔里鎮西安路一段234號.",
+      "tags": [
+        "fm",
+        "official",
+        "ncc",
+        "taiwan",
+        "class-c"
+      ],
+      "source": "NCC FM transmitter dataset",
+      "sourceUrl": "https://data.gov.tw/en/datasets/6445",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "tw-new-taipei-city-國立臺灣藝術大學教育實習廣播電臺-88-3",
+      "name": "國立臺灣藝術大學教育實習廣播電臺",
+      "freqMhz": 88.3,
+      "cityId": "tw-new-taipei-city",
+      "description": "Taiwan FM station listed by NCC for 新北市. Station: 國立臺灣藝術大學教育實習廣播電臺. Category: school. Transmitter address: 新北市板橋區大觀路一段59號.",
+      "tags": [
+        "fm",
+        "official",
+        "ncc",
+        "taiwan",
+        "school"
+      ],
+      "source": "NCC FM transmitter dataset",
+      "sourceUrl": "https://data.gov.tw/en/datasets/6445",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "tw-new-taipei-city-輔大之聲學校實習廣播電臺-88-5",
+      "name": "輔大之聲學校實習廣播電臺",
+      "freqMhz": 88.5,
+      "cityId": "tw-new-taipei-city",
+      "description": "Taiwan FM station listed by NCC for 新北市. Station: 輔大之聲學校實習廣播電臺. Category: school. Transmitter address: 新北市新莊區中正路510號文開樓8樓.",
+      "tags": [
+        "fm",
+        "official",
+        "ncc",
+        "taiwan",
+        "school"
+      ],
+      "source": "NCC FM transmitter dataset",
+      "sourceUrl": "https://data.gov.tw/en/datasets/6445",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "tw-new-taipei-city-淡江之聲學校實習廣播電臺-88-7",
+      "name": "淡江之聲學校實習廣播電臺",
+      "freqMhz": 88.7,
+      "cityId": "tw-new-taipei-city",
+      "description": "Taiwan FM station listed by NCC for 新北市. Station: 淡江之聲學校實習廣播電臺. Category: school. Transmitter address: 新北市淡水區英專路151號(驚聲紀念大樓T1204室).",
+      "tags": [
+        "fm",
+        "official",
+        "ncc",
+        "taiwan",
+        "school"
+      ],
+      "source": "NCC FM transmitter dataset",
+      "sourceUrl": "https://data.gov.tw/en/datasets/6445",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "tw-new-taipei-city-北部調頻廣播電臺-88-9",
+      "name": "北部調頻廣播電臺",
+      "freqMhz": 88.9,
+      "cityId": "tw-new-taipei-city",
+      "description": "Taiwan FM station listed by NCC for 新北市. Station: 北部調頻廣播電臺. Category: class-a. Transmitter address: 新北市萬里區頂萬里加投段溪底小段235之1地號.",
+      "tags": [
+        "fm",
+        "official",
+        "ncc",
+        "taiwan",
+        "class-a"
+      ],
+      "source": "NCC FM transmitter dataset",
+      "sourceUrl": "https://data.gov.tw/en/datasets/6445",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "tw-new-taipei-city-淡水河廣播電臺-89-7",
+      "name": "淡水河廣播電臺",
+      "freqMhz": 89.7,
+      "cityId": "tw-new-taipei-city",
+      "description": "Taiwan FM station listed by NCC for 新北市. Station: 淡水河廣播電臺. Category: class-a. Transmitter address: 新北市樹林區獇子寮地號622號.",
+      "tags": [
+        "fm",
+        "official",
+        "ncc",
+        "taiwan",
+        "class-a"
+      ],
+      "source": "NCC FM transmitter dataset",
+      "sourceUrl": "https://data.gov.tw/en/datasets/6445",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "tw-new-taipei-city-台北流行廣播電臺-91-7",
+      "name": "台北流行廣播電臺",
+      "freqMhz": 91.7,
+      "cityId": "tw-new-taipei-city",
+      "description": "Taiwan FM station listed by NCC for 新北市. Station: 台北流行廣播電臺. Category: class-a. Transmitter address: 新北市萬里區頂萬里加投段溪底小段235-1號.",
+      "tags": [
+        "fm",
+        "official",
+        "ncc",
+        "taiwan",
+        "class-a"
+      ],
+      "source": "NCC FM transmitter dataset",
+      "sourceUrl": "https://data.gov.tw/en/datasets/6445",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "tw-new-taipei-city-亞洲廣播電臺-92-7",
+      "name": "亞洲廣播電臺",
+      "freqMhz": 92.7,
+      "cityId": "tw-new-taipei-city",
+      "description": "Taiwan FM station listed by NCC for 新北市. Station: 亞洲廣播電臺. Category: class-b. Transmitter address: 新北市三峽區中埔段224-3號.",
+      "tags": [
+        "fm",
+        "official",
+        "ncc",
+        "taiwan",
+        "class-b"
+      ],
+      "source": "NCC FM transmitter dataset",
+      "sourceUrl": "https://data.gov.tw/en/datasets/6445",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "tw-new-taipei-city-alian原住民廣播電臺陽明山竹子山轉播站-96-3",
+      "name": "Alian原住民廣播電臺陽明山竹子山轉播站",
+      "freqMhz": 96.3,
+      "cityId": "tw-new-taipei-city",
+      "description": "Taiwan FM station listed by NCC for 新北市. Station: Alian原住民廣播電臺陽明山竹子山轉播站. Category: class-c. Transmitter address: 新北市三芝區箭竹段96地號(陽明山竹子山華視北部發射台).",
+      "tags": [
+        "fm",
+        "official",
+        "ncc",
+        "taiwan",
+        "class-c"
+      ],
+      "source": "NCC FM transmitter dataset",
+      "sourceUrl": "https://data.gov.tw/en/datasets/6445",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "tw-new-taipei-city-基隆輕鬆廣播電臺-96-9",
+      "name": "基隆輕鬆廣播電臺",
+      "freqMhz": 96.9,
+      "cityId": "tw-new-taipei-city",
+      "description": "Taiwan FM station listed by NCC for 新北市. Station: 基隆輕鬆廣播電臺. Category: class-a. Transmitter address: 新北市萬里區頂萬里加投段溪底小段235之1地號.",
+      "tags": [
+        "fm",
+        "official",
+        "ncc",
+        "taiwan",
+        "class-a"
+      ],
+      "source": "NCC FM transmitter dataset",
+      "sourceUrl": "https://data.gov.tw/en/datasets/6445",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "tw-new-taipei-city-臺灣聲音廣播電臺-97-7",
+      "name": "臺灣聲音廣播電臺",
+      "freqMhz": 97.7,
+      "cityId": "tw-new-taipei-city",
+      "description": "Taiwan FM station listed by NCC for 新北市. Station: 臺灣聲音廣播電臺. Category: class-b. Transmitter address: 新北市汐止區長青路867號.",
+      "tags": [
+        "fm",
+        "official",
+        "ncc",
+        "taiwan",
+        "class-b"
+      ],
+      "source": "NCC FM transmitter dataset",
+      "sourceUrl": "https://data.gov.tw/en/datasets/6445",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "tw-new-taipei-city-寶島新聲廣播電臺-98-5",
+      "name": "寶島新聲廣播電臺",
+      "freqMhz": 98.5,
+      "cityId": "tw-new-taipei-city",
+      "description": "Taiwan FM station listed by NCC for 新北市. Station: 寶島新聲廣播電臺. Category: class-b. Transmitter address: 新北市萬里區頂萬里加投段溪底小段235-1號公視轉播站.",
+      "tags": [
+        "fm",
+        "official",
+        "ncc",
+        "taiwan",
+        "class-b"
+      ],
+      "source": "NCC FM transmitter dataset",
+      "sourceUrl": "https://data.gov.tw/en/datasets/6445",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "tw-new-taipei-city-內政部警政署警察廣播電臺宜蘭分臺-101-3",
+      "name": "內政部警政署警察廣播電臺宜蘭分臺",
+      "freqMhz": 101.3,
+      "cityId": "tw-new-taipei-city",
+      "description": "Taiwan FM station listed by NCC for 新北市. Station: 內政部警政署警察廣播電臺宜蘭分臺. Category: class-b. Transmitter address: 新北市坪林區碧湖路14號.",
+      "tags": [
+        "fm",
+        "official",
+        "ncc",
+        "taiwan",
+        "class-b"
+      ],
+      "source": "NCC FM transmitter dataset",
+      "sourceUrl": "https://data.gov.tw/en/datasets/6445",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "tw-new-taipei-city-內政部警政署警察廣播電臺貢寮轉播站-104-9",
+      "name": "內政部警政署警察廣播電臺貢寮轉播站",
+      "freqMhz": 104.9,
+      "cityId": "tw-new-taipei-city",
+      "description": "Taiwan FM station listed by NCC for 新北市. Station: 內政部警政署警察廣播電臺貢寮轉播站. Category: class-b. Transmitter address: 新北市貢寮區田寮洋段入桂小段7-52地號.",
+      "tags": [
+        "fm",
+        "official",
+        "ncc",
+        "taiwan",
+        "class-b"
+      ],
+      "source": "NCC FM transmitter dataset",
+      "sourceUrl": "https://data.gov.tw/en/datasets/6445",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "tw-new-taipei-city-內政部警政署警察廣播電臺野柳轉播站-104-9",
+      "name": "內政部警政署警察廣播電臺野柳轉播站",
+      "freqMhz": 104.9,
+      "cityId": "tw-new-taipei-city",
+      "description": "Taiwan FM station listed by NCC for 新北市. Station: 內政部警政署警察廣播電臺野柳轉播站. Category: class-b. Transmitter address: 新北市萬里區海洋段1106地號(新北市萬里區野柳岬內).",
+      "tags": [
+        "fm",
+        "official",
+        "ncc",
+        "taiwan",
+        "class-b"
+      ],
+      "source": "NCC FM transmitter dataset",
+      "sourceUrl": "https://data.gov.tw/en/datasets/6445",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "tw-new-taipei-city-講客廣播電臺竹子山轉播站-105-9",
+      "name": "講客廣播電臺竹子山轉播站",
+      "freqMhz": 105.9,
+      "cityId": "tw-new-taipei-city",
+      "description": "Taiwan FM station listed by NCC for 新北市. Station: 講客廣播電臺竹子山轉播站. Category: class-c. Transmitter address: 新北市三芝區箭竹段96地號(陽明山竹子山華視北部發射台).",
+      "tags": [
+        "fm",
+        "official",
+        "ncc",
+        "taiwan",
+        "class-c"
+      ],
+      "source": "NCC FM transmitter dataset",
+      "sourceUrl": "https://data.gov.tw/en/datasets/6445",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "tw-new-taipei-city-北台灣之聲廣播電臺-107-1",
+      "name": "北台灣之聲廣播電臺",
+      "freqMhz": 107.1,
+      "cityId": "tw-new-taipei-city",
+      "description": "Taiwan FM station listed by NCC for 新北市. Station: 北台灣之聲廣播電臺. Category: class-b. Transmitter address: 新北市汐止區長青路867號(中華電信五指山機房1樓).",
+      "tags": [
+        "fm",
+        "official",
+        "ncc",
+        "taiwan",
+        "class-b"
+      ],
+      "source": "NCC FM transmitter dataset",
+      "sourceUrl": "https://data.gov.tw/en/datasets/6445",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "tw-pizitou-國立中正大學學校實習廣播電臺-88-1",
+      "name": "國立中正大學學校實習廣播電臺",
+      "freqMhz": 88.1,
+      "cityId": "tw-pizitou",
+      "description": "Taiwan FM station listed by NCC for 嘉義縣. Station: 國立中正大學學校實習廣播電臺. Category: school. Transmitter address: 嘉義縣民雄鄉大學路1段168號.",
+      "tags": [
+        "fm",
+        "official",
+        "ncc",
+        "taiwan",
+        "school"
+      ],
+      "source": "NCC FM transmitter dataset",
+      "sourceUrl": "https://data.gov.tw/en/datasets/6445",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "tw-pizitou-蘭潭之聲廣播電臺-90-9",
+      "name": "蘭潭之聲廣播電臺",
+      "freqMhz": 90.9,
+      "cityId": "tw-pizitou",
+      "description": "Taiwan FM station listed by NCC for 嘉義縣. Station: 蘭潭之聲廣播電臺. Category: class-a. Transmitter address: 嘉義縣梅山鄉大坪段257地號.",
+      "tags": [
+        "fm",
+        "official",
+        "ncc",
+        "taiwan",
+        "class-a"
+      ],
+      "source": "NCC FM transmitter dataset",
+      "sourceUrl": "https://data.gov.tw/en/datasets/6445",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "tw-pizitou-北回廣播電臺-91-7",
+      "name": "北回廣播電臺",
+      "freqMhz": 91.7,
+      "cityId": "tw-pizitou",
+      "description": "Taiwan FM station listed by NCC for 嘉義縣. Station: 北回廣播電臺. Category: class-a. Transmitter address: 嘉義縣梅山鄉半天村2鄰半天寮20-1號.",
+      "tags": [
+        "fm",
+        "official",
+        "ncc",
+        "taiwan",
+        "class-a"
+      ],
+      "source": "NCC FM transmitter dataset",
+      "sourceUrl": "https://data.gov.tw/en/datasets/6445",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "tw-pizitou-嘉樂廣播電臺-92-3",
+      "name": "嘉樂廣播電臺",
+      "freqMhz": 92.3,
+      "cityId": "tw-pizitou",
+      "description": "Taiwan FM station listed by NCC for 嘉義縣. Station: 嘉樂廣播電臺. Category: class-b. Transmitter address: 嘉義縣梅山鄉大坪段0256地號.",
+      "tags": [
+        "fm",
+        "official",
+        "ncc",
+        "taiwan",
+        "class-b"
+      ],
+      "source": "NCC FM transmitter dataset",
+      "sourceUrl": "https://data.gov.tw/en/datasets/6445",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "tw-pizitou-雲嘉調頻廣播電臺-93-3",
+      "name": "雲嘉調頻廣播電臺",
+      "freqMhz": 93.3,
+      "cityId": "tw-pizitou",
+      "description": "Taiwan FM station listed by NCC for 嘉義縣. Station: 雲嘉調頻廣播電臺. Category: class-b. Transmitter address: 嘉義縣竹崎鄉緞厝寮段577之1地號.",
+      "tags": [
+        "fm",
+        "official",
+        "ncc",
+        "taiwan",
+        "class-b"
+      ],
+      "source": "NCC FM transmitter dataset",
+      "sourceUrl": "https://data.gov.tw/en/datasets/6445",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "tw-pizitou-內政部警政署警察廣播電臺新竹分臺-94-9",
+      "name": "內政部警政署警察廣播電臺新竹分臺",
+      "freqMhz": 94.9,
+      "cityId": "tw-pizitou",
+      "description": "Taiwan FM station listed by NCC for 嘉義縣. Station: 內政部警政署警察廣播電臺新竹分臺. Category: class-c. Transmitter address: 嘉義縣梅山鄉太平村大坪46號.",
+      "tags": [
+        "fm",
+        "official",
+        "ncc",
+        "taiwan",
+        "class-c"
+      ],
+      "source": "NCC FM transmitter dataset",
+      "sourceUrl": "https://data.gov.tw/en/datasets/6445",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "tw-pizitou-alian原住民族廣播電臺阿里山茶山轉播站-96-3",
+      "name": "Alian原住民族廣播電臺阿里山茶山轉播站",
+      "freqMhz": 96.3,
+      "cityId": "tw-pizitou",
+      "description": "Taiwan FM station listed by NCC for 嘉義縣. Station: Alian原住民族廣播電臺阿里山茶山轉播站. Category: class-a. Transmitter address: 嘉義縣阿里山鄉茶山段307地號.",
+      "tags": [
+        "fm",
+        "official",
+        "ncc",
+        "taiwan",
+        "class-a"
+      ],
+      "source": "NCC FM transmitter dataset",
+      "sourceUrl": "https://data.gov.tw/en/datasets/6445",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "tw-pizitou-正港廣播電臺-98-9",
+      "name": "正港廣播電臺",
+      "freqMhz": 98.9,
+      "cityId": "tw-pizitou",
+      "description": "Taiwan FM station listed by NCC for 嘉義縣. Station: 正港廣播電臺. Category: class-b. Transmitter address: 嘉義縣梅山鄉大坪段256地號.",
+      "tags": [
+        "fm",
+        "official",
+        "ncc",
+        "taiwan",
+        "class-b"
+      ],
+      "source": "NCC FM transmitter dataset",
+      "sourceUrl": "https://data.gov.tw/en/datasets/6445",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "tw-pizitou-寶島廣播電臺-100-3",
+      "name": "寶島廣播電臺",
+      "freqMhz": 100.3,
+      "cityId": "tw-pizitou",
+      "description": "Taiwan FM station listed by NCC for 嘉義縣. Station: 寶島廣播電臺. Category: class-b. Transmitter address: 嘉義縣梅山鄉太平村大坪41號.",
+      "tags": [
+        "fm",
+        "official",
+        "ncc",
+        "taiwan",
+        "class-b"
+      ],
+      "source": "NCC FM transmitter dataset",
+      "sourceUrl": "https://data.gov.tw/en/datasets/6445",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "tw-pizitou-臺北國際社區調頻廣播電臺嘉義轉播站-100-8",
+      "name": "臺北國際社區調頻廣播電臺嘉義轉播站",
+      "freqMhz": 100.8,
+      "cityId": "tw-pizitou",
+      "description": "Taiwan FM station listed by NCC for 嘉義縣. Station: 臺北國際社區調頻廣播電臺嘉義轉播站. Category: other. Transmitter address: 嘉義縣梅山鄉太平村大平46號.",
+      "tags": [
+        "fm",
+        "official",
+        "ncc",
+        "taiwan",
+        "other"
+      ],
+      "source": "NCC FM transmitter dataset",
+      "sourceUrl": "https://data.gov.tw/en/datasets/6445",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "tw-pizitou-內政部警政署警察廣播電臺梅山發射站全國網-104-9",
+      "name": "內政部警政署警察廣播電臺梅山發射站(全國網)",
+      "freqMhz": 104.9,
+      "cityId": "tw-pizitou",
+      "description": "Taiwan FM station listed by NCC for 嘉義縣. Station: 內政部警政署警察廣播電臺梅山發射站(全國網). Category: class-c. Transmitter address: 嘉義縣梅山鄉太平村大平46號.",
+      "tags": [
+        "fm",
+        "official",
+        "ncc",
+        "taiwan",
+        "class-c"
+      ],
+      "source": "NCC FM transmitter dataset",
+      "sourceUrl": "https://data.gov.tw/en/datasets/6445",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "tw-pizitou-紫色姊妹廣播電臺-105-7",
+      "name": "紫色姊妹廣播電臺",
+      "freqMhz": 105.7,
+      "cityId": "tw-pizitou",
+      "description": "Taiwan FM station listed by NCC for 嘉義縣. Station: 紫色姊妹廣播電臺. Category: class-b. Transmitter address: 嘉義縣梅山鄉大半天寮0001-0227地號.",
+      "tags": [
+        "fm",
+        "official",
+        "ncc",
+        "taiwan",
+        "class-b"
+      ],
+      "source": "NCC FM transmitter dataset",
+      "sourceUrl": "https://data.gov.tw/en/datasets/6445",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "tw-pizitou-嘉義環球調頻廣播電臺-107-1",
+      "name": "嘉義環球調頻廣播電臺",
+      "freqMhz": 107.1,
+      "cityId": "tw-pizitou",
+      "description": "Taiwan FM station listed by NCC for 嘉義縣. Station: 嘉義環球調頻廣播電臺. Category: class-b. Transmitter address: 嘉義縣梅山鄉太平村坪路7號.",
+      "tags": [
+        "fm",
+        "official",
+        "ncc",
+        "taiwan",
+        "class-b"
+      ],
+      "source": "NCC FM transmitter dataset",
+      "sourceUrl": "https://data.gov.tw/en/datasets/6445",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "tw-taichung-太陽廣播電臺-89-1",
+      "name": "太陽廣播電臺",
+      "freqMhz": 89.1,
+      "cityId": "tw-taichung",
+      "description": "Taiwan FM station listed by NCC for 臺中市. Station: 太陽廣播電臺. Category: class-a. Transmitter address: 臺中市大肚區遊園路1段1之33號.",
+      "tags": [
+        "fm",
+        "official",
+        "ncc",
+        "taiwan",
+        "class-a"
+      ],
+      "source": "NCC FM transmitter dataset",
+      "sourceUrl": "https://data.gov.tw/en/datasets/6445",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "tw-taichung-望春風廣播電臺-89-5",
+      "name": "望春風廣播電臺",
+      "freqMhz": 89.5,
+      "cityId": "tw-taichung",
+      "description": "Taiwan FM station listed by NCC for 臺中市. Station: 望春風廣播電臺. Category: class-a. Transmitter address: 臺中市南區忠明南路789號38樓之1.",
+      "tags": [
+        "fm",
+        "official",
+        "ncc",
+        "taiwan",
+        "class-a"
+      ],
+      "source": "NCC FM transmitter dataset",
+      "sourceUrl": "https://data.gov.tw/en/datasets/6445",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "tw-taichung-真善美調頻廣播電臺-89-9",
+      "name": "真善美調頻廣播電臺",
+      "freqMhz": 89.9,
+      "cityId": "tw-taichung",
+      "description": "Taiwan FM station listed by NCC for 臺中市. Station: 真善美調頻廣播電臺. Category: class-a. Transmitter address: 臺中市西屯區福科路950號15樓之2.",
+      "tags": [
+        "fm",
+        "official",
+        "ncc",
+        "taiwan",
+        "class-a"
+      ],
+      "source": "NCC FM transmitter dataset",
+      "sourceUrl": "https://data.gov.tw/en/datasets/6445",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "tw-taichung-山海屯青少年之聲廣播電臺-90-3",
+      "name": "山海屯青少年之聲廣播電臺",
+      "freqMhz": 90.3,
+      "cityId": "tw-taichung",
+      "description": "Taiwan FM station listed by NCC for 臺中市. Station: 山海屯青少年之聲廣播電臺. Category: class-a. Transmitter address: 臺中市南屯區春社里14鄰中台路650-1號.",
+      "tags": [
+        "fm",
+        "official",
+        "ncc",
+        "taiwan",
+        "class-a"
+      ],
+      "source": "NCC FM transmitter dataset",
+      "sourceUrl": "https://data.gov.tw/en/datasets/6445",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "tw-taichung-中臺灣廣播電臺-91-5",
+      "name": "中臺灣廣播電臺",
+      "freqMhz": 91.5,
+      "cityId": "tw-taichung",
+      "description": "Taiwan FM station listed by NCC for 臺中市. Station: 中臺灣廣播電臺. Category: class-a. Transmitter address: 臺中市南屯區春社里14鄰中台路650-1號.",
+      "tags": [
+        "fm",
+        "official",
+        "ncc",
+        "taiwan",
+        "class-a"
+      ],
+      "source": "NCC FM transmitter dataset",
+      "sourceUrl": "https://data.gov.tw/en/datasets/6445",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "tw-taichung-綠川之聲廣播電臺-92-1",
+      "name": "綠川之聲廣播電臺",
+      "freqMhz": 92.1,
+      "cityId": "tw-taichung",
+      "description": "Taiwan FM station listed by NCC for 臺中市. Station: 綠川之聲廣播電臺. Category: class-a. Transmitter address: 臺中市豐原區鳳山段378地號.",
+      "tags": [
+        "fm",
+        "official",
+        "ncc",
+        "taiwan",
+        "class-a"
+      ],
+      "source": "NCC FM transmitter dataset",
+      "sourceUrl": "https://data.gov.tw/en/datasets/6445",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "tw-taichung-全球之聲廣播電臺-92-5",
+      "name": "全球之聲廣播電臺",
+      "freqMhz": 92.5,
+      "cityId": "tw-taichung",
+      "description": "Taiwan FM station listed by NCC for 臺中市. Station: 全球之聲廣播電臺. Category: class-a. Transmitter address: 臺中市新社區七分段七分小段地號277-2.",
+      "tags": [
+        "fm",
+        "official",
+        "ncc",
+        "taiwan",
+        "class-a"
+      ],
+      "source": "NCC FM transmitter dataset",
+      "sourceUrl": "https://data.gov.tw/en/datasets/6445",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "tw-taichung-alian原住民族廣播電臺南投轉播站-96-3",
+      "name": "Alian原住民族廣播電臺南投轉播站",
+      "freqMhz": 96.3,
+      "cityId": "tw-taichung",
+      "description": "Taiwan FM station listed by NCC for 臺中市. Station: Alian原住民族廣播電臺南投轉播站. Category: class-b. Transmitter address: 臺中市和平區摩天嶺段0002地號.",
+      "tags": [
+        "fm",
+        "official",
+        "ncc",
+        "taiwan",
+        "class-b"
+      ],
+      "source": "NCC FM transmitter dataset",
+      "sourceUrl": "https://data.gov.tw/en/datasets/6445",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "tw-taichung-天天廣播電臺-96-9",
+      "name": "天天廣播電臺",
+      "freqMhz": 96.9,
+      "cityId": "tw-taichung",
+      "description": "Taiwan FM station listed by NCC for 臺中市. Station: 天天廣播電臺. Category: class-b. Transmitter address: 臺中市北屯區大坑段818地號.",
+      "tags": [
+        "fm",
+        "official",
+        "ncc",
+        "taiwan",
+        "class-b"
+      ],
+      "source": "NCC FM transmitter dataset",
+      "sourceUrl": "https://data.gov.tw/en/datasets/6445",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "tw-taichung-好家庭廣播電臺-97-7",
+      "name": "好家庭廣播電臺",
+      "freqMhz": 97.7,
+      "cityId": "tw-taichung",
+      "description": "Taiwan FM station listed by NCC for 臺中市. Station: 好家庭廣播電臺. Category: class-b. Transmitter address: 臺中市南屯區春社里14鄰中台路650-1號.",
+      "tags": [
+        "fm",
+        "official",
+        "ncc",
+        "taiwan",
+        "class-b"
+      ],
+      "source": "NCC FM transmitter dataset",
+      "sourceUrl": "https://data.gov.tw/en/datasets/6445",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "tw-taichung-大千廣播電臺-99-1",
+      "name": "大千廣播電臺",
+      "freqMhz": 99.1,
+      "cityId": "tw-taichung",
+      "description": "Taiwan FM station listed by NCC for 臺中市. Station: 大千廣播電臺. Category: class-b. Transmitter address: 臺中市南屯區春社里14鄰中台路650-1號.",
+      "tags": [
+        "fm",
+        "official",
+        "ncc",
+        "taiwan",
+        "class-b"
+      ],
+      "source": "NCC FM transmitter dataset",
+      "sourceUrl": "https://data.gov.tw/en/datasets/6445",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "tw-taichung-台中調頻廣播電臺-100-7",
+      "name": "台中調頻廣播電臺",
+      "freqMhz": 100.7,
+      "cityId": "tw-taichung",
+      "description": "Taiwan FM station listed by NCC for 臺中市. Station: 台中調頻廣播電臺. Category: class-b. Transmitter address: 臺中市大肚區遊園路1段1之33號.",
+      "tags": [
+        "fm",
+        "official",
+        "ncc",
+        "taiwan",
+        "class-b"
+      ],
+      "source": "NCC FM transmitter dataset",
+      "sourceUrl": "https://data.gov.tw/en/datasets/6445",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "tw-taichung-全國廣播公司臺中調頻廣播電臺-106-1",
+      "name": "全國廣播公司臺中調頻廣播電臺",
+      "freqMhz": 106.1,
+      "cityId": "tw-taichung",
+      "description": "Taiwan FM station listed by NCC for 臺中市. Station: 全國廣播公司臺中調頻廣播電臺. Category: class-b. Transmitter address: 臺中市南屯區台安段148 ,149,150-2地號.",
+      "tags": [
+        "fm",
+        "official",
+        "ncc",
+        "taiwan",
+        "class-b"
+      ],
+      "source": "NCC FM transmitter dataset",
+      "sourceUrl": "https://data.gov.tw/en/datasets/6445",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "tw-taichung-復興廣播電臺臺中轉播站-107-8",
+      "name": "復興廣播電臺臺中轉播站",
+      "freqMhz": 107.8,
+      "cityId": "tw-taichung",
+      "description": "Taiwan FM station listed by NCC for 臺中市. Station: 復興廣播電臺臺中轉播站. Category: class-c. Transmitter address: 臺中市新社區永源里井北街17號.",
+      "tags": [
+        "fm",
+        "official",
+        "ncc",
+        "taiwan",
+        "class-c"
+      ],
+      "source": "NCC FM transmitter dataset",
+      "sourceUrl": "https://data.gov.tw/en/datasets/6445",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "tw-tainan-崑山科技大學學校實習廣播電臺-88-1",
+      "name": "崑山科技大學學校實習廣播電臺",
+      "freqMhz": 88.1,
+      "cityId": "tw-tainan",
+      "description": "Taiwan FM station listed by NCC for 臺南市. Station: 崑山科技大學學校實習廣播電臺. Category: school. Transmitter address: 臺南市永康區崑大路195號.",
+      "tags": [
+        "fm",
+        "official",
+        "ncc",
+        "taiwan",
+        "school"
+      ],
+      "source": "NCC FM transmitter dataset",
+      "sourceUrl": "https://data.gov.tw/en/datasets/6445",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "tw-tainan-長榮之聲學校實習廣播電臺-88-3",
+      "name": "長榮之聲學校實習廣播電臺",
+      "freqMhz": 88.3,
+      "cityId": "tw-tainan",
+      "description": "Taiwan FM station listed by NCC for 臺南市. Station: 長榮之聲學校實習廣播電臺. Category: school. Transmitter address: 臺南市歸仁區大潭里長大路1號.",
+      "tags": [
+        "fm",
+        "official",
+        "ncc",
+        "taiwan",
+        "school"
+      ],
+      "source": "NCC FM transmitter dataset",
+      "sourceUrl": "https://data.gov.tw/en/datasets/6445",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "tw-tainan-南都廣播電臺-89-1",
+      "name": "南都廣播電臺",
+      "freqMhz": 89.1,
+      "cityId": "tw-tainan",
+      "description": "Taiwan FM station listed by NCC for 臺南市. Station: 南都廣播電臺. Category: class-a. Transmitter address: 臺南市東區小東路246號24樓之1.",
+      "tags": [
+        "fm",
+        "official",
+        "ncc",
+        "taiwan",
+        "class-a"
+      ],
+      "source": "NCC FM transmitter dataset",
+      "sourceUrl": "https://data.gov.tw/en/datasets/6445",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "tw-tainan-人生廣播電臺-89-5",
+      "name": "人生廣播電臺",
+      "freqMhz": 89.5,
+      "cityId": "tw-tainan",
+      "description": "Taiwan FM station listed by NCC for 臺南市. Station: 人生廣播電臺. Category: class-a. Transmitter address: 臺南市白河區關子嶺里128-15號.",
+      "tags": [
+        "fm",
+        "official",
+        "ncc",
+        "taiwan",
+        "class-a"
+      ],
+      "source": "NCC FM transmitter dataset",
+      "sourceUrl": "https://data.gov.tw/en/datasets/6445",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "tw-tainan-曾文溪廣播電臺-89-9",
+      "name": "曾文溪廣播電臺",
+      "freqMhz": 89.9,
+      "cityId": "tw-tainan",
+      "description": "Taiwan FM station listed by NCC for 臺南市. Station: 曾文溪廣播電臺. Category: class-a. Transmitter address: 臺南市左鎮區草山段339地號.",
+      "tags": [
+        "fm",
+        "official",
+        "ncc",
+        "taiwan",
+        "class-a"
+      ],
+      "source": "NCC FM transmitter dataset",
+      "sourceUrl": "https://data.gov.tw/en/datasets/6445",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "tw-tainan-臺南線上廣播電臺-90-3",
+      "name": "臺南線上廣播電臺",
+      "freqMhz": 90.3,
+      "cityId": "tw-tainan",
+      "description": "Taiwan FM station listed by NCC for 臺南市. Station: 臺南線上廣播電臺. Category: class-a. Transmitter address: 臺南市白河區關嶺里128-4號(央廣微波站).",
+      "tags": [
+        "fm",
+        "official",
+        "ncc",
+        "taiwan",
+        "class-a"
+      ],
+      "source": "NCC FM transmitter dataset",
+      "sourceUrl": "https://data.gov.tw/en/datasets/6445",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "tw-tainan-愛鄉之聲廣播電臺-90-7",
+      "name": "愛鄉之聲廣播電臺",
+      "freqMhz": 90.7,
+      "cityId": "tw-tainan",
+      "description": "Taiwan FM station listed by NCC for 臺南市. Station: 愛鄉之聲廣播電臺. Category: class-a. Transmitter address: 臺南市善化區民生路275號10樓頂.",
+      "tags": [
+        "fm",
+        "official",
+        "ncc",
+        "taiwan",
+        "class-a"
+      ],
+      "source": "NCC FM transmitter dataset",
+      "sourceUrl": "https://data.gov.tw/en/datasets/6445",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "tw-tainan-府城之聲廣播電臺-91-1",
+      "name": "府城之聲廣播電臺",
+      "freqMhz": 91.1,
+      "cityId": "tw-tainan",
+      "description": "Taiwan FM station listed by NCC for 臺南市. Station: 府城之聲廣播電臺. Category: class-a. Transmitter address: 臺南市東區林森路一段149號23樓.",
+      "tags": [
+        "fm",
+        "official",
+        "ncc",
+        "taiwan",
+        "class-a"
+      ],
+      "source": "NCC FM transmitter dataset",
+      "sourceUrl": "https://data.gov.tw/en/datasets/6445",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "tw-tainan-自由之聲廣播電臺-91-5",
+      "name": "自由之聲廣播電臺",
+      "freqMhz": 91.5,
+      "cityId": "tw-tainan",
+      "description": "Taiwan FM station listed by NCC for 臺南市. Station: 自由之聲廣播電臺. Category: class-a. Transmitter address: 臺南市仁德區後壁里德善路251巷7弄6號8樓之4.",
+      "tags": [
+        "fm",
+        "official",
+        "ncc",
+        "taiwan",
+        "class-a"
+      ],
+      "source": "NCC FM transmitter dataset",
+      "sourceUrl": "https://data.gov.tw/en/datasets/6445",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "tw-tainan-嘉南廣播電臺-91-9",
+      "name": "嘉南廣播電臺",
+      "freqMhz": 91.9,
+      "cityId": "tw-tainan",
+      "description": "Taiwan FM station listed by NCC for 臺南市. Station: 嘉南廣播電臺. Category: class-a. Transmitter address: 臺南市北區西門路四段271號8樓之一.",
+      "tags": [
+        "fm",
+        "official",
+        "ncc",
+        "taiwan",
+        "class-a"
+      ],
+      "source": "NCC FM transmitter dataset",
+      "sourceUrl": "https://data.gov.tw/en/datasets/6445",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "tw-tainan-臺南之聲廣播電臺-92-7",
+      "name": "臺南之聲廣播電臺",
+      "freqMhz": 92.7,
+      "cityId": "tw-tainan",
+      "description": "Taiwan FM station listed by NCC for 臺南市. Station: 臺南之聲廣播電臺. Category: class-a. Transmitter address: 臺南市永康區小東路689號之98 (19樓).",
+      "tags": [
+        "fm",
+        "official",
+        "ncc",
+        "taiwan",
+        "class-a"
+      ],
+      "source": "NCC FM transmitter dataset",
+      "sourceUrl": "https://data.gov.tw/en/datasets/6445",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "tw-tainan-領袖廣播電臺-93-7",
+      "name": "領袖廣播電臺",
+      "freqMhz": 93.7,
+      "cityId": "tw-tainan",
+      "description": "Taiwan FM station listed by NCC for 臺南市. Station: 領袖廣播電臺. Category: class-b. Transmitter address: 臺南市永康區中華路1號25樓.",
+      "tags": [
+        "fm",
+        "official",
+        "ncc",
+        "taiwan",
+        "class-b"
+      ],
+      "source": "NCC FM transmitter dataset",
+      "sourceUrl": "https://data.gov.tw/en/datasets/6445",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "tw-tainan-臺南知音廣播電臺-97-1",
+      "name": "臺南知音廣播電臺",
+      "freqMhz": 97.1,
+      "cityId": "tw-tainan",
+      "description": "Taiwan FM station listed by NCC for 臺南市. Station: 臺南知音廣播電臺. Category: class-b. Transmitter address: 臺南市永康區中華路1號25樓.",
+      "tags": [
+        "fm",
+        "official",
+        "ncc",
+        "taiwan",
+        "class-b"
+      ],
+      "source": "NCC FM transmitter dataset",
+      "sourceUrl": "https://data.gov.tw/en/datasets/6445",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "tw-tainan-凱旋廣播電臺-97-9",
+      "name": "凱旋廣播電臺",
+      "freqMhz": 97.9,
+      "cityId": "tw-tainan",
+      "description": "Taiwan FM station listed by NCC for 臺南市. Station: 凱旋廣播電臺. Category: class-b. Transmitter address: 臺南市永康區中華路425號24樓.",
+      "tags": [
+        "fm",
+        "official",
+        "ncc",
+        "taiwan",
+        "class-b"
+      ],
+      "source": "NCC FM transmitter dataset",
+      "sourceUrl": "https://data.gov.tw/en/datasets/6445",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "tw-tainan-青春廣播電臺-98-7",
+      "name": "青春廣播電臺",
+      "freqMhz": 98.7,
+      "cityId": "tw-tainan",
+      "description": "Taiwan FM station listed by NCC for 臺南市. Station: 青春廣播電臺. Category: class-b. Transmitter address: 臺南市永康區新行街133號16樓.",
+      "tags": [
+        "fm",
+        "official",
+        "ncc",
+        "taiwan",
+        "class-b"
+      ],
+      "source": "NCC FM transmitter dataset",
+      "sourceUrl": "https://data.gov.tw/en/datasets/6445",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "tw-tainan-都會聲音廣播電臺-99-7",
+      "name": "都會聲音廣播電臺",
+      "freqMhz": 99.7,
+      "cityId": "tw-tainan",
+      "description": "Taiwan FM station listed by NCC for 臺南市. Station: 都會聲音廣播電臺. Category: class-a. Transmitter address: 臺南市白河區關子嶺128之15號.",
+      "tags": [
+        "fm",
+        "official",
+        "ncc",
+        "taiwan",
+        "class-a"
+      ],
+      "source": "NCC FM transmitter dataset",
+      "sourceUrl": "https://data.gov.tw/en/datasets/6445",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "tw-tainan-漢聲廣播電臺枕頭山分臺-101-3",
+      "name": "漢聲廣播電臺枕頭山分臺",
+      "freqMhz": 101.3,
+      "cityId": "tw-tainan",
+      "description": "Taiwan FM station listed by NCC for 臺南市. Station: 漢聲廣播電臺枕頭山分臺. Category: class-c. Transmitter address: 臺南市白河區關嶺里枕頭山營區.",
+      "tags": [
+        "fm",
+        "official",
+        "ncc",
+        "taiwan",
+        "class-c"
+      ],
+      "source": "NCC FM transmitter dataset",
+      "sourceUrl": "https://data.gov.tw/en/datasets/6445",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "tw-tainan-古都廣播電臺-102-5",
+      "name": "古都廣播電臺",
+      "freqMhz": 102.5,
+      "cityId": "tw-tainan",
+      "description": "Taiwan FM station listed by NCC for 臺南市. Station: 古都廣播電臺. Category: class-b. Transmitter address: 臺南市東區中華東路二段77號17樓.",
+      "tags": [
+        "fm",
+        "official",
+        "ncc",
+        "taiwan",
+        "class-b"
+      ],
+      "source": "NCC FM transmitter dataset",
+      "sourceUrl": "https://data.gov.tw/en/datasets/6445",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "tw-tainan-中國廣播股份有限公司調頻廣播電臺-103-1",
+      "name": "中國廣播股份有限公司調頻廣播電臺",
+      "freqMhz": 103.1,
+      "cityId": "tw-tainan",
+      "description": "Taiwan FM station listed by NCC for 臺南市. Station: 中國廣播股份有限公司調頻廣播電臺. Category: class-c. Transmitter address: 臺南市白河區關子嶺128之15號.",
+      "tags": [
+        "fm",
+        "official",
+        "ncc",
+        "taiwan",
+        "class-c"
+      ],
+      "source": "NCC FM transmitter dataset",
+      "sourceUrl": "https://data.gov.tw/en/datasets/6445",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "tw-tainan-講客廣播電臺關子嶺轉播站-104-3",
+      "name": "講客廣播電臺關子嶺轉播站",
+      "freqMhz": 104.3,
+      "cityId": "tw-tainan",
+      "description": "Taiwan FM station listed by NCC for 臺南市. Station: 講客廣播電臺關子嶺轉播站. Category: class-c. Transmitter address: 臺南市白河區關子嶺里126-2號.",
+      "tags": [
+        "fm",
+        "official",
+        "ncc",
+        "taiwan",
+        "class-c"
+      ],
+      "source": "NCC FM transmitter dataset",
+      "sourceUrl": "https://data.gov.tw/en/datasets/6445",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "tw-tainan-指南廣播電臺-106-5",
+      "name": "指南廣播電臺",
+      "freqMhz": 106.5,
+      "cityId": "tw-tainan",
+      "description": "Taiwan FM station listed by NCC for 臺南市. Station: 指南廣播電臺. Category: class-b. Transmitter address: 臺南市白河區關嶺里128之4號.",
+      "tags": [
+        "fm",
+        "official",
+        "ncc",
+        "taiwan",
+        "class-b"
+      ],
+      "source": "NCC FM transmitter dataset",
+      "sourceUrl": "https://data.gov.tw/en/datasets/6445",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "tw-tainan-國立教育廣播電臺枕頭山轉播站-107-7",
+      "name": "國立教育廣播電臺枕頭山轉播站",
+      "freqMhz": 107.7,
+      "cityId": "tw-tainan",
+      "description": "Taiwan FM station listed by NCC for 臺南市. Station: 國立教育廣播電臺枕頭山轉播站. Category: class-c. Transmitter address: 臺南市白河區關嶺里水火洞2-6號.",
+      "tags": [
+        "fm",
+        "official",
+        "ncc",
+        "taiwan",
+        "class-c"
+      ],
+      "source": "NCC FM transmitter dataset",
+      "sourceUrl": "https://data.gov.tw/en/datasets/6445",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "tw-taipei-世新大學學校實習廣播電臺-88-1",
+      "name": "世新大學學校實習廣播電臺",
+      "freqMhz": 88.1,
+      "cityId": "tw-taipei",
+      "description": "Taiwan FM station listed by NCC for 臺北市. Station: 世新大學學校實習廣播電臺. Category: school. Transmitter address: 臺北市文山區木柵路一段17巷1號.",
+      "tags": [
+        "fm",
+        "official",
+        "ncc",
+        "taiwan",
+        "school"
+      ],
+      "source": "NCC FM transmitter dataset",
+      "sourceUrl": "https://data.gov.tw/en/datasets/6445",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "tw-taipei-銘傳大學學校實習廣播電臺-88-3",
+      "name": "銘傳大學學校實習廣播電臺",
+      "freqMhz": 88.3,
+      "cityId": "tw-taipei",
+      "description": "Taiwan FM station listed by NCC for 臺北市. Station: 銘傳大學學校實習廣播電臺. Category: school. Transmitter address: 臺北市士林區中山北路5段250號Ｈ棟大樓.",
+      "tags": [
+        "fm",
+        "official",
+        "ncc",
+        "taiwan",
+        "school"
+      ],
+      "source": "NCC FM transmitter dataset",
+      "sourceUrl": "https://data.gov.tw/en/datasets/6445",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "tw-taipei-華岡實習廣播電臺-88-5",
+      "name": "華岡實習廣播電臺",
+      "freqMhz": 88.5,
+      "cityId": "tw-taipei",
+      "description": "Taiwan FM station listed by NCC for 臺北市. Station: 華岡實習廣播電臺. Category: school. Transmitter address: 臺北市士林區華岡路55號.",
+      "tags": [
+        "fm",
+        "official",
+        "ncc",
+        "taiwan",
+        "school"
+      ],
+      "source": "NCC FM transmitter dataset",
+      "sourceUrl": "https://data.gov.tw/en/datasets/6445",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "tw-taipei-政大之聲學校實習廣播電臺-88-7",
+      "name": "政大之聲學校實習廣播電臺",
+      "freqMhz": 88.7,
+      "cityId": "tw-taipei",
+      "description": "Taiwan FM station listed by NCC for 臺北市. Station: 政大之聲學校實習廣播電臺. Category: school. Transmitter address: 臺北市文山區指南路二段64號.",
+      "tags": [
+        "fm",
+        "official",
+        "ncc",
+        "taiwan",
+        "school"
+      ],
+      "source": "NCC FM transmitter dataset",
+      "sourceUrl": "https://data.gov.tw/en/datasets/6445",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "tw-taipei-全景社區廣播電臺-89-3",
+      "name": "全景社區廣播電臺",
+      "freqMhz": 89.3,
+      "cityId": "tw-taipei",
+      "description": "Taiwan FM station listed by NCC for 臺北市. Station: 全景社區廣播電臺. Category: class-a. Transmitter address: 臺北市中山區中山北路4段1巷1弄30號.",
+      "tags": [
+        "fm",
+        "official",
+        "ncc",
+        "taiwan",
+        "class-a"
+      ],
+      "source": "NCC FM transmitter dataset",
+      "sourceUrl": "https://data.gov.tw/en/datasets/6445",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "tw-taipei-臺北健康廣播電臺-90-1",
+      "name": "臺北健康廣播電臺",
+      "freqMhz": 90.1,
+      "cityId": "tw-taipei",
+      "description": "Taiwan FM station listed by NCC for 臺北市. Station: 臺北健康廣播電臺. Category: class-a. Transmitter address: 臺北市中山區中山北路4段1巷1弄30號.",
+      "tags": [
+        "fm",
+        "official",
+        "ncc",
+        "taiwan",
+        "class-a"
+      ],
+      "source": "NCC FM transmitter dataset",
+      "sourceUrl": "https://data.gov.tw/en/datasets/6445",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "tw-taipei-大樹下廣播電臺-90-5",
+      "name": "大樹下廣播電臺",
+      "freqMhz": 90.5,
+      "cityId": "tw-taipei",
+      "description": "Taiwan FM station listed by NCC for 臺北市. Station: 大樹下廣播電臺. Category: class-a. Transmitter address: 臺北市大同區延平北路2段202號樓頂.",
+      "tags": [
+        "fm",
+        "official",
+        "ncc",
+        "taiwan",
+        "class-a"
+      ],
+      "source": "NCC FM transmitter dataset",
+      "sourceUrl": "https://data.gov.tw/en/datasets/6445",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "tw-taipei-財團法人佳音廣播電臺-90-9",
+      "name": "財團法人佳音廣播電臺",
+      "freqMhz": 90.9,
+      "cityId": "tw-taipei",
+      "description": "Taiwan FM station listed by NCC for 臺北市. Station: 財團法人佳音廣播電臺. Category: class-a. Transmitter address: 臺北市大安區和平東路二段24號12樓.",
+      "tags": [
+        "fm",
+        "official",
+        "ncc",
+        "taiwan",
+        "class-a"
+      ],
+      "source": "NCC FM transmitter dataset",
+      "sourceUrl": "https://data.gov.tw/en/datasets/6445",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "tw-taipei-臺北勞工教育電臺-91-3",
+      "name": "臺北勞工教育電臺",
+      "freqMhz": 91.3,
+      "cityId": "tw-taipei",
+      "description": "Taiwan FM station listed by NCC for 臺北市. Station: 臺北勞工教育電臺. Category: class-a. Transmitter address: 臺北市士林區凱旋路61巷4弄33號.",
+      "tags": [
+        "fm",
+        "official",
+        "ncc",
+        "taiwan",
+        "class-a"
+      ],
+      "source": "NCC FM transmitter dataset",
+      "sourceUrl": "https://data.gov.tw/en/datasets/6445",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "tw-taipei-飛碟廣播電臺-92-1",
+      "name": "飛碟廣播電臺",
+      "freqMhz": 92.1,
+      "cityId": "tw-taipei",
+      "description": "Taiwan FM station listed by NCC for 臺北市. Station: 飛碟廣播電臺. Category: class-b. Transmitter address: 臺北市中正區羅斯福路二段100號頂樓屋凸.",
+      "tags": [
+        "fm",
+        "official",
+        "ncc",
+        "taiwan",
+        "class-b"
+      ],
+      "source": "NCC FM transmitter dataset",
+      "sourceUrl": "https://data.gov.tw/en/datasets/6445",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "tw-taipei-臺北廣播電臺調頻臺-93-1",
+      "name": "臺北廣播電臺調頻臺",
+      "freqMhz": 93.1,
+      "cityId": "tw-taipei",
+      "description": "Taiwan FM station listed by NCC for 臺北市. Station: 臺北廣播電臺調頻臺. Category: class-c. Transmitter address: 臺北市北投區竹子湖路74之6號.",
+      "tags": [
+        "fm",
+        "official",
+        "ncc",
+        "taiwan",
+        "class-c"
+      ],
+      "source": "NCC FM transmitter dataset",
+      "sourceUrl": "https://data.gov.tw/en/datasets/6445",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "tw-taipei-寶島客家廣播電臺-93-7",
+      "name": "寶島客家廣播電臺",
+      "freqMhz": 93.7,
+      "cityId": "tw-taipei",
+      "description": "Taiwan FM station listed by NCC for 臺北市. Station: 寶島客家廣播電臺. Category: class-b. Transmitter address: 臺北市北投區陽明山竹子山華視北部發射站.",
+      "tags": [
+        "fm",
+        "official",
+        "ncc",
+        "taiwan",
+        "class-b"
+      ],
+      "source": "NCC FM transmitter dataset",
+      "sourceUrl": "https://data.gov.tw/en/datasets/6445",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "tw-taipei-內政部警政署警察廣播電臺臺北分臺-94-3",
+      "name": "內政部警政署警察廣播電臺臺北分臺",
+      "freqMhz": 94.3,
+      "cityId": "tw-taipei",
+      "description": "Taiwan FM station listed by NCC for 臺北市. Station: 內政部警政署警察廣播電臺臺北分臺. Category: class-c. Transmitter address: 臺北市陽明山竹子山上.",
+      "tags": [
+        "fm",
+        "official",
+        "ncc",
+        "taiwan",
+        "class-c"
+      ],
+      "source": "NCC FM transmitter dataset",
+      "sourceUrl": "https://data.gov.tw/en/datasets/6445",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "tw-taipei-綠色和平廣播電臺-97-3",
+      "name": "綠色和平廣播電臺",
+      "freqMhz": 97.3,
+      "cityId": "tw-taipei",
+      "description": "Taiwan FM station listed by NCC for 臺北市. Station: 綠色和平廣播電臺. Category: class-b. Transmitter address: 臺北市北投區湖田段2小段44之8地號.",
+      "tags": [
+        "fm",
+        "official",
+        "ncc",
+        "taiwan",
+        "class-b"
+      ],
+      "source": "NCC FM transmitter dataset",
+      "sourceUrl": "https://data.gov.tw/en/datasets/6445",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "tw-taipei-臺灣全民廣播電臺-98-1",
+      "name": "臺灣全民廣播電臺",
+      "freqMhz": 98.1,
+      "cityId": "tw-taipei",
+      "description": "Taiwan FM station listed by NCC for 臺北市. Station: 臺灣全民廣播電臺. Category: class-b. Transmitter address: 臺北市中正區羅斯福路二段102號頂樓.",
+      "tags": [
+        "fm",
+        "official",
+        "ncc",
+        "taiwan",
+        "class-b"
+      ],
+      "source": "NCC FM transmitter dataset",
+      "sourceUrl": "https://data.gov.tw/en/datasets/6445",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "tw-taipei-人人廣播電臺-98-9",
+      "name": "人人廣播電臺",
+      "freqMhz": 98.9,
+      "cityId": "tw-taipei",
+      "description": "Taiwan FM station listed by NCC for 臺北市. Station: 人人廣播電臺. Category: class-b. Transmitter address: 臺北市陽明山竹子山華視北部發射站.",
+      "tags": [
+        "fm",
+        "official",
+        "ncc",
+        "taiwan",
+        "class-b"
+      ],
+      "source": "NCC FM transmitter dataset",
+      "sourceUrl": "https://data.gov.tw/en/datasets/6445",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "tw-taipei-臺北愛樂廣播電臺-99-7",
+      "name": "臺北愛樂廣播電臺",
+      "freqMhz": 99.7,
+      "cityId": "tw-taipei",
+      "description": "Taiwan FM station listed by NCC for 臺北市. Station: 臺北愛樂廣播電臺. Category: class-b. Transmitter address: 臺北市陽明山竹子湖華視竹子山發射站.",
+      "tags": [
+        "fm",
+        "official",
+        "ncc",
+        "taiwan",
+        "class-b"
+      ],
+      "source": "NCC FM transmitter dataset",
+      "sourceUrl": "https://data.gov.tw/en/datasets/6445",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "tw-taipei-臺北國際社區廣播電臺菁山轉播站-100-7",
+      "name": "臺北國際社區廣播電臺菁山轉播站",
+      "freqMhz": 100.7,
+      "cityId": "tw-taipei",
+      "description": "Taiwan FM station listed by NCC for 臺北市. Station: 臺北國際社區廣播電臺菁山轉播站. Category: class-c. Transmitter address: 臺北市士林區永公路245巷34弄290號.",
+      "tags": [
+        "fm",
+        "official",
+        "ncc",
+        "taiwan",
+        "class-c"
+      ],
+      "source": "NCC FM transmitter dataset",
+      "sourceUrl": "https://data.gov.tw/en/datasets/6445",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "tw-taipei-國立教育廣播電臺七星山發射臺-101-7",
+      "name": "國立教育廣播電臺七星山發射臺",
+      "freqMhz": 101.7,
+      "cityId": "tw-taipei",
+      "description": "Taiwan FM station listed by NCC for 臺北市. Station: 國立教育廣播電臺七星山發射臺. Category: class-c. Transmitter address: 臺北市北投區湖田里竹子湖路74之7號.",
+      "tags": [
+        "fm",
+        "official",
+        "ncc",
+        "taiwan",
+        "class-c"
+      ],
+      "source": "NCC FM transmitter dataset",
+      "sourceUrl": "https://data.gov.tw/en/datasets/6445",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "tw-taipei-幸福廣播電臺-102-5",
+      "name": "幸福廣播電臺",
+      "freqMhz": 102.5,
+      "cityId": "tw-taipei",
+      "description": "Taiwan FM station listed by NCC for 臺北市. Station: 幸福廣播電臺. Category: class-b. Transmitter address: 臺北市北投區湖田段2小段44之8地號.",
+      "tags": [
+        "fm",
+        "official",
+        "ncc",
+        "taiwan",
+        "class-b"
+      ],
+      "source": "NCC FM transmitter dataset",
+      "sourceUrl": "https://data.gov.tw/en/datasets/6445",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "tw-taipei-中國廣播股份有限公司臺北調頻廣播電臺-103-3",
+      "name": "中國廣播股份有限公司臺北調頻廣播電臺",
+      "freqMhz": 103.3,
+      "cityId": "tw-taipei",
+      "description": "Taiwan FM station listed by NCC for 臺北市. Station: 中國廣播股份有限公司臺北調頻廣播電臺. Category: class-c. Transmitter address: 臺北市陽明山竹子山上.",
+      "tags": [
+        "fm",
+        "official",
+        "ncc",
+        "taiwan",
+        "class-c"
+      ],
+      "source": "NCC FM transmitter dataset",
+      "sourceUrl": "https://data.gov.tw/en/datasets/6445",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "tw-taipei-正聲廣播公司臺北調頻廣播電臺-104-1",
+      "name": "正聲廣播公司臺北調頻廣播電臺",
+      "freqMhz": 104.1,
+      "cityId": "tw-taipei",
+      "description": "Taiwan FM station listed by NCC for 臺北市. Station: 正聲廣播公司臺北調頻廣播電臺. Category: class-c. Transmitter address: 臺北市北投區陽明山後竹仔山中視發射站2樓.",
+      "tags": [
+        "fm",
+        "official",
+        "ncc",
+        "taiwan",
+        "class-c"
+      ],
+      "source": "NCC FM transmitter dataset",
+      "sourceUrl": "https://data.gov.tw/en/datasets/6445",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "tw-taipei-內政部警政署警察廣播電臺竹子山發射站全國網-104-9",
+      "name": "內政部警政署警察廣播電臺竹子山發射站(全國網)",
+      "freqMhz": 104.9,
+      "cityId": "tw-taipei",
+      "description": "Taiwan FM station listed by NCC for 臺北市. Station: 內政部警政署警察廣播電臺竹子山發射站(全國網). Category: class-c. Transmitter address: 臺北市北投區陽明山竹子山上.",
+      "tags": [
+        "fm",
+        "official",
+        "ncc",
+        "taiwan",
+        "class-c"
+      ],
+      "source": "NCC FM transmitter dataset",
+      "sourceUrl": "https://data.gov.tw/en/datasets/6445",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "tw-taipei-漢聲廣播電臺嵩山分臺-106-5",
+      "name": "漢聲廣播電臺嵩山分臺",
+      "freqMhz": 106.5,
+      "cityId": "tw-taipei",
+      "description": "Taiwan FM station listed by NCC for 臺北市. Station: 漢聲廣播電臺嵩山分臺. Category: class-c. Transmitter address: 臺北市北投區湖田里小觀音山.",
+      "tags": [
+        "fm",
+        "official",
+        "ncc",
+        "taiwan",
+        "class-c"
+      ],
+      "source": "NCC FM transmitter dataset",
+      "sourceUrl": "https://data.gov.tw/en/datasets/6445",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "tw-taipei-臺北之音廣播電臺-107-7",
+      "name": "臺北之音廣播電臺",
+      "freqMhz": 107.7,
+      "cityId": "tw-taipei",
+      "description": "Taiwan FM station listed by NCC for 臺北市. Station: 臺北之音廣播電臺. Category: class-b. Transmitter address: 臺北市中正區杭州南路1段15之1號頂樓.",
+      "tags": [
+        "fm",
+        "official",
+        "ncc",
+        "taiwan",
+        "class-b"
+      ],
+      "source": "NCC FM transmitter dataset",
+      "sourceUrl": "https://data.gov.tw/en/datasets/6445",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "tw-taitung-臺東之聲廣播電臺-89-7",
+      "name": "臺東之聲廣播電臺",
+      "freqMhz": 89.7,
+      "cityId": "tw-taitung",
+      "description": "Taiwan FM station listed by NCC for 臺東市. Station: 臺東之聲廣播電臺. Category: class-a. Transmitter address: 臺東市四維路三段11號16樓樓頂.",
+      "tags": [
+        "fm",
+        "official",
+        "ncc",
+        "taiwan",
+        "class-a"
+      ],
+      "source": "NCC FM transmitter dataset",
+      "sourceUrl": "https://data.gov.tw/en/datasets/6445",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "tw-taitung-臺東知本廣播電臺-91-3",
+      "name": "臺東知本廣播電臺",
+      "freqMhz": 91.3,
+      "cityId": "tw-taitung",
+      "description": "Taiwan FM station listed by NCC for 臺東市. Station: 臺東知本廣播電臺. Category: class-a. Transmitter address: 臺東市四維路三段59巷8號13樓之8.",
+      "tags": [
+        "fm",
+        "official",
+        "ncc",
+        "taiwan",
+        "class-a"
+      ],
+      "source": "NCC FM transmitter dataset",
+      "sourceUrl": "https://data.gov.tw/en/datasets/6445",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "tw-taitung-內政部警政署警察廣播電臺臺東分臺-94-3",
+      "name": "內政部警政署警察廣播電臺臺東分臺",
+      "freqMhz": 94.3,
+      "cityId": "tw-taitung",
+      "description": "Taiwan FM station listed by NCC for 臺東市. Station: 內政部警政署警察廣播電臺臺東分臺. Category: class-c. Transmitter address: 臺東市太麻里鄉三和村47號.",
+      "tags": [
+        "fm",
+        "official",
+        "ncc",
+        "taiwan",
+        "class-c"
+      ],
+      "source": "NCC FM transmitter dataset",
+      "sourceUrl": "https://data.gov.tw/en/datasets/6445",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "tw-taitung-漢聲廣播電臺臺東分臺-105-3",
+      "name": "漢聲廣播電臺臺東分臺",
+      "freqMhz": 105.3,
+      "cityId": "tw-taitung",
+      "description": "Taiwan FM station listed by NCC for 臺東市. Station: 漢聲廣播電臺臺東分臺. Category: class-c. Transmitter address: 臺東市鯉魚山營區.",
+      "tags": [
+        "fm",
+        "official",
+        "ncc",
+        "taiwan",
+        "class-c"
+      ],
+      "source": "NCC FM transmitter dataset",
+      "sourceUrl": "https://data.gov.tw/en/datasets/6445",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "tw-taitung-2-大寶桑廣播電臺-92-5",
+      "name": "大寶桑廣播電臺",
+      "freqMhz": 92.5,
+      "cityId": "tw-taitung-2",
+      "description": "Taiwan FM station listed by NCC for 臺東縣. Station: 大寶桑廣播電臺. Category: class-a. Transmitter address: 臺東縣太麻里鄉荖花段520地號.",
+      "tags": [
+        "fm",
+        "official",
+        "ncc",
+        "taiwan",
+        "class-a"
+      ],
+      "source": "NCC FM transmitter dataset",
+      "sourceUrl": "https://data.gov.tw/en/datasets/6445",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "tw-taitung-2-內政部警政署警察廣播電臺森永轉播站-94-3",
+      "name": "內政部警政署警察廣播電臺森永轉播站",
+      "freqMhz": 94.3,
+      "cityId": "tw-taitung-2",
+      "description": "Taiwan FM station listed by NCC for 臺東縣. Station: 內政部警政署警察廣播電臺森永轉播站. Category: class-a. Transmitter address: 臺東縣達仁鄉森永村森永5號.",
+      "tags": [
+        "fm",
+        "official",
+        "ncc",
+        "taiwan",
+        "class-a"
+      ],
+      "source": "NCC FM transmitter dataset",
+      "sourceUrl": "https://data.gov.tw/en/datasets/6445",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "tw-taitung-2-alian原住民族廣播電臺東河轉播站-96-1",
+      "name": "Alian原住民族廣播電臺東河轉播站",
+      "freqMhz": 96.1,
+      "cityId": "tw-taitung-2",
+      "description": "Taiwan FM station listed by NCC for 臺東縣. Station: Alian原住民族廣播電臺東河轉播站. Category: class-a. Transmitter address: 臺東縣東河鄉高原段1579地號.",
+      "tags": [
+        "fm",
+        "official",
+        "ncc",
+        "taiwan",
+        "class-a"
+      ],
+      "source": "NCC FM transmitter dataset",
+      "sourceUrl": "https://data.gov.tw/en/datasets/6445",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "tw-taitung-2-alian原住民族廣播電臺森永轉播站-96-1",
+      "name": "Alian原住民族廣播電臺森永轉播站",
+      "freqMhz": 96.1,
+      "cityId": "tw-taitung-2",
+      "description": "Taiwan FM station listed by NCC for 臺東縣. Station: Alian原住民族廣播電臺森永轉播站. Category: class-a. Transmitter address: 臺東縣達仁鄉森永村森永5號.",
+      "tags": [
+        "fm",
+        "official",
+        "ncc",
+        "taiwan",
+        "class-a"
+      ],
+      "source": "NCC FM transmitter dataset",
+      "sourceUrl": "https://data.gov.tw/en/datasets/6445",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "tw-taitung-2-alian原住民族廣播電臺海端轉播站-96-1",
+      "name": "Alian原住民族廣播電臺海端轉播站",
+      "freqMhz": 96.1,
+      "cityId": "tw-taitung-2",
+      "description": "Taiwan FM station listed by NCC for 臺東縣. Station: Alian原住民族廣播電臺海端轉播站. Category: class-a. Transmitter address: 臺東縣海端鄉利稻(0220)段396-2地號.",
+      "tags": [
+        "fm",
+        "official",
+        "ncc",
+        "taiwan",
+        "class-a"
+      ],
+      "source": "NCC FM transmitter dataset",
+      "sourceUrl": "https://data.gov.tw/en/datasets/6445",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "tw-taitung-2-alian原住民族廣播電臺綠島轉播站-96-1",
+      "name": "Alian原住民族廣播電臺綠島轉播站",
+      "freqMhz": 96.1,
+      "cityId": "tw-taitung-2",
+      "description": "Taiwan FM station listed by NCC for 臺東縣. Station: Alian原住民族廣播電臺綠島轉播站. Category: class-c. Transmitter address: 臺東縣綠島鄉南寮村火燒山路5號.",
+      "tags": [
+        "fm",
+        "official",
+        "ncc",
+        "taiwan",
+        "class-c"
+      ],
+      "source": "NCC FM transmitter dataset",
+      "sourceUrl": "https://data.gov.tw/en/datasets/6445",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "tw-taitung-2-alian原住民族廣播電臺蘭嶼轉播站-96-1",
+      "name": "Alian原住民族廣播電臺蘭嶼轉播站",
+      "freqMhz": 96.1,
+      "cityId": "tw-taitung-2",
+      "description": "Taiwan FM station listed by NCC for 臺東縣. Station: Alian原住民族廣播電臺蘭嶼轉播站. Category: class-a. Transmitter address: 臺東縣蘭嶼鄉紅頭村紅頭1-6號.",
+      "tags": [
+        "fm",
+        "official",
+        "ncc",
+        "taiwan",
+        "class-a"
+      ],
+      "source": "NCC FM transmitter dataset",
+      "sourceUrl": "https://data.gov.tw/en/datasets/6445",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "tw-taitung-2-alian原住民廣播電臺臺東西川山轉播站-96-3",
+      "name": "Alian原住民廣播電臺臺東西川山轉播站",
+      "freqMhz": 96.3,
+      "cityId": "tw-taitung-2",
+      "description": "Taiwan FM station listed by NCC for 臺東縣. Station: Alian原住民廣播電臺臺東西川山轉播站. Category: class-c. Transmitter address: 臺東縣太麻里鄉三和村47號.",
+      "tags": [
+        "fm",
+        "official",
+        "ncc",
+        "taiwan",
+        "class-c"
+      ],
+      "source": "NCC FM transmitter dataset",
+      "sourceUrl": "https://data.gov.tw/en/datasets/6445",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "tw-taitung-2-東民廣播電臺-98-7",
+      "name": "東民廣播電臺",
+      "freqMhz": 98.7,
+      "cityId": "tw-taitung-2",
+      "description": "Taiwan FM station listed by NCC for 臺東縣. Station: 東民廣播電臺. Category: class-b. Transmitter address: 臺東縣太麻里鄉三和村荖花段521地號.",
+      "tags": [
+        "fm",
+        "official",
+        "ncc",
+        "taiwan",
+        "class-b"
+      ],
+      "source": "NCC FM transmitter dataset",
+      "sourceUrl": "https://data.gov.tw/en/datasets/6445",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "tw-taitung-2-蘭嶼廣播電臺-99-5",
+      "name": "蘭嶼廣播電臺",
+      "freqMhz": 99.5,
+      "cityId": "tw-taitung-2",
+      "description": "Taiwan FM station listed by NCC for 臺東縣. Station: 蘭嶼廣播電臺. Category: class-a. Transmitter address: 臺東縣蘭嶼鄉紅頭村漁人147號.",
+      "tags": [
+        "fm",
+        "official",
+        "ncc",
+        "taiwan",
+        "class-a"
+      ],
+      "source": "NCC FM transmitter dataset",
+      "sourceUrl": "https://data.gov.tw/en/datasets/6445",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "tw-taitung-2-國立教育廣播電臺成功同頻轉播站-100-5",
+      "name": "國立教育廣播電臺成功同頻轉播站",
+      "freqMhz": 100.5,
+      "cityId": "tw-taitung-2",
+      "description": "Taiwan FM station listed by NCC for 臺東縣. Station: 國立教育廣播電臺成功同頻轉播站. Category: class-b. Transmitter address: 臺東縣成功鎮基翬路56號.",
+      "tags": [
+        "fm",
+        "official",
+        "ncc",
+        "taiwan",
+        "class-b"
+      ],
+      "source": "NCC FM transmitter dataset",
+      "sourceUrl": "https://data.gov.tw/en/datasets/6445",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "tw-taitung-2-國立教育廣播電臺鯉魚山發射臺-100-5",
+      "name": "國立教育廣播電臺鯉魚山發射臺",
+      "freqMhz": 100.5,
+      "cityId": "tw-taitung-2",
+      "description": "Taiwan FM station listed by NCC for 臺東縣. Station: 國立教育廣播電臺鯉魚山發射臺. Category: class-c. Transmitter address: 臺東縣臺東市桂林北路185號.",
+      "tags": [
+        "fm",
+        "official",
+        "ncc",
+        "taiwan",
+        "class-c"
+      ],
+      "source": "NCC FM transmitter dataset",
+      "sourceUrl": "https://data.gov.tw/en/datasets/6445",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "tw-taitung-2-內政部警政署警察廣播電臺西山川發射站全國網-101-3",
+      "name": "內政部警政署警察廣播電臺西山川發射站(全國網)",
+      "freqMhz": 101.3,
+      "cityId": "tw-taitung-2",
+      "description": "Taiwan FM station listed by NCC for 臺東縣. Station: 內政部警政署警察廣播電臺西山川發射站(全國網). Category: class-b. Transmitter address: 臺東縣太麻里鄉三和村47號.",
+      "tags": [
+        "fm",
+        "official",
+        "ncc",
+        "taiwan",
+        "class-b"
+      ],
+      "source": "NCC FM transmitter dataset",
+      "sourceUrl": "https://data.gov.tw/en/datasets/6445",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "tw-taitung-2-中國廣播股份有限公司臺東調頻廣播電臺-102-1",
+      "name": "中國廣播股份有限公司臺東調頻廣播電臺",
+      "freqMhz": 102.1,
+      "cityId": "tw-taitung-2",
+      "description": "Taiwan FM station listed by NCC for 臺東縣. Station: 中國廣播股份有限公司臺東調頻廣播電臺. Category: class-c. Transmitter address: 臺東縣太麻里鄉樂山段173地號.",
+      "tags": [
+        "fm",
+        "official",
+        "ncc",
+        "taiwan",
+        "class-c"
+      ],
+      "source": "NCC FM transmitter dataset",
+      "sourceUrl": "https://data.gov.tw/en/datasets/6445",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "tw-taitung-2-國立教育廣播電臺卑南發射臺-102-9",
+      "name": "國立教育廣播電臺卑南發射臺",
+      "freqMhz": 102.9,
+      "cityId": "tw-taitung-2",
+      "description": "Taiwan FM station listed by NCC for 臺東縣. Station: 國立教育廣播電臺卑南發射臺. Category: class-c. Transmitter address: 臺東縣卑南鄉美農村高台57號.",
+      "tags": [
+        "fm",
+        "official",
+        "ncc",
+        "taiwan",
+        "class-c"
+      ],
+      "source": "NCC FM transmitter dataset",
+      "sourceUrl": "https://data.gov.tw/en/datasets/6445",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "tw-taitung-2-國立教育廣播電臺成功同頻轉播站-102-9",
+      "name": "國立教育廣播電臺成功同頻轉播站",
+      "freqMhz": 102.9,
+      "cityId": "tw-taitung-2",
+      "description": "Taiwan FM station listed by NCC for 臺東縣. Station: 國立教育廣播電臺成功同頻轉播站. Category: class-b. Transmitter address: 臺東縣成功鎮基翬路56號.",
+      "tags": [
+        "fm",
+        "official",
+        "ncc",
+        "taiwan",
+        "class-b"
+      ],
+      "source": "NCC FM transmitter dataset",
+      "sourceUrl": "https://data.gov.tw/en/datasets/6445",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "tw-taitung-2-漢聲廣播電臺關山轉播站-105-3",
+      "name": "漢聲廣播電臺關山轉播站",
+      "freqMhz": 105.3,
+      "cityId": "tw-taitung-2",
+      "description": "Taiwan FM station listed by NCC for 臺東縣. Station: 漢聲廣播電臺關山轉播站. Category: class-b. Transmitter address: 臺東縣關山鎮德高里西莊24-5號.",
+      "tags": [
+        "fm",
+        "official",
+        "ncc",
+        "taiwan",
+        "class-b"
+      ],
+      "source": "NCC FM transmitter dataset",
+      "sourceUrl": "https://data.gov.tw/en/datasets/6445",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "tw-taitung-2-講客廣播電臺臺東轉播站-106-9",
+      "name": "講客廣播電臺臺東轉播站",
+      "freqMhz": 106.9,
+      "cityId": "tw-taitung-2",
+      "description": "Taiwan FM station listed by NCC for 臺東縣. Station: 講客廣播電臺臺東轉播站. Category: class-c. Transmitter address: 臺東縣太麻里鄉三和村47號.",
+      "tags": [
+        "fm",
+        "official",
+        "ncc",
+        "taiwan",
+        "class-c"
+      ],
+      "source": "NCC FM transmitter dataset",
+      "sourceUrl": "https://data.gov.tw/en/datasets/6445",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "tw-xizhou-苗栗正義廣播電臺-88-9",
+      "name": "苗栗正義廣播電臺",
+      "freqMhz": 88.9,
+      "cityId": "tw-xizhou",
+      "description": "Taiwan FM station listed by NCC for 苗栗縣. Station: 苗栗正義廣播電臺. Category: class-a. Transmitter address: 苗栗縣三義鄉西湖村伯公坑15鄰34號.",
+      "tags": [
+        "fm",
+        "official",
+        "ncc",
+        "taiwan",
+        "class-a"
+      ],
+      "source": "NCC FM transmitter dataset",
+      "sourceUrl": "https://data.gov.tw/en/datasets/6445",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "tw-xizhou-新天地廣播電臺-90-5",
+      "name": "新天地廣播電臺",
+      "freqMhz": 90.5,
+      "cityId": "tw-xizhou",
+      "description": "Taiwan FM station listed by NCC for 苗栗縣. Station: 新天地廣播電臺. Category: class-a. Transmitter address: 苗栗縣三義鄉西湖村伯公坑38號.",
+      "tags": [
+        "fm",
+        "official",
+        "ncc",
+        "taiwan",
+        "class-a"
+      ],
+      "source": "NCC FM transmitter dataset",
+      "sourceUrl": "https://data.gov.tw/en/datasets/6445",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "tw-xizhou-中港溪廣播電臺-91-3",
+      "name": "中港溪廣播電臺",
+      "freqMhz": 91.3,
+      "cityId": "tw-xizhou",
+      "description": "Taiwan FM station listed by NCC for 苗栗縣. Station: 中港溪廣播電臺. Category: class-a. Transmitter address: 苗栗縣南庄鄉神桌山段12地號.",
+      "tags": [
+        "fm",
+        "official",
+        "ncc",
+        "taiwan",
+        "class-a"
+      ],
+      "source": "NCC FM transmitter dataset",
+      "sourceUrl": "https://data.gov.tw/en/datasets/6445",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "tw-xizhou-亞太廣播電臺-92-3",
+      "name": "亞太廣播電臺",
+      "freqMhz": 92.3,
+      "cityId": "tw-xizhou",
+      "description": "Taiwan FM station listed by NCC for 苗栗縣. Station: 亞太廣播電臺. Category: class-a. Transmitter address: 苗栗縣獅潭鄉仙山段68地號.",
+      "tags": [
+        "fm",
+        "official",
+        "ncc",
+        "taiwan",
+        "class-a"
+      ],
+      "source": "NCC FM transmitter dataset",
+      "sourceUrl": "https://data.gov.tw/en/datasets/6445",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "tw-xizhou-內政部警政署警察廣播電臺臺中分臺-94-5",
+      "name": "內政部警政署警察廣播電臺臺中分臺",
+      "freqMhz": 94.5,
+      "cityId": "tw-xizhou",
+      "description": "Taiwan FM station listed by NCC for 苗栗縣. Station: 內政部警政署警察廣播電臺臺中分臺. Category: class-c. Transmitter address: 苗栗縣三義鄉西湖村伯公坑33號.",
+      "tags": [
+        "fm",
+        "official",
+        "ncc",
+        "taiwan",
+        "class-c"
+      ],
+      "source": "NCC FM transmitter dataset",
+      "sourceUrl": "https://data.gov.tw/en/datasets/6445",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "tw-xizhou-alian原住民族廣播電臺火炎山轉播站-96-1",
+      "name": "Alian原住民族廣播電臺火炎山轉播站",
+      "freqMhz": 96.1,
+      "cityId": "tw-xizhou",
+      "description": "Taiwan FM station listed by NCC for 苗栗縣. Station: Alian原住民族廣播電臺火炎山轉播站. Category: class-c. Transmitter address: 苗栗縣三義鄉西湖村伯公坑15鄰33號.",
+      "tags": [
+        "fm",
+        "official",
+        "ncc",
+        "taiwan",
+        "class-c"
+      ],
+      "source": "NCC FM transmitter dataset",
+      "sourceUrl": "https://data.gov.tw/en/datasets/6445",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "tw-xizhou-大漢之音廣播電臺-97-1",
+      "name": "大漢之音廣播電臺",
+      "freqMhz": 97.1,
+      "cityId": "tw-xizhou",
+      "description": "Taiwan FM station listed by NCC for 苗栗縣. Station: 大漢之音廣播電臺. Category: class-b. Transmitter address: 苗栗縣獅潭鄉仙山段353地號.",
+      "tags": [
+        "fm",
+        "official",
+        "ncc",
+        "taiwan",
+        "class-b"
+      ],
+      "source": "NCC FM transmitter dataset",
+      "sourceUrl": "https://data.gov.tw/en/datasets/6445",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "tw-xizhou-大苗栗調頻廣播電臺-98-3",
+      "name": "大苗栗調頻廣播電臺",
+      "freqMhz": 98.3,
+      "cityId": "tw-xizhou",
+      "description": "Taiwan FM station listed by NCC for 苗栗縣. Station: 大苗栗調頻廣播電臺. Category: class-b. Transmitter address: 苗栗縣苗栗市站前1號頂樓.",
+      "tags": [
+        "fm",
+        "official",
+        "ncc",
+        "taiwan",
+        "class-b"
+      ],
+      "source": "NCC FM transmitter dataset",
+      "sourceUrl": "https://data.gov.tw/en/datasets/6445",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "tw-xizhou-臺北國際社區廣播電臺火炎山轉播站-100-1",
+      "name": "臺北國際社區廣播電臺火炎山轉播站",
+      "freqMhz": 100.1,
+      "cityId": "tw-xizhou",
+      "description": "Taiwan FM station listed by NCC for 苗栗縣. Station: 臺北國際社區廣播電臺火炎山轉播站. Category: class-c. Transmitter address: 苗栗縣三義鄉西湖村伯公坑38-2號.",
+      "tags": [
+        "fm",
+        "official",
+        "ncc",
+        "taiwan",
+        "class-c"
+      ],
+      "source": "NCC FM transmitter dataset",
+      "sourceUrl": "https://data.gov.tw/en/datasets/6445",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "tw-xizhou-講客廣播電臺三義轉播站-101-5",
+      "name": "講客廣播電臺三義轉播站",
+      "freqMhz": 101.5,
+      "cityId": "tw-xizhou",
+      "description": "Taiwan FM station listed by NCC for 苗栗縣. Station: 講客廣播電臺三義轉播站. Category: class-c. Transmitter address: 苗栗縣三義鄉西湖村伯公坑38-1號.",
+      "tags": [
+        "fm",
+        "official",
+        "ncc",
+        "taiwan",
+        "class-c"
+      ],
+      "source": "NCC FM transmitter dataset",
+      "sourceUrl": "https://data.gov.tw/en/datasets/6445",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "tw-xizhou-愛苗廣播電臺-102-3",
+      "name": "愛苗廣播電臺",
+      "freqMhz": 102.3,
+      "cityId": "tw-xizhou",
+      "description": "Taiwan FM station listed by NCC for 苗栗縣. Station: 愛苗廣播電臺. Category: class-b. Transmitter address: 苗栗縣獅潭鄉仙山段354-022地號.",
+      "tags": [
+        "fm",
+        "official",
+        "ncc",
+        "taiwan",
+        "class-b"
+      ],
+      "source": "NCC FM transmitter dataset",
+      "sourceUrl": "https://data.gov.tw/en/datasets/6445",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "tw-xizhou-中國廣播股份有限公司火炎山調頻廣播電臺-102-9",
+      "name": "中國廣播股份有限公司火炎山調頻廣播電臺",
+      "freqMhz": 102.9,
+      "cityId": "tw-xizhou",
+      "description": "Taiwan FM station listed by NCC for 苗栗縣. Station: 中國廣播股份有限公司火炎山調頻廣播電臺. Category: class-c. Transmitter address: 苗栗縣三義鄉西湖村伯公坑38-2號.",
+      "tags": [
+        "fm",
+        "official",
+        "ncc",
+        "taiwan",
+        "class-c"
+      ],
+      "source": "NCC FM transmitter dataset",
+      "sourceUrl": "https://data.gov.tw/en/datasets/6445",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "tw-xizhou-教育廣播電臺苗栗轉播站-103-9",
+      "name": "教育廣播電臺苗栗轉播站",
+      "freqMhz": 103.9,
+      "cityId": "tw-xizhou",
+      "description": "Taiwan FM station listed by NCC for 苗栗縣. Station: 教育廣播電臺苗栗轉播站. Category: class-c. Transmitter address: 苗栗縣造橋鄉豐湖村12鄰阿義埤路16之1號.",
+      "tags": [
+        "fm",
+        "official",
+        "ncc",
+        "taiwan",
+        "class-c"
+      ],
+      "source": "NCC FM transmitter dataset",
+      "sourceUrl": "https://data.gov.tw/en/datasets/6445",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "tw-xizhou-漢聲廣播電臺火炎山分臺-104-5",
+      "name": "漢聲廣播電臺火炎山分臺",
+      "freqMhz": 104.5,
+      "cityId": "tw-xizhou",
+      "description": "Taiwan FM station listed by NCC for 苗栗縣. Station: 漢聲廣播電臺火炎山分臺. Category: class-c. Transmitter address: 苗栗縣三義火炎山營區.",
+      "tags": [
+        "fm",
+        "official",
+        "ncc",
+        "taiwan",
+        "class-c"
+      ],
+      "source": "NCC FM transmitter dataset",
+      "sourceUrl": "https://data.gov.tw/en/datasets/6445",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "tw-xizhou-內政部警政署警察廣播電臺火炎山發射站全國網-105-1",
+      "name": "內政部警政署警察廣播電臺火炎山發射站(全國網)",
+      "freqMhz": 105.1,
+      "cityId": "tw-xizhou",
+      "description": "Taiwan FM station listed by NCC for 苗栗縣. Station: 內政部警政署警察廣播電臺火炎山發射站(全國網). Category: class-c. Transmitter address: 苗栗縣三義鄉西湖村伯公坑33號.",
+      "tags": [
+        "fm",
+        "official",
+        "ncc",
+        "taiwan",
+        "class-c"
+      ],
+      "source": "NCC FM transmitter dataset",
+      "sourceUrl": "https://data.gov.tw/en/datasets/6445",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "tw-xizhou-講客廣播電臺大湖轉播站-106-9",
+      "name": "講客廣播電臺大湖轉播站",
+      "freqMhz": 106.9,
+      "cityId": "tw-xizhou",
+      "description": "Taiwan FM station listed by NCC for 苗栗縣. Station: 講客廣播電臺大湖轉播站. Category: class-c. Transmitter address: 苗栗縣大湖鄉武榮村武榮37號.",
+      "tags": [
+        "fm",
+        "official",
+        "ncc",
+        "taiwan",
+        "class-c"
+      ],
+      "source": "NCC FM transmitter dataset",
+      "sourceUrl": "https://data.gov.tw/en/datasets/6445",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "tw-yilan-佛光大學佛大之聲學校實習廣播電臺-88-1",
+      "name": "佛光大學佛大之聲學校實習廣播電臺",
+      "freqMhz": 88.1,
+      "cityId": "tw-yilan",
+      "description": "Taiwan FM station listed by NCC for 宜蘭縣. Station: 佛光大學佛大之聲學校實習廣播電臺. Category: school. Transmitter address: 宜蘭縣礁溪鄉林美村林尾路160號.",
+      "tags": [
+        "fm",
+        "official",
+        "ncc",
+        "taiwan",
+        "school"
+      ],
+      "source": "NCC FM transmitter dataset",
+      "sourceUrl": "https://data.gov.tw/en/datasets/6445",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "tw-yilan-中原調頻廣播電臺-89-1",
+      "name": "中原調頻廣播電臺",
+      "freqMhz": 89.1,
+      "cityId": "tw-yilan",
+      "description": "Taiwan FM station listed by NCC for 宜蘭縣. Station: 中原調頻廣播電臺. Category: class-a. Transmitter address: 宜蘭縣員山鄉內湖1段0105-0000地號.",
+      "tags": [
+        "fm",
+        "official",
+        "ncc",
+        "taiwan",
+        "class-a"
+      ],
+      "source": "NCC FM transmitter dataset",
+      "sourceUrl": "https://data.gov.tw/en/datasets/6445",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "tw-yilan-北宜產業廣播電臺-89-9",
+      "name": "北宜產業廣播電臺",
+      "freqMhz": 89.9,
+      "cityId": "tw-yilan",
+      "description": "Taiwan FM station listed by NCC for 宜蘭縣. Station: 北宜產業廣播電臺. Category: class-a. Transmitter address: 宜蘭縣壯圍鄉古結村古結路8號.",
+      "tags": [
+        "fm",
+        "official",
+        "ncc",
+        "taiwan",
+        "class-a"
+      ],
+      "source": "NCC FM transmitter dataset",
+      "sourceUrl": "https://data.gov.tw/en/datasets/6445",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "tw-yilan-羅東廣播電臺-90-3",
+      "name": "羅東廣播電臺",
+      "freqMhz": 90.3,
+      "cityId": "tw-yilan",
+      "description": "Taiwan FM station listed by NCC for 宜蘭縣. Station: 羅東廣播電臺. Category: class-a. Transmitter address: 宜蘭縣員山鄉內湖1段0148-0000地號.",
+      "tags": [
+        "fm",
+        "official",
+        "ncc",
+        "taiwan",
+        "class-a"
+      ],
+      "source": "NCC FM transmitter dataset",
+      "sourceUrl": "https://data.gov.tw/en/datasets/6445",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "tw-yilan-宜蘭之聲廣播電臺-90-7",
+      "name": "宜蘭之聲廣播電臺",
+      "freqMhz": 90.7,
+      "cityId": "tw-yilan",
+      "description": "Taiwan FM station listed by NCC for 宜蘭縣. Station: 宜蘭之聲廣播電臺. Category: class-a. Transmitter address: 宜蘭縣三星鄉槍櫃城段0029-0000地號(羅東事業區50林班地).",
+      "tags": [
+        "fm",
+        "official",
+        "ncc",
+        "taiwan",
+        "class-a"
+      ],
+      "source": "NCC FM transmitter dataset",
+      "sourceUrl": "https://data.gov.tw/en/datasets/6445",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "tw-yilan-太平洋之聲廣播電臺-91-5",
+      "name": "太平洋之聲廣播電臺",
+      "freqMhz": 91.5,
+      "cityId": "tw-yilan",
+      "description": "Taiwan FM station listed by NCC for 宜蘭縣. Station: 太平洋之聲廣播電臺. Category: class-a. Transmitter address: 宜蘭縣員山鄉湖西村隘界二路503號.",
+      "tags": [
+        "fm",
+        "official",
+        "ncc",
+        "taiwan",
+        "class-a"
+      ],
+      "source": "NCC FM transmitter dataset",
+      "sourceUrl": "https://data.gov.tw/en/datasets/6445",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "tw-yilan-蘭友廣播電臺-91-9",
+      "name": "蘭友廣播電臺",
+      "freqMhz": 91.9,
+      "cityId": "tw-yilan",
+      "description": "Taiwan FM station listed by NCC for 宜蘭縣. Station: 蘭友廣播電臺. Category: class-a. Transmitter address: 宜蘭縣宜蘭市成功路50之2號9樓.",
+      "tags": [
+        "fm",
+        "official",
+        "ncc",
+        "taiwan",
+        "class-a"
+      ],
+      "source": "NCC FM transmitter dataset",
+      "sourceUrl": "https://data.gov.tw/en/datasets/6445",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "tw-yilan-宜蘭九二三廣播電臺-92-3",
+      "name": "宜蘭九二三廣播電臺",
+      "freqMhz": 92.3,
+      "cityId": "tw-yilan",
+      "description": "Taiwan FM station listed by NCC for 宜蘭縣. Station: 宜蘭九二三廣播電臺. Category: class-a. Transmitter address: 宜蘭縣員山鄉大湖二段0278-0000地號.",
+      "tags": [
+        "fm",
+        "official",
+        "ncc",
+        "taiwan",
+        "class-a"
+      ],
+      "source": "NCC FM transmitter dataset",
+      "sourceUrl": "https://data.gov.tw/en/datasets/6445",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "tw-yilan-alian原住民族廣播電臺南澳轉播站-96-1",
+      "name": "Alian原住民族廣播電臺南澳轉播站",
+      "freqMhz": 96.1,
+      "cityId": "tw-yilan",
+      "description": "Taiwan FM station listed by NCC for 宜蘭縣. Station: Alian原住民族廣播電臺南澳轉播站. Category: class-a. Transmitter address: 宜蘭縣南澳鄉大通路160號.",
+      "tags": [
+        "fm",
+        "official",
+        "ncc",
+        "taiwan",
+        "class-a"
+      ],
+      "source": "NCC FM transmitter dataset",
+      "sourceUrl": "https://data.gov.tw/en/datasets/6445",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "tw-yilan-alian原住民族廣播電臺大同轉播站-96-1",
+      "name": "Alian原住民族廣播電臺大同轉播站",
+      "freqMhz": 96.1,
+      "cityId": "tw-yilan",
+      "description": "Taiwan FM station listed by NCC for 宜蘭縣. Station: Alian原住民族廣播電臺大同轉播站. Category: class-a. Transmitter address: 宜蘭縣大同鄉梵梵段132地號.",
+      "tags": [
+        "fm",
+        "official",
+        "ncc",
+        "taiwan",
+        "class-a"
+      ],
+      "source": "NCC FM transmitter dataset",
+      "sourceUrl": "https://data.gov.tw/en/datasets/6445",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "tw-yilan-alian原住民族廣播電臺宜蘭轉播站-96-1",
+      "name": "Alian原住民族廣播電臺宜蘭轉播站",
+      "freqMhz": 96.1,
+      "cityId": "tw-yilan",
+      "description": "Taiwan FM station listed by NCC for 宜蘭縣. Station: Alian原住民族廣播電臺宜蘭轉播站. Category: class-b. Transmitter address: 宜蘭縣蘇澳鎮七星嶺6號.",
+      "tags": [
+        "fm",
+        "official",
+        "ncc",
+        "taiwan",
+        "class-b"
+      ],
+      "source": "NCC FM transmitter dataset",
+      "sourceUrl": "https://data.gov.tw/en/datasets/6445",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "tw-yilan-宜蘭中山廣播電臺-97-1",
+      "name": "宜蘭中山廣播電臺",
+      "freqMhz": 97.1,
+      "cityId": "tw-yilan",
+      "description": "Taiwan FM station listed by NCC for 宜蘭縣. Station: 宜蘭中山廣播電臺. Category: class-b. Transmitter address: 宜蘭縣蘇澳鎮港邊里七星嶺2號.",
+      "tags": [
+        "fm",
+        "official",
+        "ncc",
+        "taiwan",
+        "class-b"
+      ],
+      "source": "NCC FM transmitter dataset",
+      "sourceUrl": "https://data.gov.tw/en/datasets/6445",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "tw-yilan-噶瑪蘭廣播電臺股份有限公司南澳同頻轉播站-97-9",
+      "name": "噶瑪蘭廣播電臺股份有限公司南澳同頻轉播站",
+      "freqMhz": 97.9,
+      "cityId": "tw-yilan",
+      "description": "Taiwan FM station listed by NCC for 宜蘭縣. Station: 噶瑪蘭廣播電臺股份有限公司南澳同頻轉播站. Category: class-a. Transmitter address: 宜蘭縣南澳鄉鹿皮段770地號.",
+      "tags": [
+        "fm",
+        "official",
+        "ncc",
+        "taiwan",
+        "class-a"
+      ],
+      "source": "NCC FM transmitter dataset",
+      "sourceUrl": "https://data.gov.tw/en/datasets/6445",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "tw-yilan-噶瑪蘭調頻廣播電臺-97-9",
+      "name": "噶瑪蘭調頻廣播電臺",
+      "freqMhz": 97.9,
+      "cityId": "tw-yilan",
+      "description": "Taiwan FM station listed by NCC for 宜蘭縣. Station: 噶瑪蘭調頻廣播電臺. Category: class-b. Transmitter address: 宜蘭縣大同鄉寒溪村華興巷48號.",
+      "tags": [
+        "fm",
+        "official",
+        "ncc",
+        "taiwan",
+        "class-b"
+      ],
+      "source": "NCC FM transmitter dataset",
+      "sourceUrl": "https://data.gov.tw/en/datasets/6445",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "tw-yilan-東方廣播電臺-99-5",
+      "name": "東方廣播電臺",
+      "freqMhz": 99.5,
+      "cityId": "tw-yilan",
+      "description": "Taiwan FM station listed by NCC for 宜蘭縣. Station: 東方廣播電臺. Category: class-b. Transmitter address: 宜蘭縣員山鄉內湖1段105地號.",
+      "tags": [
+        "fm",
+        "official",
+        "ncc",
+        "taiwan",
+        "class-b"
+      ],
+      "source": "NCC FM transmitter dataset",
+      "sourceUrl": "https://data.gov.tw/en/datasets/6445",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "tw-yilan-東方廣播電臺南澳同頻轉播站-99-5",
+      "name": "東方廣播電臺南澳同頻轉播站",
+      "freqMhz": 99.5,
+      "cityId": "tw-yilan",
+      "description": "Taiwan FM station listed by NCC for 宜蘭縣. Station: 東方廣播電臺南澳同頻轉播站. Category: class-b. Transmitter address: 宜蘭縣南澳鄉鹿皮段770地號.",
+      "tags": [
+        "fm",
+        "official",
+        "ncc",
+        "taiwan",
+        "class-b"
+      ],
+      "source": "NCC FM transmitter dataset",
+      "sourceUrl": "https://data.gov.tw/en/datasets/6445",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "tw-yilan-內政部警政署警察廣播電臺南澳轉播站-101-3",
+      "name": "內政部警政署警察廣播電臺南澳轉播站",
+      "freqMhz": 101.3,
+      "cityId": "tw-yilan",
+      "description": "Taiwan FM station listed by NCC for 宜蘭縣. Station: 內政部警政署警察廣播電臺南澳轉播站. Category: class-a. Transmitter address: 宜蘭縣南澳鄉大通路160號.",
+      "tags": [
+        "fm",
+        "official",
+        "ncc",
+        "taiwan",
+        "class-a"
+      ],
+      "source": "NCC FM transmitter dataset",
+      "sourceUrl": "https://data.gov.tw/en/datasets/6445",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "tw-yilan-內政部警政署警察廣播電臺烏石鼻轉播站-101-3",
+      "name": "內政部警政署警察廣播電臺烏石鼻轉播站",
+      "freqMhz": 101.3,
+      "cityId": "tw-yilan",
+      "description": "Taiwan FM station listed by NCC for 宜蘭縣. Station: 內政部警政署警察廣播電臺烏石鼻轉播站. Category: class-a. Transmitter address: 宜蘭縣蘇澳鎮烏石鼻1號.",
+      "tags": [
+        "fm",
+        "official",
+        "ncc",
+        "taiwan",
+        "class-a"
+      ],
+      "source": "NCC FM transmitter dataset",
+      "sourceUrl": "https://data.gov.tw/en/datasets/6445",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "tw-yilan-中國廣播股份有限公司宜蘭調頻廣播電臺-102-1",
+      "name": "中國廣播股份有限公司宜蘭調頻廣播電臺",
+      "freqMhz": 102.1,
+      "cityId": "tw-yilan",
+      "description": "Taiwan FM station listed by NCC for 宜蘭縣. Station: 中國廣播股份有限公司宜蘭調頻廣播電臺. Category: class-c. Transmitter address: 宜蘭縣壯圍鄉古結路8號.",
+      "tags": [
+        "fm",
+        "official",
+        "ncc",
+        "taiwan",
+        "class-c"
+      ],
+      "source": "NCC FM transmitter dataset",
+      "sourceUrl": "https://data.gov.tw/en/datasets/6445",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "tw-yilan-講客廣播電臺宜蘭轉播站-102-9",
+      "name": "講客廣播電臺宜蘭轉播站",
+      "freqMhz": 102.9,
+      "cityId": "tw-yilan",
+      "description": "Taiwan FM station listed by NCC for 宜蘭縣. Station: 講客廣播電臺宜蘭轉播站. Category: class-c. Transmitter address: 宜蘭縣蘇澳鎮七星嶺6號.",
+      "tags": [
+        "fm",
+        "official",
+        "ncc",
+        "taiwan",
+        "class-c"
+      ],
+      "source": "NCC FM transmitter dataset",
+      "sourceUrl": "https://data.gov.tw/en/datasets/6445",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "tw-yilan-國立教育廣播電臺南澳同頻轉播站-103-5",
+      "name": "國立教育廣播電臺南澳同頻轉播站",
+      "freqMhz": 103.5,
+      "cityId": "tw-yilan",
+      "description": "Taiwan FM station listed by NCC for 宜蘭縣. Station: 國立教育廣播電臺南澳同頻轉播站. Category: class-c. Transmitter address: 宜蘭縣南澳鄉鹿皮段770號.",
+      "tags": [
+        "fm",
+        "official",
+        "ncc",
+        "taiwan",
+        "class-c"
+      ],
+      "source": "NCC FM transmitter dataset",
+      "sourceUrl": "https://data.gov.tw/en/datasets/6445",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "tw-yilan-國立教育廣播電臺宜蘭轉播站-103-5",
+      "name": "國立教育廣播電臺宜蘭轉播站",
+      "freqMhz": 103.5,
+      "cityId": "tw-yilan",
+      "description": "Taiwan FM station listed by NCC for 宜蘭縣. Station: 國立教育廣播電臺宜蘭轉播站. Category: class-c. Transmitter address: 宜蘭縣蘇澳鎮七星嶺蘇東里1之20號.",
+      "tags": [
+        "fm",
+        "official",
+        "ncc",
+        "taiwan",
+        "class-c"
+      ],
+      "source": "NCC FM transmitter dataset",
+      "sourceUrl": "https://data.gov.tw/en/datasets/6445",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "tw-yilan-內政部警政署警察廣播電臺南澳轉播站-104-9",
+      "name": "內政部警政署警察廣播電臺南澳轉播站",
+      "freqMhz": 104.9,
+      "cityId": "tw-yilan",
+      "description": "Taiwan FM station listed by NCC for 宜蘭縣. Station: 內政部警政署警察廣播電臺南澳轉播站. Category: class-a. Transmitter address: 宜蘭縣南澳鄉大通路160號.",
+      "tags": [
+        "fm",
+        "official",
+        "ncc",
+        "taiwan",
+        "class-a"
+      ],
+      "source": "NCC FM transmitter dataset",
+      "sourceUrl": "https://data.gov.tw/en/datasets/6445",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "tw-yilan-內政部警政署警察廣播電臺烏石鼻轉播站-104-9",
+      "name": "內政部警政署警察廣播電臺烏石鼻轉播站",
+      "freqMhz": 104.9,
+      "cityId": "tw-yilan",
+      "description": "Taiwan FM station listed by NCC for 宜蘭縣. Station: 內政部警政署警察廣播電臺烏石鼻轉播站. Category: class-a. Transmitter address: 宜蘭縣蘇澳鎮烏石鼻1號.",
+      "tags": [
+        "fm",
+        "official",
+        "ncc",
+        "taiwan",
+        "class-a"
+      ],
+      "source": "NCC FM transmitter dataset",
+      "sourceUrl": "https://data.gov.tw/en/datasets/6445",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "tw-yilan-冬山河廣播電臺-105-5",
+      "name": "冬山河廣播電臺",
+      "freqMhz": 105.5,
+      "cityId": "tw-yilan",
+      "description": "Taiwan FM station listed by NCC for 宜蘭縣. Station: 冬山河廣播電臺. Category: class-b. Transmitter address: 宜蘭縣員山鄉內湖1段0105-0000地號.",
+      "tags": [
+        "fm",
+        "official",
+        "ncc",
+        "taiwan",
+        "class-b"
+      ],
+      "source": "NCC FM transmitter dataset",
+      "sourceUrl": "https://data.gov.tw/en/datasets/6445",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "tw-yilan-漢聲廣播電臺宜蘭轉播站-106-5",
+      "name": "漢聲廣播電臺宜蘭轉播站",
+      "freqMhz": 106.5,
+      "cityId": "tw-yilan",
+      "description": "Taiwan FM station listed by NCC for 宜蘭縣. Station: 漢聲廣播電臺宜蘭轉播站. Category: class-c. Transmitter address: 宜蘭縣蘇澳鎮七星嶺蘇東里1之20號.",
+      "tags": [
+        "fm",
+        "official",
+        "ncc",
+        "taiwan",
+        "class-c"
+      ],
+      "source": "NCC FM transmitter dataset",
+      "sourceUrl": "https://data.gov.tw/en/datasets/6445",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "tw-yilan-蘭陽廣播電臺-107-3",
+      "name": "蘭陽廣播電臺",
+      "freqMhz": 107.3,
+      "cityId": "tw-yilan",
+      "description": "Taiwan FM station listed by NCC for 宜蘭縣. Station: 蘭陽廣播電臺. Category: class-b. Transmitter address: 宜蘭縣員山鄉內湖一段147地號.",
+      "tags": [
+        "fm",
+        "official",
+        "ncc",
+        "taiwan",
+        "class-b"
+      ],
+      "source": "NCC FM transmitter dataset",
+      "sourceUrl": "https://data.gov.tw/en/datasets/6445",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "tw-yuanlin-彰化花園廣播電臺-88-7",
+      "name": "彰化花園廣播電臺",
+      "freqMhz": 88.7,
+      "cityId": "tw-yuanlin",
+      "description": "Taiwan FM station listed by NCC for 彰化縣. Station: 彰化花園廣播電臺. Category: class-a. Transmitter address: 彰化縣芬園鄉大彰路1段831號.",
+      "tags": [
+        "fm",
+        "official",
+        "ncc",
+        "taiwan",
+        "class-a"
+      ],
+      "source": "NCC FM transmitter dataset",
+      "sourceUrl": "https://data.gov.tw/en/datasets/6445",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "tw-yuanlin-關懷廣播電臺-91-1",
+      "name": "關懷廣播電臺",
+      "freqMhz": 91.1,
+      "cityId": "tw-yuanlin",
+      "description": "Taiwan FM station listed by NCC for 彰化縣. Station: 關懷廣播電臺. Category: class-a. Transmitter address: 彰化縣芬園鄉德興段726地號.",
+      "tags": [
+        "fm",
+        "official",
+        "ncc",
+        "taiwan",
+        "class-a"
+      ],
+      "source": "NCC FM transmitter dataset",
+      "sourceUrl": "https://data.gov.tw/en/datasets/6445",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "tw-yuanlin-中部調頻廣播電臺-91-9",
+      "name": "中部調頻廣播電臺",
+      "freqMhz": 91.9,
+      "cityId": "tw-yuanlin",
+      "description": "Taiwan FM station listed by NCC for 彰化縣. Station: 中部調頻廣播電臺. Category: class-a. Transmitter address: 彰化縣芬園鄉德興段62-1地號.",
+      "tags": [
+        "fm",
+        "official",
+        "ncc",
+        "taiwan",
+        "class-a"
+      ],
+      "source": "NCC FM transmitter dataset",
+      "sourceUrl": "https://data.gov.tw/en/datasets/6445",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "tw-yuanlin-靉友之聲調頻廣播電臺-97-3",
+      "name": "靉友之聲調頻廣播電臺",
+      "freqMhz": 97.3,
+      "cityId": "tw-yuanlin",
+      "description": "Taiwan FM station listed by NCC for 彰化縣. Station: 靉友之聲調頻廣播電臺. Category: class-b. Transmitter address: 彰化縣芬園鄉德興段107地號.",
+      "tags": [
+        "fm",
+        "official",
+        "ncc",
+        "taiwan",
+        "class-b"
+      ],
+      "source": "NCC FM transmitter dataset",
+      "sourceUrl": "https://data.gov.tw/en/datasets/6445",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "tw-yuanlin-中國廣播股份有限公司臺中調頻廣播電臺-102-1",
+      "name": "中國廣播股份有限公司臺中調頻廣播電臺",
+      "freqMhz": 102.1,
+      "cityId": "tw-yuanlin",
+      "description": "Taiwan FM station listed by NCC for 彰化縣. Station: 中國廣播股份有限公司臺中調頻廣播電臺. Category: class-c. Transmitter address: 彰化縣芬園鄉大彰路1段591號.",
+      "tags": [
+        "fm",
+        "official",
+        "ncc",
+        "taiwan",
+        "class-c"
+      ],
+      "source": "NCC FM transmitter dataset",
+      "sourceUrl": "https://data.gov.tw/en/datasets/6445",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "tw-zhudong-新農廣播電臺-89-1",
+      "name": "新農廣播電臺",
+      "freqMhz": 89.1,
+      "cityId": "tw-zhudong",
+      "description": "Taiwan FM station listed by NCC for 新竹縣. Station: 新農廣播電臺. Category: class-a. Transmitter address: 新竹縣芎林鄉王爺坑75-9號.",
+      "tags": [
+        "fm",
+        "official",
+        "ncc",
+        "taiwan",
+        "class-a"
+      ],
+      "source": "NCC FM transmitter dataset",
+      "sourceUrl": "https://data.gov.tw/en/datasets/6445",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "tw-zhudong-心動廣播電臺-89-9",
+      "name": "心動廣播電臺",
+      "freqMhz": 89.9,
+      "cityId": "tw-zhudong",
+      "description": "Taiwan FM station listed by NCC for 新竹縣. Station: 心動廣播電臺. Category: class-a. Transmitter address: 新竹縣五峰鄉大隘村14鄰269-30號.",
+      "tags": [
+        "fm",
+        "official",
+        "ncc",
+        "taiwan",
+        "class-a"
+      ],
+      "source": "NCC FM transmitter dataset",
+      "sourceUrl": "https://data.gov.tw/en/datasets/6445",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "tw-zhudong-竹塹廣播電臺-90-3",
+      "name": "竹塹廣播電臺",
+      "freqMhz": 90.3,
+      "cityId": "tw-zhudong",
+      "description": "Taiwan FM station listed by NCC for 新竹縣. Station: 竹塹廣播電臺. Category: class-a. Transmitter address: 新竹縣芎林鄉王爺坑地段83-42地號.",
+      "tags": [
+        "fm",
+        "official",
+        "ncc",
+        "taiwan",
+        "class-a"
+      ],
+      "source": "NCC FM transmitter dataset",
+      "sourceUrl": "https://data.gov.tw/en/datasets/6445",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "tw-zhudong-內政部警政署警察廣播電臺臺南分臺-94-7",
+      "name": "內政部警政署警察廣播電臺臺南分臺",
+      "freqMhz": 94.7,
+      "cityId": "tw-zhudong",
+      "description": "Taiwan FM station listed by NCC for 新竹縣. Station: 內政部警政署警察廣播電臺臺南分臺. Category: class-c. Transmitter address: 新竹縣橫山鄉尖筆窩66號.",
+      "tags": [
+        "fm",
+        "official",
+        "ncc",
+        "taiwan",
+        "class-c"
+      ],
+      "source": "NCC FM transmitter dataset",
+      "sourceUrl": "https://data.gov.tw/en/datasets/6445",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "tw-zhudong-alian原住民族廣播電臺五指山轉播站-96-1",
+      "name": "Alian原住民族廣播電臺五指山轉播站",
+      "freqMhz": 96.1,
+      "cityId": "tw-zhudong",
+      "description": "Taiwan FM station listed by NCC for 新竹縣. Station: Alian原住民族廣播電臺五指山轉播站. Category: class-c. Transmitter address: 新竹縣五峰鄉大隘村14鄰269-30號.",
+      "tags": [
+        "fm",
+        "official",
+        "ncc",
+        "taiwan",
+        "class-c"
+      ],
+      "source": "NCC FM transmitter dataset",
+      "sourceUrl": "https://data.gov.tw/en/datasets/6445",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "tw-zhudong-新竹之音廣播電臺-97-9",
+      "name": "新竹之音廣播電臺",
+      "freqMhz": 97.9,
+      "cityId": "tw-zhudong",
+      "description": "Taiwan FM station listed by NCC for 新竹縣. Station: 新竹之音廣播電臺. Category: class-a. Transmitter address: 新竹縣五峰鄉大隘段0302-0000地號.",
+      "tags": [
+        "fm",
+        "official",
+        "ncc",
+        "taiwan",
+        "class-a"
+      ],
+      "source": "NCC FM transmitter dataset",
+      "sourceUrl": "https://data.gov.tw/en/datasets/6445",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "tw-zhudong-新聲廣播電臺-99-3",
+      "name": "新聲廣播電臺",
+      "freqMhz": 99.3,
+      "cityId": "tw-zhudong",
+      "description": "Taiwan FM station listed by NCC for 新竹縣. Station: 新聲廣播電臺. Category: class-b. Transmitter address: 新竹縣尖石鄉義興村義興段義興小段1003-2地號.",
+      "tags": [
+        "fm",
+        "official",
+        "ncc",
+        "taiwan",
+        "class-b"
+      ],
+      "source": "NCC FM transmitter dataset",
+      "sourceUrl": "https://data.gov.tw/en/datasets/6445",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "tw-zhudong-臺北國際社區廣播電臺轉播臺新竹轉播站-100-7",
+      "name": "臺北國際社區廣播電臺轉播臺新竹轉播站",
+      "freqMhz": 100.7,
+      "cityId": "tw-zhudong",
+      "description": "Taiwan FM station listed by NCC for 新竹縣. Station: 臺北國際社區廣播電臺轉播臺新竹轉播站. Category: class-b. Transmitter address: 新竹縣芎林鄉永興村3鄰王爺坑75之9號.",
+      "tags": [
+        "fm",
+        "official",
+        "ncc",
+        "taiwan",
+        "class-b"
+      ],
+      "source": "NCC FM transmitter dataset",
+      "sourceUrl": "https://data.gov.tw/en/datasets/6445",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "tw-zhudong-講客廣播電臺新竹轉播站-105-7",
+      "name": "講客廣播電臺新竹轉播站",
+      "freqMhz": 105.7,
+      "cityId": "tw-zhudong",
+      "description": "Taiwan FM station listed by NCC for 新竹縣. Station: 講客廣播電臺新竹轉播站. Category: class-c. Transmitter address: 新竹縣五峰鄉大隘村14鄰269-30號.",
+      "tags": [
+        "fm",
+        "official",
+        "ncc",
+        "taiwan",
+        "class-c"
+      ],
+      "source": "NCC FM transmitter dataset",
+      "sourceUrl": "https://data.gov.tw/en/datasets/6445",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    }
+  ]
+}

@@ -1,0 +1,26 @@
+[
+  {
+    "id": "gb-london",
+    "name": "London",
+    "countryId": "united-kingdom",
+    "timezone": "Europe/London",
+    "latitude": 51.5072,
+    "longitude": -0.1276
+  },
+  {
+    "id": "jp-tokyo",
+    "name": "Tokyo",
+    "countryId": "japan",
+    "timezone": "Asia/Tokyo",
+    "latitude": 35.6762,
+    "longitude": 139.6503
+  },
+  {
+    "id": "kr-seoul",
+    "name": "Seoul",
+    "countryId": "south-korea",
+    "timezone": "Asia/Seoul",
+    "latitude": 37.5665,
+    "longitude": 126.978
+  }
+]

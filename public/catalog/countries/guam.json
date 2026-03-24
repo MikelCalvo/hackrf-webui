@@ -1,0 +1,271 @@
+{
+  "country": {
+    "id": "guam",
+    "code": "GU",
+    "name": "Guam",
+    "regionId": "oceania",
+    "cityCount": 3,
+    "stationCount": 12,
+    "sourceCount": 1,
+    "sources": [
+      {
+        "name": "FCC LMS Public Database",
+        "url": "https://enterpriseefiling.fcc.gov/dataentry/public/tv/lmsDatabase.html"
+      }
+    ],
+    "lastImportedAt": "2026-03-24",
+    "coverageStatus": "active",
+    "coverageTier": "official-substantial",
+    "coverageScope": "national",
+    "sourceQuality": "official-regulator",
+    "hasOfficialImporter": true,
+    "coverageScore": 88
+  },
+  "cities": [
+    {
+      "id": "gu-barrigada-village",
+      "name": "Barrigada Village",
+      "countryId": "guam",
+      "timezone": "Pacific/Guam",
+      "latitude": 13.46913,
+      "longitude": 144.79901,
+      "stationCount": 2
+    },
+    {
+      "id": "gu-hagatna",
+      "name": "Hagåtña",
+      "countryId": "guam",
+      "timezone": "Pacific/Guam",
+      "latitude": 13.47567,
+      "longitude": 144.74886,
+      "stationCount": 9
+    },
+    {
+      "id": "gu-tamuning",
+      "name": "Tamuning",
+      "countryId": "guam",
+      "timezone": "Pacific/Guam",
+      "latitude": 13.48754,
+      "longitude": 144.78143,
+      "stationCount": 1
+    }
+  ],
+  "stations": [
+    {
+      "id": "gu-barrigada-village-khmg-88-1",
+      "name": "KHMG",
+      "freqMhz": 88.1,
+      "cityId": "gu-barrigada-village",
+      "description": "Full Power FM service listed by FCC for BARRIGADA, Guam. Callsign: KHMG.",
+      "tags": [
+        "fm",
+        "official",
+        "fcc",
+        "guam",
+        "full-power"
+      ],
+      "source": "FCC LMS Public Database",
+      "sourceUrl": "https://enterpriseefiling.fcc.gov/dataentry/public/tv/lmsDatabase.html",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "gu-barrigada-village-kchm-90-1",
+      "name": "KCHM",
+      "freqMhz": 90.1,
+      "cityId": "gu-barrigada-village",
+      "description": "Full Power FM service listed by FCC for BARRIGADA, Guam. Callsign: KCHM.",
+      "tags": [
+        "fm",
+        "official",
+        "fcc",
+        "guam",
+        "full-power"
+      ],
+      "source": "FCC LMS Public Database",
+      "sourceUrl": "https://enterpriseefiling.fcc.gov/dataentry/public/tv/lmsDatabase.html",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "gu-hagatna-kprg-89-3",
+      "name": "KPRG",
+      "freqMhz": 89.3,
+      "cityId": "gu-hagatna",
+      "description": "Full Power FM service listed by FCC for AGANA, Guam. Callsign: KPRG.",
+      "tags": [
+        "fm",
+        "official",
+        "fcc",
+        "guam",
+        "full-power"
+      ],
+      "source": "FCC LMS Public Database",
+      "sourceUrl": "https://enterpriseefiling.fcc.gov/dataentry/public/tv/lmsDatabase.html",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "gu-hagatna-kolg-90-9",
+      "name": "KOLG",
+      "freqMhz": 90.9,
+      "cityId": "gu-hagatna",
+      "description": "Full Power FM service listed by FCC for AGANA, Guam. Callsign: KOLG.",
+      "tags": [
+        "fm",
+        "official",
+        "fcc",
+        "guam",
+        "full-power"
+      ],
+      "source": "FCC LMS Public Database",
+      "sourceUrl": "https://enterpriseefiling.fcc.gov/dataentry/public/tv/lmsDatabase.html",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "gu-hagatna-kuam-fm-93-9",
+      "name": "KUAM-FM",
+      "freqMhz": 93.9,
+      "cityId": "gu-hagatna",
+      "description": "Full Power FM service listed by FCC for AGANA, Guam. Callsign: KUAM-FM.",
+      "tags": [
+        "fm",
+        "official",
+        "fcc",
+        "guam",
+        "full-power"
+      ],
+      "source": "FCC LMS Public Database",
+      "sourceUrl": "https://enterpriseefiling.fcc.gov/dataentry/public/tv/lmsDatabase.html",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "gu-hagatna-ksto-95-5",
+      "name": "KSTO",
+      "freqMhz": 95.5,
+      "cityId": "gu-hagatna",
+      "description": "Full Power FM service listed by FCC for HAGATNA, Guam. Callsign: KSTO.",
+      "tags": [
+        "fm",
+        "official",
+        "fcc",
+        "guam",
+        "full-power"
+      ],
+      "source": "FCC LMS Public Database",
+      "sourceUrl": "https://enterpriseefiling.fcc.gov/dataentry/public/tv/lmsDatabase.html",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "gu-hagatna-k243cs-96-5",
+      "name": "K243CS",
+      "freqMhz": 96.5,
+      "cityId": "gu-hagatna",
+      "description": "FM translator service listed by FCC for AGANA, Guam. Callsign: K243CS.",
+      "tags": [
+        "fm",
+        "official",
+        "fcc",
+        "guam",
+        "translator"
+      ],
+      "source": "FCC LMS Public Database",
+      "sourceUrl": "https://enterpriseefiling.fcc.gov/dataentry/public/tv/lmsDatabase.html",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "gu-hagatna-kzgz-97-5",
+      "name": "KZGZ",
+      "freqMhz": 97.5,
+      "cityId": "gu-hagatna",
+      "description": "Full Power FM service listed by FCC for AGANA, Guam. Callsign: KZGZ.",
+      "tags": [
+        "fm",
+        "official",
+        "fcc",
+        "guam",
+        "full-power"
+      ],
+      "source": "FCC LMS Public Database",
+      "sourceUrl": "https://enterpriseefiling.fcc.gov/dataentry/public/tv/lmsDatabase.html",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "gu-hagatna-koku-100-3",
+      "name": "KOKU",
+      "freqMhz": 100.3,
+      "cityId": "gu-hagatna",
+      "description": "Full Power FM service listed by FCC for HAGATNA, Guam. Callsign: KOKU.",
+      "tags": [
+        "fm",
+        "official",
+        "fcc",
+        "guam",
+        "full-power"
+      ],
+      "source": "FCC LMS Public Database",
+      "sourceUrl": "https://enterpriseefiling.fcc.gov/dataentry/public/tv/lmsDatabase.html",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "gu-hagatna-ktkb-fm-101-9",
+      "name": "KTKB-FM",
+      "freqMhz": 101.9,
+      "cityId": "gu-hagatna",
+      "description": "Full Power FM service listed by FCC for AGANA, Guam. Callsign: KTKB-FM.",
+      "tags": [
+        "fm",
+        "official",
+        "fcc",
+        "guam",
+        "full-power"
+      ],
+      "source": "FCC LMS Public Database",
+      "sourceUrl": "https://enterpriseefiling.fcc.gov/dataentry/public/tv/lmsDatabase.html",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "gu-hagatna-kish-102-9",
+      "name": "KISH",
+      "freqMhz": 102.9,
+      "cityId": "gu-hagatna",
+      "description": "Full Power FM service listed by FCC for HAGATNA, Guam. Callsign: KISH.",
+      "tags": [
+        "fm",
+        "official",
+        "fcc",
+        "guam",
+        "full-power"
+      ],
+      "source": "FCC LMS Public Database",
+      "sourceUrl": "https://enterpriseefiling.fcc.gov/dataentry/public/tv/lmsDatabase.html",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "gu-tamuning-knut-101-1",
+      "name": "KNUT",
+      "freqMhz": 101.1,
+      "cityId": "gu-tamuning",
+      "description": "Full Power FM service listed by FCC for TAMUNING, Guam. Callsign: KNUT.",
+      "tags": [
+        "fm",
+        "official",
+        "fcc",
+        "guam",
+        "full-power"
+      ],
+      "source": "FCC LMS Public Database",
+      "sourceUrl": "https://enterpriseefiling.fcc.gov/dataentry/public/tv/lmsDatabase.html",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    }
+  ]
+}

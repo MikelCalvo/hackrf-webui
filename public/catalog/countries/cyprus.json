@@ -1,0 +1,1352 @@
+{
+  "country": {
+    "id": "cyprus",
+    "code": "CY",
+    "name": "Cyprus",
+    "regionId": "europe",
+    "cityCount": 12,
+    "stationCount": 64,
+    "sourceCount": 1,
+    "sources": [
+      {
+        "name": "DEC national radio broadcasting coverage plan",
+        "url": "https://dec.dmrid.gov.cy/dmrid/dec/ws_dec.nsf/radioplan_en/radioplan_en?OpenDocument"
+      }
+    ],
+    "lastImportedAt": "2026-03-24",
+    "coverageStatus": "active",
+    "coverageTier": "official-substantial",
+    "coverageScope": "national",
+    "sourceQuality": "official-regulator",
+    "hasOfficialImporter": true,
+    "coverageScore": 88
+  },
+  "cities": [
+    {
+      "id": "cy-agros",
+      "name": "Agrós",
+      "countryId": "cyprus",
+      "timezone": "Asia/Nicosia",
+      "latitude": 34.91784,
+      "longitude": 33.01811,
+      "stationCount": 1
+    },
+    {
+      "id": "cy-kato-pyrgos",
+      "name": "Káto Pýrgos",
+      "countryId": "cyprus",
+      "timezone": "Asia/Nicosia",
+      "latitude": 35.17897,
+      "longitude": 32.686,
+      "stationCount": 1
+    },
+    {
+      "id": "cy-kyperounta",
+      "name": "Kyperoúnta",
+      "countryId": "cyprus",
+      "timezone": "Asia/Nicosia",
+      "latitude": 34.93815,
+      "longitude": 32.97551,
+      "stationCount": 1
+    },
+    {
+      "id": "cy-larnaca",
+      "name": "Larnaca",
+      "countryId": "cyprus",
+      "timezone": "Asia/Nicosia",
+      "latitude": 34.9221,
+      "longitude": 33.62794,
+      "stationCount": 4
+    },
+    {
+      "id": "cy-limassol",
+      "name": "Limassol",
+      "countryId": "cyprus",
+      "timezone": "Asia/Nicosia",
+      "latitude": 34.68406,
+      "longitude": 33.03794,
+      "stationCount": 2
+    },
+    {
+      "id": "cy-nicosia",
+      "name": "Nicosia",
+      "countryId": "cyprus",
+      "timezone": "Asia/Nicosia",
+      "latitude": 35.17284,
+      "longitude": 33.35397,
+      "stationCount": 2
+    },
+    {
+      "id": "cy-pissouri",
+      "name": "Pissoúri",
+      "countryId": "cyprus",
+      "timezone": "Asia/Nicosia",
+      "latitude": 34.66942,
+      "longitude": 32.70132,
+      "stationCount": 6
+    },
+    {
+      "id": "cy-strovolos",
+      "name": "Stróvolos",
+      "countryId": "cyprus",
+      "timezone": "Asia/Nicosia",
+      "latitude": 35.14867,
+      "longitude": 33.33384,
+      "stationCount": 1
+    },
+    {
+      "id": "cy-troodos",
+      "name": "Tróodos",
+      "countryId": "cyprus",
+      "timezone": "Asia/Nicosia",
+      "latitude": 34.92344,
+      "longitude": 32.8805,
+      "stationCount": 8
+    },
+    {
+      "id": "cy-tsada",
+      "name": "Tsáda",
+      "countryId": "cyprus",
+      "timezone": "Asia/Nicosia",
+      "latitude": 34.83862,
+      "longitude": 32.47499,
+      "stationCount": 28
+    },
+    {
+      "id": "cy-tseri",
+      "name": "Tséri",
+      "countryId": "cyprus",
+      "timezone": "Asia/Nicosia",
+      "latitude": 35.07307,
+      "longitude": 33.32344,
+      "stationCount": 6
+    },
+    {
+      "id": "cy-voroklini",
+      "name": "Voróklini",
+      "countryId": "cyprus",
+      "timezone": "Asia/Nicosia",
+      "latitude": 34.98138,
+      "longitude": 33.65648,
+      "stationCount": 4
+    }
+  ],
+  "stations": [
+    {
+      "id": "cy-agros-radio-ap-andreas-94-5",
+      "name": "RADIO AP. ANDREAS",
+      "freqMhz": 94.5,
+      "cityId": "cy-agros",
+      "description": "Cyprus FM transmitter listed by DEC for Αγρός. Licensee: ΡΑΔΙΟΦΩΝΙΚΟΣ ΣΤΑΘΜΟΣ ΙΕΡΑΣ ΜΗΤΡΟΠΟΛΗΣ ΛΕΜΕΣΟΥ - ΑΠ. ΑΝΤΡΕΑΣ. Site elevation: 1.15 km. Bandwidth: 150.000000 KHz. Output power: 10.00 dBW. Maximum radiated power: 18.00 dBW ERP. Emission: 150KF3E--.",
+      "tags": [
+        "fm",
+        "official",
+        "dec",
+        "cyprus",
+        "αγρος",
+        "erp"
+      ],
+      "source": "DEC national radio broadcasting coverage plan",
+      "sourceUrl": "https://dec.dmrid.gov.cy/dmrid/dec/ws_dec.nsf/radioplan_en/radioplan_en?OpenDocument",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "cy-kato-pyrgos-radio-pyrgos-92-4",
+      "name": "RADIO PYRGOS",
+      "freqMhz": 92.4,
+      "cityId": "cy-kato-pyrgos",
+      "description": "Cyprus FM transmitter listed by DEC for Κάτω Πύργος. Licensee: Α.Κ. ΡΑΔΙΟ (ΠΥΡΓΟΣ) ΛΤΔ - ΡAΔΙΟ ΠYΡΓΟΣ. Site elevation: 33 m. Bandwidth: 150.000000 KHz. Output power: 16.99 dBW. Maximum radiated power: 22.00 dBW ERP. Emission: 150KF3E--.",
+      "tags": [
+        "fm",
+        "official",
+        "dec",
+        "cyprus",
+        "κατω-πυργος",
+        "erp"
+      ],
+      "source": "DEC national radio broadcasting coverage plan",
+      "sourceUrl": "https://dec.dmrid.gov.cy/dmrid/dec/ws_dec.nsf/radioplan_en/radioplan_en?OpenDocument",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "cy-kyperounta-radio-ap-andreas-107-9",
+      "name": "RADIO AP. ANDREAS",
+      "freqMhz": 107.9,
+      "cityId": "cy-kyperounta",
+      "description": "Cyprus FM transmitter listed by DEC for Κυπερούντα. Licensee: ΡΑΔΙΟΦΩΝΙΚΟΣ ΣΤΑΘΜΟΣ ΙΕΡΑΣ ΜΗΤΡΟΠΟΛΗΣ ΛΕΜΕΣΟΥ - ΑΠ. ΑΝΤΡΕΑΣ. Site elevation: 1.273 km. Bandwidth: 150.000000 KHz. Output power: 16.99 dBW. Maximum radiated power: 22.00 dBW ERP. Emission: 150KF3E--.",
+      "tags": [
+        "fm",
+        "official",
+        "dec",
+        "cyprus",
+        "κυπερουντα",
+        "erp"
+      ],
+      "source": "DEC national radio broadcasting coverage plan",
+      "sourceUrl": "https://dec.dmrid.gov.cy/dmrid/dec/ws_dec.nsf/radioplan_en/radioplan_en?OpenDocument",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "cy-larnaca-radio-star-fm-93-7",
+      "name": "RADIO STAR FM",
+      "freqMhz": 93.7,
+      "cityId": "cy-larnaca",
+      "description": "Cyprus FM transmitter listed by DEC for Λάρνακα. Licensee: P.E.G STAR FM - RADIO STAR 93.7. Site elevation: 19 m. Bandwidth: 150.000000 KHz. Output power: 16.99 dBW. Maximum radiated power: 27.20 dBW ERP. Emission: 150KF3E--.",
+      "tags": [
+        "fm",
+        "official",
+        "dec",
+        "cyprus",
+        "λαρνακα",
+        "erp"
+      ],
+      "source": "DEC national radio broadcasting coverage plan",
+      "sourceUrl": "https://dec.dmrid.gov.cy/dmrid/dec/ws_dec.nsf/radioplan_en/radioplan_en?OpenDocument",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "cy-larnaca-radio-fm-99",
+      "name": "RADIO FM",
+      "freqMhz": 99,
+      "cityId": "cy-larnaca",
+      "description": "Cyprus FM transmitter listed by DEC for Λάρνακα. Licensee: NBS RADIO LTD - RADIO FM. Site elevation: 0 m. Bandwidth: 150.000000 KHz. Output power: 16.99 dBW. Maximum radiated power: 27.80 dBW ERP. Emission: 150KF3E--.",
+      "tags": [
+        "fm",
+        "official",
+        "dec",
+        "cyprus",
+        "λαρνακα",
+        "erp"
+      ],
+      "source": "DEC national radio broadcasting coverage plan",
+      "sourceUrl": "https://dec.dmrid.gov.cy/dmrid/dec/ws_dec.nsf/radioplan_en/radioplan_en?OpenDocument",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "cy-larnaca-radio-magic-102-1",
+      "name": "RADIO MAGIC",
+      "freqMhz": 102.1,
+      "cityId": "cy-larnaca",
+      "description": "Cyprus FM transmitter listed by DEC for Λάρνακα. Licensee: ΕΚΔΟΤΙΚΟΣ & ΡΑΔΙΟΤΗΛΕΟΠΤΙΚΟΣ ΟΙΚΟΣ ΤΑΚΑ LTD - ΡΑΔΙΟ MAGIC. Site elevation: 32 m. Bandwidth: 150.000000 KHz. Output power: 16.99 dBW. Maximum radiated power: 28.20 dBW ERP. Emission: 150KF3E--.",
+      "tags": [
+        "fm",
+        "official",
+        "dec",
+        "cyprus",
+        "λαρνακα",
+        "erp"
+      ],
+      "source": "DEC national radio broadcasting coverage plan",
+      "sourceUrl": "https://dec.dmrid.gov.cy/dmrid/dec/ws_dec.nsf/radioplan_en/radioplan_en?OpenDocument",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "cy-larnaca-radio-zhnon-107-2",
+      "name": "RADIO ZHNON",
+      "freqMhz": 107.2,
+      "cityId": "cy-larnaca",
+      "description": "Cyprus FM transmitter listed by DEC for Λάρνακα. Licensee: RADIO ZINON LTD - ΡΑΔΙΟ ΖΗΝΩΝ. Site elevation: 15 m. Bandwidth: 150.000000 KHz. Output power: 13.01 dBW. Maximum radiated power: 23.00 dBW ERP. Emission: 150KF3E--.",
+      "tags": [
+        "fm",
+        "official",
+        "dec",
+        "cyprus",
+        "λαρνακα",
+        "erp"
+      ],
+      "source": "DEC national radio broadcasting coverage plan",
+      "sourceUrl": "https://dec.dmrid.gov.cy/dmrid/dec/ws_dec.nsf/radioplan_en/radioplan_en?OpenDocument",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "cy-limassol-pause-fm-89-2",
+      "name": "PAUSE FM",
+      "freqMhz": 89.2,
+      "cityId": "cy-limassol",
+      "description": "Cyprus FM transmitter listed by DEC for Λεμεσός. Licensee: PAUSE FM. Site elevation: 53 m. Bandwidth: 150.000000 KHz. Output power: 13.01 dBW. Maximum radiated power: 17.00 dBW ERP. Emission: 150KF3E--.",
+      "tags": [
+        "fm",
+        "official",
+        "dec",
+        "cyprus",
+        "λεμεσος",
+        "erp"
+      ],
+      "source": "DEC national radio broadcasting coverage plan",
+      "sourceUrl": "https://dec.dmrid.gov.cy/dmrid/dec/ws_dec.nsf/radioplan_en/radioplan_en?OpenDocument",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "cy-limassol-cut-fm-95-2",
+      "name": "CUT FM",
+      "freqMhz": 95.2,
+      "cityId": "cy-limassol",
+      "description": "Cyprus FM transmitter listed by DEC for Λεμεσός. Licensee: ΤΕΠΑΚ RADIO - CUT RADIO. Site elevation: 15 m. Bandwidth: 150.000000 KHz. Output power: 13.01 dBW. Maximum radiated power: 17.15 dBW ERP. Emission: 150KF3E--.",
+      "tags": [
+        "fm",
+        "official",
+        "dec",
+        "cyprus",
+        "λεμεσος",
+        "erp"
+      ],
+      "source": "DEC national radio broadcasting coverage plan",
+      "sourceUrl": "https://dec.dmrid.gov.cy/dmrid/dec/ws_dec.nsf/radioplan_en/radioplan_en?OpenDocument",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "cy-nicosia-bfbs1-89-7",
+      "name": "BFBS1",
+      "freqMhz": 89.7,
+      "cityId": "cy-nicosia",
+      "description": "Cyprus FM transmitter listed by DEC for Λευκωσία. Licensee: BFBS. Site elevation: 213 m. Bandwidth: 150.000000 KHz. Output power: 30.00 dBW. Maximum radiated power: 43.00 dBW ERP. Emission: 150KF3E--.",
+      "tags": [
+        "fm",
+        "official",
+        "dec",
+        "cyprus",
+        "λευκωσια",
+        "erp"
+      ],
+      "source": "DEC national radio broadcasting coverage plan",
+      "sourceUrl": "https://dec.dmrid.gov.cy/dmrid/dec/ws_dec.nsf/radioplan_en/radioplan_en?OpenDocument",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "cy-nicosia-bfbs2-91-7",
+      "name": "BFBS2",
+      "freqMhz": 91.7,
+      "cityId": "cy-nicosia",
+      "description": "Cyprus FM transmitter listed by DEC for Λευκωσία. Licensee: BFBS. Site elevation: 213 m. Bandwidth: 150.000000 KHz. Output power: 30.00 dBW. Maximum radiated power: 43.00 dBW ERP. Emission: 150KF3E--.",
+      "tags": [
+        "fm",
+        "official",
+        "dec",
+        "cyprus",
+        "λευκωσια",
+        "erp"
+      ],
+      "source": "DEC national radio broadcasting coverage plan",
+      "sourceUrl": "https://dec.dmrid.gov.cy/dmrid/dec/ws_dec.nsf/radioplan_en/radioplan_en?OpenDocument",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "cy-pissouri-radio-athina-88-7",
+      "name": "RADIO ATHINA",
+      "freqMhz": 88.7,
+      "cityId": "cy-pissouri",
+      "description": "Cyprus FM transmitter listed by DEC for Πισσούρι. Licensee: ATHINA MEDIA SERVICES - LOVE FM. Site elevation: 245 m. Bandwidth: 150.000000 KHz. Output power: 16.99 dBW. Maximum radiated power: 24.30 dBW ERP. Emission: 150KF3E--.",
+      "tags": [
+        "fm",
+        "official",
+        "dec",
+        "cyprus",
+        "πισσουρι",
+        "erp"
+      ],
+      "source": "DEC national radio broadcasting coverage plan",
+      "sourceUrl": "https://dec.dmrid.gov.cy/dmrid/dec/ws_dec.nsf/radioplan_en/radioplan_en?OpenDocument",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "cy-pissouri-kanali-7-92-6",
+      "name": "KANALI 7",
+      "freqMhz": 92.6,
+      "cityId": "cy-pissouri",
+      "description": "Cyprus FM transmitter listed by DEC for Πισσούρι. Licensee: GEOPHORAE (PUBLISHING) LTD - ΡΑΔΙΟ ΚΑΝΑΛΙ 7. Site elevation: 235 m. Bandwidth: 150.000000 KHz. Output power: 20.00 dBW. Maximum radiated power: 27.30 dBW ERP. Emission: 150KF3E--.",
+      "tags": [
+        "fm",
+        "official",
+        "dec",
+        "cyprus",
+        "πισσουρι",
+        "erp"
+      ],
+      "source": "DEC national radio broadcasting coverage plan",
+      "sourceUrl": "https://dec.dmrid.gov.cy/dmrid/dec/ws_dec.nsf/radioplan_en/radioplan_en?OpenDocument",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "cy-pissouri-radio-sfaira-94-2",
+      "name": "RADIO SFAIRA",
+      "freqMhz": 94.2,
+      "cityId": "cy-pissouri",
+      "description": "Cyprus FM transmitter listed by DEC for Πισσούρι. Licensee: ΡΑΔΙΟΤΗΛΕΟΠΤΙΚΗ ΕΤΑΙΡΕΙΑ ΕΛΛΗΝΙΚΗ ΗΧΩ ΛΤΔ - ΡΑΔΙΟ ΣΦΑΙΡΑ. Site elevation: 245 m. Bandwidth: 150.000000 KHz. Output power: 16.99 dBW. Maximum radiated power: 19.00 dBW ERP. Emission: 150KF3E--.",
+      "tags": [
+        "fm",
+        "official",
+        "dec",
+        "cyprus",
+        "πισσουρι",
+        "erp"
+      ],
+      "source": "DEC national radio broadcasting coverage plan",
+      "sourceUrl": "https://dec.dmrid.gov.cy/dmrid/dec/ws_dec.nsf/radioplan_en/radioplan_en?OpenDocument",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "cy-pissouri-radio-deejay-100-1",
+      "name": "RADIO DEEJAY",
+      "freqMhz": 100.1,
+      "cityId": "cy-pissouri",
+      "description": "Cyprus FM transmitter listed by DEC for Πισσούρι. Licensee: RADIO DEEJAY LTD - ΡΑΔΙΟ DEEJAY. Site elevation: 245 m. Bandwidth: 150.000000 KHz. Output power: 26.99 dBW. Maximum radiated power: 34.00 dBW ERP. Emission: 150KF3E--.",
+      "tags": [
+        "fm",
+        "official",
+        "dec",
+        "cyprus",
+        "πισσουρι",
+        "erp"
+      ],
+      "source": "DEC national radio broadcasting coverage plan",
+      "sourceUrl": "https://dec.dmrid.gov.cy/dmrid/dec/ws_dec.nsf/radioplan_en/radioplan_en?OpenDocument",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "cy-pissouri-melody-radio-103-9",
+      "name": "MELODY RADIO",
+      "freqMhz": 103.9,
+      "cityId": "cy-pissouri",
+      "description": "Cyprus FM transmitter listed by DEC for Πισσούρι. Licensee: PANOS C. MELODY LTD - RADIO MELODY. Site elevation: 245 m. Bandwidth: 150.000000 KHz. Output power: 16.99 dBW. Maximum radiated power: 21.00 dBW ERP. Emission: 150KF3E--.",
+      "tags": [
+        "fm",
+        "official",
+        "dec",
+        "cyprus",
+        "πισσουρι",
+        "erp"
+      ],
+      "source": "DEC national radio broadcasting coverage plan",
+      "sourceUrl": "https://dec.dmrid.gov.cy/dmrid/dec/ws_dec.nsf/radioplan_en/radioplan_en?OpenDocument",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "cy-pissouri-kanali-6-106-9",
+      "name": "KANALI 6",
+      "freqMhz": 106.9,
+      "cityId": "cy-pissouri",
+      "description": "Cyprus FM transmitter listed by DEC for Πισσούρι. Licensee: ΔΙΑΥΛΟΣ ΕΠΙΧΕΙΡΗΣΕΙΣ ΠΛΗΡΟΦΟΡΗΣΗΣ - ΣΤ. ΚΑΝΑΛΙ ΕΞΙ. Site elevation: 235 m. Bandwidth: 150.000000 KHz. Output power: 16.99 dBW. Maximum radiated power: 34.30 dBW ERP. Emission: 150KF3E--.",
+      "tags": [
+        "fm",
+        "official",
+        "dec",
+        "cyprus",
+        "πισσουρι",
+        "erp"
+      ],
+      "source": "DEC national radio broadcasting coverage plan",
+      "sourceUrl": "https://dec.dmrid.gov.cy/dmrid/dec/ws_dec.nsf/radioplan_en/radioplan_en?OpenDocument",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "cy-strovolos-gc-school-91-4",
+      "name": "G.C. SCHOOL",
+      "freqMhz": 91.4,
+      "cityId": "cy-strovolos",
+      "description": "Cyprus FM transmitter listed by DEC for Στρόβολος. Licensee: GC SCHOOL OF CAREERS - G. C. RADIO. Site elevation: 174 m. Bandwidth: 150.000000 KHz. Output power: 13.01 dBW. Maximum radiated power: 15.00 dBW ERP. Emission: 150KF3E--.",
+      "tags": [
+        "fm",
+        "official",
+        "dec",
+        "cyprus",
+        "στροβολος",
+        "erp"
+      ],
+      "source": "DEC national radio broadcasting coverage plan",
+      "sourceUrl": "https://dec.dmrid.gov.cy/dmrid/dec/ws_dec.nsf/radioplan_en/radioplan_en?OpenDocument",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "cy-troodos-pik-4-88-2",
+      "name": "PIK 4",
+      "freqMhz": 88.2,
+      "cityId": "cy-troodos",
+      "description": "Cyprus FM transmitter listed by DEC for Τρόοδος. Licensee: CYBC - ΡΑΔΙΟΦΩΝΙΚΟ ΙΔΡΥΜΑ ΚΥΠΡΟΥ (Δ' ΠΡΟΓΡΑΜΜΑ). Site elevation: 1.949 km. Bandwidth: 150.000000 KHz. Output power: 40.00 dBW. Maximum radiated power: 48.50 dBW ERP. Emission: 150KF3E--.",
+      "tags": [
+        "fm",
+        "official",
+        "dec",
+        "cyprus",
+        "τροοδος",
+        "erp"
+      ],
+      "source": "DEC national radio broadcasting coverage plan",
+      "sourceUrl": "https://dec.dmrid.gov.cy/dmrid/dec/ws_dec.nsf/radioplan_en/radioplan_en?OpenDocument",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "cy-troodos-pik-2-91-1",
+      "name": "PIK 2",
+      "freqMhz": 91.1,
+      "cityId": "cy-troodos",
+      "description": "Cyprus FM transmitter listed by DEC for Τρόοδος. Licensee: CYBC - ΡΑΔΙΟΦΩΝΙΚΟ ΙΔΡΥΜΑ ΚΥΠΡΟΥ (Β' ΠΡΟΓΡΑΜΜΑ). Site elevation: 1.949 km. Bandwidth: 150.000000 KHz. Output power: 40.00 dBW. Maximum radiated power: 48.50 dBW ERP. Emission: 150KF3E--.",
+      "tags": [
+        "fm",
+        "official",
+        "dec",
+        "cyprus",
+        "τροοδος",
+        "erp"
+      ],
+      "source": "DEC national radio broadcasting coverage plan",
+      "sourceUrl": "https://dec.dmrid.gov.cy/dmrid/dec/ws_dec.nsf/radioplan_en/radioplan_en?OpenDocument",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "cy-troodos-radio-astra-92-8",
+      "name": "RADIO ASTRA",
+      "freqMhz": 92.8,
+      "cityId": "cy-troodos",
+      "description": "Cyprus FM transmitter listed by DEC for Τρόοδος. Licensee: RADIOSTAGE CO LTD - ΡΑΔΙΟ ΑΣΤΡΑ. Site elevation: 1.949 km. Bandwidth: 150.000000 KHz. Output power: 36.99 dBW. Maximum radiated power: 42.00 dBW ERP. Emission: 150KF3E--.",
+      "tags": [
+        "fm",
+        "official",
+        "dec",
+        "cyprus",
+        "τροοδος",
+        "erp"
+      ],
+      "source": "DEC national radio broadcasting coverage plan",
+      "sourceUrl": "https://dec.dmrid.gov.cy/dmrid/dec/ws_dec.nsf/radioplan_en/radioplan_en?OpenDocument",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "cy-troodos-pik-3-94-8",
+      "name": "PIK 3",
+      "freqMhz": 94.8,
+      "cityId": "cy-troodos",
+      "description": "Cyprus FM transmitter listed by DEC for Τρόοδος. Licensee: CYBC - ΡΑΔΙΟΦΩΝΙΚΟ ΙΔΡΥΜΑ ΚΥΠΡΟΥ (Γ' ΠΡΟΓΡΑΜΜΑ). Site elevation: 1.949 km. Bandwidth: 150.000000 KHz. Output power: 40.00 dBW. Maximum radiated power: 48.50 dBW ERP. Emission: 150KF3E--.",
+      "tags": [
+        "fm",
+        "official",
+        "dec",
+        "cyprus",
+        "τροοδος",
+        "erp"
+      ],
+      "source": "DEC national radio broadcasting coverage plan",
+      "sourceUrl": "https://dec.dmrid.gov.cy/dmrid/dec/ws_dec.nsf/radioplan_en/radioplan_en?OpenDocument",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "cy-troodos-pik-1-97-2",
+      "name": "PIK 1",
+      "freqMhz": 97.2,
+      "cityId": "cy-troodos",
+      "description": "Cyprus FM transmitter listed by DEC for Τρόοδος. Licensee: CYBC - ΡΑΔΙΟΦΩΝΙΚΟ ΙΔΡΥΜΑ ΚΥΠΡΟΥ (Α' ΠΡΟΓΡΑΜΜΑ). Site elevation: 1.949 km. Bandwidth: 150.000000 KHz. Output power: 40.00 dBW. Maximum radiated power: 48.50 dBW ERP. Emission: 150KF3E--.",
+      "tags": [
+        "fm",
+        "official",
+        "dec",
+        "cyprus",
+        "τροοδος",
+        "erp"
+      ],
+      "source": "DEC national radio broadcasting coverage plan",
+      "sourceUrl": "https://dec.dmrid.gov.cy/dmrid/dec/ws_dec.nsf/radioplan_en/radioplan_en?OpenDocument",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "cy-troodos-radio-proto-99-3",
+      "name": "RADIO PROTO",
+      "freqMhz": 99.3,
+      "cityId": "cy-troodos",
+      "description": "Cyprus FM transmitter listed by DEC for Τρόοδος. Licensee: ΕΚΔΟΤΙΚΟΣ ΟΙΚΟΣ ΔΙΑΣ ΔΗΜΟΣΙΑ ΛΤΔ - ΡΑΔΙΟ ΠΡΩΤΟ. Site elevation: 1.949 km. Bandwidth: 150.000000 KHz. Output power: 40.00 dBW. Maximum radiated power: 52.00 dBW ERP. Emission: 150KF3E--.",
+      "tags": [
+        "fm",
+        "official",
+        "dec",
+        "cyprus",
+        "τροοδος",
+        "erp"
+      ],
+      "source": "DEC national radio broadcasting coverage plan",
+      "sourceUrl": "https://dec.dmrid.gov.cy/dmrid/dec/ws_dec.nsf/radioplan_en/radioplan_en?OpenDocument",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "cy-troodos-o-logos-101-1",
+      "name": "O LOGOS",
+      "freqMhz": 101.1,
+      "cityId": "cy-troodos",
+      "description": "Cyprus FM transmitter listed by DEC for Τρόοδος. Licensee: ΠΛΗΡΟΦΟΡΙΑΚΗ ΚΑΙ ΠΟΛΙΤΙΣΤΙΚΗ ΕΤΑΙΡΕΙΑ \"Ο ΛΟΓΟΣ\" - Ο ΛΟΓΟΣ. Site elevation: 1.975 km. Bandwidth: 150.000000 KHz. Output power: 40.00 dBW. Maximum radiated power: 48.50 dBW ERP. Emission: 150KF3E--.",
+      "tags": [
+        "fm",
+        "official",
+        "dec",
+        "cyprus",
+        "τροοδος",
+        "erp"
+      ],
+      "source": "DEC national radio broadcasting coverage plan",
+      "sourceUrl": "https://dec.dmrid.gov.cy/dmrid/dec/ws_dec.nsf/radioplan_en/radioplan_en?OpenDocument",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "cy-troodos-radio-super-104-8",
+      "name": "RADIO SUPER",
+      "freqMhz": 104.8,
+      "cityId": "cy-troodos",
+      "description": "Cyprus FM transmitter listed by DEC for Τρόοδος. Licensee: SUPER MERCURY RADIO LTD - ΡΑΔΙΟ SUPER. Site elevation: 1.949 km. Bandwidth: 150.000000 KHz. Output power: 40.00 dBW. Maximum radiated power: 48.50 dBW ERP. Emission: 150KF3E--.",
+      "tags": [
+        "fm",
+        "official",
+        "dec",
+        "cyprus",
+        "τροοδος",
+        "erp"
+      ],
+      "source": "DEC national radio broadcasting coverage plan",
+      "sourceUrl": "https://dec.dmrid.gov.cy/dmrid/dec/ws_dec.nsf/radioplan_en/radioplan_en?OpenDocument",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "cy-tsada-kiss-fm-89",
+      "name": "KISS FM",
+      "freqMhz": 89,
+      "cityId": "cy-tsada",
+      "description": "Cyprus FM transmitter listed by DEC for Τσάδα. Licensee: MA & CA ENTERTAINMENT LTD - KISS FM. Site elevation: 570 m. Bandwidth: 150.000000 KHz. Output power: 30.00 dBW. Maximum radiated power: 37.20 dBW ERP. Emission: 150KF3E--.",
+      "tags": [
+        "fm",
+        "official",
+        "dec",
+        "cyprus",
+        "τσαδα",
+        "erp"
+      ],
+      "source": "DEC national radio broadcasting coverage plan",
+      "sourceUrl": "https://dec.dmrid.gov.cy/dmrid/dec/ws_dec.nsf/radioplan_en/radioplan_en?OpenDocument",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "cy-tsada-radio-proto-89-4",
+      "name": "RADIO PROTO",
+      "freqMhz": 89.4,
+      "cityId": "cy-tsada",
+      "description": "Cyprus FM transmitter listed by DEC for Τσάδα. Licensee: ΕΚΔΟΤΙΚΟΣ ΟΙΚΟΣ ΔΙΑΣ ΔΗΜΟΣΙΑ ΛΤΔ - ΡΑΔΙΟ ΠΡΩΤΟ. Site elevation: 570 m. Bandwidth: 150.000000 KHz. Output power: 30.00 dBW. Maximum radiated power: 40.80 dBW ERP. Emission: 150KF3E--.",
+      "tags": [
+        "fm",
+        "official",
+        "dec",
+        "cyprus",
+        "τσαδα",
+        "erp"
+      ],
+      "source": "DEC national radio broadcasting coverage plan",
+      "sourceUrl": "https://dec.dmrid.gov.cy/dmrid/dec/ws_dec.nsf/radioplan_en/radioplan_en?OpenDocument",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "cy-tsada-pik-4-90-2",
+      "name": "PIK 4",
+      "freqMhz": 90.2,
+      "cityId": "cy-tsada",
+      "description": "Cyprus FM transmitter listed by DEC for Τσάδα. Licensee: CYBC - ΡΑΔΙΟΦΩΝΙΚΟ ΙΔΡΥΜΑ ΚΥΠΡΟΥ (Δ' ΠΡΟΓΡΑΜΜΑ). Site elevation: 570 m. Bandwidth: 150.000000 KHz. Output power: 30.00 dBW. Maximum radiated power: 37.50 dBW ERP. Emission: 150KF3E--.",
+      "tags": [
+        "fm",
+        "official",
+        "dec",
+        "cyprus",
+        "τσαδα",
+        "erp"
+      ],
+      "source": "DEC national radio broadcasting coverage plan",
+      "sourceUrl": "https://dec.dmrid.gov.cy/dmrid/dec/ws_dec.nsf/radioplan_en/radioplan_en?OpenDocument",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "cy-tsada-pik-1-92-4",
+      "name": "PIK 1",
+      "freqMhz": 92.4,
+      "cityId": "cy-tsada",
+      "description": "Cyprus FM transmitter listed by DEC for Τσάδα. Licensee: CYBC - ΡΑΔΙΟΦΩΝΙΚΟ ΙΔΡΥΜΑ ΚΥΠΡΟΥ (Α' ΠΡΟΓΡΑΜΜΑ). Site elevation: 570 m. Bandwidth: 150.000000 KHz. Output power: 30.00 dBW. Maximum radiated power: 37.50 dBW ERP. Emission: 150KF3E--.",
+      "tags": [
+        "fm",
+        "official",
+        "dec",
+        "cyprus",
+        "τσαδα",
+        "erp"
+      ],
+      "source": "DEC national radio broadcasting coverage plan",
+      "sourceUrl": "https://dec.dmrid.gov.cy/dmrid/dec/ws_dec.nsf/radioplan_en/radioplan_en?OpenDocument",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "cy-tsada-active-fm-93-2",
+      "name": "ACTIVE FM",
+      "freqMhz": 93.2,
+      "cityId": "cy-tsada",
+      "description": "Cyprus FM transmitter listed by DEC for Τσάδα. Licensee: DIASTASIS FM LTD - ACTIVE 107.4. Site elevation: 570 m. Bandwidth: 150.000000 KHz. Output power: 30.00 dBW. Maximum radiated power: 37.20 dBW ERP. Emission: 150KF3E--.",
+      "tags": [
+        "fm",
+        "official",
+        "dec",
+        "cyprus",
+        "τσαδα",
+        "erp"
+      ],
+      "source": "DEC national radio broadcasting coverage plan",
+      "sourceUrl": "https://dec.dmrid.gov.cy/dmrid/dec/ws_dec.nsf/radioplan_en/radioplan_en?OpenDocument",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "cy-tsada-radio-deejay-93-5",
+      "name": "RADIO DEEJAY",
+      "freqMhz": 93.5,
+      "cityId": "cy-tsada",
+      "description": "Cyprus FM transmitter listed by DEC for Τσάδα. Licensee: RADIO DEEJAY LTD - ΡΑΔΙΟ DEEJAY. Site elevation: 570 m. Bandwidth: 150.000000 KHz. Output power: 30.00 dBW. Maximum radiated power: 34.20 dBW ERP. Emission: 150KF3E--.",
+      "tags": [
+        "fm",
+        "official",
+        "dec",
+        "cyprus",
+        "τσαδα",
+        "erp"
+      ],
+      "source": "DEC national radio broadcasting coverage plan",
+      "sourceUrl": "https://dec.dmrid.gov.cy/dmrid/dec/ws_dec.nsf/radioplan_en/radioplan_en?OpenDocument",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "cy-tsada-radio-paphos-93-7",
+      "name": "RADIO PAPHOS",
+      "freqMhz": 93.7,
+      "cityId": "cy-tsada",
+      "description": "Cyprus FM transmitter listed by DEC for Τσάδα. Licensee: ΑΦΟΙ ΝΙΚΟΛΑΪΔΗ ΡΑΔΙΟΦΩΝΙΚΕΣ ΕΠΙΧΕΙΡΙΣΕΙΣ - ΡΑΔΙΟ ΠΑΦΟΣ. Site elevation: 570 m. Bandwidth: 150.000000 KHz. Output power: 30.00 dBW. Maximum radiated power: 39.40 dBW ERP. Emission: 150KF3E--.",
+      "tags": [
+        "fm",
+        "official",
+        "dec",
+        "cyprus",
+        "τσαδα",
+        "erp"
+      ],
+      "source": "DEC national radio broadcasting coverage plan",
+      "sourceUrl": "https://dec.dmrid.gov.cy/dmrid/dec/ws_dec.nsf/radioplan_en/radioplan_en?OpenDocument",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "cy-tsada-pik-3-94",
+      "name": "PIK 3",
+      "freqMhz": 94,
+      "cityId": "cy-tsada",
+      "description": "Cyprus FM transmitter listed by DEC for Τσάδα. Licensee: CYBC - ΡΑΔΙΟΦΩΝΙΚΟ ΙΔΡΥΜΑ ΚΥΠΡΟΥ (Γ' ΠΡΟΓΡΑΜΜΑ). Site elevation: 570 m. Bandwidth: 150.000000 KHz. Output power: 30.00 dBW. Maximum radiated power: 37.50 dBW ERP. Emission: 150KF3E--.",
+      "tags": [
+        "fm",
+        "official",
+        "dec",
+        "cyprus",
+        "τσαδα",
+        "erp"
+      ],
+      "source": "DEC national radio broadcasting coverage plan",
+      "sourceUrl": "https://dec.dmrid.gov.cy/dmrid/dec/ws_dec.nsf/radioplan_en/radioplan_en?OpenDocument",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "cy-tsada-my-radio-art-94-4",
+      "name": "MY RADIO ART",
+      "freqMhz": 94.4,
+      "cityId": "cy-tsada",
+      "description": "Cyprus FM transmitter listed by DEC for Τσάδα. Licensee: SIMONA SOUND & VISION - MY RADIO ART. Site elevation: 570 m. Bandwidth: 150.000000 KHz. Output power: 30.00 dBW. Maximum radiated power: 38.50 dBW ERP. Emission: 150KF3E--.",
+      "tags": [
+        "fm",
+        "official",
+        "dec",
+        "cyprus",
+        "τσαδα",
+        "erp"
+      ],
+      "source": "DEC national radio broadcasting coverage plan",
+      "sourceUrl": "https://dec.dmrid.gov.cy/dmrid/dec/ws_dec.nsf/radioplan_en/radioplan_en?OpenDocument",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "cy-tsada-radio-kosmos-95-2",
+      "name": "RADIO KOSMOS",
+      "freqMhz": 95.2,
+      "cityId": "cy-tsada",
+      "description": "Cyprus FM transmitter listed by DEC for Τσάδα. Licensee: ΡΑΔΙΟ ΚΙΝΥΡΑΣ (ΠΑΦΟΣ) FM ΣΤΕΡΕΟ ΛΤΔ - ΡΑΔΙΟ ΚΟΣΜΟΣ. Site elevation: 570 m. Bandwidth: 150.000000 KHz. Output power: 30.00 dBW. Maximum radiated power: 43.10 dBW ERP. Emission: 150KF3E--.",
+      "tags": [
+        "fm",
+        "official",
+        "dec",
+        "cyprus",
+        "τσαδα",
+        "erp"
+      ],
+      "source": "DEC national radio broadcasting coverage plan",
+      "sourceUrl": "https://dec.dmrid.gov.cy/dmrid/dec/ws_dec.nsf/radioplan_en/radioplan_en?OpenDocument",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "cy-tsada-radio-super-95-7",
+      "name": "RADIO SUPER",
+      "freqMhz": 95.7,
+      "cityId": "cy-tsada",
+      "description": "Cyprus FM transmitter listed by DEC for Τσάδα. Licensee: SUPER MERCURY RADIO LTD - ΡΑΔΙΟ SUPER. Site elevation: 570 m. Bandwidth: 150.000000 KHz. Output power: 30.00 dBW. Maximum radiated power: 37.81 dBW ERP. Emission: 150KF3E--.",
+      "tags": [
+        "fm",
+        "official",
+        "dec",
+        "cyprus",
+        "τσαδα",
+        "erp"
+      ],
+      "source": "DEC national radio broadcasting coverage plan",
+      "sourceUrl": "https://dec.dmrid.gov.cy/dmrid/dec/ws_dec.nsf/radioplan_en/radioplan_en?OpenDocument",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "cy-tsada-radio-sfaira-96-8",
+      "name": "RADIO SFAIRA",
+      "freqMhz": 96.8,
+      "cityId": "cy-tsada",
+      "description": "Cyprus FM transmitter listed by DEC for Τσάδα. Licensee: ΡΑΔΙΟΤΗΛΕΟΠΤΙΚΗ ΕΤΑΙΡΕΙΑ ΕΛΛΗΝΙΚΗ ΗΧΩ ΛΤΔ - ΡΑΔΙΟ ΣΦΑΙΡΑ. Site elevation: 570 m. Bandwidth: 150.000000 KHz. Output power: 30.00 dBW. Maximum radiated power: 37.20 dBW ERP. Emission: 150KF3E--.",
+      "tags": [
+        "fm",
+        "official",
+        "dec",
+        "cyprus",
+        "τσαδα",
+        "erp"
+      ],
+      "source": "DEC national radio broadcasting coverage plan",
+      "sourceUrl": "https://dec.dmrid.gov.cy/dmrid/dec/ws_dec.nsf/radioplan_en/radioplan_en?OpenDocument",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "cy-tsada-pik-2-97-9",
+      "name": "PIK 2",
+      "freqMhz": 97.9,
+      "cityId": "cy-tsada",
+      "description": "Cyprus FM transmitter listed by DEC for Τσάδα. Licensee: CYBC - ΡΑΔΙΟΦΩΝΙΚΟ ΙΔΡΥΜΑ ΚΥΠΡΟΥ (Β' ΠΡΟΓΡΑΜΜΑ). Site elevation: 570 m. Bandwidth: 150.000000 KHz. Output power: 30.00 dBW. Maximum radiated power: 37.50 dBW ERP. Emission: 150KF3E--.",
+      "tags": [
+        "fm",
+        "official",
+        "dec",
+        "cyprus",
+        "τσαδα",
+        "erp"
+      ],
+      "source": "DEC national radio broadcasting coverage plan",
+      "sourceUrl": "https://dec.dmrid.gov.cy/dmrid/dec/ws_dec.nsf/radioplan_en/radioplan_en?OpenDocument",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "cy-tsada-radio-klik-fm-98-2",
+      "name": "RADIO KLIK FM",
+      "freqMhz": 98.2,
+      "cityId": "cy-tsada",
+      "description": "Cyprus FM transmitter listed by DEC for Τσάδα. Licensee: M.H. RADIO LIMASSOL LTD - ΡΑΔΙΟ ΚΛΙΚ FM. Site elevation: 570 m. Bandwidth: 150.000000 KHz. Output power: 30.00 dBW. Maximum radiated power: 39.40 dBW ERP. Emission: 150KF3E--.",
+      "tags": [
+        "fm",
+        "official",
+        "dec",
+        "cyprus",
+        "τσαδα",
+        "erp"
+      ],
+      "source": "DEC national radio broadcasting coverage plan",
+      "sourceUrl": "https://dec.dmrid.gov.cy/dmrid/dec/ws_dec.nsf/radioplan_en/radioplan_en?OpenDocument",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "cy-tsada-rock-fm-98-5",
+      "name": "ROCK FM",
+      "freqMhz": 98.5,
+      "cityId": "cy-tsada",
+      "description": "Cyprus FM transmitter listed by DEC for Τσάδα. Licensee: ROCK FM LTD - RADIO ROCK FM. Site elevation: 570 m. Bandwidth: 150.000000 KHz. Output power: 30.00 dBW. Maximum radiated power: 38.50 dBW ERP. Emission: 150KF3E--.",
+      "tags": [
+        "fm",
+        "official",
+        "dec",
+        "cyprus",
+        "τσαδα",
+        "erp"
+      ],
+      "source": "DEC national radio broadcasting coverage plan",
+      "sourceUrl": "https://dec.dmrid.gov.cy/dmrid/dec/ws_dec.nsf/radioplan_en/radioplan_en?OpenDocument",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "cy-tsada-gialousa-epilogi-100-3",
+      "name": "GIALOUSA & EPILOGI",
+      "freqMhz": 100.3,
+      "cityId": "cy-tsada",
+      "description": "Cyprus FM transmitter listed by DEC for Τσάδα. Licensee: ΡΑΔΙΟ ΓΙΑΛΟΥΣΑ & ΕΠΙΛΟΓΗ ΛΤΔ - ΜΑΡΙΑ ΜΙΛΤΙΑΔΟΥΣ & ΓΕΩΡΓΙΟΣ ΜΙΧΑΟΛΑΣ. Site elevation: 570 m. Bandwidth: 150.000000 KHz. Output power: 30.00 dBW. Maximum radiated power: 38.50 dBW ERP. Emission: 150KF3E--.",
+      "tags": [
+        "fm",
+        "official",
+        "dec",
+        "cyprus",
+        "τσαδα",
+        "erp"
+      ],
+      "source": "DEC national radio broadcasting coverage plan",
+      "sourceUrl": "https://dec.dmrid.gov.cy/dmrid/dec/ws_dec.nsf/radioplan_en/radioplan_en?OpenDocument",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "cy-tsada-radio-athina-100-7",
+      "name": "RADIO ATHINA",
+      "freqMhz": 100.7,
+      "cityId": "cy-tsada",
+      "description": "Cyprus FM transmitter listed by DEC for Τσάδα. Licensee: ATHINA MEDIA SERVICES - LOVE FM. Site elevation: 570 m. Bandwidth: 150.000000 KHz. Output power: 30.00 dBW. Maximum radiated power: 39.50 dBW ERP. Emission: 150KF3E--.",
+      "tags": [
+        "fm",
+        "official",
+        "dec",
+        "cyprus",
+        "τσαδα",
+        "erp"
+      ],
+      "source": "DEC national radio broadcasting coverage plan",
+      "sourceUrl": "https://dec.dmrid.gov.cy/dmrid/dec/ws_dec.nsf/radioplan_en/radioplan_en?OpenDocument",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "cy-tsada-radio-capital-101-4",
+      "name": "RADIO CAPITAL",
+      "freqMhz": 101.4,
+      "cityId": "cy-tsada",
+      "description": "Cyprus FM transmitter listed by DEC for Τσάδα. Licensee: LIMA COMMUNICATION LTD - RADIO CAPITAL. Site elevation: 570 m. Bandwidth: 150.000000 KHz. Output power: 30.00 dBW. Maximum radiated power: 41.45 dBW ERP. Emission: 150KF3E--.",
+      "tags": [
+        "fm",
+        "official",
+        "dec",
+        "cyprus",
+        "τσαδα",
+        "erp"
+      ],
+      "source": "DEC national radio broadcasting coverage plan",
+      "sourceUrl": "https://dec.dmrid.gov.cy/dmrid/dec/ws_dec.nsf/radioplan_en/radioplan_en?OpenDocument",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "cy-tsada-o-logos-101-6",
+      "name": "O LOGOS",
+      "freqMhz": 101.6,
+      "cityId": "cy-tsada",
+      "description": "Cyprus FM transmitter listed by DEC for Τσάδα. Licensee: ΠΛΗΡΟΦΟΡΙΑΚΗ ΚΑΙ ΠΟΛΙΤΙΣΤΙΚΗ ΕΤΑΙΡΕΙΑ \"Ο ΛΟΓΟΣ\" - Ο ΛΟΓΟΣ. Site elevation: 570 m. Bandwidth: 150.000000 KHz. Output power: 30.00 dBW. Maximum radiated power: 37.60 dBW ERP. Emission: 150KF3E--.",
+      "tags": [
+        "fm",
+        "official",
+        "dec",
+        "cyprus",
+        "τσαδα",
+        "erp"
+      ],
+      "source": "DEC national radio broadcasting coverage plan",
+      "sourceUrl": "https://dec.dmrid.gov.cy/dmrid/dec/ws_dec.nsf/radioplan_en/radioplan_en?OpenDocument",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "cy-tsada-kanali-7-102-1",
+      "name": "KANALI 7",
+      "freqMhz": 102.1,
+      "cityId": "cy-tsada",
+      "description": "Cyprus FM transmitter listed by DEC for Τσάδα. Licensee: GEOPHORAE (PUBLISHING) LTD - ΡΑΔΙΟ ΚΑΝΑΛΙ 7. Site elevation: 570 m. Bandwidth: 150.000000 KHz. Output power: 30.00 dBW. Maximum radiated power: 41.50 dBW ERP. Emission: 150KF3E--.",
+      "tags": [
+        "fm",
+        "official",
+        "dec",
+        "cyprus",
+        "τσαδα",
+        "erp"
+      ],
+      "source": "DEC national radio broadcasting coverage plan",
+      "sourceUrl": "https://dec.dmrid.gov.cy/dmrid/dec/ws_dec.nsf/radioplan_en/radioplan_en?OpenDocument",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "cy-tsada-mix-fm-102-3",
+      "name": "MIX FM",
+      "freqMhz": 102.3,
+      "cityId": "cy-tsada",
+      "description": "Cyprus FM transmitter listed by DEC for Τσάδα. Licensee: Γ.Μ.Ν. ΡΑΔΙΟΚΥΜΑΤΑ ΛΤΔ - MIX FM. Site elevation: 570 m. Bandwidth: 150.000000 KHz. Output power: 30.00 dBW. Maximum radiated power: 37.20 dBW ERP. Emission: 150KF3E--.",
+      "tags": [
+        "fm",
+        "official",
+        "dec",
+        "cyprus",
+        "τσαδα",
+        "erp"
+      ],
+      "source": "DEC national radio broadcasting coverage plan",
+      "sourceUrl": "https://dec.dmrid.gov.cy/dmrid/dec/ws_dec.nsf/radioplan_en/radioplan_en?OpenDocument",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "cy-tsada-antenna-fm-102-7",
+      "name": "ANTENNA FM",
+      "freqMhz": 102.7,
+      "cityId": "cy-tsada",
+      "description": "Cyprus FM transmitter listed by DEC for Τσάδα. Licensee: ANTENNA LTD - ANTENNA FM. Site elevation: 570 m. Bandwidth: 150.000000 KHz. Output power: 30.00 dBW. Maximum radiated power: 38.50 dBW ERP. Emission: 150KF3E--.",
+      "tags": [
+        "fm",
+        "official",
+        "dec",
+        "cyprus",
+        "τσαδα",
+        "erp"
+      ],
+      "source": "DEC national radio broadcasting coverage plan",
+      "sourceUrl": "https://dec.dmrid.gov.cy/dmrid/dec/ws_dec.nsf/radioplan_en/radioplan_en?OpenDocument",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "cy-tsada-radio-dromos-102-9",
+      "name": "RADIO DROMOS",
+      "freqMhz": 102.9,
+      "cityId": "cy-tsada",
+      "description": "Cyprus FM transmitter listed by DEC for Τσάδα. Licensee: Ν.Π.Φ. ΡΑΔΙΟ ΕΠΙΣΤΡΟΦΗ - ΡΑΔΙΟ ΔΡΟΜΟΣ. Site elevation: 570 m. Bandwidth: 150.000000 KHz. Output power: 30.00 dBW. Maximum radiated power: 37.70 dBW ERP. Emission: 150KF3E--.",
+      "tags": [
+        "fm",
+        "official",
+        "dec",
+        "cyprus",
+        "τσαδα",
+        "erp"
+      ],
+      "source": "DEC national radio broadcasting coverage plan",
+      "sourceUrl": "https://dec.dmrid.gov.cy/dmrid/dec/ws_dec.nsf/radioplan_en/radioplan_en?OpenDocument",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "cy-tsada-supersport-104",
+      "name": "SUPERSPORT",
+      "freqMhz": 104,
+      "cityId": "cy-tsada",
+      "description": "Cyprus FM transmitter listed by DEC for Τσάδα. Licensee: SUPERSPORT FM (CYPRUS) LTD - SUPERSPORT FM. Site elevation: 570 m. Bandwidth: 150.000000 KHz. Output power: 30.00 dBW. Maximum radiated power: 37.70 dBW ERP. Emission: 150KF3E--.",
+      "tags": [
+        "fm",
+        "official",
+        "dec",
+        "cyprus",
+        "τσαδα",
+        "erp"
+      ],
+      "source": "DEC national radio broadcasting coverage plan",
+      "sourceUrl": "https://dec.dmrid.gov.cy/dmrid/dec/ws_dec.nsf/radioplan_en/radioplan_en?OpenDocument",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "cy-tsada-point-fm-104-3",
+      "name": "POINT FM",
+      "freqMhz": 104.3,
+      "cityId": "cy-tsada",
+      "description": "Cyprus FM transmitter listed by DEC for Τσάδα. Licensee: S.P.A.P. RADIO LTD - ΡΑΔΙΟ POINT FM. Site elevation: 570 m. Bandwidth: 150.000000 KHz. Output power: 30.00 dBW. Maximum radiated power: 37.50 dBW ERP. Emission: 150KF3E--.",
+      "tags": [
+        "fm",
+        "official",
+        "dec",
+        "cyprus",
+        "τσαδα",
+        "erp"
+      ],
+      "source": "DEC national radio broadcasting coverage plan",
+      "sourceUrl": "https://dec.dmrid.gov.cy/dmrid/dec/ws_dec.nsf/radioplan_en/radioplan_en?OpenDocument",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "cy-tsada-radio-pyrgos-105-6",
+      "name": "RADIO PYRGOS",
+      "freqMhz": 105.6,
+      "cityId": "cy-tsada",
+      "description": "Cyprus FM transmitter listed by DEC for Τσάδα. Licensee: Α.Κ. ΡΑΔΙΟ (ΠΥΡΓΟΣ) ΛΤΔ - ΡAΔΙΟ ΠYΡΓΟΣ. Site elevation: 570 m. Bandwidth: 150.000000 KHz. Output power: 30.00 dBW. Maximum radiated power: 39.75 dBW ERP. Emission: 150KF3E--.",
+      "tags": [
+        "fm",
+        "official",
+        "dec",
+        "cyprus",
+        "τσαδα",
+        "erp"
+      ],
+      "source": "DEC national radio broadcasting coverage plan",
+      "sourceUrl": "https://dec.dmrid.gov.cy/dmrid/dec/ws_dec.nsf/radioplan_en/radioplan_en?OpenDocument",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "cy-tsada-kanali-6-106",
+      "name": "KANALI 6",
+      "freqMhz": 106,
+      "cityId": "cy-tsada",
+      "description": "Cyprus FM transmitter listed by DEC for Τσάδα. Licensee: ΔΙΑΥΛΟΣ ΕΠΙΧΕΙΡΗΣΕΙΣ ΠΛΗΡΟΦΟΡΗΣΗΣ - ΣΤ. ΚΑΝΑΛΙ ΕΞΙ. Site elevation: 570 m. Bandwidth: 150.000000 KHz. Output power: 30.00 dBW. Maximum radiated power: 39.60 dBW ERP. Emission: 150KF3E--.",
+      "tags": [
+        "fm",
+        "official",
+        "dec",
+        "cyprus",
+        "τσαδα",
+        "erp"
+      ],
+      "source": "DEC national radio broadcasting coverage plan",
+      "sourceUrl": "https://dec.dmrid.gov.cy/dmrid/dec/ws_dec.nsf/radioplan_en/radioplan_en?OpenDocument",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "cy-tsada-politis-fm-107-6",
+      "name": "POLITIS FM",
+      "freqMhz": 107.6,
+      "cityId": "cy-tsada",
+      "description": "Cyprus FM transmitter listed by DEC for Τσάδα. Licensee: RADIO ELIOS NETWORK LTD - POLITIS FM. Site elevation: 570 m. Bandwidth: 150.000000 KHz. Output power: 30.00 dBW. Maximum radiated power: 40.50 dBW ERP. Emission: 150KF3E--.",
+      "tags": [
+        "fm",
+        "official",
+        "dec",
+        "cyprus",
+        "τσαδα",
+        "erp"
+      ],
+      "source": "DEC national radio broadcasting coverage plan",
+      "sourceUrl": "https://dec.dmrid.gov.cy/dmrid/dec/ws_dec.nsf/radioplan_en/radioplan_en?OpenDocument",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "cy-tseri-agios-dimitrios-93-3",
+      "name": "AGIOS DIMITRIOS",
+      "freqMhz": 93.3,
+      "cityId": "cy-tseri",
+      "description": "Cyprus FM transmitter listed by DEC for Τσέρι. Licensee: ΙΔΡΥΜΑ \"Ο ΚΑΛΟΣ ΣΑΜΑΡΙΤΗΣ\" - AΓΙΟΣ ΔΗΜΗΤΡΙΟΣ. Site elevation: 286 m. Bandwidth: 150.000000 KHz. Output power: 30.00 dBW. Maximum radiated power: 42.70 dBW ERP. Emission: 150KF3E--.",
+      "tags": [
+        "fm",
+        "official",
+        "dec",
+        "cyprus",
+        "τσερι",
+        "erp"
+      ],
+      "source": "DEC national radio broadcasting coverage plan",
+      "sourceUrl": "https://dec.dmrid.gov.cy/dmrid/dec/ws_dec.nsf/radioplan_en/radioplan_en?OpenDocument",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "cy-tseri-radio-frederick-95",
+      "name": "RADIO FREDERICK",
+      "freqMhz": 95,
+      "cityId": "cy-tseri",
+      "description": "Cyprus FM transmitter listed by DEC for Τσέρι. Licensee: RADIO FREDERICK - ΡΑΔΙΟ FREDERICK. Site elevation: 286 m. Bandwidth: 150.000000 KHz. Output power: 30.00 dBW. Maximum radiated power: 42.70 dBW ERP. Emission: 150KF3E--.",
+      "tags": [
+        "fm",
+        "official",
+        "dec",
+        "cyprus",
+        "τσερι",
+        "erp"
+      ],
+      "source": "DEC national radio broadcasting coverage plan",
+      "sourceUrl": "https://dec.dmrid.gov.cy/dmrid/dec/ws_dec.nsf/radioplan_en/radioplan_en?OpenDocument",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "cy-tseri-my-radio-art-99",
+      "name": "MY RADIO ART",
+      "freqMhz": 99,
+      "cityId": "cy-tseri",
+      "description": "Cyprus FM transmitter listed by DEC for Τσέρι. Licensee: SIMONA SOUND & VISION - MY RADIO ART. Site elevation: 286 m. Bandwidth: 150.000000 KHz. Output power: 30.00 dBW. Maximum radiated power: 42.70 dBW ERP. Emission: 150KF3E--.",
+      "tags": [
+        "fm",
+        "official",
+        "dec",
+        "cyprus",
+        "τσερι",
+        "erp"
+      ],
+      "source": "DEC national radio broadcasting coverage plan",
+      "sourceUrl": "https://dec.dmrid.gov.cy/dmrid/dec/ws_dec.nsf/radioplan_en/radioplan_en?OpenDocument",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "cy-tseri-u-radio-99-5",
+      "name": "U-RADIO",
+      "freqMhz": 99.5,
+      "cityId": "cy-tseri",
+      "description": "Cyprus FM transmitter listed by DEC for Τσέρι. Licensee: UNIC MEDIA LTD - NJOY. Site elevation: 286 m. Bandwidth: 150.000000 KHz. Output power: 30.00 dBW. Maximum radiated power: 41.80 dBW ERP. Emission: 150KF3E--.",
+      "tags": [
+        "fm",
+        "official",
+        "dec",
+        "cyprus",
+        "τσερι",
+        "erp"
+      ],
+      "source": "DEC national radio broadcasting coverage plan",
+      "sourceUrl": "https://dec.dmrid.gov.cy/dmrid/dec/ws_dec.nsf/radioplan_en/radioplan_en?OpenDocument",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "cy-tseri-top-fm-stereo-99-9",
+      "name": "TOP FM STEREO",
+      "freqMhz": 99.9,
+      "cityId": "cy-tseri",
+      "description": "Cyprus FM transmitter listed by DEC for Τσέρι. Licensee: RADIO RANIA FM STEREO LTD - ΡΑΔΙΟ TOP FM. Site elevation: 286 m. Bandwidth: 150.000000 KHz. Output power: 30.00 dBW. Maximum radiated power: 42.70 dBW ERP. Emission: 150KF3E--.",
+      "tags": [
+        "fm",
+        "official",
+        "dec",
+        "cyprus",
+        "τσερι",
+        "erp"
+      ],
+      "source": "DEC national radio broadcasting coverage plan",
+      "sourceUrl": "https://dec.dmrid.gov.cy/dmrid/dec/ws_dec.nsf/radioplan_en/radioplan_en?OpenDocument",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "cy-tseri-radio-dromos-106-7",
+      "name": "RADIO DROMOS",
+      "freqMhz": 106.7,
+      "cityId": "cy-tseri",
+      "description": "Cyprus FM transmitter listed by DEC for Τσέρι. Licensee: Ν.Π.Φ. ΡΑΔΙΟ ΕΠΙΣΤΡΟΦΗ - ΡΑΔΙΟ ΔΡΟΜΟΣ. Site elevation: 286 m. Bandwidth: 150.000000 KHz. Output power: 30.00 dBW. Maximum radiated power: 42.70 dBW ERP. Emission: 150KF3E--.",
+      "tags": [
+        "fm",
+        "official",
+        "dec",
+        "cyprus",
+        "τσερι",
+        "erp"
+      ],
+      "source": "DEC national radio broadcasting coverage plan",
+      "sourceUrl": "https://dec.dmrid.gov.cy/dmrid/dec/ws_dec.nsf/radioplan_en/radioplan_en?OpenDocument",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "cy-voroklini-prima-scala-93",
+      "name": "PRIMA SCALA",
+      "freqMhz": 93,
+      "cityId": "cy-voroklini",
+      "description": "Cyprus FM transmitter listed by DEC for Ορόκλινη. Licensee: VAMMA RADIO COMPANY LTD - PRIMA SCALA 93 FM. Site elevation: 103 m. Bandwidth: 150.000000 KHz. Output power: 26.99 dBW. Maximum radiated power: 36.70 dBW ERP. Emission: 150KF3E--.",
+      "tags": [
+        "fm",
+        "official",
+        "dec",
+        "cyprus",
+        "οροκλινη",
+        "erp"
+      ],
+      "source": "DEC national radio broadcasting coverage plan",
+      "sourceUrl": "https://dec.dmrid.gov.cy/dmrid/dec/ws_dec.nsf/radioplan_en/radioplan_en?OpenDocument",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "cy-voroklini-my-radio-art-94-4",
+      "name": "MY RADIO ART",
+      "freqMhz": 94.4,
+      "cityId": "cy-voroklini",
+      "description": "Cyprus FM transmitter listed by DEC for Ορόκλινη. Licensee: SIMONA SOUND & VISION - MY RADIO ART. Site elevation: 103 m. Bandwidth: 150.000000 KHz. Output power: 26.99 dBW. Maximum radiated power: 37.50 dBW ERP. Emission: 150KF3E--.",
+      "tags": [
+        "fm",
+        "official",
+        "dec",
+        "cyprus",
+        "οροκλινη",
+        "erp"
+      ],
+      "source": "DEC national radio broadcasting coverage plan",
+      "sourceUrl": "https://dec.dmrid.gov.cy/dmrid/dec/ws_dec.nsf/radioplan_en/radioplan_en?OpenDocument",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "cy-voroklini-radio-lux-97",
+      "name": "RADIO LUX",
+      "freqMhz": 97,
+      "cityId": "cy-voroklini",
+      "description": "Cyprus FM transmitter listed by DEC for Ορόκλινη. Licensee: EDISLINE LTD - RADIO LUX. Site elevation: 103 m. Bandwidth: 150.000000 KHz. Output power: 26.99 dBW. Maximum radiated power: 35.00 dBW ERP. Emission: 150KF3E--.",
+      "tags": [
+        "fm",
+        "official",
+        "dec",
+        "cyprus",
+        "οροκλινη",
+        "erp"
+      ],
+      "source": "DEC national radio broadcasting coverage plan",
+      "sourceUrl": "https://dec.dmrid.gov.cy/dmrid/dec/ws_dec.nsf/radioplan_en/radioplan_en?OpenDocument",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "cy-voroklini-radio-mega-98-6",
+      "name": "RADIO MEGA",
+      "freqMhz": 98.6,
+      "cityId": "cy-voroklini",
+      "description": "Cyprus FM transmitter listed by DEC for Ορόκλινη. Licensee: M & K MEGA FM 88.4 LTD - RADIO MEGA. Site elevation: 103 m. Bandwidth: 150.000000 KHz. Output power: 26.99 dBW. Maximum radiated power: 34.00 dBW ERP. Emission: 150KF3E--.",
+      "tags": [
+        "fm",
+        "official",
+        "dec",
+        "cyprus",
+        "οροκλινη",
+        "erp"
+      ],
+      "source": "DEC national radio broadcasting coverage plan",
+      "sourceUrl": "https://dec.dmrid.gov.cy/dmrid/dec/ws_dec.nsf/radioplan_en/radioplan_en?OpenDocument",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    }
+  ]
+}

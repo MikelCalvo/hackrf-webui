@@ -1,0 +1,1530 @@
+{
+  "generatedAt": "2026-03-24T19:47:03.274Z",
+  "regions": [
+    {
+      "id": "asia",
+      "name": "Asia",
+      "sortOrder": 20
+    },
+    {
+      "id": "europe",
+      "name": "Europe",
+      "sortOrder": 30
+    },
+    {
+      "id": "north-america",
+      "name": "North America",
+      "sortOrder": 40
+    },
+    {
+      "id": "oceania",
+      "name": "Oceania",
+      "sortOrder": 50
+    },
+    {
+      "id": "south-america",
+      "name": "South America",
+      "sortOrder": 60
+    }
+  ],
+  "countries": [
+    {
+      "id": "american-samoa",
+      "code": "AS",
+      "name": "American Samoa",
+      "regionId": "oceania",
+      "cityCount": 6,
+      "stationCount": 10,
+      "sourceCount": 1,
+      "sources": [
+        {
+          "name": "FCC LMS Public Database",
+          "url": "https://enterpriseefiling.fcc.gov/dataentry/public/tv/lmsDatabase.html"
+        }
+      ],
+      "lastImportedAt": "2026-03-24",
+      "coverageStatus": "active",
+      "coverageTier": "official-substantial",
+      "coverageScope": "national",
+      "sourceQuality": "official-regulator",
+      "hasOfficialImporter": true,
+      "coverageScore": 88
+    },
+    {
+      "id": "australia",
+      "code": "AU",
+      "name": "Australia",
+      "regionId": "oceania",
+      "cityCount": 478,
+      "stationCount": 1415,
+      "sourceCount": 1,
+      "sources": [
+        {
+          "name": "ACMA Broadcast Transmitter Excel",
+          "url": "https://www.acma.gov.au/list-transmitters-licence-broadcast"
+        }
+      ],
+      "lastImportedAt": "2026-03-24",
+      "coverageStatus": "active",
+      "coverageTier": "official-substantial",
+      "coverageScope": "national",
+      "sourceQuality": "official-regulator",
+      "hasOfficialImporter": true,
+      "coverageScore": 88
+    },
+    {
+      "id": "austria",
+      "code": "AT",
+      "name": "Austria",
+      "regionId": "europe",
+      "cityCount": 370,
+      "stationCount": 1443,
+      "sourceCount": 1,
+      "sources": [
+        {
+          "name": "RTR MedienFrequenzbuch",
+          "url": "https://www.rtr.at/medien/service/frequenzbuecher/FrequenzbuchRF.de.html"
+        }
+      ],
+      "lastImportedAt": "2026-03-24",
+      "coverageStatus": "active",
+      "coverageTier": "official-substantial",
+      "coverageScope": "national",
+      "sourceQuality": "official-regulator",
+      "hasOfficialImporter": true,
+      "coverageScore": 88
+    },
+    {
+      "id": "belgium",
+      "code": "BE",
+      "name": "Belgium",
+      "regionId": "europe",
+      "cityCount": 189,
+      "stationCount": 289,
+      "sourceCount": 2,
+      "sources": [
+        {
+          "name": "CSA service registry",
+          "url": "https://www.csa.be/service/frequence-plus/"
+        },
+        {
+          "name": "Vlaamse overheid local FM packages",
+          "url": "https://www.vlaanderen.be/cjm/sites/default/files/2020-07/erkende-lokale-radios_noodfonds.pdf"
+        }
+      ],
+      "lastImportedAt": "2026-03-24",
+      "coverageStatus": "partial",
+      "coverageTier": "official-partial",
+      "coverageScope": "regional",
+      "sourceQuality": "official-public-sector",
+      "hasOfficialImporter": true,
+      "notesPath": "docs/fm/belgium-source-notes.md",
+      "coverageNotes": "Hybrid regional result built from Flemish and CSA authority sources. Wallonia and Brussels can temporarily depend on cached fallback when CSA is unstable.",
+      "coverageScore": 58
+    },
+    {
+      "id": "bolivia",
+      "code": "BO",
+      "name": "Bolivia",
+      "regionId": "south-america",
+      "cityCount": 70,
+      "stationCount": 876,
+      "sourceCount": 1,
+      "sources": [
+        {
+          "name": "ATT SINADI FM operator list",
+          "url": "https://plataformas.att.gob.bo/index.php/sinadi/index/AM"
+        }
+      ],
+      "lastImportedAt": "2026-03-24",
+      "coverageStatus": "active",
+      "coverageTier": "official-substantial",
+      "coverageScope": "national",
+      "sourceQuality": "official-regulator",
+      "hasOfficialImporter": true,
+      "coverageScore": 88
+    },
+    {
+      "id": "brazil",
+      "code": "BR",
+      "name": "Brazil",
+      "regionId": "south-america",
+      "cityCount": 1235,
+      "stationCount": 2090,
+      "sourceCount": 1,
+      "sources": [
+        {
+          "name": "Brazilian federal radiodiffusion CSV",
+          "url": "https://s3.mcom.gov.br/radcom/SCR_DADOS_RADIODIFUSAO_TV_GTVD_RTV_RTVD_FM_OM.csv"
+        }
+      ],
+      "lastImportedAt": "2026-03-24",
+      "coverageStatus": "active",
+      "coverageTier": "official-substantial",
+      "coverageScope": "national",
+      "sourceQuality": "official-regulator",
+      "hasOfficialImporter": true,
+      "coverageScore": 88,
+      "cachedFallbackUsed": true
+    },
+    {
+      "id": "canada",
+      "code": "CA",
+      "name": "Canada",
+      "regionId": "north-america",
+      "cityCount": 1226,
+      "stationCount": 4533,
+      "sourceCount": 1,
+      "sources": [
+        {
+          "name": "ISED Broadcasting Data",
+          "url": "https://ised-isde.canada.ca/site/spectrum-management-system/en/broadcasting-services/download-broadcasting-data-files"
+        }
+      ],
+      "lastImportedAt": "2026-03-24",
+      "coverageStatus": "active",
+      "coverageTier": "official-substantial",
+      "coverageScope": "national",
+      "sourceQuality": "official-regulator",
+      "hasOfficialImporter": true,
+      "coverageScore": 88
+    },
+    {
+      "id": "chile",
+      "code": "CL",
+      "name": "Chile",
+      "regionId": "south-america",
+      "cityCount": 480,
+      "stationCount": 2341,
+      "sourceCount": 1,
+      "sources": [
+        {
+          "name": "SUBTEL FM Vigentes KMZ",
+          "url": "https://www.subtel.gob.cl/wp-content/uploads/2026/01/FM_RCC_Vigentes_Enero_2026.zip"
+        }
+      ],
+      "lastImportedAt": "2026-03-24",
+      "coverageStatus": "active",
+      "coverageTier": "official-substantial",
+      "coverageScope": "national",
+      "sourceQuality": "official-regulator",
+      "hasOfficialImporter": true,
+      "coverageScore": 88
+    },
+    {
+      "id": "colombia",
+      "code": "CO",
+      "name": "Colombia",
+      "regionId": "south-america",
+      "cityCount": 992,
+      "stationCount": 2520,
+      "sourceCount": 1,
+      "sources": [
+        {
+          "name": "ANE national FM technical plan appendix",
+          "url": "https://www.ane.gov.co/Sliders/archivos/GestionTecnica/Radiodifusi%C3%B3n%20sonora/Planes%20t%C3%A9cnicos%20de%20Radiodifusi%C3%B3n%20Sonora/Actualizaciones%20del%20PTNRS%20en%20AM%20y%20FM%20a%C3%B1o%202021/Plan%20T%C3%A9cnico/Apendice%20A%20del%20PTNRS%20en%20FM%20actualizado%20Resolucion%20284%20del%2018%20de%20junio%20de%202021.pdf"
+        }
+      ],
+      "lastImportedAt": "2026-03-24",
+      "coverageStatus": "active",
+      "coverageTier": "official-substantial",
+      "coverageScope": "national",
+      "sourceQuality": "official-regulator",
+      "hasOfficialImporter": true,
+      "coverageScore": 88
+    },
+    {
+      "id": "croatia",
+      "code": "HR",
+      "name": "Croatia",
+      "regionId": "europe",
+      "cityCount": 183,
+      "stationCount": 553,
+      "sourceCount": 1,
+      "sources": [
+        {
+          "name": "HAKOM FM concession table",
+          "url": "https://app.hakom.hr/default.aspx?id=406"
+        }
+      ],
+      "lastImportedAt": "2026-03-24",
+      "coverageStatus": "active",
+      "coverageTier": "official-substantial",
+      "coverageScope": "national",
+      "sourceQuality": "official-regulator",
+      "hasOfficialImporter": true,
+      "coverageScore": 88
+    },
+    {
+      "id": "cyprus",
+      "code": "CY",
+      "name": "Cyprus",
+      "regionId": "europe",
+      "cityCount": 12,
+      "stationCount": 64,
+      "sourceCount": 1,
+      "sources": [
+        {
+          "name": "DEC national radio broadcasting coverage plan",
+          "url": "https://dec.dmrid.gov.cy/dmrid/dec/ws_dec.nsf/radioplan_en/radioplan_en?OpenDocument"
+        }
+      ],
+      "lastImportedAt": "2026-03-24",
+      "coverageStatus": "active",
+      "coverageTier": "official-substantial",
+      "coverageScope": "national",
+      "sourceQuality": "official-regulator",
+      "hasOfficialImporter": true,
+      "coverageScore": 88
+    },
+    {
+      "id": "czechia",
+      "code": "CZ",
+      "name": "Czechia",
+      "regionId": "europe",
+      "cityCount": 424,
+      "stationCount": 998,
+      "sourceCount": 1,
+      "sources": [
+        {
+          "name": "CTU radio transmitters dataset",
+          "url": "https://data.ctu.gov.cz/dataset/rozhlasove-vysilace"
+        }
+      ],
+      "lastImportedAt": "2026-03-24",
+      "coverageStatus": "active",
+      "coverageTier": "official-substantial",
+      "coverageScope": "national",
+      "sourceQuality": "official-regulator",
+      "hasOfficialImporter": true,
+      "coverageScore": 88
+    },
+    {
+      "id": "denmark",
+      "code": "DK",
+      "name": "Denmark",
+      "regionId": "europe",
+      "cityCount": 248,
+      "stationCount": 708,
+      "sourceCount": 1,
+      "sources": [
+        {
+          "name": "SDFI Frekvensregistret",
+          "url": "https://frekvensregister.sdfi.dk/Search/Result.aspx?MMSI=&SFE=108&SFS=87%2C5&CuNo=&FPt=&FPf=&Lno1=&Lno2=&CuAdd=&CuAdd2=&Fadd=&FCity=&CuCity=&CS=&CuName=&CuCVR=&CPCF=&CPCt=&UDF=&UDT=&IntHa=false&IntSu=false&PA=&LG=6&UdMet=&GA=&Type=19"
+        }
+      ],
+      "lastImportedAt": "2026-03-24",
+      "coverageStatus": "active",
+      "coverageTier": "official-substantial",
+      "coverageScope": "national",
+      "sourceQuality": "official-regulator",
+      "hasOfficialImporter": true,
+      "coverageScore": 88
+    },
+    {
+      "id": "ecuador",
+      "code": "EC",
+      "name": "Ecuador",
+      "regionId": "south-america",
+      "cityCount": 132,
+      "stationCount": 746,
+      "sourceCount": 1,
+      "sources": [
+        {
+          "name": "ARCOTEL national concession register workbook",
+          "url": "https://www.arcotel.gob.ec/wp-content/uploads/2021/12/8.1.3.-Listado_RTV-Noviembre-2021.xls"
+        }
+      ],
+      "lastImportedAt": "2026-03-24",
+      "coverageStatus": "active",
+      "coverageTier": "official-substantial",
+      "coverageScope": "national",
+      "sourceQuality": "official-regulator",
+      "hasOfficialImporter": true,
+      "coverageScore": 88
+    },
+    {
+      "id": "estonia",
+      "code": "EE",
+      "name": "Estonia",
+      "regionId": "europe",
+      "cityCount": 34,
+      "stationCount": 198,
+      "sourceCount": 1,
+      "sources": [
+        {
+          "name": "TTJA FM radio overview PDF",
+          "url": "https://www.ttja.ee/sites/default/files/documents/2025-07/FMraadio_2025.07.04.pdf"
+        }
+      ],
+      "lastImportedAt": "2026-03-24",
+      "coverageStatus": "active",
+      "coverageTier": "official-substantial",
+      "coverageScope": "national",
+      "sourceQuality": "official-regulator",
+      "hasOfficialImporter": true,
+      "coverageScore": 88
+    },
+    {
+      "id": "finland",
+      "code": "FI",
+      "name": "Finland",
+      "regionId": "europe",
+      "cityCount": 136,
+      "stationCount": 961,
+      "sourceCount": 1,
+      "sources": [
+        {
+          "name": "Traficom radio station register",
+          "url": "https://eservices.traficom.fi/Licensesservices/Forms/BCLicenses.aspx?langid=en"
+        }
+      ],
+      "lastImportedAt": "2026-03-24",
+      "coverageStatus": "active",
+      "coverageTier": "official-substantial",
+      "coverageScope": "national",
+      "sourceQuality": "official-regulator",
+      "hasOfficialImporter": true,
+      "coverageScore": 88
+    },
+    {
+      "id": "france",
+      "code": "FR",
+      "name": "France",
+      "regionId": "europe",
+      "cityCount": 1016,
+      "stationCount": 7423,
+      "sourceCount": 1,
+      "sources": [
+        {
+          "name": "Arcom radio FM station list",
+          "url": "https://www.arcom.fr/radio-et-audio-numerique/radio-fm-dab/radios/france-musique"
+        }
+      ],
+      "lastImportedAt": "2026-03-24",
+      "coverageStatus": "active",
+      "coverageTier": "official-substantial",
+      "coverageScope": "national",
+      "sourceQuality": "official-regulator",
+      "hasOfficialImporter": true,
+      "coverageScore": 88,
+      "cachedFallbackUsed": true
+    },
+    {
+      "id": "germany",
+      "code": "DE",
+      "name": "Germany",
+      "regionId": "europe",
+      "cityCount": 1077,
+      "stationCount": 2985,
+      "sourceCount": 1,
+      "sources": [
+        {
+          "name": "Bundesnetzagentur UKW Senderdaten",
+          "url": "https://www.bundesnetzagentur.de/EN/Areas/Telecommunications/FrequencyManagement/Broadcasting/start.html"
+        }
+      ],
+      "lastImportedAt": "2026-03-24",
+      "coverageStatus": "active",
+      "coverageTier": "official-substantial",
+      "coverageScope": "national",
+      "sourceQuality": "official-regulator",
+      "hasOfficialImporter": true,
+      "coverageScore": 88
+    },
+    {
+      "id": "greece",
+      "code": "GR",
+      "name": "Greece",
+      "regionId": "europe",
+      "cityCount": 177,
+      "stationCount": 719,
+      "sourceCount": 1,
+      "sources": [
+        {
+          "name": "ESR radio station register workbook",
+          "url": "https://www.esr.gr/wp-content/uploads/bnl.xlsx"
+        }
+      ],
+      "lastImportedAt": "2026-03-24",
+      "coverageStatus": "active",
+      "coverageTier": "official-substantial",
+      "coverageScope": "national",
+      "sourceQuality": "official-regulator",
+      "hasOfficialImporter": true,
+      "coverageScore": 88
+    },
+    {
+      "id": "guam",
+      "code": "GU",
+      "name": "Guam",
+      "regionId": "oceania",
+      "cityCount": 3,
+      "stationCount": 12,
+      "sourceCount": 1,
+      "sources": [
+        {
+          "name": "FCC LMS Public Database",
+          "url": "https://enterpriseefiling.fcc.gov/dataentry/public/tv/lmsDatabase.html"
+        }
+      ],
+      "lastImportedAt": "2026-03-24",
+      "coverageStatus": "active",
+      "coverageTier": "official-substantial",
+      "coverageScope": "national",
+      "sourceQuality": "official-regulator",
+      "hasOfficialImporter": true,
+      "coverageScore": 88
+    },
+    {
+      "id": "hungary",
+      "code": "HU",
+      "name": "Hungary",
+      "regionId": "europe",
+      "cityCount": 129,
+      "stationCount": 351,
+      "sourceCount": 5,
+      "sources": [
+        {
+          "name": "NMHH local FM table",
+          "url": "https://nmhh.hu/cikk/183544/URHFM_radioallomasok__helyi"
+        },
+        {
+          "name": "NMHH national commercial FM table",
+          "url": "https://nmhh.hu/cikk/196119/URHFM_radioallomasok__orszagos_kereskedelmi_halozat"
+        },
+        {
+          "name": "NMHH public-service FM table",
+          "url": "https://nmhh.hu/cikk/185578/URHFM_radioallomasok__orszagos_kozszolgalati_halozatok"
+        },
+        {
+          "name": "NMHH regional FM table",
+          "url": "https://nmhh.hu/cikk/185577/URHFM_radioallomasok__korzeti"
+        },
+        {
+          "name": "NMHH small-community FM table",
+          "url": "https://nmhh.hu/cikk/185576/URHFM_radioallomasok__kiskozossegi"
+        }
+      ],
+      "lastImportedAt": "2026-03-24",
+      "coverageStatus": "active",
+      "coverageTier": "official-substantial",
+      "coverageScope": "national",
+      "sourceQuality": "official-regulator",
+      "hasOfficialImporter": true,
+      "coverageScore": 88
+    },
+    {
+      "id": "india",
+      "code": "IN",
+      "name": "India",
+      "regionId": "asia",
+      "cityCount": 462,
+      "stationCount": 868,
+      "sourceCount": 2,
+      "sources": [
+        {
+          "name": "MIB operational private FM channels PDF",
+          "url": "https://mib.gov.in/sites/default/files/2026-02/391_operationalchannels_01022026.pdf"
+        },
+        {
+          "name": "Prasar Bharati Akashvani stations PDF",
+          "url": "https://prasarbharati.gov.in/wp-content/uploads/2025/12/Akashvani_Stations.pdf"
+        }
+      ],
+      "lastImportedAt": "2026-03-24",
+      "coverageStatus": "partial",
+      "coverageTier": "official-substantial",
+      "coverageScope": "national",
+      "sourceQuality": "mixed",
+      "hasOfficialImporter": true,
+      "notesPath": "docs/fm/india-source-notes.md",
+      "coverageNotes": "Strong national baseline from MIB and Prasar Bharati, but not yet a complete all-broadcaster registry.",
+      "coverageScore": 72
+    },
+    {
+      "id": "ireland",
+      "code": "IE",
+      "name": "Ireland",
+      "regionId": "europe",
+      "cityCount": 18,
+      "stationCount": 72,
+      "sourceCount": 1,
+      "sources": [
+        {
+          "name": "2RN FM radio network table",
+          "url": "https://2rn.ie/analogue-radio/"
+        }
+      ],
+      "lastImportedAt": "2026-03-24",
+      "coverageStatus": "partial",
+      "coverageTier": "official-partial",
+      "coverageScope": "public-service-only",
+      "sourceQuality": "official-public-sector",
+      "hasOfficialImporter": true,
+      "coverageNotes": "Current Irish coverage comes from the 2RN public-service network table, not a full commercial-market register.",
+      "coverageScore": 48
+    },
+    {
+      "id": "italy",
+      "code": "IT",
+      "name": "Italy",
+      "regionId": "europe",
+      "cityCount": 2689,
+      "stationCount": 16723,
+      "sourceCount": 1,
+      "sources": [
+        {
+          "name": "AGCOM CNF public site",
+          "url": "http://www.catastofrequenze.agcom.it/catasto/pubblico"
+        }
+      ],
+      "lastImportedAt": "2026-03-24",
+      "coverageStatus": "active",
+      "coverageTier": "official-substantial",
+      "coverageScope": "national",
+      "sourceQuality": "official-regulator",
+      "hasOfficialImporter": true,
+      "coverageScore": 88
+    },
+    {
+      "id": "japan",
+      "code": "JP",
+      "name": "Japan",
+      "regionId": "asia",
+      "cityCount": 1,
+      "stationCount": 4,
+      "sourceCount": 1,
+      "sources": [
+        {
+          "name": "Community seed",
+          "kind": "manual"
+        }
+      ],
+      "lastImportedAt": "2026-03-23",
+      "coverageStatus": "manual",
+      "coverageTier": "manual-seed",
+      "coverageScope": "city-seed",
+      "sourceQuality": "manual-curated",
+      "hasOfficialImporter": false,
+      "notesPath": "docs/fm/japan-source-notes.md",
+      "coverageNotes": "Japan currently ships only a small manual seed while the official nationwide import path remains blocked.",
+      "coverageScore": 12
+    },
+    {
+      "id": "latvia",
+      "code": "LV",
+      "name": "Latvia",
+      "regionId": "europe",
+      "cityCount": 46,
+      "stationCount": 276,
+      "sourceCount": 1,
+      "sources": [
+        {
+          "name": "Elektroniskie sakari FM station table",
+          "url": "https://www.esakari.lv/lv/fm-apraides-staciju-saraksts"
+        }
+      ],
+      "lastImportedAt": "2026-03-24",
+      "coverageStatus": "active",
+      "coverageTier": "official-substantial",
+      "coverageScope": "national",
+      "sourceQuality": "official-regulator",
+      "hasOfficialImporter": true,
+      "coverageScore": 88
+    },
+    {
+      "id": "lithuania",
+      "code": "LT",
+      "name": "Lithuania",
+      "regionId": "europe",
+      "cityCount": 32,
+      "stationCount": 318,
+      "sourceCount": 1,
+      "sources": [
+        {
+          "name": "RRT analogue radio frequency list",
+          "url": "http://epaslaugos.rrt.lt/bc/RadioA.aspx"
+        }
+      ],
+      "lastImportedAt": "2026-03-24",
+      "coverageStatus": "active",
+      "coverageTier": "official-substantial",
+      "coverageScope": "national",
+      "sourceQuality": "official-regulator",
+      "hasOfficialImporter": true,
+      "coverageScore": 88
+    },
+    {
+      "id": "luxembourg",
+      "code": "LU",
+      "name": "Luxembourg",
+      "regionId": "europe",
+      "cityCount": 17,
+      "stationCount": 33,
+      "sourceCount": 1,
+      "sources": [
+        {
+          "name": "ILR radio transmitters list",
+          "url": "https://www.ilr.lu/publications/liste-des-emetteurs-de-programmes-de-radio/"
+        }
+      ],
+      "lastImportedAt": "2026-03-24",
+      "coverageStatus": "active",
+      "coverageTier": "official-substantial",
+      "coverageScope": "national",
+      "sourceQuality": "official-regulator",
+      "hasOfficialImporter": true,
+      "coverageScore": 88
+    },
+    {
+      "id": "malaysia",
+      "code": "MY",
+      "name": "Malaysia",
+      "regionId": "asia",
+      "cityCount": 21,
+      "stationCount": 28,
+      "sourceCount": 1,
+      "sources": [
+        {
+          "name": "RTM stations API",
+          "url": "https://radio.rtm.gov.my/api/frontend/stations"
+        }
+      ],
+      "lastImportedAt": "2026-03-24",
+      "coverageStatus": "partial",
+      "coverageTier": "official-partial",
+      "coverageScope": "public-service-only",
+      "sourceQuality": "official-public-sector",
+      "hasOfficialImporter": true,
+      "coverageNotes": "Current Malaysia coverage is derived from RTM station data only.",
+      "coverageScore": 42
+    },
+    {
+      "id": "malta",
+      "code": "MT",
+      "name": "Malta",
+      "regionId": "europe",
+      "cityCount": 24,
+      "stationCount": 31,
+      "sourceCount": 2,
+      "sources": [
+        {
+          "name": "Broadcasting Authority community radio table",
+          "url": "https://ba.org.mt/stations-licenced"
+        },
+        {
+          "name": "Broadcasting Authority nationwide radio table",
+          "url": "https://ba.org.mt/stations-licenced"
+        }
+      ],
+      "lastImportedAt": "2026-03-24",
+      "coverageStatus": "active",
+      "coverageTier": "official-substantial",
+      "coverageScope": "national",
+      "sourceQuality": "official-regulator",
+      "hasOfficialImporter": true,
+      "coverageScore": 88
+    },
+    {
+      "id": "mexico",
+      "code": "MX",
+      "name": "Mexico",
+      "regionId": "north-america",
+      "cityCount": 647,
+      "stationCount": 1835,
+      "sourceCount": 1,
+      "sources": [
+        {
+          "name": "IFT FM station workbook",
+          "url": "https://www.ift.org.mx/secciones/espectro-radioelectrico"
+        }
+      ],
+      "lastImportedAt": "2026-03-24",
+      "coverageStatus": "active",
+      "coverageTier": "official-substantial",
+      "coverageScope": "national",
+      "sourceQuality": "official-regulator",
+      "hasOfficialImporter": true,
+      "coverageScore": 88
+    },
+    {
+      "id": "moldova",
+      "code": "MD",
+      "name": "Moldova",
+      "regionId": "europe",
+      "cityCount": 40,
+      "stationCount": 196,
+      "sourceCount": 1,
+      "sources": [
+        {
+          "name": "Consiliul Audiovizualului radio media register",
+          "url": "https://consiliuaudiovizual.md/registers/registrul-furnizorilor-de-servicii-media-de-radiodifuziune-sonora/"
+        }
+      ],
+      "lastImportedAt": "2026-03-24",
+      "coverageStatus": "active",
+      "coverageTier": "official-substantial",
+      "coverageScope": "national",
+      "sourceQuality": "official-regulator",
+      "hasOfficialImporter": true,
+      "coverageScore": 88
+    },
+    {
+      "id": "montenegro",
+      "code": "ME",
+      "name": "Montenegro",
+      "regionId": "europe",
+      "cityCount": 23,
+      "stationCount": 235,
+      "sourceCount": 1,
+      "sources": [
+        {
+          "name": "AMU Montenegro media register export",
+          "url": "https://amu.me/wp-json/api/v1/excel?select-emiter_kategorija=rtcg"
+        }
+      ],
+      "lastImportedAt": "2026-03-24",
+      "coverageStatus": "active",
+      "coverageTier": "official-substantial",
+      "coverageScope": "national",
+      "sourceQuality": "official-regulator",
+      "hasOfficialImporter": true,
+      "coverageScore": 88
+    },
+    {
+      "id": "north-macedonia",
+      "code": "MK",
+      "name": "North Macedonia",
+      "regionId": "europe",
+      "cityCount": 29,
+      "stationCount": 74,
+      "sourceCount": 1,
+      "sources": [
+        {
+          "name": "AVMU Register of Radios workbook",
+          "url": "https://avmu.mk/wp-content/uploads/2026/03/ENGL-Registar-na-RA-13.3.2026.xlsx"
+        }
+      ],
+      "lastImportedAt": "2026-03-24",
+      "coverageStatus": "active",
+      "coverageTier": "official-substantial",
+      "coverageScope": "national",
+      "sourceQuality": "official-regulator",
+      "hasOfficialImporter": true,
+      "coverageScore": 88
+    },
+    {
+      "id": "northern-mariana-islands",
+      "code": "MP",
+      "name": "Northern Mariana Islands",
+      "regionId": "oceania",
+      "cityCount": 3,
+      "stationCount": 5,
+      "sourceCount": 1,
+      "sources": [
+        {
+          "name": "FCC LMS Public Database",
+          "url": "https://enterpriseefiling.fcc.gov/dataentry/public/tv/lmsDatabase.html"
+        }
+      ],
+      "lastImportedAt": "2026-03-24",
+      "coverageStatus": "active",
+      "coverageTier": "official-substantial",
+      "coverageScope": "national",
+      "sourceQuality": "official-regulator",
+      "hasOfficialImporter": true,
+      "coverageScore": 88
+    },
+    {
+      "id": "paraguay",
+      "code": "PY",
+      "name": "Paraguay",
+      "regionId": "south-america",
+      "cityCount": 122,
+      "stationCount": 369,
+      "sourceCount": 2,
+      "sources": [
+        {
+          "name": "CONATEL community FM register",
+          "url": "https://www.conatel.gov.py/wp-content/uploads/2025/08/Servicio-Radiodifusion-Sonora-de-Pequena-y-Mediana-Cobertura-25.07.2025.pdf"
+        },
+        {
+          "name": "CONATEL FM Comercial register",
+          "url": "https://www.conatel.gov.py/conatel/wp-content/uploads/2025/04/servicio-de-radiodifusion-sonora-por-modulacion-de-frecuencia_fm-comercial-14.04.25.pdf"
+        }
+      ],
+      "lastImportedAt": "2026-03-24",
+      "coverageStatus": "active",
+      "coverageTier": "official-substantial",
+      "coverageScope": "national",
+      "sourceQuality": "official-regulator",
+      "hasOfficialImporter": true,
+      "coverageScore": 88
+    },
+    {
+      "id": "peru",
+      "code": "PE",
+      "name": "Peru",
+      "regionId": "south-america",
+      "cityCount": 961,
+      "stationCount": 4729,
+      "sourceCount": 1,
+      "sources": [
+        {
+          "name": "Ministerio de Transportes y Comunicaciones - MTC",
+          "url": "https://www.datosabiertos.gob.pe/dataset/autorizaciones-vigentes-de-radiodifusi%C3%B3n-sonora-al-i-semestre-2025-ministerio-de-transportes"
+        }
+      ],
+      "lastImportedAt": "2026-03-24",
+      "coverageStatus": "active",
+      "coverageTier": "official-substantial",
+      "coverageScope": "national",
+      "sourceQuality": "official-regulator",
+      "hasOfficialImporter": true,
+      "coverageScore": 88
+    },
+    {
+      "id": "philippines",
+      "code": "PH",
+      "name": "Philippines",
+      "regionId": "asia",
+      "cityCount": 15,
+      "stationCount": 55,
+      "sourceCount": 1,
+      "sources": [
+        {
+          "name": "NTC Region VII broadcast stations",
+          "url": "https://region7.ntc.gov.ph/regional-profile/radio-and-tv-broadcast-station/"
+        }
+      ],
+      "lastImportedAt": "2026-03-24",
+      "coverageStatus": "partial",
+      "coverageTier": "official-partial",
+      "coverageScope": "regional",
+      "sourceQuality": "official-regulator",
+      "hasOfficialImporter": true,
+      "coverageNotes": "Only the official NTC Region VII FM table is landed so far; the broader national path remains blocked from this environment.",
+      "coverageScore": 36
+    },
+    {
+      "id": "poland",
+      "code": "PL",
+      "name": "Poland",
+      "regionId": "europe",
+      "cityCount": 666,
+      "stationCount": 1078,
+      "sourceCount": 1,
+      "sources": [
+        {
+          "name": "UKE FM reservations workbook",
+          "url": "https://bip.uke.gov.pl/rezerwacje-czestotliwosci/rezerwacje-radiofoniczne-tresci/87-5-108-mhz%2C2%2C50.html"
+        }
+      ],
+      "lastImportedAt": "2026-03-24",
+      "coverageStatus": "active",
+      "coverageTier": "official-substantial",
+      "coverageScope": "national",
+      "sourceQuality": "official-regulator",
+      "hasOfficialImporter": true,
+      "coverageScore": 88
+    },
+    {
+      "id": "portugal",
+      "code": "PT",
+      "name": "Portugal",
+      "regionId": "europe",
+      "cityCount": 161,
+      "stationCount": 280,
+      "sourceCount": 1,
+      "sources": [
+        {
+          "name": "ERC Operadores de Rádio register list",
+          "url": "https://www.erc.pt/pt/fs/listagem-de-registos-na-erc/"
+        }
+      ],
+      "lastImportedAt": "2026-03-24",
+      "coverageStatus": "partial",
+      "coverageTier": "official-partial",
+      "coverageScope": "national",
+      "sourceQuality": "official-regulator",
+      "hasOfficialImporter": true,
+      "notesPath": "docs/fm/portugal-source-notes.md",
+      "coverageNotes": "Portugal currently relies on the last public bulk export rather than a live ANACOM technical registry.",
+      "coverageScore": 60
+    },
+    {
+      "id": "puerto-rico",
+      "code": "PR",
+      "name": "Puerto Rico",
+      "regionId": "north-america",
+      "cityCount": 47,
+      "stationCount": 133,
+      "sourceCount": 1,
+      "sources": [
+        {
+          "name": "FCC LMS Public Database",
+          "url": "https://enterpriseefiling.fcc.gov/dataentry/public/tv/lmsDatabase.html"
+        }
+      ],
+      "lastImportedAt": "2026-03-24",
+      "coverageStatus": "active",
+      "coverageTier": "official-substantial",
+      "coverageScope": "national",
+      "sourceQuality": "official-regulator",
+      "hasOfficialImporter": true,
+      "coverageScore": 88
+    },
+    {
+      "id": "romania",
+      "code": "RO",
+      "name": "Romania",
+      "regionId": "europe",
+      "cityCount": 166,
+      "stationCount": 824,
+      "sourceCount": 2,
+      "sources": [
+        {
+          "name": "CNA radio licence list PDF",
+          "url": "https://media.cna.ro/Licente_audiovizuale_pentru_difuzarea_serviciilor_de_programe_Radio_SITE_b99b416696.pdf"
+        },
+        {
+          "name": "CNA SRR radio frequencies PDF",
+          "url": "https://media.cna.ro/Frecventele_serviciilor_de_programe_Radio_ale_SRR_SITE_b0187e0343.pdf"
+        }
+      ],
+      "lastImportedAt": "2026-03-24",
+      "coverageStatus": "active",
+      "coverageTier": "official-substantial",
+      "coverageScope": "national",
+      "sourceQuality": "official-regulator",
+      "hasOfficialImporter": true,
+      "coverageScore": 88
+    },
+    {
+      "id": "san-marino",
+      "code": "SM",
+      "name": "San Marino",
+      "regionId": "europe",
+      "cityCount": 1,
+      "stationCount": 2,
+      "sourceCount": 1,
+      "sources": [
+        {
+          "name": "San Marino RTV official radio page",
+          "url": "https://www.sanmarinortv.sm/radio"
+        }
+      ],
+      "lastImportedAt": "2026-03-24",
+      "coverageStatus": "active",
+      "coverageTier": "official-substantial",
+      "coverageScope": "national",
+      "sourceQuality": "official-regulator",
+      "hasOfficialImporter": true,
+      "coverageScore": 88
+    },
+    {
+      "id": "serbia",
+      "code": "RS",
+      "name": "Serbia",
+      "regionId": "europe",
+      "cityCount": 123,
+      "stationCount": 280,
+      "sourceCount": 1,
+      "sources": [
+        {
+          "name": "RATEL broadcasting spectrum register",
+          "url": "https://registar.ratel.rs/en/reg204?action=table&vazece=2100&vrstaStanice=BC&freqOd=87.5&freqOdJedinica=6&freqDo=108&freqDoJedinica=6"
+        }
+      ],
+      "lastImportedAt": "2026-03-24",
+      "coverageStatus": "active",
+      "coverageTier": "official-substantial",
+      "coverageScope": "national",
+      "sourceQuality": "official-regulator",
+      "hasOfficialImporter": true,
+      "coverageScore": 88
+    },
+    {
+      "id": "singapore",
+      "code": "SG",
+      "name": "Singapore",
+      "regionId": "asia",
+      "cityCount": 1,
+      "stationCount": 19,
+      "sourceCount": 1,
+      "sources": [
+        {
+          "name": "IMDA Spectrum Management Handbook",
+          "url": "https://www.imda.gov.sg/~/media/imda/files/regulation%20licensing%20and%20consultations/frameworks%20and%20policies/spectrum%20management%20and%20coordination/spectrummgmthb.pdf"
+        }
+      ],
+      "lastImportedAt": "2026-03-24",
+      "coverageStatus": "active",
+      "coverageTier": "official-substantial",
+      "coverageScope": "national",
+      "sourceQuality": "official-regulator",
+      "hasOfficialImporter": true,
+      "coverageScore": 88
+    },
+    {
+      "id": "slovakia",
+      "code": "SK",
+      "name": "Slovakia",
+      "regionId": "europe",
+      "cityCount": 74,
+      "stationCount": 318,
+      "sourceCount": 1,
+      "sources": [
+        {
+          "name": "Teleoff FM decision PDF",
+          "url": "https://www.teleoff.gov.sk/files/urad/odbory-oddelenia/odbor-spravy-frekvencneho-spektra/zoznam-rozhodnuti-oblasti-spravy-frekvencneho-spektra/rozhlasova-televizna-sluzba/rozhlasove-analogove-pozemske-vysielanie/radio-vlna-s-r.o/23-10-60-1-073-banska-bystrica-87-7-mhz.pdf"
+        }
+      ],
+      "lastImportedAt": "2026-03-24",
+      "coverageStatus": "active",
+      "coverageTier": "official-substantial",
+      "coverageScope": "national",
+      "sourceQuality": "official-regulator",
+      "hasOfficialImporter": true,
+      "coverageScore": 88
+    },
+    {
+      "id": "slovenia",
+      "code": "SI",
+      "name": "Slovenia",
+      "regionId": "europe",
+      "cityCount": 69,
+      "stationCount": 226,
+      "sourceCount": 1,
+      "sources": [
+        {
+          "name": "AKOS RA and TV frequencies register",
+          "url": "https://www.akos-rs.si/en/registers/registers-list/ra-and-tv-frequencies"
+        }
+      ],
+      "lastImportedAt": "2026-03-24",
+      "coverageStatus": "active",
+      "coverageTier": "official-substantial",
+      "coverageScope": "national",
+      "sourceQuality": "official-regulator",
+      "hasOfficialImporter": true,
+      "coverageScore": 88
+    },
+    {
+      "id": "south-korea",
+      "code": "KR",
+      "name": "South Korea",
+      "regionId": "asia",
+      "cityCount": 1,
+      "stationCount": 3,
+      "sourceCount": 1,
+      "sources": [
+        {
+          "name": "Community seed",
+          "kind": "manual"
+        }
+      ],
+      "lastImportedAt": "2026-03-23",
+      "coverageStatus": "manual",
+      "coverageTier": "manual-seed",
+      "coverageScope": "city-seed",
+      "sourceQuality": "manual-curated",
+      "hasOfficialImporter": false,
+      "coverageNotes": "South Korea currently ships only a small manual seed because the best official path is API-limited.",
+      "coverageScore": 14
+    },
+    {
+      "id": "spain",
+      "code": "ES",
+      "name": "Spain",
+      "regionId": "europe",
+      "cityCount": 613,
+      "stationCount": 1617,
+      "sourceCount": 35,
+      "sources": [
+        {
+          "name": "Atresmedia Publicidad 2025 Europa FM local stations PDF",
+          "url": "https://www.atresmediapublicidad.com/documents/2024/12/11/6A10BC65-651C-4F39-9B02-41A823941ADA/07emisoras2025.pdf"
+        },
+        {
+          "name": "Atresmedia Publicidad 2025 Melodia FM local stations PDF",
+          "url": "https://www.atresmediapublicidad.com/documents/2024/12/11/6A10BC65-651C-4F39-9B02-41A823941ADA/07emisoras2025.pdf"
+        },
+        {
+          "name": "Atresmedia Publicidad 2025 Onda Cero local stations PDF",
+          "url": "https://www.atresmediapublicidad.com/documents/2024/12/11/6A10BC65-651C-4F39-9B02-41A823941ADA/07emisoras2025.pdf"
+        },
+        {
+          "name": "Cadena Dial official station list",
+          "url": "https://www.cadenadial.com/emisoras"
+        },
+        {
+          "name": "Cadena Dial station directory",
+          "url": "https://www.cadenadial.com/emisoras"
+        },
+        {
+          "name": "Cadena SER / Radio Bilbao",
+          "url": "https://cadenaser.com/euskadi/2024/08/19/radio-bilbao-sale-a-la-calle-durante-aste-nagusia-2024-radio-bilbao/"
+        },
+        {
+          "name": "Cadena SER Radio Madrid contact page",
+          "url": "https://cadenaser.com/radio-madrid/contacto/"
+        },
+        {
+          "name": "COPE official station list",
+          "url": "https://www.cope.es/emisoras"
+        },
+        {
+          "name": "EITB frequencies page",
+          "url": "https://www.eitb.eus/es/grupo-eitb/donde-encuentro-eitb/en-mi-radio/"
+        },
+        {
+          "name": "esRadio official how-to-listen page",
+          "url": "https://esradio.libertaddigital.com/escuchenos.html"
+        },
+        {
+          "name": "Generalitat de Catalunya public radio transmitter CSV",
+          "url": "https://analisi.transparenciacatalunya.cat/api/views/pf4t-gv87/rows.csv?accessType=DOWNLOAD"
+        },
+        {
+          "name": "Junta de Andalucia municipal FM workbook",
+          "url": "https://www.juntadeandalucia.es/datosabiertos/portal/dataset/32f9d19e-86a9-45d0-8a91-1b3a4e7e447a/resource/f0856ba5-a364-4ae0-8a13-fa171ceb6c59/download/20210628_fm_municipales_web.xls"
+        },
+        {
+          "name": "Junta de Andalucia private FM workbook",
+          "url": "https://www.juntadeandalucia.es/datosabiertos/portal/dataset/db069ed9-7d73-4cdc-8981-1badc6d5911c/resource/cbfbde8f-9400-4546-bb3a-eab280fd093e/download/20240318_fm-comerciales_web_0.xls"
+        },
+        {
+          "name": "Junta de Castilla y Leon municipal FM CSV",
+          "url": "https://datosabiertos.jcyl.es/web/jcyl/risp/es/ciencia-tecnologia/emisoras-municipales-fm/1284843873946.csv"
+        },
+        {
+          "name": "Junta de Castilla y Leon private FM CSV",
+          "url": "https://datosabiertos.jcyl.es/web/jcyl/risp/es/ciencia-tecnologia/emisoras-fm-titularidad-privada/1284843864772.csv"
+        },
+        {
+          "name": "Junta de Extremadura FM workbook",
+          "url": "https://www.juntaex.es/documents/77055/5801338/Emisoras_y_TDTL.xls"
+        },
+        {
+          "name": "KISS FM official station list",
+          "url": "https://www.kissfm.es/emisoras/"
+        },
+        {
+          "name": "LOS40 official station list",
+          "url": "https://los40.com/emisoras/"
+        },
+        {
+          "name": "LOS40 station directory",
+          "url": "https://los40.com/emisoras/"
+        },
+        {
+          "name": "Official beteve FAQ",
+          "url": "https://beteve.cat/preguntes-frequents/"
+        },
+        {
+          "name": "Official COPE Bilbao page",
+          "url": "https://www.cope.es/emisoras/pais-vasco/vizcaya/bilbao/contacto"
+        },
+        {
+          "name": "Official COPE stations page",
+          "url": "https://www.cope.es/emisoras"
+        },
+        {
+          "name": "Official Flaix FM frequencies page",
+          "url": "https://flaixfm.cat/frequencies/"
+        },
+        {
+          "name": "Official LOS40 frequencies page",
+          "url": "https://los40.com/emisoras/"
+        },
+        {
+          "name": "Official LOS40 station list",
+          "url": "https://los40.com/emisoras/"
+        },
+        {
+          "name": "Official RAC1 frequencies page",
+          "url": "https://www.rac1.cat/frequencies.html"
+        },
+        {
+          "name": "Official RAC105 frequencies page",
+          "url": "https://www.rac105.cat/frequencies"
+        },
+        {
+          "name": "Official RTVE Radio 4 frequencies page",
+          "url": "https://www.rtve.es/radio/20210304/frequeencies-radio-4/289629.shtml"
+        },
+        {
+          "name": "Official SER Catalunya frequency page",
+          "url": "https://cadenaser.com/emisora/2016/10/20/sercat/1476973407_000492.html"
+        },
+        {
+          "name": "Onda Cero official article",
+          "url": "https://www.ondacero.es/elecciones/pais-vasco/como-donde-escuchar-elecciones-pais-vasco-directo_2024042166252aba8e66020001f7fab5.html"
+        },
+        {
+          "name": "Onda Vasca official site",
+          "url": "https://www.ondavasca.com/quienes-somos/"
+        },
+        {
+          "name": "Radio Nervion frequencies page",
+          "url": "https://www.radionervion.com/emisoras/"
+        },
+        {
+          "name": "Radio Popular frequencies page",
+          "url": "https://radiopopular.com/frecuencias"
+        },
+        {
+          "name": "RTVE frequency map",
+          "url": "https://www.rtve.es/radio/frecuencias-rne/"
+        },
+        {
+          "name": "RTVE RNE frequency map",
+          "url": "https://www.rtve.es/radio/frecuencias-rne/"
+        }
+      ],
+      "lastImportedAt": "2026-03-24",
+      "coverageStatus": "partial",
+      "coverageTier": "official-partial",
+      "coverageScope": "regional",
+      "sourceQuality": "mixed",
+      "hasOfficialImporter": true,
+      "notesPath": "docs/fm/spain-source-notes.md",
+      "coverageNotes": "Spain currently mixes regional official datasets with a curated broadcaster/city supplement rather than a clean nationwide FM registry.",
+      "coverageScore": 56
+    },
+    {
+      "id": "switzerland",
+      "code": "CH",
+      "name": "Switzerland",
+      "regionId": "europe",
+      "cityCount": 421,
+      "stationCount": 1219,
+      "sourceCount": 1,
+      "sources": [
+        {
+          "name": "BAKOM FM coordination archive",
+          "url": "https://www.bakom.admin.ch/en/location-of-radio-transmitters"
+        }
+      ],
+      "lastImportedAt": "2026-03-24",
+      "coverageStatus": "active",
+      "coverageTier": "official-substantial",
+      "coverageScope": "national",
+      "sourceQuality": "official-regulator",
+      "hasOfficialImporter": true,
+      "coverageScore": 88
+    },
+    {
+      "id": "taiwan",
+      "code": "TW",
+      "name": "Taiwan",
+      "regionId": "asia",
+      "cityCount": 26,
+      "stationCount": 290,
+      "sourceCount": 1,
+      "sources": [
+        {
+          "name": "NCC FM transmitter dataset",
+          "url": "https://data.gov.tw/en/datasets/6445"
+        }
+      ],
+      "lastImportedAt": "2026-03-24",
+      "coverageStatus": "active",
+      "coverageTier": "official-substantial",
+      "coverageScope": "national",
+      "sourceQuality": "official-regulator",
+      "hasOfficialImporter": true,
+      "coverageScore": 88
+    },
+    {
+      "id": "the-netherlands",
+      "code": "NL",
+      "name": "The Netherlands",
+      "regionId": "europe",
+      "cityCount": 89,
+      "stationCount": 307,
+      "sourceCount": 1,
+      "sources": [
+        {
+          "name": "RDI FM licence PDF",
+          "url": "https://www.rdi.nl/site/binaries/site-content/collections/documenten/2023/08/28/vergunningen-lco/Vergunning+LCO+DPG+Media+B.V.+kavel+A07.pdf"
+        }
+      ],
+      "lastImportedAt": "2026-03-24",
+      "coverageStatus": "active",
+      "coverageTier": "official-substantial",
+      "coverageScope": "national",
+      "sourceQuality": "official-regulator",
+      "hasOfficialImporter": true,
+      "coverageScore": 88
+    },
+    {
+      "id": "turkey",
+      "code": "TR",
+      "name": "Turkey",
+      "regionId": "asia",
+      "cityCount": 641,
+      "stationCount": 5545,
+      "sourceCount": 1,
+      "sources": [
+        {
+          "name": "RTUK terrestrial radio portal",
+          "url": "https://yayinci.rtuk.gov.tr/izintahsisv2/web_giris_karasal.php"
+        }
+      ],
+      "lastImportedAt": "2026-03-24",
+      "coverageStatus": "active",
+      "coverageTier": "official-substantial",
+      "coverageScope": "national",
+      "sourceQuality": "official-regulator",
+      "hasOfficialImporter": true,
+      "coverageScore": 88
+    },
+    {
+      "id": "us-virgin-islands",
+      "code": "VI",
+      "name": "U.S. Virgin Islands",
+      "regionId": "north-america",
+      "cityCount": 4,
+      "stationCount": 21,
+      "sourceCount": 1,
+      "sources": [
+        {
+          "name": "FCC LMS Public Database",
+          "url": "https://enterpriseefiling.fcc.gov/dataentry/public/tv/lmsDatabase.html"
+        }
+      ],
+      "lastImportedAt": "2026-03-24",
+      "coverageStatus": "active",
+      "coverageTier": "official-substantial",
+      "coverageScope": "national",
+      "sourceQuality": "official-regulator",
+      "hasOfficialImporter": true,
+      "coverageScore": 88
+    },
+    {
+      "id": "ukraine",
+      "code": "UA",
+      "name": "Ukraine",
+      "regionId": "europe",
+      "cityCount": 346,
+      "stationCount": 1263,
+      "sourceCount": 1,
+      "sources": [
+        {
+          "name": "National Council of Ukraine media register export",
+          "url": "https://webportal.nrada.gov.ua/wp-content/uploads/2026/03/dodatok_perelik-subyektiv-u-sferi-media-stanom-na-01.02.2026-dodatok-do-s-z-05-234-vid-06.03.2026.xlsx"
+        }
+      ],
+      "lastImportedAt": "2026-03-24",
+      "coverageStatus": "active",
+      "coverageTier": "official-substantial",
+      "coverageScope": "national",
+      "sourceQuality": "official-regulator",
+      "hasOfficialImporter": true,
+      "coverageScore": 88
+    },
+    {
+      "id": "united-kingdom",
+      "code": "GB",
+      "name": "United Kingdom",
+      "regionId": "europe",
+      "cityCount": 1,
+      "stationCount": 4,
+      "sourceCount": 1,
+      "sources": [
+        {
+          "name": "Community seed",
+          "kind": "manual"
+        }
+      ],
+      "lastImportedAt": "2026-03-23",
+      "coverageStatus": "manual",
+      "coverageTier": "manual-seed",
+      "coverageScope": "city-seed",
+      "sourceQuality": "manual-curated",
+      "hasOfficialImporter": false,
+      "notesPath": "docs/fm/uk-source-notes.md",
+      "coverageNotes": "Only a tiny manual seed is shipped. Official Ofcom downloads remain Cloudflare-blocked from this environment.",
+      "coverageScore": 12
+    },
+    {
+      "id": "united-states",
+      "code": "US",
+      "name": "United States",
+      "regionId": "north-america",
+      "cityCount": 5702,
+      "stationCount": 20982,
+      "sourceCount": 1,
+      "sources": [
+        {
+          "name": "FCC LMS Public Database",
+          "url": "https://enterpriseefiling.fcc.gov/dataentry/public/tv/lmsDatabase.html"
+        }
+      ],
+      "lastImportedAt": "2026-03-24",
+      "coverageStatus": "active",
+      "coverageTier": "official-substantial",
+      "coverageScope": "national",
+      "sourceQuality": "official-regulator",
+      "hasOfficialImporter": true,
+      "coverageScore": 88
+    },
+    {
+      "id": "uruguay",
+      "code": "UY",
+      "name": "Uruguay",
+      "regionId": "south-america",
+      "cityCount": 71,
+      "stationCount": 183,
+      "sourceCount": 1,
+      "sources": [
+        {
+          "name": "URSEC technical data list",
+          "url": "https://www.gub.uy/unidad-reguladora-servicios-comunicaciones/datos-y-estadisticas/datos/listado-datos-tecnicos"
+        }
+      ],
+      "lastImportedAt": "2026-03-24",
+      "coverageStatus": "active",
+      "coverageTier": "official-substantial",
+      "coverageScope": "national",
+      "sourceQuality": "official-regulator",
+      "hasOfficialImporter": true,
+      "coverageScore": 88
+    },
+    {
+      "id": "vietnam",
+      "code": "VN",
+      "name": "Vietnam",
+      "regionId": "asia",
+      "cityCount": 60,
+      "stationCount": 64,
+      "sourceCount": 1,
+      "sources": [
+        {
+          "name": "Vietnam FM channel allocation plan",
+          "url": "https://congbao.chinhphu.vn/van-ban/thong-tu-so-37-2017-tt-btttt-25303/20229.htm"
+        }
+      ],
+      "lastImportedAt": "2026-03-24",
+      "coverageStatus": "active",
+      "coverageTier": "official-substantial",
+      "coverageScope": "national",
+      "sourceQuality": "official-regulator",
+      "hasOfficialImporter": true,
+      "coverageScore": 88
+    }
+  ],
+  "stats": {
+    "totalCountries": 59,
+    "totalCities": 23050,
+    "totalStations": 91744,
+    "byCoverageStatus": {
+      "active": 49,
+      "partial": 7,
+      "manual": 3
+    }
+  }
+}

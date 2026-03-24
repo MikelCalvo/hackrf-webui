@@ -1,0 +1,1559 @@
+{
+  "country": {
+    "id": "ireland",
+    "code": "IE",
+    "name": "Ireland",
+    "regionId": "europe",
+    "cityCount": 18,
+    "stationCount": 72,
+    "sourceCount": 1,
+    "sources": [
+      {
+        "name": "2RN FM radio network table",
+        "url": "https://2rn.ie/analogue-radio/"
+      }
+    ],
+    "lastImportedAt": "2026-03-24",
+    "coverageStatus": "partial",
+    "coverageTier": "official-partial",
+    "coverageScope": "public-service-only",
+    "sourceQuality": "official-public-sector",
+    "hasOfficialImporter": true,
+    "coverageNotes": "Current Irish coverage comes from the 2RN public-service network table, not a full commercial-market register.",
+    "coverageScore": 48
+  },
+  "cities": [
+    {
+      "id": "ie-athlone",
+      "name": "Athlone",
+      "countryId": "ireland",
+      "timezone": "Europe/Dublin",
+      "latitude": 53.42278,
+      "longitude": -7.93722,
+      "stationCount": 4
+    },
+    {
+      "id": "ie-ballybofey",
+      "name": "Ballybofey",
+      "countryId": "ireland",
+      "timezone": "Europe/Dublin",
+      "latitude": 54.8,
+      "longitude": -7.78333,
+      "stationCount": 4
+    },
+    {
+      "id": "ie-bantry",
+      "name": "Bantry",
+      "countryId": "ireland",
+      "timezone": "Europe/Dublin",
+      "latitude": 51.68025,
+      "longitude": -9.45254,
+      "stationCount": 4
+    },
+    {
+      "id": "ie-cahersiveen",
+      "name": "Cahersiveen",
+      "countryId": "ireland",
+      "timezone": "Europe/Dublin",
+      "latitude": 51.94861,
+      "longitude": -10.22222,
+      "stationCount": 4
+    },
+    {
+      "id": "ie-castlebar",
+      "name": "Castlebar",
+      "countryId": "ireland",
+      "timezone": "Europe/Dublin",
+      "latitude": 53.85,
+      "longitude": -9.3,
+      "stationCount": 4
+    },
+    {
+      "id": "ie-castletownbere",
+      "name": "Castletownbere",
+      "countryId": "ireland",
+      "timezone": "Europe/Dublin",
+      "latitude": 51.65132,
+      "longitude": -9.9104,
+      "stationCount": 4
+    },
+    {
+      "id": "ie-clifden",
+      "name": "Clifden",
+      "countryId": "ireland",
+      "timezone": "Europe/Dublin",
+      "latitude": 53.48907,
+      "longitude": -10.0191,
+      "stationCount": 4
+    },
+    {
+      "id": "ie-cluain-meala",
+      "name": "Cluain Meala",
+      "countryId": "ireland",
+      "timezone": "Europe/Dublin",
+      "latitude": 52.355,
+      "longitude": -7.70389,
+      "stationCount": 4
+    },
+    {
+      "id": "ie-crosshaven",
+      "name": "Crosshaven",
+      "countryId": "ireland",
+      "timezone": "Europe/Dublin",
+      "latitude": 51.79833,
+      "longitude": -8.30083,
+      "stationCount": 4
+    },
+    {
+      "id": "ie-dungarvan",
+      "name": "Dungarvan",
+      "countryId": "ireland",
+      "timezone": "Europe/Dublin",
+      "latitude": 52.08806,
+      "longitude": -7.62528,
+      "stationCount": 4
+    },
+    {
+      "id": "ie-fermoy",
+      "name": "Fermoy",
+      "countryId": "ireland",
+      "timezone": "Europe/Dublin",
+      "latitude": 52.13583,
+      "longitude": -8.27583,
+      "stationCount": 4
+    },
+    {
+      "id": "ie-greystones",
+      "name": "Greystones",
+      "countryId": "ireland",
+      "timezone": "Europe/Dublin",
+      "latitude": 53.14083,
+      "longitude": -6.06306,
+      "stationCount": 4
+    },
+    {
+      "id": "ie-kinsale",
+      "name": "Kinsale",
+      "countryId": "ireland",
+      "timezone": "Europe/Dublin",
+      "latitude": 51.7075,
+      "longitude": -8.53056,
+      "stationCount": 4
+    },
+    {
+      "id": "ie-lehinch",
+      "name": "Lehinch",
+      "countryId": "ireland",
+      "timezone": "Europe/Dublin",
+      "latitude": 52.93268,
+      "longitude": -9.33666,
+      "stationCount": 4
+    },
+    {
+      "id": "ie-mitchelstown",
+      "name": "Mitchelstown",
+      "countryId": "ireland",
+      "timezone": "Europe/Dublin",
+      "latitude": 52.26583,
+      "longitude": -8.26806,
+      "stationCount": 4
+    },
+    {
+      "id": "ie-monaghan",
+      "name": "Monaghan",
+      "countryId": "ireland",
+      "timezone": "Europe/Dublin",
+      "latitude": 54.24589,
+      "longitude": -6.97098,
+      "stationCount": 4
+    },
+    {
+      "id": "ie-moville",
+      "name": "Moville",
+      "countryId": "ireland",
+      "timezone": "Europe/Dublin",
+      "latitude": 55.19153,
+      "longitude": -7.03873,
+      "stationCount": 4
+    },
+    {
+      "id": "ie-waterford",
+      "name": "Waterford",
+      "countryId": "ireland",
+      "timezone": "Europe/Dublin",
+      "latitude": 52.25833,
+      "longitude": -7.11194,
+      "stationCount": 4
+    }
+  ],
+  "stations": [
+    {
+      "id": "ie-athlone-rte-radio-1-89-3",
+      "name": "RTÉ Radio 1",
+      "freqMhz": 89.3,
+      "cityId": "ie-athlone",
+      "description": "2RN FM network site listed in the official Irish FM table for Athlone. Station: RTÉ Radio 1. Site class: Relay Stations. Frequency: 89.3 MHz.",
+      "tags": [
+        "fm",
+        "official",
+        "ireland",
+        "2rn",
+        "relay-stations",
+        "rte-radio-1"
+      ],
+      "source": "2RN FM radio network table",
+      "sourceUrl": "https://2rn.ie/analogue-radio/",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "ie-athlone-rte-2fm-91-5",
+      "name": "RTÉ 2FM",
+      "freqMhz": 91.5,
+      "cityId": "ie-athlone",
+      "description": "2RN FM network site listed in the official Irish FM table for Athlone. Station: RTÉ 2FM. Site class: Relay Stations. Frequency: 91.5 MHz.",
+      "tags": [
+        "fm",
+        "official",
+        "ireland",
+        "2rn",
+        "relay-stations",
+        "rte-2fm"
+      ],
+      "source": "2RN FM radio network table",
+      "sourceUrl": "https://2rn.ie/analogue-radio/",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "ie-athlone-rte-raidio-na-gaeltachta-93-7",
+      "name": "RTÉ Raidió na Gaeltachta",
+      "freqMhz": 93.7,
+      "cityId": "ie-athlone",
+      "description": "2RN FM network site listed in the official Irish FM table for Athlone. Station: RTÉ Raidió na Gaeltachta. Site class: Relay Stations. Frequency: 93.7 MHz.",
+      "tags": [
+        "fm",
+        "official",
+        "ireland",
+        "2rn",
+        "relay-stations",
+        "rte-raidio-na-gaeltachta"
+      ],
+      "source": "2RN FM radio network table",
+      "sourceUrl": "https://2rn.ie/analogue-radio/",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "ie-athlone-rte-lyric-fm-98-9",
+      "name": "RTÉ lyric fm",
+      "freqMhz": 98.9,
+      "cityId": "ie-athlone",
+      "description": "2RN FM network site listed in the official Irish FM table for Athlone. Station: RTÉ lyric fm. Site class: Relay Stations. Frequency: 98.9 MHz.",
+      "tags": [
+        "fm",
+        "official",
+        "ireland",
+        "2rn",
+        "relay-stations",
+        "rte-lyric-fm"
+      ],
+      "source": "2RN FM radio network table",
+      "sourceUrl": "https://2rn.ie/analogue-radio/",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "ie-ballybofey-rte-radio-1-89-7",
+      "name": "RTÉ Radio 1",
+      "freqMhz": 89.7,
+      "cityId": "ie-ballybofey",
+      "description": "2RN FM network site listed in the official Irish FM table for Ballybofey. Station: RTÉ Radio 1. Site class: Relay Stations. Frequency: 89.7 MHz.",
+      "tags": [
+        "fm",
+        "official",
+        "ireland",
+        "2rn",
+        "relay-stations",
+        "rte-radio-1"
+      ],
+      "source": "2RN FM radio network table",
+      "sourceUrl": "https://2rn.ie/analogue-radio/",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "ie-ballybofey-rte-2fm-91-9",
+      "name": "RTÉ 2FM",
+      "freqMhz": 91.9,
+      "cityId": "ie-ballybofey",
+      "description": "2RN FM network site listed in the official Irish FM table for Ballybofey. Station: RTÉ 2FM. Site class: Relay Stations. Frequency: 91.9 MHz.",
+      "tags": [
+        "fm",
+        "official",
+        "ireland",
+        "2rn",
+        "relay-stations",
+        "rte-2fm"
+      ],
+      "source": "2RN FM radio network table",
+      "sourceUrl": "https://2rn.ie/analogue-radio/",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "ie-ballybofey-rte-raidio-na-gaeltachta-94-1",
+      "name": "RTÉ Raidió na Gaeltachta",
+      "freqMhz": 94.1,
+      "cityId": "ie-ballybofey",
+      "description": "2RN FM network site listed in the official Irish FM table for Ballybofey. Station: RTÉ Raidió na Gaeltachta. Site class: Relay Stations. Frequency: 94.1 MHz.",
+      "tags": [
+        "fm",
+        "official",
+        "ireland",
+        "2rn",
+        "relay-stations",
+        "rte-raidio-na-gaeltachta"
+      ],
+      "source": "2RN FM radio network table",
+      "sourceUrl": "https://2rn.ie/analogue-radio/",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "ie-ballybofey-rte-lyric-fm-99-3",
+      "name": "RTÉ lyric fm",
+      "freqMhz": 99.3,
+      "cityId": "ie-ballybofey",
+      "description": "2RN FM network site listed in the official Irish FM table for Ballybofey. Station: RTÉ lyric fm. Site class: Relay Stations. Frequency: 99.3 MHz.",
+      "tags": [
+        "fm",
+        "official",
+        "ireland",
+        "2rn",
+        "relay-stations",
+        "rte-lyric-fm"
+      ],
+      "source": "2RN FM radio network table",
+      "sourceUrl": "https://2rn.ie/analogue-radio/",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "ie-bantry-rte-radio-1-88-7",
+      "name": "RTÉ Radio 1",
+      "freqMhz": 88.7,
+      "cityId": "ie-bantry",
+      "description": "2RN FM network site listed in the official Irish FM table for Bantry. Station: RTÉ Radio 1. Site class: Relay Stations. Frequency: 88.7 MHz.",
+      "tags": [
+        "fm",
+        "official",
+        "ireland",
+        "2rn",
+        "relay-stations",
+        "rte-radio-1"
+      ],
+      "source": "2RN FM radio network table",
+      "sourceUrl": "https://2rn.ie/analogue-radio/",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "ie-bantry-rte-2fm-90-9",
+      "name": "RTÉ 2FM",
+      "freqMhz": 90.9,
+      "cityId": "ie-bantry",
+      "description": "2RN FM network site listed in the official Irish FM table for Bantry. Station: RTÉ 2FM. Site class: Relay Stations. Frequency: 90.9 MHz.",
+      "tags": [
+        "fm",
+        "official",
+        "ireland",
+        "2rn",
+        "relay-stations",
+        "rte-2fm"
+      ],
+      "source": "2RN FM radio network table",
+      "sourceUrl": "https://2rn.ie/analogue-radio/",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "ie-bantry-rte-raidio-na-gaeltachta-93-1",
+      "name": "RTÉ Raidió na Gaeltachta",
+      "freqMhz": 93.1,
+      "cityId": "ie-bantry",
+      "description": "2RN FM network site listed in the official Irish FM table for Bantry. Station: RTÉ Raidió na Gaeltachta. Site class: Relay Stations. Frequency: 93.1 MHz.",
+      "tags": [
+        "fm",
+        "official",
+        "ireland",
+        "2rn",
+        "relay-stations",
+        "rte-raidio-na-gaeltachta"
+      ],
+      "source": "2RN FM radio network table",
+      "sourceUrl": "https://2rn.ie/analogue-radio/",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "ie-bantry-rte-lyric-fm-98-3",
+      "name": "RTÉ lyric fm",
+      "freqMhz": 98.3,
+      "cityId": "ie-bantry",
+      "description": "2RN FM network site listed in the official Irish FM table for Bantry. Station: RTÉ lyric fm. Site class: Relay Stations. Frequency: 98.3 MHz.",
+      "tags": [
+        "fm",
+        "official",
+        "ireland",
+        "2rn",
+        "relay-stations",
+        "rte-lyric-fm"
+      ],
+      "source": "2RN FM radio network table",
+      "sourceUrl": "https://2rn.ie/analogue-radio/",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "ie-cahersiveen-rte-radio-1-89-5",
+      "name": "RTÉ Radio 1",
+      "freqMhz": 89.5,
+      "cityId": "ie-cahersiveen",
+      "description": "2RN FM network site listed in the official Irish FM table for Cahirciveen. Station: RTÉ Radio 1. Site class: Relay Stations. Frequency: 89.5 MHz.",
+      "tags": [
+        "fm",
+        "official",
+        "ireland",
+        "2rn",
+        "relay-stations",
+        "rte-radio-1"
+      ],
+      "source": "2RN FM radio network table",
+      "sourceUrl": "https://2rn.ie/analogue-radio/",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "ie-cahersiveen-rte-2fm-91-7",
+      "name": "RTÉ 2FM",
+      "freqMhz": 91.7,
+      "cityId": "ie-cahersiveen",
+      "description": "2RN FM network site listed in the official Irish FM table for Cahirciveen. Station: RTÉ 2FM. Site class: Relay Stations. Frequency: 91.7 MHz.",
+      "tags": [
+        "fm",
+        "official",
+        "ireland",
+        "2rn",
+        "relay-stations",
+        "rte-2fm"
+      ],
+      "source": "2RN FM radio network table",
+      "sourceUrl": "https://2rn.ie/analogue-radio/",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "ie-cahersiveen-rte-raidio-na-gaeltachta-93-9",
+      "name": "RTÉ Raidió na Gaeltachta",
+      "freqMhz": 93.9,
+      "cityId": "ie-cahersiveen",
+      "description": "2RN FM network site listed in the official Irish FM table for Cahirciveen. Station: RTÉ Raidió na Gaeltachta. Site class: Relay Stations. Frequency: 93.9 MHz.",
+      "tags": [
+        "fm",
+        "official",
+        "ireland",
+        "2rn",
+        "relay-stations",
+        "rte-raidio-na-gaeltachta"
+      ],
+      "source": "2RN FM radio network table",
+      "sourceUrl": "https://2rn.ie/analogue-radio/",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "ie-cahersiveen-rte-lyric-fm-99-1",
+      "name": "RTÉ lyric fm",
+      "freqMhz": 99.1,
+      "cityId": "ie-cahersiveen",
+      "description": "2RN FM network site listed in the official Irish FM table for Cahirciveen. Station: RTÉ lyric fm. Site class: Relay Stations. Frequency: 99.1 MHz.",
+      "tags": [
+        "fm",
+        "official",
+        "ireland",
+        "2rn",
+        "relay-stations",
+        "rte-lyric-fm"
+      ],
+      "source": "2RN FM radio network table",
+      "sourceUrl": "https://2rn.ie/analogue-radio/",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "ie-castlebar-rte-radio-1-89-3",
+      "name": "RTÉ Radio 1",
+      "freqMhz": 89.3,
+      "cityId": "ie-castlebar",
+      "description": "2RN FM network site listed in the official Irish FM table for Castlebar. Station: RTÉ Radio 1. Site class: Relay Stations. Frequency: 89.3 MHz.",
+      "tags": [
+        "fm",
+        "official",
+        "ireland",
+        "2rn",
+        "relay-stations",
+        "rte-radio-1"
+      ],
+      "source": "2RN FM radio network table",
+      "sourceUrl": "https://2rn.ie/analogue-radio/",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "ie-castlebar-rte-2fm-91-5",
+      "name": "RTÉ 2FM",
+      "freqMhz": 91.5,
+      "cityId": "ie-castlebar",
+      "description": "2RN FM network site listed in the official Irish FM table for Castlebar. Station: RTÉ 2FM. Site class: Relay Stations. Frequency: 91.5 MHz.",
+      "tags": [
+        "fm",
+        "official",
+        "ireland",
+        "2rn",
+        "relay-stations",
+        "rte-2fm"
+      ],
+      "source": "2RN FM radio network table",
+      "sourceUrl": "https://2rn.ie/analogue-radio/",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "ie-castlebar-rte-raidio-na-gaeltachta-93-7",
+      "name": "RTÉ Raidió na Gaeltachta",
+      "freqMhz": 93.7,
+      "cityId": "ie-castlebar",
+      "description": "2RN FM network site listed in the official Irish FM table for Castlebar. Station: RTÉ Raidió na Gaeltachta. Site class: Relay Stations. Frequency: 93.7 MHz.",
+      "tags": [
+        "fm",
+        "official",
+        "ireland",
+        "2rn",
+        "relay-stations",
+        "rte-raidio-na-gaeltachta"
+      ],
+      "source": "2RN FM radio network table",
+      "sourceUrl": "https://2rn.ie/analogue-radio/",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "ie-castlebar-rte-lyric-fm-98-9",
+      "name": "RTÉ lyric fm",
+      "freqMhz": 98.9,
+      "cityId": "ie-castlebar",
+      "description": "2RN FM network site listed in the official Irish FM table for Castlebar. Station: RTÉ lyric fm. Site class: Relay Stations. Frequency: 98.9 MHz.",
+      "tags": [
+        "fm",
+        "official",
+        "ireland",
+        "2rn",
+        "relay-stations",
+        "rte-lyric-fm"
+      ],
+      "source": "2RN FM radio network table",
+      "sourceUrl": "https://2rn.ie/analogue-radio/",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "ie-castletownbere-rte-radio-1-88-3",
+      "name": "RTÉ Radio 1",
+      "freqMhz": 88.3,
+      "cityId": "ie-castletownbere",
+      "description": "2RN FM network site listed in the official Irish FM table for Castletownbere. Station: RTÉ Radio 1. Site class: Relay Stations. Frequency: 88.3 MHz.",
+      "tags": [
+        "fm",
+        "official",
+        "ireland",
+        "2rn",
+        "relay-stations",
+        "rte-radio-1"
+      ],
+      "source": "2RN FM radio network table",
+      "sourceUrl": "https://2rn.ie/analogue-radio/",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "ie-castletownbere-rte-2fm-90-5",
+      "name": "RTÉ 2FM",
+      "freqMhz": 90.5,
+      "cityId": "ie-castletownbere",
+      "description": "2RN FM network site listed in the official Irish FM table for Castletownbere. Station: RTÉ 2FM. Site class: Relay Stations. Frequency: 90.5 MHz.",
+      "tags": [
+        "fm",
+        "official",
+        "ireland",
+        "2rn",
+        "relay-stations",
+        "rte-2fm"
+      ],
+      "source": "2RN FM radio network table",
+      "sourceUrl": "https://2rn.ie/analogue-radio/",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "ie-castletownbere-rte-raidio-na-gaeltachta-92-7",
+      "name": "RTÉ Raidió na Gaeltachta",
+      "freqMhz": 92.7,
+      "cityId": "ie-castletownbere",
+      "description": "2RN FM network site listed in the official Irish FM table for Castletownbere. Station: RTÉ Raidió na Gaeltachta. Site class: Relay Stations. Frequency: 92.7 MHz.",
+      "tags": [
+        "fm",
+        "official",
+        "ireland",
+        "2rn",
+        "relay-stations",
+        "rte-raidio-na-gaeltachta"
+      ],
+      "source": "2RN FM radio network table",
+      "sourceUrl": "https://2rn.ie/analogue-radio/",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "ie-castletownbere-rte-lyric-fm-97-9",
+      "name": "RTÉ lyric fm",
+      "freqMhz": 97.9,
+      "cityId": "ie-castletownbere",
+      "description": "2RN FM network site listed in the official Irish FM table for Castletownbere. Station: RTÉ lyric fm. Site class: Relay Stations. Frequency: 97.9 MHz.",
+      "tags": [
+        "fm",
+        "official",
+        "ireland",
+        "2rn",
+        "relay-stations",
+        "rte-lyric-fm"
+      ],
+      "source": "2RN FM radio network table",
+      "sourceUrl": "https://2rn.ie/analogue-radio/",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "ie-clifden-rte-radio-1-89-5",
+      "name": "RTÉ Radio 1",
+      "freqMhz": 89.5,
+      "cityId": "ie-clifden",
+      "description": "2RN FM network site listed in the official Irish FM table for Clifden. Station: RTÉ Radio 1. Site class: Relay Stations. Frequency: 89.5 MHz.",
+      "tags": [
+        "fm",
+        "official",
+        "ireland",
+        "2rn",
+        "relay-stations",
+        "rte-radio-1"
+      ],
+      "source": "2RN FM radio network table",
+      "sourceUrl": "https://2rn.ie/analogue-radio/",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "ie-clifden-rte-2fm-91-7",
+      "name": "RTÉ 2FM",
+      "freqMhz": 91.7,
+      "cityId": "ie-clifden",
+      "description": "2RN FM network site listed in the official Irish FM table for Clifden. Station: RTÉ 2FM. Site class: Relay Stations. Frequency: 91.7 MHz.",
+      "tags": [
+        "fm",
+        "official",
+        "ireland",
+        "2rn",
+        "relay-stations",
+        "rte-2fm"
+      ],
+      "source": "2RN FM radio network table",
+      "sourceUrl": "https://2rn.ie/analogue-radio/",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "ie-clifden-rte-raidio-na-gaeltachta-93-9",
+      "name": "RTÉ Raidió na Gaeltachta",
+      "freqMhz": 93.9,
+      "cityId": "ie-clifden",
+      "description": "2RN FM network site listed in the official Irish FM table for Clifden. Station: RTÉ Raidió na Gaeltachta. Site class: Relay Stations. Frequency: 93.9 MHz.",
+      "tags": [
+        "fm",
+        "official",
+        "ireland",
+        "2rn",
+        "relay-stations",
+        "rte-raidio-na-gaeltachta"
+      ],
+      "source": "2RN FM radio network table",
+      "sourceUrl": "https://2rn.ie/analogue-radio/",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "ie-clifden-rte-lyric-fm-99-1",
+      "name": "RTÉ lyric fm",
+      "freqMhz": 99.1,
+      "cityId": "ie-clifden",
+      "description": "2RN FM network site listed in the official Irish FM table for Clifden. Station: RTÉ lyric fm. Site class: Relay Stations. Frequency: 99.1 MHz.",
+      "tags": [
+        "fm",
+        "official",
+        "ireland",
+        "2rn",
+        "relay-stations",
+        "rte-lyric-fm"
+      ],
+      "source": "2RN FM radio network table",
+      "sourceUrl": "https://2rn.ie/analogue-radio/",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "ie-cluain-meala-rte-radio-1-88-3",
+      "name": "RTÉ Radio 1",
+      "freqMhz": 88.3,
+      "cityId": "ie-cluain-meala",
+      "description": "2RN FM network site listed in the official Irish FM table for Clonmel. Station: RTÉ Radio 1. Site class: Relay Stations. Frequency: 88.3 MHz.",
+      "tags": [
+        "fm",
+        "official",
+        "ireland",
+        "2rn",
+        "relay-stations",
+        "rte-radio-1"
+      ],
+      "source": "2RN FM radio network table",
+      "sourceUrl": "https://2rn.ie/analogue-radio/",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "ie-cluain-meala-rte-2fm-90-5",
+      "name": "RTÉ 2FM",
+      "freqMhz": 90.5,
+      "cityId": "ie-cluain-meala",
+      "description": "2RN FM network site listed in the official Irish FM table for Clonmel. Station: RTÉ 2FM. Site class: Relay Stations. Frequency: 90.5 MHz.",
+      "tags": [
+        "fm",
+        "official",
+        "ireland",
+        "2rn",
+        "relay-stations",
+        "rte-2fm"
+      ],
+      "source": "2RN FM radio network table",
+      "sourceUrl": "https://2rn.ie/analogue-radio/",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "ie-cluain-meala-rte-raidio-na-gaeltachta-92-7",
+      "name": "RTÉ Raidió na Gaeltachta",
+      "freqMhz": 92.7,
+      "cityId": "ie-cluain-meala",
+      "description": "2RN FM network site listed in the official Irish FM table for Clonmel. Station: RTÉ Raidió na Gaeltachta. Site class: Relay Stations. Frequency: 92.7 MHz.",
+      "tags": [
+        "fm",
+        "official",
+        "ireland",
+        "2rn",
+        "relay-stations",
+        "rte-raidio-na-gaeltachta"
+      ],
+      "source": "2RN FM radio network table",
+      "sourceUrl": "https://2rn.ie/analogue-radio/",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "ie-cluain-meala-rte-lyric-fm-97-9",
+      "name": "RTÉ lyric fm",
+      "freqMhz": 97.9,
+      "cityId": "ie-cluain-meala",
+      "description": "2RN FM network site listed in the official Irish FM table for Clonmel. Station: RTÉ lyric fm. Site class: Relay Stations. Frequency: 97.9 MHz.",
+      "tags": [
+        "fm",
+        "official",
+        "ireland",
+        "2rn",
+        "relay-stations",
+        "rte-lyric-fm"
+      ],
+      "source": "2RN FM radio network table",
+      "sourceUrl": "https://2rn.ie/analogue-radio/",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "ie-crosshaven-rte-radio-1-88-2",
+      "name": "RTÉ Radio 1",
+      "freqMhz": 88.2,
+      "cityId": "ie-crosshaven",
+      "description": "2RN FM network site listed in the official Irish FM table for Crosshaven. Station: RTÉ Radio 1. Site class: Relay Stations. Frequency: 88.2 MHz.",
+      "tags": [
+        "fm",
+        "official",
+        "ireland",
+        "2rn",
+        "relay-stations",
+        "rte-radio-1"
+      ],
+      "source": "2RN FM radio network table",
+      "sourceUrl": "https://2rn.ie/analogue-radio/",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "ie-crosshaven-rte-2fm-90-4",
+      "name": "RTÉ 2FM",
+      "freqMhz": 90.4,
+      "cityId": "ie-crosshaven",
+      "description": "2RN FM network site listed in the official Irish FM table for Crosshaven. Station: RTÉ 2FM. Site class: Relay Stations. Frequency: 90.4 MHz.",
+      "tags": [
+        "fm",
+        "official",
+        "ireland",
+        "2rn",
+        "relay-stations",
+        "rte-2fm"
+      ],
+      "source": "2RN FM radio network table",
+      "sourceUrl": "https://2rn.ie/analogue-radio/",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "ie-crosshaven-rte-raidio-na-gaeltachta-92-6",
+      "name": "RTÉ Raidió na Gaeltachta",
+      "freqMhz": 92.6,
+      "cityId": "ie-crosshaven",
+      "description": "2RN FM network site listed in the official Irish FM table for Crosshaven. Station: RTÉ Raidió na Gaeltachta. Site class: Relay Stations. Frequency: 92.6 MHz.",
+      "tags": [
+        "fm",
+        "official",
+        "ireland",
+        "2rn",
+        "relay-stations",
+        "rte-raidio-na-gaeltachta"
+      ],
+      "source": "2RN FM radio network table",
+      "sourceUrl": "https://2rn.ie/analogue-radio/",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "ie-crosshaven-rte-lyric-fm-97-8",
+      "name": "RTÉ lyric fm",
+      "freqMhz": 97.8,
+      "cityId": "ie-crosshaven",
+      "description": "2RN FM network site listed in the official Irish FM table for Crosshaven. Station: RTÉ lyric fm. Site class: Relay Stations. Frequency: 97.8 MHz.",
+      "tags": [
+        "fm",
+        "official",
+        "ireland",
+        "2rn",
+        "relay-stations",
+        "rte-lyric-fm"
+      ],
+      "source": "2RN FM radio network table",
+      "sourceUrl": "https://2rn.ie/analogue-radio/",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "ie-dungarvan-rte-radio-1-88-5",
+      "name": "RTÉ Radio 1",
+      "freqMhz": 88.5,
+      "cityId": "ie-dungarvan",
+      "description": "2RN FM network site listed in the official Irish FM table for Dungarvan. Station: RTÉ Radio 1. Site class: Relay Stations. Frequency: 88.5 MHz.",
+      "tags": [
+        "fm",
+        "official",
+        "ireland",
+        "2rn",
+        "relay-stations",
+        "rte-radio-1"
+      ],
+      "source": "2RN FM radio network table",
+      "sourceUrl": "https://2rn.ie/analogue-radio/",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "ie-dungarvan-rte-2fm-90-7",
+      "name": "RTÉ 2FM",
+      "freqMhz": 90.7,
+      "cityId": "ie-dungarvan",
+      "description": "2RN FM network site listed in the official Irish FM table for Dungarvan. Station: RTÉ 2FM. Site class: Relay Stations. Frequency: 90.7 MHz.",
+      "tags": [
+        "fm",
+        "official",
+        "ireland",
+        "2rn",
+        "relay-stations",
+        "rte-2fm"
+      ],
+      "source": "2RN FM radio network table",
+      "sourceUrl": "https://2rn.ie/analogue-radio/",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "ie-dungarvan-rte-raidio-na-gaeltachta-92-9",
+      "name": "RTÉ Raidió na Gaeltachta",
+      "freqMhz": 92.9,
+      "cityId": "ie-dungarvan",
+      "description": "2RN FM network site listed in the official Irish FM table for Dungarvan. Station: RTÉ Raidió na Gaeltachta. Site class: Relay Stations. Frequency: 92.9 MHz.",
+      "tags": [
+        "fm",
+        "official",
+        "ireland",
+        "2rn",
+        "relay-stations",
+        "rte-raidio-na-gaeltachta"
+      ],
+      "source": "2RN FM radio network table",
+      "sourceUrl": "https://2rn.ie/analogue-radio/",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "ie-dungarvan-rte-lyric-fm-98-1",
+      "name": "RTÉ lyric fm",
+      "freqMhz": 98.1,
+      "cityId": "ie-dungarvan",
+      "description": "2RN FM network site listed in the official Irish FM table for Dungarvan. Station: RTÉ lyric fm. Site class: Relay Stations. Frequency: 98.1 MHz.",
+      "tags": [
+        "fm",
+        "official",
+        "ireland",
+        "2rn",
+        "relay-stations",
+        "rte-lyric-fm"
+      ],
+      "source": "2RN FM radio network table",
+      "sourceUrl": "https://2rn.ie/analogue-radio/",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "ie-fermoy-rte-radio-1-89-4",
+      "name": "RTÉ Radio 1",
+      "freqMhz": 89.4,
+      "cityId": "ie-fermoy",
+      "description": "2RN FM network site listed in the official Irish FM table for Fermoy. Station: RTÉ Radio 1. Site class: Relay Stations. Frequency: 89.4 MHz.",
+      "tags": [
+        "fm",
+        "official",
+        "ireland",
+        "2rn",
+        "relay-stations",
+        "rte-radio-1"
+      ],
+      "source": "2RN FM radio network table",
+      "sourceUrl": "https://2rn.ie/analogue-radio/",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "ie-fermoy-rte-2fm-91-6",
+      "name": "RTÉ 2FM",
+      "freqMhz": 91.6,
+      "cityId": "ie-fermoy",
+      "description": "2RN FM network site listed in the official Irish FM table for Fermoy. Station: RTÉ 2FM. Site class: Relay Stations. Frequency: 91.6 MHz.",
+      "tags": [
+        "fm",
+        "official",
+        "ireland",
+        "2rn",
+        "relay-stations",
+        "rte-2fm"
+      ],
+      "source": "2RN FM radio network table",
+      "sourceUrl": "https://2rn.ie/analogue-radio/",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "ie-fermoy-rte-raidio-na-gaeltachta-93-8",
+      "name": "RTÉ Raidió na Gaeltachta",
+      "freqMhz": 93.8,
+      "cityId": "ie-fermoy",
+      "description": "2RN FM network site listed in the official Irish FM table for Fermoy. Station: RTÉ Raidió na Gaeltachta. Site class: Relay Stations. Frequency: 93.8 MHz.",
+      "tags": [
+        "fm",
+        "official",
+        "ireland",
+        "2rn",
+        "relay-stations",
+        "rte-raidio-na-gaeltachta"
+      ],
+      "source": "2RN FM radio network table",
+      "sourceUrl": "https://2rn.ie/analogue-radio/",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "ie-fermoy-rte-lyric-fm-99",
+      "name": "RTÉ lyric fm",
+      "freqMhz": 99,
+      "cityId": "ie-fermoy",
+      "description": "2RN FM network site listed in the official Irish FM table for Fermoy. Station: RTÉ lyric fm. Site class: Relay Stations. Frequency: 99.0 MHz.",
+      "tags": [
+        "fm",
+        "official",
+        "ireland",
+        "2rn",
+        "relay-stations",
+        "rte-lyric-fm"
+      ],
+      "source": "2RN FM radio network table",
+      "sourceUrl": "https://2rn.ie/analogue-radio/",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "ie-greystones-rte-radio-1-89-5",
+      "name": "RTÉ Radio 1",
+      "freqMhz": 89.5,
+      "cityId": "ie-greystones",
+      "description": "2RN FM network site listed in the official Irish FM table for Greystones. Station: RTÉ Radio 1. Site class: Relay Stations. Frequency: 89.5 MHz.",
+      "tags": [
+        "fm",
+        "official",
+        "ireland",
+        "2rn",
+        "relay-stations",
+        "rte-radio-1"
+      ],
+      "source": "2RN FM radio network table",
+      "sourceUrl": "https://2rn.ie/analogue-radio/",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "ie-greystones-rte-2fm-91-7",
+      "name": "RTÉ 2FM",
+      "freqMhz": 91.7,
+      "cityId": "ie-greystones",
+      "description": "2RN FM network site listed in the official Irish FM table for Greystones. Station: RTÉ 2FM. Site class: Relay Stations. Frequency: 91.7 MHz.",
+      "tags": [
+        "fm",
+        "official",
+        "ireland",
+        "2rn",
+        "relay-stations",
+        "rte-2fm"
+      ],
+      "source": "2RN FM radio network table",
+      "sourceUrl": "https://2rn.ie/analogue-radio/",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "ie-greystones-rte-raidio-na-gaeltachta-93-9",
+      "name": "RTÉ Raidió na Gaeltachta",
+      "freqMhz": 93.9,
+      "cityId": "ie-greystones",
+      "description": "2RN FM network site listed in the official Irish FM table for Greystones. Station: RTÉ Raidió na Gaeltachta. Site class: Relay Stations. Frequency: 93.9 MHz.",
+      "tags": [
+        "fm",
+        "official",
+        "ireland",
+        "2rn",
+        "relay-stations",
+        "rte-raidio-na-gaeltachta"
+      ],
+      "source": "2RN FM radio network table",
+      "sourceUrl": "https://2rn.ie/analogue-radio/",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "ie-greystones-rte-lyric-fm-99-1",
+      "name": "RTÉ lyric fm",
+      "freqMhz": 99.1,
+      "cityId": "ie-greystones",
+      "description": "2RN FM network site listed in the official Irish FM table for Greystones. Station: RTÉ lyric fm. Site class: Relay Stations. Frequency: 99.1 MHz.",
+      "tags": [
+        "fm",
+        "official",
+        "ireland",
+        "2rn",
+        "relay-stations",
+        "rte-lyric-fm"
+      ],
+      "source": "2RN FM radio network table",
+      "sourceUrl": "https://2rn.ie/analogue-radio/",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "ie-kinsale-rte-radio-1-89",
+      "name": "RTÉ Radio 1",
+      "freqMhz": 89,
+      "cityId": "ie-kinsale",
+      "description": "2RN FM network site listed in the official Irish FM table for Kinsale. Station: RTÉ Radio 1. Site class: Relay Stations. Frequency: 89.0 MHz.",
+      "tags": [
+        "fm",
+        "official",
+        "ireland",
+        "2rn",
+        "relay-stations",
+        "rte-radio-1"
+      ],
+      "source": "2RN FM radio network table",
+      "sourceUrl": "https://2rn.ie/analogue-radio/",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "ie-kinsale-rte-2fm-91-2",
+      "name": "RTÉ 2FM",
+      "freqMhz": 91.2,
+      "cityId": "ie-kinsale",
+      "description": "2RN FM network site listed in the official Irish FM table for Kinsale. Station: RTÉ 2FM. Site class: Relay Stations. Frequency: 91.2 MHz.",
+      "tags": [
+        "fm",
+        "official",
+        "ireland",
+        "2rn",
+        "relay-stations",
+        "rte-2fm"
+      ],
+      "source": "2RN FM radio network table",
+      "sourceUrl": "https://2rn.ie/analogue-radio/",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "ie-kinsale-rte-raidio-na-gaeltachta-93-4",
+      "name": "RTÉ Raidió na Gaeltachta",
+      "freqMhz": 93.4,
+      "cityId": "ie-kinsale",
+      "description": "2RN FM network site listed in the official Irish FM table for Kinsale. Station: RTÉ Raidió na Gaeltachta. Site class: Relay Stations. Frequency: 93.4 MHz.",
+      "tags": [
+        "fm",
+        "official",
+        "ireland",
+        "2rn",
+        "relay-stations",
+        "rte-raidio-na-gaeltachta"
+      ],
+      "source": "2RN FM radio network table",
+      "sourceUrl": "https://2rn.ie/analogue-radio/",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "ie-kinsale-rte-lyric-fm-98-6",
+      "name": "RTÉ lyric fm",
+      "freqMhz": 98.6,
+      "cityId": "ie-kinsale",
+      "description": "2RN FM network site listed in the official Irish FM table for Kinsale. Station: RTÉ lyric fm. Site class: Relay Stations. Frequency: 98.6 MHz.",
+      "tags": [
+        "fm",
+        "official",
+        "ireland",
+        "2rn",
+        "relay-stations",
+        "rte-lyric-fm"
+      ],
+      "source": "2RN FM radio network table",
+      "sourceUrl": "https://2rn.ie/analogue-radio/",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "ie-lehinch-rte-radio-1-89-7",
+      "name": "RTÉ Radio 1",
+      "freqMhz": 89.7,
+      "cityId": "ie-lehinch",
+      "description": "2RN FM network site listed in the official Irish FM table for Lehinch. Station: RTÉ Radio 1. Site class: Relay Stations. Frequency: 89.7 MHz.",
+      "tags": [
+        "fm",
+        "official",
+        "ireland",
+        "2rn",
+        "relay-stations",
+        "rte-radio-1"
+      ],
+      "source": "2RN FM radio network table",
+      "sourceUrl": "https://2rn.ie/analogue-radio/",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "ie-lehinch-rte-2fm-91-9",
+      "name": "RTÉ 2FM",
+      "freqMhz": 91.9,
+      "cityId": "ie-lehinch",
+      "description": "2RN FM network site listed in the official Irish FM table for Lehinch. Station: RTÉ 2FM. Site class: Relay Stations. Frequency: 91.9 MHz.",
+      "tags": [
+        "fm",
+        "official",
+        "ireland",
+        "2rn",
+        "relay-stations",
+        "rte-2fm"
+      ],
+      "source": "2RN FM radio network table",
+      "sourceUrl": "https://2rn.ie/analogue-radio/",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "ie-lehinch-rte-raidio-na-gaeltachta-94-1",
+      "name": "RTÉ Raidió na Gaeltachta",
+      "freqMhz": 94.1,
+      "cityId": "ie-lehinch",
+      "description": "2RN FM network site listed in the official Irish FM table for Lehinch. Station: RTÉ Raidió na Gaeltachta. Site class: Relay Stations. Frequency: 94.1 MHz.",
+      "tags": [
+        "fm",
+        "official",
+        "ireland",
+        "2rn",
+        "relay-stations",
+        "rte-raidio-na-gaeltachta"
+      ],
+      "source": "2RN FM radio network table",
+      "sourceUrl": "https://2rn.ie/analogue-radio/",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "ie-lehinch-rte-lyric-fm-99-3",
+      "name": "RTÉ lyric fm",
+      "freqMhz": 99.3,
+      "cityId": "ie-lehinch",
+      "description": "2RN FM network site listed in the official Irish FM table for Lehinch. Station: RTÉ lyric fm. Site class: Relay Stations. Frequency: 99.3 MHz.",
+      "tags": [
+        "fm",
+        "official",
+        "ireland",
+        "2rn",
+        "relay-stations",
+        "rte-lyric-fm"
+      ],
+      "source": "2RN FM radio network table",
+      "sourceUrl": "https://2rn.ie/analogue-radio/",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "ie-mitchelstown-rte-radio-1-88-6",
+      "name": "RTÉ Radio 1",
+      "freqMhz": 88.6,
+      "cityId": "ie-mitchelstown",
+      "description": "2RN FM network site listed in the official Irish FM table for Mitchelstown. Station: RTÉ Radio 1. Site class: Relay Stations. Frequency: 88.6 MHz.",
+      "tags": [
+        "fm",
+        "official",
+        "ireland",
+        "2rn",
+        "relay-stations",
+        "rte-radio-1"
+      ],
+      "source": "2RN FM radio network table",
+      "sourceUrl": "https://2rn.ie/analogue-radio/",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "ie-mitchelstown-rte-2fm-90-8",
+      "name": "RTÉ 2FM",
+      "freqMhz": 90.8,
+      "cityId": "ie-mitchelstown",
+      "description": "2RN FM network site listed in the official Irish FM table for Mitchelstown. Station: RTÉ 2FM. Site class: Relay Stations. Frequency: 90.8 MHz.",
+      "tags": [
+        "fm",
+        "official",
+        "ireland",
+        "2rn",
+        "relay-stations",
+        "rte-2fm"
+      ],
+      "source": "2RN FM radio network table",
+      "sourceUrl": "https://2rn.ie/analogue-radio/",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "ie-mitchelstown-rte-raidio-na-gaeltachta-93",
+      "name": "RTÉ Raidió na Gaeltachta",
+      "freqMhz": 93,
+      "cityId": "ie-mitchelstown",
+      "description": "2RN FM network site listed in the official Irish FM table for Mitchelstown. Station: RTÉ Raidió na Gaeltachta. Site class: Relay Stations. Frequency: 93.0 MHz.",
+      "tags": [
+        "fm",
+        "official",
+        "ireland",
+        "2rn",
+        "relay-stations",
+        "rte-raidio-na-gaeltachta"
+      ],
+      "source": "2RN FM radio network table",
+      "sourceUrl": "https://2rn.ie/analogue-radio/",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "ie-mitchelstown-rte-lyric-fm-98-2",
+      "name": "RTÉ lyric fm",
+      "freqMhz": 98.2,
+      "cityId": "ie-mitchelstown",
+      "description": "2RN FM network site listed in the official Irish FM table for Mitchelstown. Station: RTÉ lyric fm. Site class: Relay Stations. Frequency: 98.2 MHz.",
+      "tags": [
+        "fm",
+        "official",
+        "ireland",
+        "2rn",
+        "relay-stations",
+        "rte-lyric-fm"
+      ],
+      "source": "2RN FM radio network table",
+      "sourceUrl": "https://2rn.ie/analogue-radio/",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "ie-monaghan-rte-radio-1-88-9",
+      "name": "RTÉ Radio 1",
+      "freqMhz": 88.9,
+      "cityId": "ie-monaghan",
+      "description": "2RN FM network site listed in the official Irish FM table for Monaghan (Lugad). Station: RTÉ Radio 1. Site class: Relay Stations. Frequency: 88.9 MHz.",
+      "tags": [
+        "fm",
+        "official",
+        "ireland",
+        "2rn",
+        "relay-stations",
+        "rte-radio-1"
+      ],
+      "source": "2RN FM radio network table",
+      "sourceUrl": "https://2rn.ie/analogue-radio/",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "ie-monaghan-rte-2fm-91-1",
+      "name": "RTÉ 2FM",
+      "freqMhz": 91.1,
+      "cityId": "ie-monaghan",
+      "description": "2RN FM network site listed in the official Irish FM table for Monaghan (Lugad). Station: RTÉ 2FM. Site class: Relay Stations. Frequency: 91.1 MHz.",
+      "tags": [
+        "fm",
+        "official",
+        "ireland",
+        "2rn",
+        "relay-stations",
+        "rte-2fm"
+      ],
+      "source": "2RN FM radio network table",
+      "sourceUrl": "https://2rn.ie/analogue-radio/",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "ie-monaghan-rte-raidio-na-gaeltachta-93-3",
+      "name": "RTÉ Raidió na Gaeltachta",
+      "freqMhz": 93.3,
+      "cityId": "ie-monaghan",
+      "description": "2RN FM network site listed in the official Irish FM table for Monaghan (Lugad). Station: RTÉ Raidió na Gaeltachta. Site class: Relay Stations. Frequency: 93.3 MHz.",
+      "tags": [
+        "fm",
+        "official",
+        "ireland",
+        "2rn",
+        "relay-stations",
+        "rte-raidio-na-gaeltachta"
+      ],
+      "source": "2RN FM radio network table",
+      "sourceUrl": "https://2rn.ie/analogue-radio/",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "ie-monaghan-rte-lyric-fm-98-5",
+      "name": "RTÉ lyric fm",
+      "freqMhz": 98.5,
+      "cityId": "ie-monaghan",
+      "description": "2RN FM network site listed in the official Irish FM table for Monaghan (Lugad). Station: RTÉ lyric fm. Site class: Relay Stations. Frequency: 98.5 MHz.",
+      "tags": [
+        "fm",
+        "official",
+        "ireland",
+        "2rn",
+        "relay-stations",
+        "rte-lyric-fm"
+      ],
+      "source": "2RN FM radio network table",
+      "sourceUrl": "https://2rn.ie/analogue-radio/",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "ie-moville-rte-radio-1-88-3",
+      "name": "RTÉ Radio 1",
+      "freqMhz": 88.3,
+      "cityId": "ie-moville",
+      "description": "2RN FM network site listed in the official Irish FM table for Moville. Station: RTÉ Radio 1. Site class: Relay Stations. Frequency: 88.3 MHz.",
+      "tags": [
+        "fm",
+        "official",
+        "ireland",
+        "2rn",
+        "relay-stations",
+        "rte-radio-1"
+      ],
+      "source": "2RN FM radio network table",
+      "sourceUrl": "https://2rn.ie/analogue-radio/",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "ie-moville-rte-2fm-90-5",
+      "name": "RTÉ 2FM",
+      "freqMhz": 90.5,
+      "cityId": "ie-moville",
+      "description": "2RN FM network site listed in the official Irish FM table for Moville. Station: RTÉ 2FM. Site class: Relay Stations. Frequency: 90.5 MHz.",
+      "tags": [
+        "fm",
+        "official",
+        "ireland",
+        "2rn",
+        "relay-stations",
+        "rte-2fm"
+      ],
+      "source": "2RN FM radio network table",
+      "sourceUrl": "https://2rn.ie/analogue-radio/",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "ie-moville-rte-raidio-na-gaeltachta-92-7",
+      "name": "RTÉ Raidió na Gaeltachta",
+      "freqMhz": 92.7,
+      "cityId": "ie-moville",
+      "description": "2RN FM network site listed in the official Irish FM table for Moville. Station: RTÉ Raidió na Gaeltachta. Site class: Relay Stations. Frequency: 92.7 MHz.",
+      "tags": [
+        "fm",
+        "official",
+        "ireland",
+        "2rn",
+        "relay-stations",
+        "rte-raidio-na-gaeltachta"
+      ],
+      "source": "2RN FM radio network table",
+      "sourceUrl": "https://2rn.ie/analogue-radio/",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "ie-moville-rte-lyric-fm-97-9",
+      "name": "RTÉ lyric fm",
+      "freqMhz": 97.9,
+      "cityId": "ie-moville",
+      "description": "2RN FM network site listed in the official Irish FM table for Moville. Station: RTÉ lyric fm. Site class: Relay Stations. Frequency: 97.9 MHz.",
+      "tags": [
+        "fm",
+        "official",
+        "ireland",
+        "2rn",
+        "relay-stations",
+        "rte-lyric-fm"
+      ],
+      "source": "2RN FM radio network table",
+      "sourceUrl": "https://2rn.ie/analogue-radio/",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "ie-waterford-rte-radio-1-88-3",
+      "name": "RTÉ Radio 1",
+      "freqMhz": 88.3,
+      "cityId": "ie-waterford",
+      "description": "2RN FM network site listed in the official Irish FM table for Waterford City. Station: RTÉ Radio 1. Site class: Relay Stations. Frequency: 88.3 MHz.",
+      "tags": [
+        "fm",
+        "official",
+        "ireland",
+        "2rn",
+        "relay-stations",
+        "rte-radio-1"
+      ],
+      "source": "2RN FM radio network table",
+      "sourceUrl": "https://2rn.ie/analogue-radio/",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "ie-waterford-rte-2fm-90-5",
+      "name": "RTÉ 2FM",
+      "freqMhz": 90.5,
+      "cityId": "ie-waterford",
+      "description": "2RN FM network site listed in the official Irish FM table for Waterford City. Station: RTÉ 2FM. Site class: Relay Stations. Frequency: 90.5 MHz.",
+      "tags": [
+        "fm",
+        "official",
+        "ireland",
+        "2rn",
+        "relay-stations",
+        "rte-2fm"
+      ],
+      "source": "2RN FM radio network table",
+      "sourceUrl": "https://2rn.ie/analogue-radio/",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "ie-waterford-rte-raidio-na-gaeltachta-92-7",
+      "name": "RTÉ Raidió na Gaeltachta",
+      "freqMhz": 92.7,
+      "cityId": "ie-waterford",
+      "description": "2RN FM network site listed in the official Irish FM table for Waterford City. Station: RTÉ Raidió na Gaeltachta. Site class: Relay Stations. Frequency: 92.7 MHz.",
+      "tags": [
+        "fm",
+        "official",
+        "ireland",
+        "2rn",
+        "relay-stations",
+        "rte-raidio-na-gaeltachta"
+      ],
+      "source": "2RN FM radio network table",
+      "sourceUrl": "https://2rn.ie/analogue-radio/",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "ie-waterford-rte-lyric-fm-97-9",
+      "name": "RTÉ lyric fm",
+      "freqMhz": 97.9,
+      "cityId": "ie-waterford",
+      "description": "2RN FM network site listed in the official Irish FM table for Waterford City. Station: RTÉ lyric fm. Site class: Relay Stations. Frequency: 97.9 MHz.",
+      "tags": [
+        "fm",
+        "official",
+        "ireland",
+        "2rn",
+        "relay-stations",
+        "rte-lyric-fm"
+      ],
+      "source": "2RN FM radio network table",
+      "sourceUrl": "https://2rn.ie/analogue-radio/",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    }
+  ]
+}

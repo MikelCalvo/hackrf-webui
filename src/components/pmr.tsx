@@ -61,8 +61,6 @@ function buildRetuneUrl(ch: PmrChannel): string {
   })}`;
 }
 
-const CLS_INPUT =
-  "w-full rounded-lg border border-white/10 bg-white/[0.04] px-3 py-2 text-sm text-[var(--foreground)] outline-none transition placeholder:text-[var(--muted)] focus:border-[var(--accent)]/50 focus:bg-white/[0.06]";
 const CLS_BTN_PRIMARY =
   "inline-flex items-center justify-center gap-2 rounded-full border border-[var(--accent)]/40 bg-[var(--accent)]/12 px-4 py-2 text-sm font-semibold transition hover:border-[var(--accent)]/70 hover:bg-[var(--accent)]/20 disabled:cursor-not-allowed disabled:opacity-40";
 const CLS_BTN_GHOST =
@@ -285,7 +283,6 @@ export function PmrModule({
     }, 2000);
 
     return () => clearInterval(interval);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [scannerState]);
 
   function startScan(): void {

@@ -1,0 +1,1695 @@
+{
+  "country": {
+    "id": "north-macedonia",
+    "code": "MK",
+    "name": "North Macedonia",
+    "regionId": "europe",
+    "cityCount": 29,
+    "stationCount": 74,
+    "sourceCount": 1,
+    "sources": [
+      {
+        "name": "AVMU Register of Radios workbook",
+        "url": "https://avmu.mk/wp-content/uploads/2026/03/ENGL-Registar-na-RA-13.3.2026.xlsx"
+      }
+    ],
+    "lastImportedAt": "2026-03-24",
+    "coverageStatus": "active",
+    "coverageTier": "official-substantial",
+    "coverageScope": "national",
+    "sourceQuality": "official-regulator",
+    "hasOfficialImporter": true,
+    "coverageScore": 88
+  },
+  "cities": [
+    {
+      "id": "mk-berovo",
+      "name": "Berovo",
+      "countryId": "north-macedonia",
+      "timezone": "Europe/Skopje",
+      "latitude": 41.70182,
+      "longitude": 22.85716,
+      "stationCount": 1
+    },
+    {
+      "id": "mk-bitola",
+      "name": "Bitola",
+      "countryId": "north-macedonia",
+      "timezone": "Europe/Skopje",
+      "latitude": 41.03226,
+      "longitude": 21.33553,
+      "stationCount": 3
+    },
+    {
+      "id": "mk-bukovik",
+      "name": "Bukovik",
+      "countryId": "north-macedonia",
+      "timezone": "Europe/Skopje",
+      "latitude": 41.97103,
+      "longitude": 21.23905,
+      "stationCount": 2
+    },
+    {
+      "id": "mk-debar",
+      "name": "Debar",
+      "countryId": "north-macedonia",
+      "timezone": "Europe/Skopje",
+      "latitude": 41.52286,
+      "longitude": 20.52198,
+      "stationCount": 1
+    },
+    {
+      "id": "mk-demir-kapija",
+      "name": "Demir Kapija",
+      "countryId": "north-macedonia",
+      "timezone": "Europe/Skopje",
+      "latitude": 41.40633,
+      "longitude": 22.24305,
+      "stationCount": 2
+    },
+    {
+      "id": "mk-gevgelija",
+      "name": "Gevgelija",
+      "countryId": "north-macedonia",
+      "timezone": "Europe/Skopje",
+      "latitude": 41.14289,
+      "longitude": 22.50108,
+      "stationCount": 3
+    },
+    {
+      "id": "mk-gostivar",
+      "name": "Gostivar",
+      "countryId": "north-macedonia",
+      "timezone": "Europe/Skopje",
+      "latitude": 41.79627,
+      "longitude": 20.90799,
+      "stationCount": 2
+    },
+    {
+      "id": "mk-grupcin",
+      "name": "Grupčin",
+      "countryId": "north-macedonia",
+      "timezone": "Europe/Skopje",
+      "latitude": 41.96749,
+      "longitude": 21.13053,
+      "stationCount": 1
+    },
+    {
+      "id": "mk-kavadarci",
+      "name": "Kavadarci",
+      "countryId": "north-macedonia",
+      "timezone": "Europe/Skopje",
+      "latitude": 41.43344,
+      "longitude": 22.01218,
+      "stationCount": 2
+    },
+    {
+      "id": "mk-kicevo",
+      "name": "Kičevo",
+      "countryId": "north-macedonia",
+      "timezone": "Europe/Skopje",
+      "latitude": 41.51274,
+      "longitude": 20.95867,
+      "stationCount": 4
+    },
+    {
+      "id": "mk-kochani",
+      "name": "Kochani",
+      "countryId": "north-macedonia",
+      "timezone": "Europe/Skopje",
+      "latitude": 41.91639,
+      "longitude": 22.41278,
+      "stationCount": 2
+    },
+    {
+      "id": "mk-kratovo",
+      "name": "Kratovo",
+      "countryId": "north-macedonia",
+      "timezone": "Europe/Skopje",
+      "latitude": 42.07906,
+      "longitude": 22.18167,
+      "stationCount": 2
+    },
+    {
+      "id": "mk-krivogashtani",
+      "name": "Krivogashtani",
+      "countryId": "north-macedonia",
+      "timezone": "Europe/Skopje",
+      "latitude": 41.33611,
+      "longitude": 21.33306,
+      "stationCount": 1
+    },
+    {
+      "id": "mk-krusevo",
+      "name": "Krusevo",
+      "countryId": "north-macedonia",
+      "timezone": "Europe/Skopje",
+      "latitude": 41.36889,
+      "longitude": 21.24889,
+      "stationCount": 1
+    },
+    {
+      "id": "mk-kumanovo",
+      "name": "Kumanovo",
+      "countryId": "north-macedonia",
+      "timezone": "Europe/Skopje",
+      "latitude": 42.13279,
+      "longitude": 21.71585,
+      "stationCount": 5
+    },
+    {
+      "id": "mk-negotino",
+      "name": "Negotino",
+      "countryId": "north-macedonia",
+      "timezone": "Europe/Skopje",
+      "latitude": 41.48456,
+      "longitude": 22.09056,
+      "stationCount": 2
+    },
+    {
+      "id": "mk-novo-selo",
+      "name": "Novo Selo",
+      "countryId": "north-macedonia",
+      "timezone": "Europe/Skopje",
+      "latitude": 41.41536,
+      "longitude": 22.88336,
+      "stationCount": 1
+    },
+    {
+      "id": "mk-ohrid",
+      "name": "Ohrid",
+      "countryId": "north-macedonia",
+      "timezone": "Europe/Skopje",
+      "latitude": 41.11701,
+      "longitude": 20.80175,
+      "stationCount": 1
+    },
+    {
+      "id": "mk-prilep",
+      "name": "Prilep",
+      "countryId": "north-macedonia",
+      "timezone": "Europe/Skopje",
+      "latitude": 41.34558,
+      "longitude": 21.5537,
+      "stationCount": 3
+    },
+    {
+      "id": "mk-probishtip",
+      "name": "Probishtip",
+      "countryId": "north-macedonia",
+      "timezone": "Europe/Skopje",
+      "latitude": 42.00306,
+      "longitude": 22.17861,
+      "stationCount": 1
+    },
+    {
+      "id": "mk-romanovci",
+      "name": "Romanovci",
+      "countryId": "north-macedonia",
+      "timezone": "Europe/Skopje",
+      "latitude": 42.09472,
+      "longitude": 21.69306,
+      "stationCount": 1
+    },
+    {
+      "id": "mk-shtip",
+      "name": "Shtip",
+      "countryId": "north-macedonia",
+      "timezone": "Europe/Skopje",
+      "latitude": 41.74583,
+      "longitude": 22.19583,
+      "stationCount": 3
+    },
+    {
+      "id": "mk-skopje",
+      "name": "Skopje",
+      "countryId": "north-macedonia",
+      "timezone": "Europe/Skopje",
+      "latitude": 41.99646,
+      "longitude": 21.43141,
+      "stationCount": 14
+    },
+    {
+      "id": "mk-struga",
+      "name": "Struga",
+      "countryId": "north-macedonia",
+      "timezone": "Europe/Skopje",
+      "latitude": 41.17787,
+      "longitude": 20.67894,
+      "stationCount": 2
+    },
+    {
+      "id": "mk-strumica",
+      "name": "Strumica",
+      "countryId": "north-macedonia",
+      "timezone": "Europe/Skopje",
+      "latitude": 41.43763,
+      "longitude": 22.64288,
+      "stationCount": 3
+    },
+    {
+      "id": "mk-sveti-nikole",
+      "name": "Sveti Nikole",
+      "countryId": "north-macedonia",
+      "timezone": "Europe/Skopje",
+      "latitude": 41.86956,
+      "longitude": 21.95274,
+      "stationCount": 3
+    },
+    {
+      "id": "mk-tetovo",
+      "name": "Tetovo",
+      "countryId": "north-macedonia",
+      "timezone": "Europe/Skopje",
+      "latitude": 42.00989,
+      "longitude": 20.97138,
+      "stationCount": 5
+    },
+    {
+      "id": "mk-valandovo",
+      "name": "Valandovo",
+      "countryId": "north-macedonia",
+      "timezone": "Europe/Skopje",
+      "latitude": 41.31761,
+      "longitude": 22.56303,
+      "stationCount": 1
+    },
+    {
+      "id": "mk-veles",
+      "name": "Veles",
+      "countryId": "north-macedonia",
+      "timezone": "Europe/Skopje",
+      "latitude": 41.71719,
+      "longitude": 21.77196,
+      "stationCount": 2
+    }
+  ],
+  "stations": [
+    {
+      "id": "mk-berovo-jon-radio-doo-struga-107-6",
+      "name": "JON-RADIO DOO Struga",
+      "freqMhz": 107.6,
+      "cityId": "mk-berovo",
+      "description": "North Macedonian FM radio entry listed by AVMU for Berovo. Licensee: JON-RADIO DOO Struga Commercial Broadcasting Company. Coverage level: national. Service area: All of the territory of the Republic of North Macedonia. Transmitter site: Bukovik. Broadcasting licence: Up1 no.08-234 , dated 06.03.2024. Validity: from 0802-107 to 02.04.2028 година.",
+      "tags": [
+        "fm",
+        "official",
+        "avmu",
+        "north-macedonia",
+        "national",
+        "berovo"
+      ],
+      "source": "AVMU Register of Radios workbook",
+      "sourceUrl": "https://avmu.mk/wp-content/uploads/2026/03/ENGL-Registar-na-RA-13.3.2026.xlsx",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "mk-bitola-univerzitetsko-radio-uklo-fm-bitola-90-8",
+      "name": "UNIVERZITETSKO RADIO UKLO FM BITOLA",
+      "freqMhz": 90.8,
+      "cityId": "mk-bitola",
+      "description": "North Macedonian FM radio entry listed by AVMU for Bitola. Licensee: UNIVERZITETSKO RADIO UKLO FM BITOLA - Univerzitet Sv. Kliment Ohridski Bitola Republic of North Macedonia Non-profit Broadcasting Institution. Coverage level: local. Service area: Bitola. Transmitter site: Tumbe Kafe. Broadcasting licence: Up 1 no.08-89, dated 07.09.2023. Validity: from 05.01.2024 to 04.01.2027.",
+      "tags": [
+        "fm",
+        "official",
+        "avmu",
+        "north-macedonia",
+        "local",
+        "bitola"
+      ],
+      "source": "AVMU Register of Radios workbook",
+      "sourceUrl": "https://avmu.mk/wp-content/uploads/2026/03/ENGL-Registar-na-RA-13.3.2026.xlsx",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "mk-bitola-jon-radio-doo-struga-96-4",
+      "name": "JON-RADIO DOO Struga",
+      "freqMhz": 96.4,
+      "cityId": "mk-bitola",
+      "description": "North Macedonian FM radio entry listed by AVMU for Bitola. Licensee: JON-RADIO DOO Struga Commercial Broadcasting Company. Coverage level: national. Service area: All of the territory of the Republic of North Macedonia. Transmitter site: Gjavato. Broadcasting licence: Up1 no.08-234 , dated 06.03.2024. Validity: from 0802-107 to 02.04.2028 година.",
+      "tags": [
+        "fm",
+        "official",
+        "avmu",
+        "north-macedonia",
+        "national",
+        "bitola"
+      ],
+      "source": "AVMU Register of Radios workbook",
+      "sourceUrl": "https://avmu.mk/wp-content/uploads/2026/03/ENGL-Registar-na-RA-13.3.2026.xlsx",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "mk-bitola-radio106-106-6",
+      "name": "RADIO106",
+      "freqMhz": 106.6,
+      "cityId": "mk-bitola",
+      "description": "North Macedonian FM radio entry listed by AVMU for Bitola. Licensee: RADIO 106 Bitola DOOEL Commercial Broadcasting Company. Coverage level: local. Service area: Bitola. Transmitter site: Tumbe Kafe. Broadcasting licence: Up 1 no.08-85, dated 07.09.2023. Validity: from 05.01.2024 to 04.01.2027.",
+      "tags": [
+        "fm",
+        "official",
+        "avmu",
+        "north-macedonia",
+        "local",
+        "bitola"
+      ],
+      "source": "AVMU Register of Radios workbook",
+      "sourceUrl": "https://avmu.mk/wp-content/uploads/2026/03/ENGL-Registar-na-RA-13.3.2026.xlsx",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "mk-bukovik-radio-kanal-77-dooel-shtip-92-3",
+      "name": "Radio KANAL 77 DOOEL Shtip",
+      "freqMhz": 92.3,
+      "cityId": "mk-bukovik",
+      "description": "North Macedonian FM radio entry listed by AVMU for Bukovik. Licensee: Radio KANAL 77 DOOEL Shtip Commercial Broadcasting Company. Coverage level: national. Service area: All of the territory of the Republic of North Macedonia. Broadcasting licence: Up1 no.08-64 , dated 07.09.2023. Validity: from 05.01.2024 to 04.01.2027.",
+      "tags": [
+        "fm",
+        "official",
+        "avmu",
+        "north-macedonia",
+        "national",
+        "bukovik"
+      ],
+      "source": "AVMU Register of Radios workbook",
+      "sourceUrl": "https://avmu.mk/wp-content/uploads/2026/03/ENGL-Registar-na-RA-13.3.2026.xlsx",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "mk-bukovik-radio-antena5-95",
+      "name": "RADIO ANTENA5",
+      "freqMhz": 95,
+      "cityId": "mk-bukovik",
+      "description": "North Macedonian FM radio entry listed by AVMU for Bukovik. Licensee: RADIO ANTENA 5 Petrov, Janevski and Gushev DOO Skopje Commercial Broadcasting Company. Coverage level: national. Service area: All of the territory of the Republic of North Macedonia. Broadcasting licence: Up1 no.08-63 , dated 07.09.2023. Validity: from 05.01.2024 to 04.01.2027.",
+      "tags": [
+        "fm",
+        "official",
+        "avmu",
+        "north-macedonia",
+        "national",
+        "bukovik"
+      ],
+      "source": "AVMU Register of Radios workbook",
+      "sourceUrl": "https://avmu.mk/wp-content/uploads/2026/03/ENGL-Registar-na-RA-13.3.2026.xlsx",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "mk-debar-jon-radio-doo-struga-98-9",
+      "name": "JON-RADIO DOO Struga",
+      "freqMhz": 98.9,
+      "cityId": "mk-debar",
+      "description": "North Macedonian FM radio entry listed by AVMU for Debar. Licensee: JON-RADIO DOO Struga Commercial Broadcasting Company. Coverage level: national. Service area: All of the territory of the Republic of North Macedonia. Transmitter site: Stogovo. Broadcasting licence: Up1 no.08-234 , dated 06.03.2024. Validity: from 0802-107 to 02.04.2028 година.",
+      "tags": [
+        "fm",
+        "official",
+        "avmu",
+        "north-macedonia",
+        "national",
+        "debar"
+      ],
+      "source": "AVMU Register of Radios workbook",
+      "sourceUrl": "https://avmu.mk/wp-content/uploads/2026/03/ENGL-Registar-na-RA-13.3.2026.xlsx",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "mk-demir-kapija-radio-kanal-77-dooel-shtip-100-3",
+      "name": "Radio KANAL 77 DOOEL Shtip",
+      "freqMhz": 100.3,
+      "cityId": "mk-demir-kapija",
+      "description": "North Macedonian FM radio entry listed by AVMU for Demir Kapija. Licensee: Radio KANAL 77 DOOEL Shtip Commercial Broadcasting Company. Coverage level: national. Service area: All of the territory of the Republic of North Macedonia. Broadcasting licence: Up1 no.08-64 , dated 07.09.2023. Validity: from 05.01.2024 to 04.01.2027.",
+      "tags": [
+        "fm",
+        "official",
+        "avmu",
+        "north-macedonia",
+        "national",
+        "demir-kapija"
+      ],
+      "source": "AVMU Register of Radios workbook",
+      "sourceUrl": "https://avmu.mk/wp-content/uploads/2026/03/ENGL-Registar-na-RA-13.3.2026.xlsx",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "mk-demir-kapija-radio-antena5-106-3",
+      "name": "RADIO ANTENA5",
+      "freqMhz": 106.3,
+      "cityId": "mk-demir-kapija",
+      "description": "North Macedonian FM radio entry listed by AVMU for Demir Kapija. Licensee: RADIO ANTENA 5 Petrov, Janevski and Gushev DOO Skopje Commercial Broadcasting Company. Coverage level: national. Service area: All of the territory of the Republic of North Macedonia. Broadcasting licence: Up1 no.08-63 , dated 07.09.2023. Validity: from 05.01.2024 to 04.01.2027.",
+      "tags": [
+        "fm",
+        "official",
+        "avmu",
+        "north-macedonia",
+        "national",
+        "demir-kapija"
+      ],
+      "source": "AVMU Register of Radios workbook",
+      "sourceUrl": "https://avmu.mk/wp-content/uploads/2026/03/ENGL-Registar-na-RA-13.3.2026.xlsx",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "mk-gevgelija-radio-antena5-89-2",
+      "name": "RADIO ANTENA5",
+      "freqMhz": 89.2,
+      "cityId": "mk-gevgelija",
+      "description": "North Macedonian FM radio entry listed by AVMU for Gevgelija. Licensee: RADIO ANTENA 5 Petrov, Janevski and Gushev DOO Skopje Commercial Broadcasting Company. Coverage level: national. Service area: All of the territory of the Republic of North Macedonia. Transmitter site: Mrzenski Rid. Broadcasting licence: Up1 no.08-63 , dated 07.09.2023. Validity: from 05.01.2024 to 04.01.2027.",
+      "tags": [
+        "fm",
+        "official",
+        "avmu",
+        "north-macedonia",
+        "national",
+        "gevgelija"
+      ],
+      "source": "AVMU Register of Radios workbook",
+      "sourceUrl": "https://avmu.mk/wp-content/uploads/2026/03/ENGL-Registar-na-RA-13.3.2026.xlsx",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "mk-gevgelija-radio-tajm-dooel-gevgelija-93-6",
+      "name": "RADIO TAJM DOOEL Gevgelija",
+      "freqMhz": 93.6,
+      "cityId": "mk-gevgelija",
+      "description": "North Macedonian FM radio entry listed by AVMU for Gevgelija. Licensee: RADIO TAJM Pavle DOOEL Gevgelija Commercial Broadcasting Company. Coverage level: local. Service area: Gevgelija. Transmitter site: Konski rid. Broadcasting licence: Up 1 no.08-96, dated 07.09.2023. Validity: from 05.01.2024 to 04.01.2027.",
+      "tags": [
+        "fm",
+        "official",
+        "avmu",
+        "north-macedonia",
+        "local",
+        "gevgelija"
+      ],
+      "source": "AVMU Register of Radios workbook",
+      "sourceUrl": "https://avmu.mk/wp-content/uploads/2026/03/ENGL-Registar-na-RA-13.3.2026.xlsx",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "mk-gevgelija-jon-radio-doo-struga-97-7",
+      "name": "JON-RADIO DOO Struga",
+      "freqMhz": 97.7,
+      "cityId": "mk-gevgelija",
+      "description": "North Macedonian FM radio entry listed by AVMU for Gevgelija. Licensee: JON-RADIO DOO Struga Commercial Broadcasting Company. Coverage level: national. Service area: All of the territory of the Republic of North Macedonia. Transmitter site: Mrzenski Rid. Broadcasting licence: Up1 no.08-234 , dated 06.03.2024. Validity: from 0802-107 to 02.04.2028 година.",
+      "tags": [
+        "fm",
+        "official",
+        "avmu",
+        "north-macedonia",
+        "national",
+        "gevgelija"
+      ],
+      "source": "AVMU Register of Radios workbook",
+      "sourceUrl": "https://avmu.mk/wp-content/uploads/2026/03/ENGL-Registar-na-RA-13.3.2026.xlsx",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "mk-gostivar-jon-radio-doo-struga-100",
+      "name": "JON-RADIO DOO Struga",
+      "freqMhz": 100,
+      "cityId": "mk-gostivar",
+      "description": "North Macedonian FM radio entry listed by AVMU for Gostivar. Licensee: JON-RADIO DOO Struga Commercial Broadcasting Company. Coverage level: national. Service area: All of the territory of the Republic of North Macedonia. Transmitter site: Vlajnitsa. Broadcasting licence: Up1 no.08-234 , dated 06.03.2024. Validity: from 0802-107 to 02.04.2028 година.",
+      "tags": [
+        "fm",
+        "official",
+        "avmu",
+        "north-macedonia",
+        "national",
+        "gostivar"
+      ],
+      "source": "AVMU Register of Radios workbook",
+      "sourceUrl": "https://avmu.mk/wp-content/uploads/2026/03/ENGL-Registar-na-RA-13.3.2026.xlsx",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "mk-gostivar-kometa-2000-dooel-gostivar-106-4",
+      "name": "KOMETA 2000 DOOEL Gostivar",
+      "freqMhz": 106.4,
+      "cityId": "mk-gostivar",
+      "description": "North Macedonian FM radio entry listed by AVMU for Gostivar. Licensee: KOMETA 2000 Rade DOOEL Gostivar Commercial Broadcasting Company. Coverage level: local. Service area: Gostivar. Broadcasting licence: Up 1 no.08-94, dated 07.09.2023. Validity: from 05.01.2024 to 04.01.2027.",
+      "tags": [
+        "fm",
+        "official",
+        "avmu",
+        "north-macedonia",
+        "local",
+        "gostivar"
+      ],
+      "source": "AVMU Register of Radios workbook",
+      "sourceUrl": "https://avmu.mk/wp-content/uploads/2026/03/ENGL-Registar-na-RA-13.3.2026.xlsx",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "mk-grupcin-radio-antena5-92",
+      "name": "RADIO ANTENA5",
+      "freqMhz": 92,
+      "cityId": "mk-grupcin",
+      "description": "North Macedonian FM radio entry listed by AVMU for Grupchin. Licensee: RADIO ANTENA 5 Petrov, Janevski and Gushev DOO Skopje Commercial Broadcasting Company. Coverage level: national. Service area: All of the territory of the Republic of North Macedonia. Broadcasting licence: Up1 no.08-63 , dated 07.09.2023. Validity: from 05.01.2024 to 04.01.2027.",
+      "tags": [
+        "fm",
+        "official",
+        "avmu",
+        "north-macedonia",
+        "national",
+        "grupchin"
+      ],
+      "source": "AVMU Register of Radios workbook",
+      "sourceUrl": "https://avmu.mk/wp-content/uploads/2026/03/ENGL-Registar-na-RA-13.3.2026.xlsx",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "mk-kavadarci-radio-kavadartsi-doo-kavadartsi-98-5",
+      "name": "RADIO KAVADARTSI DOO Kavadartsi",
+      "freqMhz": 98.5,
+      "cityId": "mk-kavadarci",
+      "description": "North Macedonian FM radio entry listed by AVMU for Kavadartsi. Licensee: RADIO KAVADARTSI DOO Kavadartsi Commercial Broadcasting Company. Coverage level: local. Service area: Kavadartsi. Transmitter site: Golem Ljubash. Broadcasting licence: Up 1 no.08-101, dated 07.09.2023. Validity: from 05.01.2024 to 04.01.2027.",
+      "tags": [
+        "fm",
+        "official",
+        "avmu",
+        "north-macedonia",
+        "local",
+        "kavadartsi"
+      ],
+      "source": "AVMU Register of Radios workbook",
+      "sourceUrl": "https://avmu.mk/wp-content/uploads/2026/03/ENGL-Registar-na-RA-13.3.2026.xlsx",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "mk-kavadarci-galaksi-2002-dooel-102-2",
+      "name": "GALAKSI-2002 DOOEL",
+      "freqMhz": 102.2,
+      "cityId": "mk-kavadarci",
+      "description": "North Macedonian FM radio entry listed by AVMU for Kavadartsi. Licensee: GALAKSI-2002 DOOEL Kavadartsi Commercial Broadcasting Company. Coverage level: local. Service area: Kavadartsi. Transmitter site: Golem Ljubash. Broadcasting licence: Up 1 no.08-100, dated 07.09.2023. Validity: from 05.01.2024 to 04.01.2027.",
+      "tags": [
+        "fm",
+        "official",
+        "avmu",
+        "north-macedonia",
+        "local",
+        "kavadartsi"
+      ],
+      "source": "AVMU Register of Radios workbook",
+      "sourceUrl": "https://avmu.mk/wp-content/uploads/2026/03/ENGL-Registar-na-RA-13.3.2026.xlsx",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "mk-kicevo-radio-medison-dooel-kichevo-89-3",
+      "name": "RADIO MEDISON DOOEL Kichevo",
+      "freqMhz": 89.3,
+      "cityId": "mk-kicevo",
+      "description": "North Macedonian FM radio entry listed by AVMU for Kichevo. Licensee: RADIO MEDISON DOOEL Kichevo Commercial Broadcasting Company. Coverage level: local. Service area: Kichevo. Transmitter site: Hotel Union. Broadcasting licence: Up 1 no.08-104, dated 07.09.2023. Validity: from 05.01.2024 to 04.01.2027.",
+      "tags": [
+        "fm",
+        "official",
+        "avmu",
+        "north-macedonia",
+        "local",
+        "kichevo"
+      ],
+      "source": "AVMU Register of Radios workbook",
+      "sourceUrl": "https://avmu.mk/wp-content/uploads/2026/03/ENGL-Registar-na-RA-13.3.2026.xlsx",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "mk-kicevo-radio-akord-dooel-kichevo-96-5",
+      "name": "RADIO AKORD DOOEL Kichevo",
+      "freqMhz": 96.5,
+      "cityId": "mk-kicevo",
+      "description": "North Macedonian FM radio entry listed by AVMU for Kichevo. Licensee: RADIO AKORD DOOEL Kichevo Commercial Broadcasting Company. Coverage level: local. Service area: Kichevo. Transmitter site: Kichevo Kale. Broadcasting licence: Up 1 no.08-103, dated 07.09.2023. Validity: from 05.01.2024 to 04.01.2027.",
+      "tags": [
+        "fm",
+        "official",
+        "avmu",
+        "north-macedonia",
+        "local",
+        "kichevo"
+      ],
+      "source": "AVMU Register of Radios workbook",
+      "sourceUrl": "https://avmu.mk/wp-content/uploads/2026/03/ENGL-Registar-na-RA-13.3.2026.xlsx",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "mk-kicevo-jon-radio-doo-struga-102-2",
+      "name": "JON-RADIO DOO Struga",
+      "freqMhz": 102.2,
+      "cityId": "mk-kicevo",
+      "description": "North Macedonian FM radio entry listed by AVMU for Kichevo. Licensee: JON-RADIO DOO Struga Commercial Broadcasting Company. Coverage level: national. Service area: All of the territory of the Republic of North Macedonia. Transmitter site: Dushegubica. Broadcasting licence: Up1 no.08-234 , dated 06.03.2024. Validity: from 0802-107 to 02.04.2028 година.",
+      "tags": [
+        "fm",
+        "official",
+        "avmu",
+        "north-macedonia",
+        "national",
+        "kichevo"
+      ],
+      "source": "AVMU Register of Radios workbook",
+      "sourceUrl": "https://avmu.mk/wp-content/uploads/2026/03/ENGL-Registar-na-RA-13.3.2026.xlsx",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "mk-kicevo-radioaleksandarmakedonski-106",
+      "name": "RADIOALEKSANDARMAKEDONSKI",
+      "freqMhz": 106,
+      "cityId": "mk-kicevo",
+      "description": "North Macedonian FM radio entry listed by AVMU for Kichevo. Licensee: RADIO ALEKSANDER MAKEDONSKI Ilija Tanevski Kichevo DOOEL Commercial Broadcasting Company. Coverage level: local. Service area: Kichevo. Transmitter site: Kichevo Kale. Broadcasting licence: Up 1 no.08-102, dated 07.09.2023. Validity: from 05.01.2024 to 04.01.2027.",
+      "tags": [
+        "fm",
+        "official",
+        "avmu",
+        "north-macedonia",
+        "local",
+        "kichevo"
+      ],
+      "source": "AVMU Register of Radios workbook",
+      "sourceUrl": "https://avmu.mk/wp-content/uploads/2026/03/ENGL-Registar-na-RA-13.3.2026.xlsx",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "mk-kochani-radio-kochani-fm-doo-kochani-100-2",
+      "name": "RADIO KOCHANI FM DOO Kochani",
+      "freqMhz": 100.2,
+      "cityId": "mk-kochani",
+      "description": "North Macedonian FM radio entry listed by AVMU for Kochani. Licensee: RADIO KOCHANI FM DOO Kochani Broadcasting company. Coverage level: local. Service area: Kochani. Broadcasting licence: Up 1 no.08-106, dated 07.09.2023. Validity: from 05.01.2024 to 04.01.2027.",
+      "tags": [
+        "fm",
+        "official",
+        "avmu",
+        "north-macedonia",
+        "local",
+        "kochani"
+      ],
+      "source": "AVMU Register of Radios workbook",
+      "sourceUrl": "https://avmu.mk/wp-content/uploads/2026/03/ENGL-Registar-na-RA-13.3.2026.xlsx",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "mk-kochani-jon-radio-doo-struga-104-3",
+      "name": "JON-RADIO DOO Struga",
+      "freqMhz": 104.3,
+      "cityId": "mk-kochani",
+      "description": "North Macedonian FM radio entry listed by AVMU for Kochani. Licensee: JON-RADIO DOO Struga Commercial Broadcasting Company. Coverage level: national. Service area: All of the territory of the Republic of North Macedonia. Transmitter site: Kalimantsi. Broadcasting licence: Up1 no.08-234 , dated 06.03.2024. Validity: from 0802-107 to 02.04.2028 година.",
+      "tags": [
+        "fm",
+        "official",
+        "avmu",
+        "north-macedonia",
+        "national",
+        "kochani"
+      ],
+      "source": "AVMU Register of Radios workbook",
+      "sourceUrl": "https://avmu.mk/wp-content/uploads/2026/03/ENGL-Registar-na-RA-13.3.2026.xlsx",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "mk-kratovo-jon-radio-doo-struga-99-3",
+      "name": "JON-RADIO DOO Struga",
+      "freqMhz": 99.3,
+      "cityId": "mk-kratovo",
+      "description": "North Macedonian FM radio entry listed by AVMU for Kratovo. Licensee: JON-RADIO DOO Struga Commercial Broadcasting Company. Coverage level: national. Service area: All of the territory of the Republic of North Macedonia. Transmitter site: Kratovo1. Broadcasting licence: Up1 no.08-234 , dated 06.03.2024. Validity: from 0802-107 to 02.04.2028 година.",
+      "tags": [
+        "fm",
+        "official",
+        "avmu",
+        "north-macedonia",
+        "national",
+        "kratovo"
+      ],
+      "source": "AVMU Register of Radios workbook",
+      "sourceUrl": "https://avmu.mk/wp-content/uploads/2026/03/ENGL-Registar-na-RA-13.3.2026.xlsx",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "mk-kratovo-jon-radio-doo-struga-107-5",
+      "name": "JON-RADIO DOO Struga",
+      "freqMhz": 107.5,
+      "cityId": "mk-kratovo",
+      "description": "North Macedonian FM radio entry listed by AVMU for Kratovo. Licensee: JON-RADIO DOO Struga Commercial Broadcasting Company. Coverage level: national. Service area: All of the territory of the Republic of North Macedonia. Transmitter site: Stratsin. Broadcasting licence: Up1 no.08-234 , dated 06.03.2024. Validity: from 0802-107 to 02.04.2028 година.",
+      "tags": [
+        "fm",
+        "official",
+        "avmu",
+        "north-macedonia",
+        "national",
+        "kratovo"
+      ],
+      "source": "AVMU Register of Radios workbook",
+      "sourceUrl": "https://avmu.mk/wp-content/uploads/2026/03/ENGL-Registar-na-RA-13.3.2026.xlsx",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "mk-krivogashtani-radio-pela-dooel-s-malo-konjari-prilep-96-8",
+      "name": "RADIO PELA DOOEL s. Malo Konjari, Prilep",
+      "freqMhz": 96.8,
+      "cityId": "mk-krivogashtani",
+      "description": "North Macedonian FM radio entry listed by AVMU for Krivogashtani. Licensee: RADIO PELA DOOEL s.Malo Konjari, PrilepCommercial Broadcasting Company. Coverage level: local. Service area: Krivogashtani. Broadcasting licence: Up 1 no.08-313, dated 03.07.2017.. Validity: from 15.05.2017 to 14.05.2026.",
+      "tags": [
+        "fm",
+        "official",
+        "avmu",
+        "north-macedonia",
+        "local",
+        "krivogashtani"
+      ],
+      "source": "AVMU Register of Radios workbook",
+      "sourceUrl": "https://avmu.mk/wp-content/uploads/2026/03/ENGL-Registar-na-RA-13.3.2026.xlsx",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "mk-krusevo-radio-antena5-106-3",
+      "name": "RADIO ANTENA5",
+      "freqMhz": 106.3,
+      "cityId": "mk-krusevo",
+      "description": "North Macedonian FM radio entry listed by AVMU for Krushevo. Licensee: RADIO ANTENA 5 Petrov, Janevski and Gushev DOO Skopje Commercial Broadcasting Company. Coverage level: national. Service area: All of the territory of the Republic of North Macedonia. Broadcasting licence: Up1 no.08-63 , dated 07.09.2023. Validity: from 05.01.2024 to 04.01.2027.",
+      "tags": [
+        "fm",
+        "official",
+        "avmu",
+        "north-macedonia",
+        "national",
+        "krushevo"
+      ],
+      "source": "AVMU Register of Radios workbook",
+      "sourceUrl": "https://avmu.mk/wp-content/uploads/2026/03/ENGL-Registar-na-RA-13.3.2026.xlsx",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "mk-kumanovo-radio-skver-dooel-kumanovo-92-6",
+      "name": "RADIO SKVER DOOEL Kumanovo",
+      "freqMhz": 92.6,
+      "cityId": "mk-kumanovo",
+      "description": "North Macedonian FM radio entry listed by AVMU for Kumanovo. Licensee: RADIO SKVER DOOEL Kumanovo Commercial Broadcasting Company. Coverage level: local. Service area: Kumanovo. Broadcasting licence: Up 1 no.08-91, dated 19.03.2025. Validity: from 06.02.2025 to 05.02.2034.",
+      "tags": [
+        "fm",
+        "official",
+        "avmu",
+        "north-macedonia",
+        "local",
+        "kumanovo"
+      ],
+      "source": "AVMU Register of Radios workbook",
+      "sourceUrl": "https://avmu.mk/wp-content/uploads/2026/03/ENGL-Registar-na-RA-13.3.2026.xlsx",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "mk-kumanovo-radio-jehona-fm-kumanovo-97-6",
+      "name": "RADIO JEHONA FM Kumanovo",
+      "freqMhz": 97.6,
+      "cityId": "mk-kumanovo",
+      "description": "North Macedonian FM radio entry listed by AVMU for Kumanovo. Licensee: RADIO JEHONA FM DOOEL Kumanovo Commercial Broadcasting Company. Coverage level: local. Service area: Kumanovo. Broadcasting licence: Up 1 no.08-18, dated 20.01.2026.. Validity: from 17.01.2026 to 16.01.2035.",
+      "tags": [
+        "fm",
+        "official",
+        "avmu",
+        "north-macedonia",
+        "local",
+        "kumanovo"
+      ],
+      "source": "AVMU Register of Radios workbook",
+      "sourceUrl": "https://avmu.mk/wp-content/uploads/2026/03/ENGL-Registar-na-RA-13.3.2026.xlsx",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "mk-kumanovo-jon-radio-doo-struga-99-3",
+      "name": "JON-RADIO DOO Struga",
+      "freqMhz": 99.3,
+      "cityId": "mk-kumanovo",
+      "description": "North Macedonian FM radio entry listed by AVMU for Kumanovo. Licensee: JON-RADIO DOO Struga Commercial Broadcasting Company. Coverage level: national. Service area: All of the territory of the Republic of North Macedonia. Broadcasting licence: Up1 no.08-234 , dated 06.03.2024. Validity: from 0802-107 to 02.04.2028 година.",
+      "tags": [
+        "fm",
+        "official",
+        "avmu",
+        "north-macedonia",
+        "national",
+        "kumanovo"
+      ],
+      "source": "AVMU Register of Radios workbook",
+      "sourceUrl": "https://avmu.mk/wp-content/uploads/2026/03/ENGL-Registar-na-RA-13.3.2026.xlsx",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "mk-kumanovo-radio-bum-dooel-kumanovo-104-2",
+      "name": "RADIO BUM DOOEL Kumanovo",
+      "freqMhz": 104.2,
+      "cityId": "mk-kumanovo",
+      "description": "North Macedonian FM radio entry listed by AVMU for Kumanovo. Licensee: RADIO BUM DOOEL Kumanovo Commercial Broadcasting Company. Coverage level: local. Service area: Kumanovo. Broadcasting licence: Up 1 no.08-110, dated 07.09.2023. Validity: from 05.01.2024 to 04.01.2027.",
+      "tags": [
+        "fm",
+        "official",
+        "avmu",
+        "north-macedonia",
+        "local",
+        "kumanovo"
+      ],
+      "source": "AVMU Register of Radios workbook",
+      "sourceUrl": "https://avmu.mk/wp-content/uploads/2026/03/ENGL-Registar-na-RA-13.3.2026.xlsx",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "mk-kumanovo-radio-antena5-106-3",
+      "name": "RADIO ANTENA5",
+      "freqMhz": 106.3,
+      "cityId": "mk-kumanovo",
+      "description": "North Macedonian FM radio entry listed by AVMU for Kumanovo. Licensee: RADIO ANTENA 5 Petrov, Janevski and Gushev DOO Skopje Commercial Broadcasting Company. Coverage level: national. Service area: All of the territory of the Republic of North Macedonia. Broadcasting licence: Up1 no.08-63 , dated 07.09.2023. Validity: from 05.01.2024 to 04.01.2027.",
+      "tags": [
+        "fm",
+        "official",
+        "avmu",
+        "north-macedonia",
+        "national",
+        "kumanovo"
+      ],
+      "source": "AVMU Register of Radios workbook",
+      "sourceUrl": "https://avmu.mk/wp-content/uploads/2026/03/ENGL-Registar-na-RA-13.3.2026.xlsx",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "mk-negotino-radio-puls-kavadarci-100-5",
+      "name": "RADIO PULS Kavadarci",
+      "freqMhz": 100.5,
+      "cityId": "mk-negotino",
+      "description": "North Macedonian FM radio entry listed by AVMU for Negotino. Licensee: RADIO PULS DOOEL Kavadartsi Commercial Broadcasting Company. Coverage level: local. Service area: Negotino. Transmitter site: Rezervat PATRIK. Broadcasting licence: Up 1 no.08-111, dated 07.09.2023. Validity: from 05.01.2024 to 04.01.2027.",
+      "tags": [
+        "fm",
+        "official",
+        "avmu",
+        "north-macedonia",
+        "local",
+        "negotino"
+      ],
+      "source": "AVMU Register of Radios workbook",
+      "sourceUrl": "https://avmu.mk/wp-content/uploads/2026/03/ENGL-Registar-na-RA-13.3.2026.xlsx",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "mk-negotino-jon-radio-doo-struga-107-6",
+      "name": "JON-RADIO DOO Struga",
+      "freqMhz": 107.6,
+      "cityId": "mk-negotino",
+      "description": "North Macedonian FM radio entry listed by AVMU for Negotino. Licensee: JON-RADIO DOO Struga Commercial Broadcasting Company. Coverage level: national. Service area: All of the territory of the Republic of North Macedonia. Transmitter site: Serta. Broadcasting licence: Up1 no.08-234 , dated 06.03.2024. Validity: from 0802-107 to 02.04.2028 година.",
+      "tags": [
+        "fm",
+        "official",
+        "avmu",
+        "north-macedonia",
+        "national",
+        "negotino"
+      ],
+      "source": "AVMU Register of Radios workbook",
+      "sourceUrl": "https://avmu.mk/wp-content/uploads/2026/03/ENGL-Registar-na-RA-13.3.2026.xlsx",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "mk-novo-selo-impuls-radio-s-susica-novo-selo-107-4",
+      "name": "IMPULS RADIO s. Susica, Novo Selo",
+      "freqMhz": 107.4,
+      "cityId": "mk-novo-selo",
+      "description": "North Macedonian FM radio entry listed by AVMU for Novo Selo. Licensee: Commercial Broadcasting Company IMPULS RADIO s. Susica, Novo Selo. Coverage level: local. Service area: Municipality of Novo Selo. Broadcasting licence: Up 1 no.08-436, dated 09.12.2021.. Validity: from 25.08.2021 to 24.08.2030.",
+      "tags": [
+        "fm",
+        "official",
+        "avmu",
+        "north-macedonia",
+        "local",
+        "novo-selo"
+      ],
+      "source": "AVMU Register of Radios workbook",
+      "sourceUrl": "https://avmu.mk/wp-content/uploads/2026/03/ENGL-Registar-na-RA-13.3.2026.xlsx",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "mk-ohrid-jon-radio-doo-struga-105",
+      "name": "JON-RADIO DOO Struga",
+      "freqMhz": 105,
+      "cityId": "mk-ohrid",
+      "description": "North Macedonian FM radio entry listed by AVMU for Ohrid. Licensee: JON-RADIO DOO Struga Commercial Broadcasting Company. Coverage level: national. Service area: All of the territory of the Republic of North Macedonia. Transmitter site: Debartsa. Broadcasting licence: Up1 no.08-234 , dated 06.03.2024. Validity: from 0802-107 to 02.04.2028 година.",
+      "tags": [
+        "fm",
+        "official",
+        "avmu",
+        "north-macedonia",
+        "national",
+        "ohrid"
+      ],
+      "source": "AVMU Register of Radios workbook",
+      "sourceUrl": "https://avmu.mk/wp-content/uploads/2026/03/ENGL-Registar-na-RA-13.3.2026.xlsx",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "mk-prilep-radio-buba-mara-dooel-prilep-90-3",
+      "name": "RADIO BUBA MARA DOOEL Prilep",
+      "freqMhz": 90.3,
+      "cityId": "mk-prilep",
+      "description": "North Macedonian FM radio entry listed by AVMU for Prilep. Licensee: RADIO BUBA MARA DOOEL Prilep Commercial Broadcasting Company. Coverage level: local. Service area: Prilep. Transmitter site: Topolchani/Toptash. Broadcasting licence: Up 1 no.08-253, dated 12.08.2025. Validity: from 29.07.2025 to 28.07.2034.",
+      "tags": [
+        "fm",
+        "official",
+        "avmu",
+        "north-macedonia",
+        "local",
+        "prilep"
+      ],
+      "source": "AVMU Register of Radios workbook",
+      "sourceUrl": "https://avmu.mk/wp-content/uploads/2026/03/ENGL-Registar-na-RA-13.3.2026.xlsx",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "mk-prilep-mapedito-radio-meff-98-7",
+      "name": "MAPEDITO-RADIO MEFF",
+      "freqMhz": 98.7,
+      "cityId": "mk-prilep",
+      "description": "North Macedonian FM radio entry listed by AVMU for Prilep. Licensee: MAPEDITO-RADIO MEFF DOOEL Prilep Commercial Broadcasting Company. Coverage level: local. Service area: Prilep. Transmitter site: Topolchani. Broadcasting licence: Up 1 no.08-118, dated 07.09.2023. Validity: from 05.01.2024 to 04.01.2027.",
+      "tags": [
+        "fm",
+        "official",
+        "avmu",
+        "north-macedonia",
+        "local",
+        "prilep"
+      ],
+      "source": "AVMU Register of Radios workbook",
+      "sourceUrl": "https://avmu.mk/wp-content/uploads/2026/03/ENGL-Registar-na-RA-13.3.2026.xlsx",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "mk-prilep-holidej-102-1",
+      "name": "HOLIDEJ",
+      "freqMhz": 102.1,
+      "cityId": "mk-prilep",
+      "description": "North Macedonian FM radio entry listed by AVMU for Prilep. Licensee: HOLIDEJ Prilep DOOEL Commercial Broadcasting Company. Coverage level: local. Service area: Prilep. Transmitter site: Zhito Prilep. Broadcasting licence: Up 1 no.08-119, dated 07.09.2023. Validity: from 05.01.2024 to 04.01.2027.",
+      "tags": [
+        "fm",
+        "official",
+        "avmu",
+        "north-macedonia",
+        "local",
+        "prilep"
+      ],
+      "source": "AVMU Register of Radios workbook",
+      "sourceUrl": "https://avmu.mk/wp-content/uploads/2026/03/ENGL-Registar-na-RA-13.3.2026.xlsx",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "mk-probishtip-eko-radio-probishtip-88-8",
+      "name": "EKO RADIO Probishtip",
+      "freqMhz": 88.8,
+      "cityId": "mk-probishtip",
+      "description": "North Macedonian FM radio entry listed by AVMU for Probishtip. Licensee: EKO RADIO DOOEL Probishtip Company for Broadcasting, Trade and Services. Coverage level: local. Service area: Probishtip. Transmitter site: Probishtip Kala. Broadcasting licence: Up 1 no.08-120, dated 07.09.2023. Validity: from 05.01.2024 to 04.01.2027.",
+      "tags": [
+        "fm",
+        "official",
+        "avmu",
+        "north-macedonia",
+        "local",
+        "probishtip"
+      ],
+      "source": "AVMU Register of Radios workbook",
+      "sourceUrl": "https://avmu.mk/wp-content/uploads/2026/03/ENGL-Registar-na-RA-13.3.2026.xlsx",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "mk-romanovci-metropolis-radio-doo-skopje-93-1",
+      "name": "METROPOLIS RADIO DOO Skopje",
+      "freqMhz": 93.1,
+      "cityId": "mk-romanovci",
+      "description": "North Macedonian FM radio entry listed by AVMU for Romanovce. Licensee: METROPOLIS RADIO DOO Skopje Commercial Broadcasting Company. Coverage level: national. Service area: All of the territory of the Republic of North Macedonia. Broadcasting licence: Up1 no.08-65 , dated 07.09.2023. Validity: from 05.01.2024 to 04.01.2027.",
+      "tags": [
+        "fm",
+        "official",
+        "avmu",
+        "north-macedonia",
+        "national",
+        "romanovce"
+      ],
+      "source": "AVMU Register of Radios workbook",
+      "sourceUrl": "https://avmu.mk/wp-content/uploads/2026/03/ENGL-Registar-na-RA-13.3.2026.xlsx",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "mk-shtip-jon-radio-doo-struga-96-6",
+      "name": "JON-RADIO DOO Struga",
+      "freqMhz": 96.6,
+      "cityId": "mk-shtip",
+      "description": "North Macedonian FM radio entry listed by AVMU for Shtip. Licensee: JON-RADIO DOO Struga Commercial Broadcasting Company. Coverage level: national. Service area: All of the territory of the Republic of North Macedonia. Transmitter site: Isar. Broadcasting licence: Up1 no.08-234 , dated 06.03.2024. Validity: from 0802-107 to 02.04.2028 година.",
+      "tags": [
+        "fm",
+        "official",
+        "avmu",
+        "north-macedonia",
+        "national",
+        "shtip"
+      ],
+      "source": "AVMU Register of Radios workbook",
+      "sourceUrl": "https://avmu.mk/wp-content/uploads/2026/03/ENGL-Registar-na-RA-13.3.2026.xlsx",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "mk-shtip-buba-mara-studio-dooel-shtip-105-3",
+      "name": "BUBA MARA STUDIO DOOEL Shtip",
+      "freqMhz": 105.3,
+      "cityId": "mk-shtip",
+      "description": "North Macedonian FM radio entry listed by AVMU for Shtip. Licensee: RADIO BUBA MARA STUDIO DOOEL Shtip Commercial Broadcasting Company. Coverage level: local. Service area: Shtip. Transmitter site: Karakush. Broadcasting licence: Up 1 no.08-258, dated 19.08.2025. Validity: from 08.08.2025 to 07.08.2034.",
+      "tags": [
+        "fm",
+        "official",
+        "avmu",
+        "north-macedonia",
+        "local",
+        "shtip"
+      ],
+      "source": "AVMU Register of Radios workbook",
+      "sourceUrl": "https://avmu.mk/wp-content/uploads/2026/03/ENGL-Registar-na-RA-13.3.2026.xlsx",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "mk-shtip-angels-fm-dooel-shtip-106-4",
+      "name": "ANGELS FM DOOEL Shtip",
+      "freqMhz": 106.4,
+      "cityId": "mk-shtip",
+      "description": "North Macedonian FM radio entry listed by AVMU for Shtip. Licensee: ANGELS FM DOOEL Shtip Commercial Broadcasting Company. Coverage level: local. Service area: Shtip. Transmitter site: Karakush. Broadcasting licence: Up 1 no.08-134, dated 07.09.2023. Validity: from 05.01.2024 to 04.01.2027.",
+      "tags": [
+        "fm",
+        "official",
+        "avmu",
+        "north-macedonia",
+        "local",
+        "shtip"
+      ],
+      "source": "AVMU Register of Radios workbook",
+      "sourceUrl": "https://avmu.mk/wp-content/uploads/2026/03/ENGL-Registar-na-RA-13.3.2026.xlsx",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "mk-skopje-radiovat-88-4",
+      "name": "RADIOVAT",
+      "freqMhz": 88.4,
+      "cityId": "mk-skopje",
+      "description": "North Macedonian FM radio entry listed by AVMU for Skopje. Licensee: RADIO VAT DOO Skopje Commercial Broadcasting Company. Coverage level: regional. Service area: Skopje. Transmitter site: Gorno Nerezi. Broadcasting licence: Up 1 no.08-69, dated 07.09.2023. Validity: from 05.01.2024 to 04.01.2027.",
+      "tags": [
+        "fm",
+        "official",
+        "avmu",
+        "north-macedonia",
+        "regional",
+        "skopje"
+      ],
+      "source": "AVMU Register of Radios workbook",
+      "sourceUrl": "https://avmu.mk/wp-content/uploads/2026/03/ENGL-Registar-na-RA-13.3.2026.xlsx",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "mk-skopje-trd-lajf-radio-dooel-skopje-89-1",
+      "name": "TRD LAJF RADIO DOOEL Skopje",
+      "freqMhz": 89.1,
+      "cityId": "mk-skopje",
+      "description": "North Macedonian FM radio entry listed by AVMU for Skopje. Licensee: LAJF RADIO DOOEL Skopje Commercial Broadcasting Company. Coverage level: regional. Service area: Skopje. Transmitter site: Sredno Vodno. Broadcasting licence: Up 1 no.08-73, dated 07.09.2023. Validity: from 05.01.2024 to 04.01.2027.",
+      "tags": [
+        "fm",
+        "official",
+        "avmu",
+        "north-macedonia",
+        "regional",
+        "skopje"
+      ],
+      "source": "AVMU Register of Radios workbook",
+      "sourceUrl": "https://avmu.mk/wp-content/uploads/2026/03/ENGL-Registar-na-RA-13.3.2026.xlsx",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "mk-skopje-ef-em-903-sportsko-radio-dooel-skopje-90-3",
+      "name": "EF-EM 90.3-SPORTSKO RADIO DOOEL Skopje",
+      "freqMhz": 90.3,
+      "cityId": "mk-skopje",
+      "description": "North Macedonian FM radio entry listed by AVMU for Skopje. Licensee: EF-EM 90.3-SPORTS RADIO DOOEL import-export Skopje. Coverage level: regional. Service area: Skopje. Transmitter site: Sredno Vodno. Broadcasting licence: Up 1 no.08-79, dated 07.09.2023. Validity: from 05.01.2024 to 04.01.2027.",
+      "tags": [
+        "fm",
+        "official",
+        "avmu",
+        "north-macedonia",
+        "regional",
+        "skopje"
+      ],
+      "source": "AVMU Register of Radios workbook",
+      "sourceUrl": "https://avmu.mk/wp-content/uploads/2026/03/ENGL-Registar-na-RA-13.3.2026.xlsx",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "mk-skopje-urban-fm-radio-dooel-skopje-90-8",
+      "name": "URBAN FM RADIO DOOEL Skopje",
+      "freqMhz": 90.8,
+      "cityId": "mk-skopje",
+      "description": "North Macedonian FM radio entry listed by AVMU for Skopje. Licensee: URBAN FM RADIO DOOEL Skopje Commercial Broadcasting Company. Coverage level: regional. Service area: Skopje. Transmitter site: Sredno Vodno. Broadcasting licence: Up 1 no.08-71, dated 07.09.2023. Validity: from 05.01.2024 to 04.01.2027.",
+      "tags": [
+        "fm",
+        "official",
+        "avmu",
+        "north-macedonia",
+        "regional",
+        "skopje"
+      ],
+      "source": "AVMU Register of Radios workbook",
+      "sourceUrl": "https://avmu.mk/wp-content/uploads/2026/03/ENGL-Registar-na-RA-13.3.2026.xlsx",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "mk-skopje-rfm-dooel-skopje-91-3",
+      "name": "RFM DOOEL Skopje",
+      "freqMhz": 91.3,
+      "cityId": "mk-skopje",
+      "description": "North Macedonian FM radio entry listed by AVMU for Skopje. Licensee: RFM DOOEL Skopje Commercial Broadcasting Company. Coverage level: regional. Service area: Skopje. Transmitter site: Skopje RTV Dom. Broadcasting licence: Up 1 no.08-75, dated 07.09.2023. Validity: from 05.01.2024 to 04.01.2027.",
+      "tags": [
+        "fm",
+        "official",
+        "avmu",
+        "north-macedonia",
+        "regional",
+        "skopje"
+      ],
+      "source": "AVMU Register of Radios workbook",
+      "sourceUrl": "https://avmu.mk/wp-content/uploads/2026/03/ENGL-Registar-na-RA-13.3.2026.xlsx",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "mk-skopje-siti-radio-dooel-skopje-city-radio-ltd-94-7",
+      "name": "SITI RADIO DOOEL Skopje CITY RADIO Ltd.",
+      "freqMhz": 94.7,
+      "cityId": "mk-skopje",
+      "description": "North Macedonian FM radio entry listed by AVMU for Skopje. Licensee: SITI RADIO DOOEL Skopje Commercial Broadcasting Company. Coverage level: regional. Service area: Skopje. Transmitter site: Sredno Vodno. Broadcasting licence: Up 1 no.08-76, dated 07.09.2023. Validity: from 05.01.2024 to 04.01.2027.",
+      "tags": [
+        "fm",
+        "official",
+        "avmu",
+        "north-macedonia",
+        "regional",
+        "skopje"
+      ],
+      "source": "AVMU Register of Radios workbook",
+      "sourceUrl": "https://avmu.mk/wp-content/uploads/2026/03/ENGL-Registar-na-RA-13.3.2026.xlsx",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "mk-skopje-radiofortuna-96-8",
+      "name": "RADIOFORTUNA",
+      "freqMhz": 96.8,
+      "cityId": "mk-skopje",
+      "description": "North Macedonian FM radio entry listed by AVMU for Skopje. Licensee: RADIO FORTUNA Violeta DOOEL Skopje Commercial Broadcasting Company. Coverage level: regional. Service area: Skopje. Transmitter site: Sredno Vodno. Broadcasting licence: Up 1 no.08-82, dated 07.09.2023. Validity: from 05.01.2024 to 04.01.2027.",
+      "tags": [
+        "fm",
+        "official",
+        "avmu",
+        "north-macedonia",
+        "regional",
+        "skopje"
+      ],
+      "source": "AVMU Register of Radios workbook",
+      "sourceUrl": "https://avmu.mk/wp-content/uploads/2026/03/ENGL-Registar-na-RA-13.3.2026.xlsx",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "mk-skopje-radio-rosa-ab-dooel-skopje-98-1",
+      "name": "RADIO ROSA-AB DOOEL Skopje",
+      "freqMhz": 98.1,
+      "cityId": "mk-skopje",
+      "description": "North Macedonian FM radio entry listed by AVMU for Skopje. Licensee: RADIO ROSA - AB DOOEL Skopje Broadcasting Company. Coverage level: regional. Service area: Skopje. Transmitter site: Sredno Vodno. Broadcasting licence: Up 1 no.08-74, dated 07.09.2023. Validity: from 05.01.2024 to 04.01.2027.",
+      "tags": [
+        "fm",
+        "official",
+        "avmu",
+        "north-macedonia",
+        "regional",
+        "skopje"
+      ],
+      "source": "AVMU Register of Radios workbook",
+      "sourceUrl": "https://avmu.mk/wp-content/uploads/2026/03/ENGL-Registar-na-RA-13.3.2026.xlsx",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "mk-skopje-radio-99-skopje-99-9",
+      "name": "RADIO 99, Skopje",
+      "freqMhz": 99.9,
+      "cityId": "mk-skopje",
+      "description": "North Macedonian FM radio entry listed by AVMU for Skopje. Licensee: RADIO 99 DOOEL Skopje Broadcasting Company. Coverage level: regional. Service area: Skopje. Transmitter site: Gorno Nerezi. Broadcasting licence: Up 1 no.08-67, dated 07.09.2023. Validity: from 05.01.2024 to 04.01.2027.",
+      "tags": [
+        "fm",
+        "official",
+        "avmu",
+        "north-macedonia",
+        "regional",
+        "skopje"
+      ],
+      "source": "AVMU Register of Radios workbook",
+      "sourceUrl": "https://avmu.mk/wp-content/uploads/2026/03/ENGL-Registar-na-RA-13.3.2026.xlsx",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "mk-skopje-dzez-fm-dooel-skopje-100-8",
+      "name": "DZEZ FM DOOEL-Skopje",
+      "freqMhz": 100.8,
+      "cityId": "mk-skopje",
+      "description": "North Macedonian FM radio entry listed by AVMU for Skopje. Licensee: DZEZ FM DOOEL - Skopje Commercial Broadcasting Company. Coverage level: regional. Service area: Skopje. Transmitter site: Sredno Vodno. Broadcasting licence: Up 1 no.08-83, dated 07.09.2023. Validity: from 05.01.2024 to 04.01.2027.",
+      "tags": [
+        "fm",
+        "official",
+        "avmu",
+        "north-macedonia",
+        "regional",
+        "skopje"
+      ],
+      "source": "AVMU Register of Radios workbook",
+      "sourceUrl": "https://avmu.mk/wp-content/uploads/2026/03/ENGL-Registar-na-RA-13.3.2026.xlsx",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "mk-skopje-skajradio-102-5",
+      "name": "SKAJRADIO",
+      "freqMhz": 102.5,
+      "cityId": "mk-skopje",
+      "description": "North Macedonian FM radio entry listed by AVMU for Skopje. Licensee: SKAJ RADIO Teodor DOOEL - Skopje Broadcasting Company. Coverage level: regional. Service area: Skopje. Transmitter site: Sredno Vodno. Broadcasting licence: Up 1 no.08-77, dated 07.09.2023. Validity: from 05.01.2024 to 04.01.2027.",
+      "tags": [
+        "fm",
+        "official",
+        "avmu",
+        "north-macedonia",
+        "regional",
+        "skopje"
+      ],
+      "source": "AVMU Register of Radios workbook",
+      "sourceUrl": "https://avmu.mk/wp-content/uploads/2026/03/ENGL-Registar-na-RA-13.3.2026.xlsx",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "mk-skopje-klub-fm-doo-103-4",
+      "name": "KLUB FM DOO",
+      "freqMhz": 103.4,
+      "cityId": "mk-skopje",
+      "description": "North Macedonian FM radio entry listed by AVMU for Skopje. Licensee: KLUB FM DOO Skopje Commercial Broadcasting Company. Coverage level: regional. Service area: Skopje. Transmitter site: Sredno Vodno. Broadcasting licence: Up 1 no.08-72, dated 07.09.2023. Validity: from 05.01.2024 to 04.01.2027.",
+      "tags": [
+        "fm",
+        "official",
+        "avmu",
+        "north-macedonia",
+        "regional",
+        "skopje"
+      ],
+      "source": "AVMU Register of Radios workbook",
+      "sourceUrl": "https://avmu.mk/wp-content/uploads/2026/03/ENGL-Registar-na-RA-13.3.2026.xlsx",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "mk-skopje-zonam1-104-4",
+      "name": "ZONAM1",
+      "freqMhz": 104.4,
+      "cityId": "mk-skopje",
+      "description": "North Macedonian FM radio entry listed by AVMU for Skopje. Licensee: RADIO ZONA M-1 Svetlana DOOEL Skopje. Coverage level: regional. Service area: Skopje. Transmitter site: Sredno Vodno. Broadcasting licence: Up 1 no.08-70, dated 07.09.2023. Validity: from 05.01.2024 to 04.01.2027.",
+      "tags": [
+        "fm",
+        "official",
+        "avmu",
+        "north-macedonia",
+        "regional",
+        "skopje"
+      ],
+      "source": "AVMU Register of Radios workbook",
+      "sourceUrl": "https://avmu.mk/wp-content/uploads/2026/03/ENGL-Registar-na-RA-13.3.2026.xlsx",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "mk-skopje-buba-mara-ranko-dooel-skopje-broadcasting-company-105-2",
+      "name": "BUBA MARA Ranko DOOEL Skopje Broadcasting Company",
+      "freqMhz": 105.2,
+      "cityId": "mk-skopje",
+      "description": "North Macedonian FM radio entry listed by AVMU for Skopje. Licensee: BUBA MARA Ranko DOOEL Skopje Broadcasting Company. Coverage level: regional. Service area: Skopje. Transmitter site: Sredno Vodno. Broadcasting licence: Up 1 no.0802-37, dated 07.02.2024. Validity: from 05.01.2024 to 04.01.2027.",
+      "tags": [
+        "fm",
+        "official",
+        "avmu",
+        "north-macedonia",
+        "regional",
+        "skopje"
+      ],
+      "source": "AVMU Register of Radios workbook",
+      "sourceUrl": "https://avmu.mk/wp-content/uploads/2026/03/ENGL-Registar-na-RA-13.3.2026.xlsx",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "mk-struga-dooel-plej-radio-struga-90-4",
+      "name": "DOOEL PLEJ RADIO Struga",
+      "freqMhz": 90.4,
+      "cityId": "mk-struga",
+      "description": "North Macedonian FM radio entry listed by AVMU for Struga. Licensee: PLEJ RADIO Struga DOOEL Company for Telecommunications and Broadcasting. Coverage level: local. Service area: Struga. Transmitter site: Vishni. Broadcasting licence: Up 1 no.08-125, dated 07.09.2023. Validity: from 05.01.2024 to 04.01.2027.",
+      "tags": [
+        "fm",
+        "official",
+        "avmu",
+        "north-macedonia",
+        "local",
+        "struga"
+      ],
+      "source": "AVMU Register of Radios workbook",
+      "sourceUrl": "https://avmu.mk/wp-content/uploads/2026/03/ENGL-Registar-na-RA-13.3.2026.xlsx",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "mk-struga-radio-struga-dooel-struga-104-2",
+      "name": "RADIO STRUGA DOOEL STRUGA",
+      "freqMhz": 104.2,
+      "cityId": "mk-struga",
+      "description": "North Macedonian FM radio entry listed by AVMU for Struga. Licensee: RADIO STRUGA DOOEL STRUGA Telecommunications and Radiobroadcasting Company. Coverage level: local. Service area: Struga. Transmitter site: Vishni. Broadcasting licence: Up1 No. 08-286 dated 04.09.2025. Validity: from 08.08.2025 to 07.08.2034.",
+      "tags": [
+        "fm",
+        "official",
+        "avmu",
+        "north-macedonia",
+        "local",
+        "struga"
+      ],
+      "source": "AVMU Register of Radios workbook",
+      "sourceUrl": "https://avmu.mk/wp-content/uploads/2026/03/ENGL-Registar-na-RA-13.3.2026.xlsx",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "mk-strumica-hit-radio-dooel-strumitsa-88-1",
+      "name": "HIT RADIO DOOEL Strumitsa",
+      "freqMhz": 88.1,
+      "cityId": "mk-strumica",
+      "description": "North Macedonian FM radio entry listed by AVMU for Strumitsa. Licensee: HIT RADIO DOOEL Strumitsa Commercial Broadcasting Company. Coverage level: local. Service area: Strumitsa. Transmitter site: Strumitsa Spomenik. Broadcasting licence: Up 1 no.08-128, dated 07.09.2023. Validity: from 05.01.2024 to 04.01.2027.",
+      "tags": [
+        "fm",
+        "official",
+        "avmu",
+        "north-macedonia",
+        "local",
+        "strumitsa"
+      ],
+      "source": "AVMU Register of Radios workbook",
+      "sourceUrl": "https://avmu.mk/wp-content/uploads/2026/03/ENGL-Registar-na-RA-13.3.2026.xlsx",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "mk-strumica-ekspresradio-101-1",
+      "name": "EKSPRESRADIO",
+      "freqMhz": 101.1,
+      "cityId": "mk-strumica",
+      "description": "North Macedonian FM radio entry listed by AVMU for Strumitsa. Licensee: EKSPRES-RADIO DOOEL Strumitsa Commercial Broadcasting Company. Coverage level: local. Service area: Strumitsa. Transmitter site: Strumitsa Bair. Broadcasting licence: Up 1 no.08-127, dated 07.09.2023. Validity: from 05.01.2024 to 04.01.2027.",
+      "tags": [
+        "fm",
+        "official",
+        "avmu",
+        "north-macedonia",
+        "local",
+        "strumitsa"
+      ],
+      "source": "AVMU Register of Radios workbook",
+      "sourceUrl": "https://avmu.mk/wp-content/uploads/2026/03/ENGL-Registar-na-RA-13.3.2026.xlsx",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "mk-strumica-radio-marija-blagovest-strumitsa-106-5",
+      "name": "RADIO MARIJA - BLAGOVEST Strumitsa",
+      "freqMhz": 106.5,
+      "cityId": "mk-strumica",
+      "description": "North Macedonian FM radio entry listed by AVMU for Strumitsa. Licensee: RADIO MARIJA - BLAGOVEST Strumitsa Non-profit broadcasting institution. Coverage level: local. Service area: Strumitsa. Transmitter site: Strumitsa Kale. Broadcasting licence: Up 1 no.08-49 oд 12.02.2019.. Validity: from 16.11.2018 to15.11.2027.",
+      "tags": [
+        "fm",
+        "official",
+        "avmu",
+        "north-macedonia",
+        "local",
+        "strumitsa"
+      ],
+      "source": "AVMU Register of Radios workbook",
+      "sourceUrl": "https://avmu.mk/wp-content/uploads/2026/03/ENGL-Registar-na-RA-13.3.2026.xlsx",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "mk-sveti-nikole-radio-sveti-nikole-doo-sveti-nikole-87-9",
+      "name": "RADIO SVETI NIKOLE DOO Sveti Nikole",
+      "freqMhz": 87.9,
+      "cityId": "mk-sveti-nikole",
+      "description": "North Macedonian FM radio entry listed by AVMU for Sveti Nikole. Licensee: RADIO SVETI NIKOLE DOO Sveti Nikole Commercial Broadcasting Company. Coverage level: local. Service area: Sveti Nikole. Broadcasting licence: Up 1 no.08-122, dated 07.09.2023. Validity: from 05.01.2024 to 04.01.2027.",
+      "tags": [
+        "fm",
+        "official",
+        "avmu",
+        "north-macedonia",
+        "local",
+        "sveti-nikole"
+      ],
+      "source": "AVMU Register of Radios workbook",
+      "sourceUrl": "https://avmu.mk/wp-content/uploads/2026/03/ENGL-Registar-na-RA-13.3.2026.xlsx",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "mk-sveti-nikole-trd-modea-dooel-sveti-nikole-97-7",
+      "name": "TRD MODEA DOOEL Sveti Nikole",
+      "freqMhz": 97.7,
+      "cityId": "mk-sveti-nikole",
+      "description": "North Macedonian FM radio entry listed by AVMU for Sveti Nikole. Licensee: MODEA DOOEL Sveti Nikole Commercial Broadcasting Company. Coverage level: local. Service area: Sveti Nikole. Broadcasting licence: Up 1 no.08-121, dated 07.09.2023. Validity: from 05.01.2024 to 04.01.2027.",
+      "tags": [
+        "fm",
+        "official",
+        "avmu",
+        "north-macedonia",
+        "local",
+        "sveti-nikole"
+      ],
+      "source": "AVMU Register of Radios workbook",
+      "sourceUrl": "https://avmu.mk/wp-content/uploads/2026/03/ENGL-Registar-na-RA-13.3.2026.xlsx",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "mk-sveti-nikole-jon-radio-doo-struga-106-7",
+      "name": "JON-RADIO DOO Struga",
+      "freqMhz": 106.7,
+      "cityId": "mk-sveti-nikole",
+      "description": "North Macedonian FM radio entry listed by AVMU for Sveti Nikole. Licensee: JON-RADIO DOO Struga Commercial Broadcasting Company. Coverage level: national. Service area: All of the territory of the Republic of North Macedonia. Transmitter site: Gjurishte. Broadcasting licence: Up1 no.08-234 , dated 06.03.2024. Validity: from 0802-107 to 02.04.2028 година.",
+      "tags": [
+        "fm",
+        "official",
+        "avmu",
+        "north-macedonia",
+        "national",
+        "sveti-nikole"
+      ],
+      "source": "AVMU Register of Radios workbook",
+      "sourceUrl": "https://avmu.mk/wp-content/uploads/2026/03/ENGL-Registar-na-RA-13.3.2026.xlsx",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "mk-tetovo-radio-red-fm-dooel-tetovo-88",
+      "name": "RADIO RED FM DOOEL Tetovo",
+      "freqMhz": 88,
+      "cityId": "mk-tetovo",
+      "description": "North Macedonian FM radio entry listed by AVMU for Tetovo. Licensee: RADIO RED FM DOOEL Tetovo Commercial Broadcasting Company. Coverage level: local. Service area: Tetovo. Transmitter site: Tetovsko Kale. Broadcasting licence: Up 1 no.08-133, dated 07.09.2023. Validity: from 05.01.2024 to 04.01.2027.",
+      "tags": [
+        "fm",
+        "official",
+        "avmu",
+        "north-macedonia",
+        "local",
+        "tetovo"
+      ],
+      "source": "AVMU Register of Radios workbook",
+      "sourceUrl": "https://avmu.mk/wp-content/uploads/2026/03/ENGL-Registar-na-RA-13.3.2026.xlsx",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "mk-tetovo-radio-7-dooel-97-5",
+      "name": "RADIO 7 DOOEL",
+      "freqMhz": 97.5,
+      "cityId": "mk-tetovo",
+      "description": "North Macedonian FM radio entry listed by AVMU for Tetovo. Licensee: RADIO 7 DOOEL Tetovo Commercial Broadcasting Company. Coverage level: local. Service area: Tetovo. Transmitter site: Gajre. Broadcasting licence: Up 1 no.08-132, dated 07.09.2023. Validity: from 05.01.2024 to 04.01.2027.",
+      "tags": [
+        "fm",
+        "official",
+        "avmu",
+        "north-macedonia",
+        "local",
+        "tetovo"
+      ],
+      "source": "AVMU Register of Radios workbook",
+      "sourceUrl": "https://avmu.mk/wp-content/uploads/2026/03/ENGL-Registar-na-RA-13.3.2026.xlsx",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "mk-tetovo-bleta-101-4",
+      "name": "BLETA",
+      "freqMhz": 101.4,
+      "cityId": "mk-tetovo",
+      "description": "North Macedonian FM radio entry listed by AVMU for Tetovo. Licensee: BLETA DOOEL Tetovo Commercial Broadcasting Company. Coverage level: local. Service area: Tetovo. Transmitter site: Tetovsko Kale. Broadcasting licence: Up 1 no.08-129, dated 07.09.2023. Validity: from 05.01.2024 to 04.01.2027.",
+      "tags": [
+        "fm",
+        "official",
+        "avmu",
+        "north-macedonia",
+        "local",
+        "tetovo"
+      ],
+      "source": "AVMU Register of Radios workbook",
+      "sourceUrl": "https://avmu.mk/wp-content/uploads/2026/03/ENGL-Registar-na-RA-13.3.2026.xlsx",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "mk-tetovo-plusforte-102-3",
+      "name": "PLUSFORTE",
+      "freqMhz": 102.3,
+      "cityId": "mk-tetovo",
+      "description": "North Macedonian FM radio entry listed by AVMU for Tetovo. Licensee: PLUS FORTE DOOEL Tetovo Commercial Broadcasting Company. Coverage level: local. Service area: Tetovo. Transmitter site: Tetovsko Kale. Broadcasting licence: Up 1 no.08-131, dated 07.09.2023. Validity: from 05.01.2024 to 04.01.2027.",
+      "tags": [
+        "fm",
+        "official",
+        "avmu",
+        "north-macedonia",
+        "local",
+        "tetovo"
+      ],
+      "source": "AVMU Register of Radios workbook",
+      "sourceUrl": "https://avmu.mk/wp-content/uploads/2026/03/ENGL-Registar-na-RA-13.3.2026.xlsx",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "mk-tetovo-radio-kiss-tetovo-104-7",
+      "name": "RADIO KISS Tetovo",
+      "freqMhz": 104.7,
+      "cityId": "mk-tetovo",
+      "description": "North Macedonian FM radio entry listed by AVMU for Tetovo. Licensee: RADIO KISS DOOEL Tetovo Commercial Broadcasting Company. Coverage level: local. Service area: Tetovo. Transmitter site: Tetovsko Kale. Broadcasting licence: Up 1 no.08-130, dated 07.09.2023. Validity: from 05.01.2024 to 04.01.2027.",
+      "tags": [
+        "fm",
+        "official",
+        "avmu",
+        "north-macedonia",
+        "local",
+        "tetovo"
+      ],
+      "source": "AVMU Register of Radios workbook",
+      "sourceUrl": "https://avmu.mk/wp-content/uploads/2026/03/ENGL-Registar-na-RA-13.3.2026.xlsx",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "mk-valandovo-radio-valandovo-doo-valandovo-91-6",
+      "name": "RADIO VALANDOVO DOO Valandovo",
+      "freqMhz": 91.6,
+      "cityId": "mk-valandovo",
+      "description": "North Macedonian FM radio entry listed by AVMU for Valandovo. Licensee: RADIO VALANDOVO DOO Valandovo Commercial Broadcasting Company. Coverage level: local. Service area: Valandovo. Transmitter site: Manastir Sveti Gjorgji. Broadcasting licence: Up 1 no.08-90, dated 07.09.2023. Validity: from 05.01.2024 to 04.01.2027.",
+      "tags": [
+        "fm",
+        "official",
+        "avmu",
+        "north-macedonia",
+        "local",
+        "valandovo"
+      ],
+      "source": "AVMU Register of Radios workbook",
+      "sourceUrl": "https://avmu.mk/wp-content/uploads/2026/03/ENGL-Registar-na-RA-13.3.2026.xlsx",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "mk-veles-goldi-103",
+      "name": "GOLDI",
+      "freqMhz": 103,
+      "cityId": "mk-veles",
+      "description": "North Macedonian FM radio entry listed by AVMU for Veles. Licensee: GOLDI DOOEL Veles Commercial Broadcasting Company. Coverage level: local. Service area: Veles. Broadcasting licence: Up 1 no.08-91, dated 07.09.2023. Validity: from 05.01.2024 to 04.01.2027.",
+      "tags": [
+        "fm",
+        "official",
+        "avmu",
+        "north-macedonia",
+        "local",
+        "veles"
+      ],
+      "source": "AVMU Register of Radios workbook",
+      "sourceUrl": "https://avmu.mk/wp-content/uploads/2026/03/ENGL-Registar-na-RA-13.3.2026.xlsx",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "mk-veles-radio-merak-5-fm-doo-veles-107-1",
+      "name": "RADIO MERAK 5 FM DOO Veles",
+      "freqMhz": 107.1,
+      "cityId": "mk-veles",
+      "description": "North Macedonian FM radio entry listed by AVMU for Veles. Licensee: RADIO MERAK 5 FM Ljupcho and Vladimir DOO Veles Commercial Broadcasting Company. Coverage level: local. Service area: Veles. Transmitter site: Sveti Ilija. Broadcasting licence: Up 1 no.08-92, dated 07.09.2023. Validity: from 05.01.2024 to 04.01.2027.",
+      "tags": [
+        "fm",
+        "official",
+        "avmu",
+        "north-macedonia",
+        "local",
+        "veles"
+      ],
+      "source": "AVMU Register of Radios workbook",
+      "sourceUrl": "https://avmu.mk/wp-content/uploads/2026/03/ENGL-Registar-na-RA-13.3.2026.xlsx",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    }
+  ]
+}

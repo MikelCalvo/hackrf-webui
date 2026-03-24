@@ -1,0 +1,837 @@
+{
+  "country": {
+    "id": "malta",
+    "code": "MT",
+    "name": "Malta",
+    "regionId": "europe",
+    "cityCount": 24,
+    "stationCount": 31,
+    "sourceCount": 2,
+    "sources": [
+      {
+        "name": "Broadcasting Authority community radio table",
+        "url": "https://ba.org.mt/stations-licenced"
+      },
+      {
+        "name": "Broadcasting Authority nationwide radio table",
+        "url": "https://ba.org.mt/stations-licenced"
+      }
+    ],
+    "lastImportedAt": "2026-03-24",
+    "coverageStatus": "active",
+    "coverageTier": "official-substantial",
+    "coverageScope": "national",
+    "sourceQuality": "official-regulator",
+    "hasOfficialImporter": true,
+    "coverageScore": 88
+  },
+  "cities": [
+    {
+      "id": "mt-birkirkara",
+      "name": "Birkirkara",
+      "countryId": "malta",
+      "timezone": "Europe/Malta",
+      "latitude": 35.89706,
+      "longitude": 14.46115,
+      "stationCount": 1
+    },
+    {
+      "id": "mt-fontana",
+      "name": "Fontana",
+      "countryId": "malta",
+      "timezone": "Europe/Malta",
+      "latitude": 36.03804,
+      "longitude": 14.23595,
+      "stationCount": 1
+    },
+    {
+      "id": "mt-għarb",
+      "name": "Għarb",
+      "countryId": "malta",
+      "timezone": "Europe/Malta",
+      "latitude": 36.05966,
+      "longitude": 14.20917,
+      "stationCount": 1
+    },
+    {
+      "id": "mt-ħamrun",
+      "name": "Ħamrun",
+      "countryId": "malta",
+      "timezone": "Europe/Malta",
+      "latitude": 35.88452,
+      "longitude": 14.48498,
+      "stationCount": 2
+    },
+    {
+      "id": "mt-imsida",
+      "name": "Imsida",
+      "countryId": "malta",
+      "timezone": "Europe/Malta",
+      "latitude": 35.8925,
+      "longitude": 14.48278,
+      "stationCount": 1
+    },
+    {
+      "id": "mt-kercem",
+      "name": "Kerċem",
+      "countryId": "malta",
+      "timezone": "Europe/Malta",
+      "latitude": 36.04162,
+      "longitude": 14.22694,
+      "stationCount": 1
+    },
+    {
+      "id": "mt-luqa",
+      "name": "Luqa",
+      "countryId": "malta",
+      "timezone": "Europe/Malta",
+      "latitude": 35.85985,
+      "longitude": 14.48895,
+      "stationCount": 1
+    },
+    {
+      "id": "mt-marsa",
+      "name": "Marsa",
+      "countryId": "malta",
+      "timezone": "Europe/Malta",
+      "latitude": 35.87925,
+      "longitude": 14.49462,
+      "stationCount": 1
+    },
+    {
+      "id": "mt-nadur",
+      "name": "Nadur",
+      "countryId": "malta",
+      "timezone": "Europe/Malta",
+      "latitude": 36.0379,
+      "longitude": 14.29382,
+      "stationCount": 1
+    },
+    {
+      "id": "mt-naxxar",
+      "name": "Naxxar",
+      "countryId": "malta",
+      "timezone": "Europe/Malta",
+      "latitude": 35.91368,
+      "longitude": 14.44382,
+      "stationCount": 1
+    },
+    {
+      "id": "mt-paola",
+      "name": "Paola",
+      "countryId": "malta",
+      "timezone": "Europe/Malta",
+      "latitude": 35.87297,
+      "longitude": 14.49897,
+      "stationCount": 1
+    },
+    {
+      "id": "mt-pieta",
+      "name": "Pietà",
+      "countryId": "malta",
+      "timezone": "Europe/Malta",
+      "latitude": 35.89297,
+      "longitude": 14.49362,
+      "stationCount": 4
+    },
+    {
+      "id": "mt-qala",
+      "name": "Qala",
+      "countryId": "malta",
+      "timezone": "Europe/Malta",
+      "latitude": 36.03611,
+      "longitude": 14.30944,
+      "stationCount": 1
+    },
+    {
+      "id": "mt-qormi",
+      "name": "Qormi",
+      "countryId": "malta",
+      "timezone": "Europe/Malta",
+      "latitude": 35.87601,
+      "longitude": 14.472,
+      "stationCount": 1
+    },
+    {
+      "id": "mt-rabat",
+      "name": "Rabat",
+      "countryId": "malta",
+      "timezone": "Europe/Malta",
+      "latitude": 35.88152,
+      "longitude": 14.39872,
+      "stationCount": 2
+    },
+    {
+      "id": "mt-san-giljan",
+      "name": "San Ġiljan",
+      "countryId": "malta",
+      "timezone": "Europe/Malta",
+      "latitude": 35.91839,
+      "longitude": 14.48977,
+      "stationCount": 1
+    },
+    {
+      "id": "mt-sannat",
+      "name": "Sannat",
+      "countryId": "malta",
+      "timezone": "Europe/Malta",
+      "latitude": 36.02451,
+      "longitude": 14.24283,
+      "stationCount": 1
+    },
+    {
+      "id": "mt-santa-venera",
+      "name": "Santa Venera",
+      "countryId": "malta",
+      "timezone": "Europe/Malta",
+      "latitude": 35.88998,
+      "longitude": 14.47291,
+      "stationCount": 1
+    },
+    {
+      "id": "mt-valletta",
+      "name": "Valletta",
+      "countryId": "malta",
+      "timezone": "Europe/Malta",
+      "latitude": 35.89968,
+      "longitude": 14.5148,
+      "stationCount": 2
+    },
+    {
+      "id": "mt-victoria",
+      "name": "Victoria",
+      "countryId": "malta",
+      "timezone": "Europe/Malta",
+      "latitude": 36.04473,
+      "longitude": 14.24118,
+      "stationCount": 2
+    },
+    {
+      "id": "mt-xagħra",
+      "name": "Xagħra",
+      "countryId": "malta",
+      "timezone": "Europe/Malta",
+      "latitude": 36.05003,
+      "longitude": 14.26421,
+      "stationCount": 1
+    },
+    {
+      "id": "mt-xewkija",
+      "name": "Xewkija",
+      "countryId": "malta",
+      "timezone": "Europe/Malta",
+      "latitude": 36.03413,
+      "longitude": 14.25591,
+      "stationCount": 1
+    },
+    {
+      "id": "mt-zebbug",
+      "name": "Żebbuġ",
+      "countryId": "malta",
+      "timezone": "Europe/Malta",
+      "latitude": 36.07187,
+      "longitude": 14.23705,
+      "stationCount": 1
+    },
+    {
+      "id": "mt-zurrieq",
+      "name": "Żurrieq",
+      "countryId": "malta",
+      "timezone": "Europe/Malta",
+      "latitude": 35.8296,
+      "longitude": 14.47588,
+      "stationCount": 1
+    }
+  ],
+  "stations": [
+    {
+      "id": "mt-birkirkara-bkr-94-5",
+      "name": "BKR",
+      "freqMhz": 94.5,
+      "cityId": "mt-birkirkara",
+      "description": "Maltese community radio listed by the Broadcasting Authority for Birkirkara. Station: BKR. Frequency: 94.5MHz. Address: 220, Valley Road, Birkirkara Tel: 7901 4573 Email: jordanleegauci@gmail.com.",
+      "tags": [
+        "fm",
+        "official",
+        "malta",
+        "broadcasting-authority",
+        "community-radio",
+        "bkr"
+      ],
+      "source": "Broadcasting Authority community radio table",
+      "sourceUrl": "https://ba.org.mt/stations-licenced",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "mt-fontana-radio-sacro-cuor-105-2",
+      "name": "Radio Sacro Cuor",
+      "freqMhz": 105.2,
+      "cityId": "mt-fontana",
+      "description": "Maltese community radio listed by the Broadcasting Authority for Fontana. Station: Radio Sacro Cuor. Frequency: 105.2 MHz. Address: Domus Curialis, Sacred Heart Parish Church, Fontana Gozo Tel: 2156 5454 Email: radio@qalbtagesu.com.",
+      "tags": [
+        "fm",
+        "official",
+        "malta",
+        "broadcasting-authority",
+        "community-radio",
+        "radio-sacro-cuor"
+      ],
+      "source": "Broadcasting Authority community radio table",
+      "sourceUrl": "https://ba.org.mt/stations-licenced",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "mt-għarb-radju-vizitazzjoni-92-4",
+      "name": "Radju Viżitazzjoni",
+      "freqMhz": 92.4,
+      "cityId": "mt-għarb",
+      "description": "Maltese community radio listed by the Broadcasting Authority for Għarb. Station: Radju Viżitazzjoni. Frequency: 92.4 MHz. Address: Dar Parrokkjali, 1, Triq it-Trux, Għarb, Gozo Tel: 2156 0114 Email: gharbparish@onvol.net.",
+      "tags": [
+        "fm",
+        "official",
+        "malta",
+        "broadcasting-authority",
+        "community-radio",
+        "radju-vizitazzjoni"
+      ],
+      "source": "Broadcasting Authority community radio table",
+      "sourceUrl": "https://ba.org.mt/stations-licenced",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "mt-ħamrun-rtk-103-103",
+      "name": "RTK 103",
+      "freqMhz": 103,
+      "cityId": "mt-ħamrun",
+      "description": "Maltese nationwide radio listed by the Broadcasting Authority for Hamrun. Station: RTK 103. Licensee: Beacon Media Group Ltd.. Frequency: 103.0 MHz. Address: National Road, Blata l-Bajda HMR 1640 Tel: 2569 9150 Email: info@newsbook.com.mt.",
+      "tags": [
+        "fm",
+        "official",
+        "malta",
+        "broadcasting-authority",
+        "nationwide-radio",
+        "rtk-103"
+      ],
+      "source": "Broadcasting Authority nationwide radio table",
+      "sourceUrl": "https://ba.org.mt/stations-licenced",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "mt-ħamrun-radio-105-105",
+      "name": "Radio 105",
+      "freqMhz": 105,
+      "cityId": "mt-ħamrun",
+      "description": "Maltese community radio listed by the Broadcasting Authority for Ħamrun. Station: Radio 105. Frequency: 105 MHz. Address: 114 Daniel's Shopping Complex,St. Joseph High Street, Ħamrun Tel: 2123 1428 Email: info@galaxy105.net.",
+      "tags": [
+        "fm",
+        "official",
+        "malta",
+        "broadcasting-authority",
+        "community-radio",
+        "radio-105"
+      ],
+      "source": "Broadcasting Authority community radio table",
+      "sourceUrl": "https://ba.org.mt/stations-licenced",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "mt-imsida-campus-1037-103-7",
+      "name": "Campus 103.7",
+      "freqMhz": 103.7,
+      "cityId": "mt-imsida",
+      "description": "Maltese nationwide radio listed by the Broadcasting Authority for L-Imsida. Station: Campus 103.7. Licensee: Malta University Enterprises Ltd.. Frequency: 103.7 MHz. Address: University of Malta, Tal-Qroqq, L-Imsida MSD 2080 Tel:2133 3313 Email: celaine.buhagiar@campusfm.um.edu.mt.",
+      "tags": [
+        "fm",
+        "official",
+        "malta",
+        "broadcasting-authority",
+        "nationwide-radio",
+        "campus-1037"
+      ],
+      "source": "Broadcasting Authority nationwide radio table",
+      "sourceUrl": "https://ba.org.mt/stations-licenced",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "mt-kercem-radju-sokkors-95-1",
+      "name": "Radju Sokkors",
+      "freqMhz": 95.1,
+      "cityId": "mt-kercem",
+      "description": "Maltese community radio listed by the Broadcasting Authority for Kerċem. Station: Radju Sokkors. Frequency: 95.1 MHz. Address: 144 Triq San Girgor, Kerċem, Gozo Tel: 2155 1355 Email: parroccakercem@onvol.net.",
+      "tags": [
+        "fm",
+        "official",
+        "malta",
+        "broadcasting-authority",
+        "community-radio",
+        "radju-sokkors"
+      ],
+      "source": "Broadcasting Authority community radio table",
+      "sourceUrl": "https://ba.org.mt/stations-licenced",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "mt-luqa-calypso-1018-101-8",
+      "name": "Calypso 101.8",
+      "freqMhz": 101.8,
+      "cityId": "mt-luqa",
+      "description": "Maltese nationwide radio listed by the Broadcasting Authority for Luqa. Station: Calypso 101.8. Licensee: Y Limited. Frequency: 101.8 MHz. Address: Centrepoint Building, Sqaq tal-Gidi off Valletta Road, Luqa, LQA 1762 Tel: 2180 1403 Email: gordon@calypsomalta.com.",
+      "tags": [
+        "fm",
+        "official",
+        "malta",
+        "broadcasting-authority",
+        "nationwide-radio",
+        "calypso-1018"
+      ],
+      "source": "Broadcasting Authority nationwide radio table",
+      "sourceUrl": "https://ba.org.mt/stations-licenced",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "mt-marsa-one-radio-92-7",
+      "name": "ONE Radio",
+      "freqMhz": 92.7,
+      "cityId": "mt-marsa",
+      "description": "Maltese nationwide radio listed by the Broadcasting Authority for Marsa. Station: ONE Radio. Licensee: ONE Productions Ltd.. Frequency: 92.7 MHz. Address: A28B, Industrial Estate, Marsa MRS 3000 Tel: 2568 2568 Email: info@onegroup.com.mt.",
+      "tags": [
+        "fm",
+        "official",
+        "malta",
+        "broadcasting-authority",
+        "nationwide-radio",
+        "one-radio"
+      ],
+      "source": "Broadcasting Authority nationwide radio table",
+      "sourceUrl": "https://ba.org.mt/stations-licenced",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "mt-nadur-radju-luminaria-106-9",
+      "name": "Radju Luminaria",
+      "freqMhz": 106.9,
+      "cityId": "mt-nadur",
+      "description": "Maltese community radio listed by the Broadcasting Authority for Nadur. Station: Radju Luminaria. Frequency: 106.9 MHz. Address: Pjazza 28 ta' April 1688,Nadur, Gozo. NDR 1033 Tel: 2155 2266 Email: radjiluminaria@gmail.com.",
+      "tags": [
+        "fm",
+        "official",
+        "malta",
+        "broadcasting-authority",
+        "community-radio",
+        "radju-luminaria"
+      ],
+      "source": "Broadcasting Authority community radio table",
+      "sourceUrl": "https://ba.org.mt/stations-licenced",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "mt-naxxar-tigi-saltnatek-radio-95-6",
+      "name": "Tiġi Saltnatek Radio",
+      "freqMhz": 95.6,
+      "cityId": "mt-naxxar",
+      "description": "Maltese community radio listed by the Broadcasting Authority for Naxxar. Station: Tiġi Saltnatek Radio. Frequency: 95.6 MHz. Address: Jemmars, Triq it-Torri tal-Kaptan, San Pawl tat-Targa, Naxxar Tel: 2701 0956 Email: escicluna57@gmail.com.",
+      "tags": [
+        "fm",
+        "official",
+        "malta",
+        "broadcasting-authority",
+        "community-radio",
+        "tigi-saltnatek-radio"
+      ],
+      "source": "Broadcasting Authority community radio table",
+      "sourceUrl": "https://ba.org.mt/stations-licenced",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "mt-paola-smash-radio-104-6",
+      "name": "Smash Radio",
+      "freqMhz": 104.6,
+      "cityId": "mt-paola",
+      "description": "Maltese nationwide radio listed by the Broadcasting Authority for Paola. Station: Smash Radio. Licensee: Smash Communications Ltd.. Frequency: 104.6 MHz. Address: Triq tax-Xewk, Paola PLA 1341 Tel: 2166 7777 Email: smash1046@gmail.com.",
+      "tags": [
+        "fm",
+        "official",
+        "malta",
+        "broadcasting-authority",
+        "nationwide-radio",
+        "smash-radio"
+      ],
+      "source": "Broadcasting Authority nationwide radio table",
+      "sourceUrl": "https://ba.org.mt/stations-licenced",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "mt-pieta-magic-malta-91-7",
+      "name": "Magic Malta",
+      "freqMhz": 91.7,
+      "cityId": "mt-pieta",
+      "description": "Maltese nationwide radio listed by the Broadcasting Authority for Pieta. Station: Magic Malta. Licensee: Public Broadcasting Services Ltd.. Frequency: 91.7 MHz. Address: 75, St. Luke's Road, G'Mangia PTA 1022 Tel: 2291 3100 Email: info@pbs.com.mt.",
+      "tags": [
+        "fm",
+        "official",
+        "malta",
+        "broadcasting-authority",
+        "nationwide-radio",
+        "magic-malta"
+      ],
+      "source": "Broadcasting Authority nationwide radio table",
+      "sourceUrl": "https://ba.org.mt/stations-licenced",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "mt-pieta-radju-malta-93-7",
+      "name": "Radju Malta",
+      "freqMhz": 93.7,
+      "cityId": "mt-pieta",
+      "description": "Maltese nationwide radio listed by the Broadcasting Authority for Pieta. Station: Radju Malta. Licensee: Public Broadcasting Services Ltd.. Frequency: 93.7 MHz. Address: 75, St. Luke's Road, G'Mangia PTA 1022 Tel: 2291 3100 Email: info@pbs.com.mt.",
+      "tags": [
+        "fm",
+        "official",
+        "malta",
+        "broadcasting-authority",
+        "nationwide-radio",
+        "radju-malta"
+      ],
+      "source": "Broadcasting Authority nationwide radio table",
+      "sourceUrl": "https://ba.org.mt/stations-licenced",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "mt-pieta-net-fm-101",
+      "name": "NET FM",
+      "freqMhz": 101,
+      "cityId": "mt-pieta",
+      "description": "Maltese nationwide radio listed by the Broadcasting Authority for Pieta. Station: NET FM. Licensee: Media.Link Communications Ltd.. Frequency: 101.0 MHz. Address: Triq Herbert Ganado, Pieta PTA 1450 Tel: 2124 3641 Email: info@netmedia.com.mt.",
+      "tags": [
+        "fm",
+        "official",
+        "malta",
+        "broadcasting-authority",
+        "nationwide-radio",
+        "net-fm"
+      ],
+      "source": "Broadcasting Authority nationwide radio table",
+      "sourceUrl": "https://ba.org.mt/stations-licenced",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "mt-pieta-radju-malta-2-105-9",
+      "name": "Radju Malta 2",
+      "freqMhz": 105.9,
+      "cityId": "mt-pieta",
+      "description": "Maltese nationwide radio listed by the Broadcasting Authority for Pieta. Station: Radju Malta 2. Licensee: Public Broadcasting Services Ltd.. Frequency: 105.9 MHz. Address: 75, St. Luke's Road, G'Mangia PTA 1022 Tel: 2291 3100 Email: info@pbs.com.mt.",
+      "tags": [
+        "fm",
+        "official",
+        "malta",
+        "broadcasting-authority",
+        "nationwide-radio",
+        "radju-malta-2"
+      ],
+      "source": "Broadcasting Authority nationwide radio table",
+      "sourceUrl": "https://ba.org.mt/stations-licenced",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "mt-qala-radju-leħen-il-qala-106-3",
+      "name": "Radju Leħen il-Qala",
+      "freqMhz": 106.3,
+      "cityId": "mt-qala",
+      "description": "Maltese community radio listed by the Broadcasting Authority for Qala. Station: Radju Leħen il-Qala. Frequency: 106.3 MHz. Address: Pjazza San Guzepp, Qala, Gozo Tel: 2155 6684 Email: info@radjulehenil-qala.com.",
+      "tags": [
+        "fm",
+        "official",
+        "malta",
+        "broadcasting-authority",
+        "community-radio",
+        "radju-leħen-il-qala"
+      ],
+      "source": "Broadcasting Authority community radio table",
+      "sourceUrl": "https://ba.org.mt/stations-licenced",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "mt-qormi-radju-leħen-il-belt-gorgjana-105-6",
+      "name": "Radju Leħen il-Belt Ġorġjana",
+      "freqMhz": 105.6,
+      "cityId": "mt-qormi",
+      "description": "Maltese community radio listed by the Broadcasting Authority for Qormi. Station: Radju Leħen il-Belt Ġorġjana. Frequency: 105.6 MHz. Address: Kumitat Festi Esterni San Gorg Martri, 6, Main Street, Qormi Tel: 2148 4363 Email: laur.zammit@gmail.com.",
+      "tags": [
+        "fm",
+        "official",
+        "malta",
+        "broadcasting-authority",
+        "community-radio",
+        "radju-leħen-il-belt-gorgjana"
+      ],
+      "source": "Broadcasting Authority community radio table",
+      "sourceUrl": "https://ba.org.mt/stations-licenced",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "mt-rabat-mics-fm-93-3",
+      "name": "Mics FM",
+      "freqMhz": 93.3,
+      "cityId": "mt-rabat",
+      "description": "Maltese community radio listed by the Broadcasting Authority for Rabat. Station: Mics FM. Frequency: 93.3 MHz. Address: Mics Court, Glormu Dingli Street, Rabat Tel: 2145 4455 Email: micsradio93.3@gmail.com.",
+      "tags": [
+        "fm",
+        "official",
+        "malta",
+        "broadcasting-authority",
+        "community-radio",
+        "mics-fm"
+      ],
+      "source": "Broadcasting Authority community radio table",
+      "sourceUrl": "https://ba.org.mt/stations-licenced",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "mt-rabat-radju-marija-102-3",
+      "name": "Radju Marija",
+      "freqMhz": 102.3,
+      "cityId": "mt-rabat",
+      "description": "Maltese nationwide radio listed by the Broadcasting Authority for Rabat. Station: Radju Marija. Licensee: Radju Marija Ltd.. Frequency: 102.3 MHz. Address: 40, Triq San Vinċenz Ferreri, Rabat RBT 2503 Tel: 2145 3105 Email: rmeditorial1023@gmail.com.",
+      "tags": [
+        "fm",
+        "official",
+        "malta",
+        "broadcasting-authority",
+        "nationwide-radio",
+        "radju-marija"
+      ],
+      "source": "Broadcasting Authority nationwide radio table",
+      "sourceUrl": "https://ba.org.mt/stations-licenced",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "mt-san-giljan-897-bay-89-7",
+      "name": "89.7 Bay",
+      "freqMhz": 89.7,
+      "cityId": "mt-san-giljan",
+      "description": "Maltese nationwide radio listed by the Broadcasting Authority for St Julian's. Station: 89.7 Bay. Licensee: Eden Entertainment Ltd.. Frequency: 89.7 MHz. Address: St. George's Bay, St Julian's STJ 3310 Tel: 2371 0800 Email: info@bay.com.mt.",
+      "tags": [
+        "fm",
+        "official",
+        "malta",
+        "broadcasting-authority",
+        "nationwide-radio",
+        "897-bay"
+      ],
+      "source": "Broadcasting Authority nationwide radio table",
+      "sourceUrl": "https://ba.org.mt/stations-licenced",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "mt-sannat-radju-margerita-96-1",
+      "name": "Radju Margerita",
+      "freqMhz": 96.1,
+      "cityId": "mt-sannat",
+      "description": "Maltese community radio listed by the Broadcasting Authority for Ta' Sannat. Station: Radju Margerita. Frequency: 96.1MHz. Address: Uffiċċju Parrokkjali, Pjazza Santa Margerita, Ta' Sannat, Gozo Tel:2155 1435 Email: sannatparish20@gmail.com.",
+      "tags": [
+        "fm",
+        "official",
+        "malta",
+        "broadcasting-authority",
+        "community-radio",
+        "radju-margerita"
+      ],
+      "source": "Broadcasting Authority community radio table",
+      "sourceUrl": "https://ba.org.mt/stations-licenced",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "mt-santa-venera-vibe-fm-88-7",
+      "name": "Vibe FM",
+      "freqMhz": 88.7,
+      "cityId": "mt-santa-venera",
+      "description": "Maltese nationwide radio listed by the Broadcasting Authority for Santa Venera. Station: Vibe FM. Licensee: Capital Communications Ltd.. Frequency: 88.7 MHz. Address: 216, Triq il-Ferrovija, Santa Venera SVR 9019 Tel: 2138 5887 Email: info@vibe.mt.",
+      "tags": [
+        "fm",
+        "official",
+        "malta",
+        "broadcasting-authority",
+        "nationwide-radio",
+        "vibe-fm"
+      ],
+      "source": "Broadcasting Authority nationwide radio table",
+      "sourceUrl": "https://ba.org.mt/stations-licenced",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "mt-valletta-radju-xeb-er-ras-90-8",
+      "name": "Radju Xeb-er-ras",
+      "freqMhz": 90.8,
+      "cityId": "mt-valletta",
+      "description": "Maltese community radio listed by the Broadcasting Authority for Valletta. Station: Radju Xeb-er-ras. Frequency: 90.8 MHz. Address: St. Dominic's Priory, St. Dominic's Street, Valletta Tel: 2124 4614 Email: fr.michael23@gmail.com.",
+      "tags": [
+        "fm",
+        "official",
+        "malta",
+        "broadcasting-authority",
+        "community-radio",
+        "radju-xeb-er-ras"
+      ],
+      "source": "Broadcasting Authority community radio table",
+      "sourceUrl": "https://ba.org.mt/stations-licenced",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "mt-valletta-radio-city-107-6",
+      "name": "Radio City",
+      "freqMhz": 107.6,
+      "cityId": "mt-valletta",
+      "description": "Maltese community radio listed by the Broadcasting Authority for Valletta. Station: Radio City. Frequency: 107.6 MHz. Address: 52 St Nicholas Street, Valletta Email: radiocitymalta@yahoo.com.",
+      "tags": [
+        "fm",
+        "official",
+        "malta",
+        "broadcasting-authority",
+        "community-radio",
+        "radio-city"
+      ],
+      "source": "Broadcasting Authority community radio table",
+      "sourceUrl": "https://ba.org.mt/stations-licenced",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "mt-victoria-radju-katidral-90-9",
+      "name": "Radju Katidral",
+      "freqMhz": 90.9,
+      "cityId": "mt-victoria",
+      "description": "Maltese community radio listed by the Broadcasting Authority for Victoria. Station: Radju Katidral. Frequency: 90.9 MHz. Address: Parochial Office, Cathedral Square, Victoria, Gozo. Tel: 2155 4101 Email: gozocath@maltanet.net.",
+      "tags": [
+        "fm",
+        "official",
+        "malta",
+        "broadcasting-authority",
+        "community-radio",
+        "radju-katidral"
+      ],
+      "source": "Broadcasting Authority community radio table",
+      "sourceUrl": "https://ba.org.mt/stations-licenced",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "mt-victoria-leħen-il-belt-victoria-104",
+      "name": "Leħen il-Belt Victoria",
+      "freqMhz": 104,
+      "cityId": "mt-victoria",
+      "description": "Maltese community radio listed by the Broadcasting Authority for Victoria. Station: Leħen il-Belt Victoria. Frequency: 104 MHz. Address: Parroċċa San Ġorġ Martri, Pjazza San Ġorġ, Victoria, Gozo. VCT105 Tel: 2155 6377 Email: lbv104@gmail.com.",
+      "tags": [
+        "fm",
+        "official",
+        "malta",
+        "broadcasting-authority",
+        "community-radio",
+        "leħen-il-belt-victoria"
+      ],
+      "source": "Broadcasting Authority community radio table",
+      "sourceUrl": "https://ba.org.mt/stations-licenced",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "mt-xagħra-radju-bambina-98-3",
+      "name": "Radju Bambina",
+      "freqMhz": 98.3,
+      "cityId": "mt-xagħra",
+      "description": "Maltese community radio listed by the Broadcasting Authority for Xagħra. Station: Radju Bambina. Frequency: 98.3 MHz. Address: Domus Curialis, 9, Pjazza l-Vittorja, Xagħra, Gozo. XRA 1010 Tel: 2155 9714 / 2155 6849 Email: info@xaghraparish.org.",
+      "tags": [
+        "fm",
+        "official",
+        "malta",
+        "broadcasting-authority",
+        "community-radio",
+        "radju-bambina"
+      ],
+      "source": "Broadcasting Authority community radio table",
+      "sourceUrl": "https://ba.org.mt/stations-licenced",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "mt-xewkija-radju-prekursur-99-3",
+      "name": "Radju Prekursur",
+      "freqMhz": 99.3,
+      "cityId": "mt-xewkija",
+      "description": "Maltese community radio listed by the Broadcasting Authority for Xewkija. Station: Radju Prekursur. Frequency: 99.3 MHz. Address: Parish Office, St. John the Baptist Square, Xewkija, Gozo Tel: 2156 5093 / 2155 6793 Email: info@radkiprekursur.com.",
+      "tags": [
+        "fm",
+        "official",
+        "malta",
+        "broadcasting-authority",
+        "community-radio",
+        "radju-prekursur"
+      ],
+      "source": "Broadcasting Authority community radio table",
+      "sourceUrl": "https://ba.org.mt/stations-licenced",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "mt-zebbug-radju-għazziela-101-4",
+      "name": "Radju Għażżiela",
+      "freqMhz": 101.4,
+      "cityId": "mt-zebbug",
+      "description": "Maltese community radio listed by the Broadcasting Authority for Żebbug. Station: Radju Għażżiela. Frequency: 101.4MHz. Address: c/o Fr John Sultana Parroċċa Santa Marija, 2 Triq il-Knisja, Żebbug, Gozo Tel:2155 4882 Email: john26571@hotmail.com.",
+      "tags": [
+        "fm",
+        "official",
+        "malta",
+        "broadcasting-authority",
+        "community-radio",
+        "radju-għazziela"
+      ],
+      "source": "Broadcasting Authority community radio table",
+      "sourceUrl": "https://ba.org.mt/stations-licenced",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "mt-zurrieq-radju-santa-katarina-90-6",
+      "name": "Radju Santa Katarina",
+      "freqMhz": 90.6,
+      "cityId": "mt-zurrieq",
+      "description": "Maltese community radio listed by the Broadcasting Authority for Żurrieq. Station: Radju Santa Katarina. Frequency: 90.6 MHz. Address: Soċjeta' Mużikali Santa Katerina VM, 37, Palazz Alexandria, Misraħ Repubblika, Żurrieq Tel: 2163 0354 Email: rsk906@stcatherineband.org.mt Email: info@stcatherineband.org.mt.",
+      "tags": [
+        "fm",
+        "official",
+        "malta",
+        "broadcasting-authority",
+        "community-radio",
+        "radju-santa-katarina"
+      ],
+      "source": "Broadcasting Authority community radio table",
+      "sourceUrl": "https://ba.org.mt/stations-licenced",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    }
+  ]
+}

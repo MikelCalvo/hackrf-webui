@@ -1,0 +1,95 @@
+{
+  "country": {
+    "id": "japan",
+    "code": "JP",
+    "name": "Japan",
+    "regionId": "asia",
+    "cityCount": 1,
+    "stationCount": 4,
+    "sourceCount": 1,
+    "sources": [
+      {
+        "name": "Community seed",
+        "kind": "manual"
+      }
+    ],
+    "lastImportedAt": "2026-03-23",
+    "coverageStatus": "manual",
+    "coverageTier": "manual-seed",
+    "coverageScope": "city-seed",
+    "sourceQuality": "manual-curated",
+    "hasOfficialImporter": false,
+    "notesPath": "docs/fm/japan-source-notes.md",
+    "coverageNotes": "Japan currently ships only a small manual seed while the official nationwide import path remains blocked.",
+    "coverageScore": 12
+  },
+  "cities": [
+    {
+      "id": "jp-tokyo",
+      "name": "Tokyo",
+      "countryId": "japan",
+      "timezone": "Asia/Tokyo",
+      "latitude": 35.6762,
+      "longitude": 139.6503,
+      "stationCount": 4
+    }
+  ],
+  "stations": [
+    {
+      "id": "jp-tokyo-tokyo-fm",
+      "name": "TOKYO FM",
+      "freqMhz": 80,
+      "cityId": "jp-tokyo",
+      "description": "Mainstream music and talk station for Tokyo.",
+      "tags": [
+        "music",
+        "talk"
+      ],
+      "source": "Community seed",
+      "verifiedAt": "2026-03-23",
+      "curated": true
+    },
+    {
+      "id": "jp-tokyo-j-wave",
+      "name": "J-WAVE",
+      "freqMhz": 81.3,
+      "cityId": "jp-tokyo",
+      "description": "Tokyo music station with an urban format.",
+      "tags": [
+        "music",
+        "urban"
+      ],
+      "source": "Community seed",
+      "verifiedAt": "2026-03-23",
+      "curated": true
+    },
+    {
+      "id": "jp-tokyo-nhk-fm",
+      "name": "NHK FM Tokyo",
+      "freqMhz": 82.5,
+      "cityId": "jp-tokyo",
+      "description": "NHK public music network.",
+      "tags": [
+        "public",
+        "music"
+      ],
+      "source": "Community seed",
+      "verifiedAt": "2026-03-23",
+      "curated": true
+    },
+    {
+      "id": "jp-tokyo-interfm897",
+      "name": "InterFM897",
+      "freqMhz": 89.7,
+      "cityId": "jp-tokyo",
+      "description": "International music and pop culture programming.",
+      "tags": [
+        "music",
+        "international"
+      ],
+      "source": "Community seed",
+      "verifiedAt": "2026-03-23",
+      "curated": true
+    }
+  ]
+}

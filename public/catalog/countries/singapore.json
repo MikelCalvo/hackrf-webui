@@ -1,0 +1,379 @@
+{
+  "country": {
+    "id": "singapore",
+    "code": "SG",
+    "name": "Singapore",
+    "regionId": "asia",
+    "cityCount": 1,
+    "stationCount": 19,
+    "sourceCount": 1,
+    "sources": [
+      {
+        "name": "IMDA Spectrum Management Handbook",
+        "url": "https://www.imda.gov.sg/~/media/imda/files/regulation%20licensing%20and%20consultations/frameworks%20and%20policies/spectrum%20management%20and%20coordination/spectrummgmthb.pdf"
+      }
+    ],
+    "lastImportedAt": "2026-03-24",
+    "coverageStatus": "active",
+    "coverageTier": "official-substantial",
+    "coverageScope": "national",
+    "sourceQuality": "official-regulator",
+    "hasOfficialImporter": true,
+    "coverageScore": 88
+  },
+  "cities": [
+    {
+      "id": "sg-singapore",
+      "name": "Singapore",
+      "countryId": "singapore",
+      "timezone": "Asia/Singapore",
+      "latitude": 1.28967,
+      "longitude": 103.85007,
+      "stationCount": 19
+    }
+  ],
+  "stations": [
+    {
+      "id": "sg-singapore-883jia-fm-88-3",
+      "name": "883Jia FM",
+      "freqMhz": 88.3,
+      "cityId": "sg-singapore",
+      "description": "Singapore FM service listed by IMDA in the Spectrum Management Handbook. Frequency: 88.3 MHz. Station: 883Jia FM.",
+      "tags": [
+        "fm",
+        "official",
+        "singapore",
+        "imda",
+        "883jia-fm"
+      ],
+      "source": "IMDA Spectrum Management Handbook",
+      "sourceUrl": "https://www.imda.gov.sg/~/media/imda/files/regulation%20licensing%20and%20consultations/frameworks%20and%20policies/spectrum%20management%20and%20coordination/spectrummgmthb.pdf",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "sg-singapore-bbc-radio-88-9",
+      "name": "BBC Radio",
+      "freqMhz": 88.9,
+      "cityId": "sg-singapore",
+      "description": "Singapore FM service listed by IMDA in the Spectrum Management Handbook. Frequency: 88.9 MHz. Station: BBC Radio.",
+      "tags": [
+        "fm",
+        "official",
+        "singapore",
+        "imda",
+        "bbc-radio"
+      ],
+      "source": "IMDA Spectrum Management Handbook",
+      "sourceUrl": "https://www.imda.gov.sg/~/media/imda/files/regulation%20licensing%20and%20consultations/frameworks%20and%20policies/spectrum%20management%20and%20coordination/spectrummgmthb.pdf",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "sg-singapore-money-fm-893-89-3",
+      "name": "Money FM 89.3",
+      "freqMhz": 89.3,
+      "cityId": "sg-singapore",
+      "description": "Singapore FM service listed by IMDA in the Spectrum Management Handbook. Frequency: 89.3 MHz. Station: Money FM 89.3.",
+      "tags": [
+        "fm",
+        "official",
+        "singapore",
+        "imda",
+        "money-fm-893"
+      ],
+      "source": "IMDA Spectrum Management Handbook",
+      "sourceUrl": "https://www.imda.gov.sg/~/media/imda/files/regulation%20licensing%20and%20consultations/frameworks%20and%20policies/spectrum%20management%20and%20coordination/spectrummgmthb.pdf",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "sg-singapore-ria-897-89-7",
+      "name": "Ria 89.7",
+      "freqMhz": 89.7,
+      "cityId": "sg-singapore",
+      "description": "Singapore FM service listed by IMDA in the Spectrum Management Handbook. Frequency: 89.7 MHz. Station: Ria 89.7.",
+      "tags": [
+        "fm",
+        "official",
+        "singapore",
+        "imda",
+        "ria-897"
+      ],
+      "source": "IMDA Spectrum Management Handbook",
+      "sourceUrl": "https://www.imda.gov.sg/~/media/imda/files/regulation%20licensing%20and%20consultations/frameworks%20and%20policies/spectrum%20management%20and%20coordination/spectrummgmthb.pdf",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "sg-singapore-gold-905fm-90-5",
+      "name": "Gold 90.5FM",
+      "freqMhz": 90.5,
+      "cityId": "sg-singapore",
+      "description": "Singapore FM service listed by IMDA in the Spectrum Management Handbook. Frequency: 90.5 MHz. Station: Gold 90.5FM.",
+      "tags": [
+        "fm",
+        "official",
+        "singapore",
+        "imda",
+        "gold-905fm"
+      ],
+      "source": "IMDA Spectrum Management Handbook",
+      "sourceUrl": "https://www.imda.gov.sg/~/media/imda/files/regulation%20licensing%20and%20consultations/frameworks%20and%20policies/spectrum%20management%20and%20coordination/spectrummgmthb.pdf",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "sg-singapore-one-fm-913-91-3",
+      "name": "One FM 91.3",
+      "freqMhz": 91.3,
+      "cityId": "sg-singapore",
+      "description": "Singapore FM service listed by IMDA in the Spectrum Management Handbook. Frequency: 91.3 MHz. Station: One FM 91.3.",
+      "tags": [
+        "fm",
+        "official",
+        "singapore",
+        "imda",
+        "one-fm-913"
+      ],
+      "source": "IMDA Spectrum Management Handbook",
+      "sourceUrl": "https://www.imda.gov.sg/~/media/imda/files/regulation%20licensing%20and%20consultations/frameworks%20and%20policies/spectrum%20management%20and%20coordination/spectrummgmthb.pdf",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "sg-singapore-kiss-92-fm-92",
+      "name": "Kiss 92 FM",
+      "freqMhz": 92,
+      "cityId": "sg-singapore",
+      "description": "Singapore FM service listed by IMDA in the Spectrum Management Handbook. Frequency: 92.0 MHz. Station: Kiss 92 FM.",
+      "tags": [
+        "fm",
+        "official",
+        "singapore",
+        "imda",
+        "kiss-92-fm"
+      ],
+      "source": "IMDA Spectrum Management Handbook",
+      "sourceUrl": "https://www.imda.gov.sg/~/media/imda/files/regulation%20licensing%20and%20consultations/frameworks%20and%20policies/spectrum%20management%20and%20coordination/spectrummgmthb.pdf",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "sg-singapore-symphony-924fm-92-4",
+      "name": "Symphony 92.4FM",
+      "freqMhz": 92.4,
+      "cityId": "sg-singapore",
+      "description": "Singapore FM service listed by IMDA in the Spectrum Management Handbook. Frequency: 92.4 MHz. Station: Symphony 92.4FM.",
+      "tags": [
+        "fm",
+        "official",
+        "singapore",
+        "imda",
+        "symphony-924fm"
+      ],
+      "source": "IMDA Spectrum Management Handbook",
+      "sourceUrl": "https://www.imda.gov.sg/~/media/imda/files/regulation%20licensing%20and%20consultations/frameworks%20and%20policies/spectrum%20management%20and%20coordination/spectrummgmthb.pdf",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "sg-singapore-yes-933fm-93-3",
+      "name": "Y.E.S. 93.3FM",
+      "freqMhz": 93.3,
+      "cityId": "sg-singapore",
+      "description": "Singapore FM service listed by IMDA in the Spectrum Management Handbook. Frequency: 93.3 MHz. Station: Y.E.S. 93.3FM.",
+      "tags": [
+        "fm",
+        "official",
+        "singapore",
+        "imda",
+        "yes-933fm"
+      ],
+      "source": "IMDA Spectrum Management Handbook",
+      "sourceUrl": "https://www.imda.gov.sg/~/media/imda/files/regulation%20licensing%20and%20consultations/frameworks%20and%20policies/spectrum%20management%20and%20coordination/spectrummgmthb.pdf",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "sg-singapore-cna938-93-8",
+      "name": "CNA938",
+      "freqMhz": 93.8,
+      "cityId": "sg-singapore",
+      "description": "Singapore FM service listed by IMDA in the Spectrum Management Handbook. Frequency: 93.8 MHz. Station: CNA938.",
+      "tags": [
+        "fm",
+        "official",
+        "singapore",
+        "imda",
+        "cna938"
+      ],
+      "source": "IMDA Spectrum Management Handbook",
+      "sourceUrl": "https://www.imda.gov.sg/~/media/imda/files/regulation%20licensing%20and%20consultations/frameworks%20and%20policies/spectrum%20management%20and%20coordination/spectrummgmthb.pdf",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "sg-singapore-warna-942fm-94-2",
+      "name": "Warna 94.2FM",
+      "freqMhz": 94.2,
+      "cityId": "sg-singapore",
+      "description": "Singapore FM service listed by IMDA in the Spectrum Management Handbook. Frequency: 94.2 MHz. Station: Warna 94.2FM.",
+      "tags": [
+        "fm",
+        "official",
+        "singapore",
+        "imda",
+        "warna-942fm"
+      ],
+      "source": "IMDA Spectrum Management Handbook",
+      "sourceUrl": "https://www.imda.gov.sg/~/media/imda/files/regulation%20licensing%20and%20consultations/frameworks%20and%20policies/spectrum%20management%20and%20coordination/spectrummgmthb.pdf",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "sg-singapore-class-95fm-95",
+      "name": "Class 95FM",
+      "freqMhz": 95,
+      "cityId": "sg-singapore",
+      "description": "Singapore FM service listed by IMDA in the Spectrum Management Handbook. Frequency: 95.0 MHz. Station: Class 95FM.",
+      "tags": [
+        "fm",
+        "official",
+        "singapore",
+        "imda",
+        "class-95fm"
+      ],
+      "source": "IMDA Spectrum Management Handbook",
+      "sourceUrl": "https://www.imda.gov.sg/~/media/imda/files/regulation%20licensing%20and%20consultations/frameworks%20and%20policies/spectrum%20management%20and%20coordination/spectrummgmthb.pdf",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "sg-singapore-capital-958fm-95-8",
+      "name": "Capital 95.8FM",
+      "freqMhz": 95.8,
+      "cityId": "sg-singapore",
+      "description": "Singapore FM service listed by IMDA in the Spectrum Management Handbook. Frequency: 95.8 MHz. Station: Capital 95.8FM.",
+      "tags": [
+        "fm",
+        "official",
+        "singapore",
+        "imda",
+        "capital-958fm"
+      ],
+      "source": "IMDA Spectrum Management Handbook",
+      "sourceUrl": "https://www.imda.gov.sg/~/media/imda/files/regulation%20licensing%20and%20consultations/frameworks%20and%20policies/spectrum%20management%20and%20coordination/spectrummgmthb.pdf",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "sg-singapore-963-hao-fm-96-3",
+      "name": "96.3 Hao FM",
+      "freqMhz": 96.3,
+      "cityId": "sg-singapore",
+      "description": "Singapore FM service listed by IMDA in the Spectrum Management Handbook. Frequency: 96.3 MHz. Station: 96.3 Hao FM.",
+      "tags": [
+        "fm",
+        "official",
+        "singapore",
+        "imda",
+        "963-hao-fm"
+      ],
+      "source": "IMDA Spectrum Management Handbook",
+      "sourceUrl": "https://www.imda.gov.sg/~/media/imda/files/regulation%20licensing%20and%20consultations/frameworks%20and%20policies/spectrum%20management%20and%20coordination/spectrummgmthb.pdf",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "sg-singapore-oli-968fm-96-8",
+      "name": "Oli 96.8FM",
+      "freqMhz": 96.8,
+      "cityId": "sg-singapore",
+      "description": "Singapore FM service listed by IMDA in the Spectrum Management Handbook. Frequency: 96.8 MHz. Station: Oli 96.8FM.",
+      "tags": [
+        "fm",
+        "official",
+        "singapore",
+        "imda",
+        "oli-968fm"
+      ],
+      "source": "IMDA Spectrum Management Handbook",
+      "sourceUrl": "https://www.imda.gov.sg/~/media/imda/files/regulation%20licensing%20and%20consultations/frameworks%20and%20policies/spectrum%20management%20and%20coordination/spectrummgmthb.pdf",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "sg-singapore-love-972fm-97-2",
+      "name": "Love 97.2FM",
+      "freqMhz": 97.2,
+      "cityId": "sg-singapore",
+      "description": "Singapore FM service listed by IMDA in the Spectrum Management Handbook. Frequency: 97.2 MHz. Station: Love 97.2FM.",
+      "tags": [
+        "fm",
+        "official",
+        "singapore",
+        "imda",
+        "love-972fm"
+      ],
+      "source": "IMDA Spectrum Management Handbook",
+      "sourceUrl": "https://www.imda.gov.sg/~/media/imda/files/regulation%20licensing%20and%20consultations/frameworks%20and%20policies/spectrum%20management%20and%20coordination/spectrummgmthb.pdf",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "sg-singapore-power-98-fm-98",
+      "name": "Power 98 FM",
+      "freqMhz": 98,
+      "cityId": "sg-singapore",
+      "description": "Singapore FM service listed by IMDA in the Spectrum Management Handbook. Frequency: 98.0 MHz. Station: Power 98 FM.",
+      "tags": [
+        "fm",
+        "official",
+        "singapore",
+        "imda",
+        "power-98-fm"
+      ],
+      "source": "IMDA Spectrum Management Handbook",
+      "sourceUrl": "https://www.imda.gov.sg/~/media/imda/files/regulation%20licensing%20and%20consultations/frameworks%20and%20policies/spectrum%20management%20and%20coordination/spectrummgmthb.pdf",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "sg-singapore-987fm-98-7",
+      "name": "987FM",
+      "freqMhz": 98.7,
+      "cityId": "sg-singapore",
+      "description": "Singapore FM service listed by IMDA in the Spectrum Management Handbook. Frequency: 98.7 MHz. Station: 987FM.",
+      "tags": [
+        "fm",
+        "official",
+        "singapore",
+        "imda",
+        "987fm"
+      ],
+      "source": "IMDA Spectrum Management Handbook",
+      "sourceUrl": "https://www.imda.gov.sg/~/media/imda/files/regulation%20licensing%20and%20consultations/frameworks%20and%20policies/spectrum%20management%20and%20coordination/spectrummgmthb.pdf",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "sg-singapore-ufm-1003-100-3",
+      "name": "UFM 100.3",
+      "freqMhz": 100.3,
+      "cityId": "sg-singapore",
+      "description": "Singapore FM service listed by IMDA in the Spectrum Management Handbook. Frequency: 100.3 MHz. Station: UFM 100.3.",
+      "tags": [
+        "fm",
+        "official",
+        "singapore",
+        "imda",
+        "ufm-1003"
+      ],
+      "source": "IMDA Spectrum Management Handbook",
+      "sourceUrl": "https://www.imda.gov.sg/~/media/imda/files/regulation%20licensing%20and%20consultations/frameworks%20and%20policies/spectrum%20management%20and%20coordination/spectrummgmthb.pdf",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    }
+  ]
+}

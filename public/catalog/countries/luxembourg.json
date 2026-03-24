@@ -1,0 +1,808 @@
+{
+  "country": {
+    "id": "luxembourg",
+    "code": "LU",
+    "name": "Luxembourg",
+    "regionId": "europe",
+    "cityCount": 17,
+    "stationCount": 33,
+    "sourceCount": 1,
+    "sources": [
+      {
+        "name": "ILR radio transmitters list",
+        "url": "https://www.ilr.lu/publications/liste-des-emetteurs-de-programmes-de-radio/"
+      }
+    ],
+    "lastImportedAt": "2026-03-24",
+    "coverageStatus": "active",
+    "coverageTier": "official-substantial",
+    "coverageScope": "national",
+    "sourceQuality": "official-regulator",
+    "hasOfficialImporter": true,
+    "coverageScore": 88
+  },
+  "cities": [
+    {
+      "id": "lu-belvaux",
+      "name": "Belvaux",
+      "countryId": "luxembourg",
+      "timezone": "Europe/Luxembourg",
+      "latitude": 49.51014,
+      "longitude": 5.92414,
+      "stationCount": 2
+    },
+    {
+      "id": "lu-bettembourg",
+      "name": "Bettembourg",
+      "countryId": "luxembourg",
+      "timezone": "Europe/Luxembourg",
+      "latitude": 49.51861,
+      "longitude": 6.10278,
+      "stationCount": 1
+    },
+    {
+      "id": "lu-blaschette",
+      "name": "Blaschette",
+      "countryId": "luxembourg",
+      "timezone": "Europe/Luxembourg",
+      "latitude": 49.70279,
+      "longitude": 6.16876,
+      "stationCount": 1
+    },
+    {
+      "id": "lu-diekirch",
+      "name": "Diekirch",
+      "countryId": "luxembourg",
+      "timezone": "Europe/Luxembourg",
+      "latitude": 49.86687,
+      "longitude": 6.15451,
+      "stationCount": 1
+    },
+    {
+      "id": "lu-dudelange",
+      "name": "Dudelange",
+      "countryId": "luxembourg",
+      "timezone": "Europe/Luxembourg",
+      "latitude": 49.48056,
+      "longitude": 6.0875,
+      "stationCount": 4
+    },
+    {
+      "id": "lu-echternach",
+      "name": "Echternach",
+      "countryId": "luxembourg",
+      "timezone": "Europe/Luxembourg",
+      "latitude": 49.81212,
+      "longitude": 6.41846,
+      "stationCount": 4
+    },
+    {
+      "id": "lu-esch-sur-alzette",
+      "name": "Esch-sur-Alzette",
+      "countryId": "luxembourg",
+      "timezone": "Europe/Luxembourg",
+      "latitude": 49.49583,
+      "longitude": 5.98056,
+      "stationCount": 3
+    },
+    {
+      "id": "lu-ettelbruck",
+      "name": "Ettelbruck",
+      "countryId": "luxembourg",
+      "timezone": "Europe/Luxembourg",
+      "latitude": 49.8475,
+      "longitude": 6.10417,
+      "stationCount": 3
+    },
+    {
+      "id": "lu-hosingen",
+      "name": "Hosingen",
+      "countryId": "luxembourg",
+      "timezone": "Europe/Luxembourg",
+      "latitude": 50.01218,
+      "longitude": 6.09089,
+      "stationCount": 2
+    },
+    {
+      "id": "lu-junglinster",
+      "name": "Junglinster",
+      "countryId": "luxembourg",
+      "timezone": "Europe/Luxembourg",
+      "latitude": 49.70722,
+      "longitude": 6.25306,
+      "stationCount": 3
+    },
+    {
+      "id": "lu-leudelange",
+      "name": "Leudelange",
+      "countryId": "luxembourg",
+      "timezone": "Europe/Luxembourg",
+      "latitude": 49.56833,
+      "longitude": 6.06528,
+      "stationCount": 1
+    },
+    {
+      "id": "lu-luxembourg",
+      "name": "Luxembourg",
+      "countryId": "luxembourg",
+      "timezone": "Europe/Luxembourg",
+      "latitude": 49.60982,
+      "longitude": 6.13268,
+      "stationCount": 3
+    },
+    {
+      "id": "lu-marnach",
+      "name": "Marnach",
+      "countryId": "luxembourg",
+      "timezone": "Europe/Luxembourg",
+      "latitude": 50.05333,
+      "longitude": 6.06194,
+      "stationCount": 1
+    },
+    {
+      "id": "lu-medernach",
+      "name": "Medernach",
+      "countryId": "luxembourg",
+      "timezone": "Europe/Luxembourg",
+      "latitude": 49.80955,
+      "longitude": 6.21521,
+      "stationCount": 1
+    },
+    {
+      "id": "lu-rodange",
+      "name": "Rodange",
+      "countryId": "luxembourg",
+      "timezone": "Europe/Luxembourg",
+      "latitude": 49.54639,
+      "longitude": 5.84083,
+      "stationCount": 1
+    },
+    {
+      "id": "lu-troisvierges",
+      "name": "Troisvierges",
+      "countryId": "luxembourg",
+      "timezone": "Europe/Luxembourg",
+      "latitude": 50.12111,
+      "longitude": 6.00028,
+      "stationCount": 1
+    },
+    {
+      "id": "lu-wiltz",
+      "name": "Wiltz",
+      "countryId": "luxembourg",
+      "timezone": "Europe/Luxembourg",
+      "latitude": 49.96547,
+      "longitude": 5.9339,
+      "stationCount": 1
+    }
+  ],
+  "stations": [
+    {
+      "id": "lu-belvaux-lessentiel-radio-97-5",
+      "name": "L’Essentiel Radio",
+      "freqMhz": 97.5,
+      "cityId": "lu-belvaux",
+      "description": "Luxembourg FM transmitter listed by ILR for Belvaux. Program: L’Essentiel Radio. Power: 1,5 kW.",
+      "tags": [
+        "fm",
+        "official",
+        "ilr",
+        "luxembourg",
+        "belvaux",
+        "15-kw"
+      ],
+      "source": "ILR radio transmitters list",
+      "sourceUrl": "https://www.ilr.lu/publications/liste-des-emetteurs-de-programmes-de-radio/",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "lu-belvaux-eldoradio-107-2",
+      "name": "Eldoradio",
+      "freqMhz": 107.2,
+      "cityId": "lu-belvaux",
+      "description": "Luxembourg FM transmitter listed by ILR for Belvaux. Program: Eldoradio. Power: 100 W.",
+      "tags": [
+        "fm",
+        "official",
+        "ilr",
+        "luxembourg",
+        "belvaux",
+        "100-w"
+      ],
+      "source": "ILR radio transmitters list",
+      "sourceUrl": "https://www.ilr.lu/publications/liste-des-emetteurs-de-programmes-de-radio/",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "lu-bettembourg-lrb-103-9",
+      "name": "LRB",
+      "freqMhz": 103.9,
+      "cityId": "lu-bettembourg",
+      "description": "Luxembourg FM transmitter listed by ILR for Bettembourg. Program: LRB. Power: 100 W.",
+      "tags": [
+        "fm",
+        "official",
+        "ilr",
+        "luxembourg",
+        "bettembourg",
+        "100-w"
+      ],
+      "source": "ILR radio transmitters list",
+      "sourceUrl": "https://www.ilr.lu/publications/liste-des-emetteurs-de-programmes-de-radio/",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "lu-blaschette-lessentiel-radio-103-4",
+      "name": "L’Essentiel Radio",
+      "freqMhz": 103.4,
+      "cityId": "lu-blaschette",
+      "description": "Luxembourg FM transmitter listed by ILR for Blaschette. Program: L’Essentiel Radio. Power: 1 kW.",
+      "tags": [
+        "fm",
+        "official",
+        "ilr",
+        "luxembourg",
+        "blaschette",
+        "1-kw"
+      ],
+      "source": "ILR radio transmitters list",
+      "sourceUrl": "https://www.ilr.lu/publications/liste-des-emetteurs-de-programmes-de-radio/",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "lu-diekirch-radio-lora-102-2",
+      "name": "Radio Lora",
+      "freqMhz": 102.2,
+      "cityId": "lu-diekirch",
+      "description": "Luxembourg FM transmitter listed by ILR for Diekirch. Program: Radio Lora. Power: 100 W.",
+      "tags": [
+        "fm",
+        "official",
+        "ilr",
+        "luxembourg",
+        "diekirch",
+        "100-w"
+      ],
+      "source": "ILR radio transmitters list",
+      "sourceUrl": "https://www.ilr.lu/publications/liste-des-emetteurs-de-programmes-de-radio/",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "lu-dudelange-rtl-radio-letzebuerg-88-9",
+      "name": "RTL Radio Lëtzebuerg",
+      "freqMhz": 88.9,
+      "cityId": "lu-dudelange",
+      "description": "Luxembourg FM transmitter listed by ILR for Dudelange. Program: RTL Radio Lëtzebuerg. Power: 100 kW.",
+      "tags": [
+        "fm",
+        "official",
+        "ilr",
+        "luxembourg",
+        "dudelange",
+        "100-kw"
+      ],
+      "source": "ILR radio transmitters list",
+      "sourceUrl": "https://www.ilr.lu/publications/liste-des-emetteurs-de-programmes-de-radio/",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "lu-dudelange-rtl-radio-93-3",
+      "name": "RTL Radio",
+      "freqMhz": 93.3,
+      "cityId": "lu-dudelange",
+      "description": "Luxembourg FM transmitter listed by ILR for Dudelange. Program: RTL Radio. Power: 100 kW.",
+      "tags": [
+        "fm",
+        "official",
+        "ilr",
+        "luxembourg",
+        "dudelange",
+        "100-kw"
+      ],
+      "source": "ILR radio transmitters list",
+      "sourceUrl": "https://www.ilr.lu/publications/liste-des-emetteurs-de-programmes-de-radio/",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "lu-dudelange-radio-socioculturelle-100-7",
+      "name": "Radio Socioculturelle",
+      "freqMhz": 100.7,
+      "cityId": "lu-dudelange",
+      "description": "Luxembourg FM transmitter listed by ILR for Dudelange. Program: Radio Socioculturelle. Power: 100 kW.",
+      "tags": [
+        "fm",
+        "official",
+        "ilr",
+        "luxembourg",
+        "dudelange",
+        "100-kw"
+      ],
+      "source": "ILR radio transmitters list",
+      "sourceUrl": "https://www.ilr.lu/publications/liste-des-emetteurs-de-programmes-de-radio/",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "lu-dudelange-radio-diddeleng-103-6",
+      "name": "Radio Diddeleng",
+      "freqMhz": 103.6,
+      "cityId": "lu-dudelange",
+      "description": "Luxembourg FM transmitter listed by ILR for Dudelange. Program: Radio Diddeleng. Power: 100 W.",
+      "tags": [
+        "fm",
+        "official",
+        "ilr",
+        "luxembourg",
+        "dudelange",
+        "100-w"
+      ],
+      "source": "ILR radio transmitters list",
+      "sourceUrl": "https://www.ilr.lu/publications/liste-des-emetteurs-de-programmes-de-radio/",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "lu-echternach-eldoradio-95",
+      "name": "Eldoradio",
+      "freqMhz": 95,
+      "cityId": "lu-echternach",
+      "description": "Luxembourg FM transmitter listed by ILR for Echternach. Program: Eldoradio. Power: 50 W.",
+      "tags": [
+        "fm",
+        "official",
+        "ilr",
+        "luxembourg",
+        "echternach",
+        "50-w"
+      ],
+      "source": "ILR radio transmitters list",
+      "sourceUrl": "https://www.ilr.lu/publications/liste-des-emetteurs-de-programmes-de-radio/",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "lu-echternach-radio-latina-103-1",
+      "name": "Radio Latina",
+      "freqMhz": 103.1,
+      "cityId": "lu-echternach",
+      "description": "Luxembourg FM transmitter listed by ILR for Echternach. Program: Radio Latina. Power: 50 W.",
+      "tags": [
+        "fm",
+        "official",
+        "ilr",
+        "luxembourg",
+        "echternach",
+        "50-w"
+      ],
+      "source": "ILR radio transmitters list",
+      "sourceUrl": "https://www.ilr.lu/publications/liste-des-emetteurs-de-programmes-de-radio/",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "lu-echternach-radio-ara-105-2",
+      "name": "Radio ARA",
+      "freqMhz": 105.2,
+      "cityId": "lu-echternach",
+      "description": "Luxembourg FM transmitter listed by ILR for Echternach. Program: Radio ARA. Power: 100 W.",
+      "tags": [
+        "fm",
+        "official",
+        "ilr",
+        "luxembourg",
+        "echternach",
+        "100-w"
+      ],
+      "source": "ILR radio transmitters list",
+      "sourceUrl": "https://www.ilr.lu/publications/liste-des-emetteurs-de-programmes-de-radio/",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "lu-echternach-radio-aktiv-106-5",
+      "name": "Radio Aktiv",
+      "freqMhz": 106.5,
+      "cityId": "lu-echternach",
+      "description": "Luxembourg FM transmitter listed by ILR for Echternach. Program: Radio Aktiv. Power: 100 W.",
+      "tags": [
+        "fm",
+        "official",
+        "ilr",
+        "luxembourg",
+        "echternach",
+        "100-w"
+      ],
+      "source": "ILR radio transmitters list",
+      "sourceUrl": "https://www.ilr.lu/publications/liste-des-emetteurs-de-programmes-de-radio/",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "lu-esch-sur-alzette-radio-ara-87-8",
+      "name": "Radio ARA",
+      "freqMhz": 87.8,
+      "cityId": "lu-esch-sur-alzette",
+      "description": "Luxembourg FM transmitter listed by ILR for Esch-sur-Alzette. Program: Radio ARA. Power: 1 kW.",
+      "tags": [
+        "fm",
+        "official",
+        "ilr",
+        "luxembourg",
+        "esch-sur-alzette",
+        "1-kw"
+      ],
+      "source": "ILR radio transmitters list",
+      "sourceUrl": "https://www.ilr.lu/publications/liste-des-emetteurs-de-programmes-de-radio/",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "lu-esch-sur-alzette-radio-gudd-laun-96-6",
+      "name": "Radio Gudd Laun",
+      "freqMhz": 96.6,
+      "cityId": "lu-esch-sur-alzette",
+      "description": "Luxembourg FM transmitter listed by ILR for Esch-sur-Alzette. Program: Radio Gudd Laun. Power: 100 W.",
+      "tags": [
+        "fm",
+        "official",
+        "ilr",
+        "luxembourg",
+        "esch-sur-alzette",
+        "100-w"
+      ],
+      "source": "ILR radio transmitters list",
+      "sourceUrl": "https://www.ilr.lu/publications/liste-des-emetteurs-de-programmes-de-radio/",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "lu-esch-sur-alzette-radio-positiva-106",
+      "name": "Radio Positiva",
+      "freqMhz": 106,
+      "cityId": "lu-esch-sur-alzette",
+      "description": "Luxembourg FM transmitter listed by ILR for Esch-sur-Alzette. Program: Radio Positiva. Power: 100 W.",
+      "tags": [
+        "fm",
+        "official",
+        "ilr",
+        "luxembourg",
+        "esch-sur-alzette",
+        "100-w"
+      ],
+      "source": "ILR radio transmitters list",
+      "sourceUrl": "https://www.ilr.lu/publications/liste-des-emetteurs-de-programmes-de-radio/",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "lu-ettelbruck-radio-latina-103-1",
+      "name": "Radio Latina",
+      "freqMhz": 103.1,
+      "cityId": "lu-ettelbruck",
+      "description": "Luxembourg FM transmitter listed by ILR for Ettelbrück. Program: Radio Latina. Power: 100 W.",
+      "tags": [
+        "fm",
+        "official",
+        "ilr",
+        "luxembourg",
+        "ettelbruck",
+        "100-w"
+      ],
+      "source": "ILR radio transmitters list",
+      "sourceUrl": "https://www.ilr.lu/publications/liste-des-emetteurs-de-programmes-de-radio/",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "lu-ettelbruck-lessentiel-radio-104-2",
+      "name": "L’Essentiel Radio",
+      "freqMhz": 104.2,
+      "cityId": "lu-ettelbruck",
+      "description": "Luxembourg FM transmitter listed by ILR for Ettelbruck. Program: L’Essentiel Radio. Power: 100 W.",
+      "tags": [
+        "fm",
+        "official",
+        "ilr",
+        "luxembourg",
+        "ettelbruck",
+        "100-w"
+      ],
+      "source": "ILR radio transmitters list",
+      "sourceUrl": "https://www.ilr.lu/publications/liste-des-emetteurs-de-programmes-de-radio/",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "lu-ettelbruck-eldoradio-107-2",
+      "name": "Eldoradio",
+      "freqMhz": 107.2,
+      "cityId": "lu-ettelbruck",
+      "description": "Luxembourg FM transmitter listed by ILR for Ettelbruck. Program: Eldoradio. Power: 100 W.",
+      "tags": [
+        "fm",
+        "official",
+        "ilr",
+        "luxembourg",
+        "ettelbruck",
+        "100-w"
+      ],
+      "source": "ILR radio transmitters list",
+      "sourceUrl": "https://www.ilr.lu/publications/liste-des-emetteurs-de-programmes-de-radio/",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "lu-hosingen-rtl-radio-letzebuerg-92-5",
+      "name": "RTL Radio Lëtzebuerg",
+      "freqMhz": 92.5,
+      "cityId": "lu-hosingen",
+      "description": "Luxembourg FM transmitter listed by ILR for Hosingen. Program: RTL Radio Lëtzebuerg. Power: 50 kW.",
+      "tags": [
+        "fm",
+        "official",
+        "ilr",
+        "luxembourg",
+        "hosingen",
+        "50-kw"
+      ],
+      "source": "ILR radio transmitters list",
+      "sourceUrl": "https://www.ilr.lu/publications/liste-des-emetteurs-de-programmes-de-radio/",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "lu-hosingen-rtl-radio-97",
+      "name": "RTL Radio",
+      "freqMhz": 97,
+      "cityId": "lu-hosingen",
+      "description": "Luxembourg FM transmitter listed by ILR for Hosingen. Program: RTL Radio. Power: 100 kW.",
+      "tags": [
+        "fm",
+        "official",
+        "ilr",
+        "luxembourg",
+        "hosingen",
+        "100-kw"
+      ],
+      "source": "ILR radio transmitters list",
+      "sourceUrl": "https://www.ilr.lu/publications/liste-des-emetteurs-de-programmes-de-radio/",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "lu-junglinster-radio-latina-91-7",
+      "name": "Radio Latina",
+      "freqMhz": 91.7,
+      "cityId": "lu-junglinster",
+      "description": "Luxembourg FM transmitter listed by ILR for Junglinster. Program: Radio Latina. Power: 100 W.",
+      "tags": [
+        "fm",
+        "official",
+        "ilr",
+        "luxembourg",
+        "junglinster",
+        "100-w"
+      ],
+      "source": "ILR radio transmitters list",
+      "sourceUrl": "https://www.ilr.lu/publications/liste-des-emetteurs-de-programmes-de-radio/",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "lu-junglinster-eldoradio-95",
+      "name": "Eldoradio",
+      "freqMhz": 95,
+      "cityId": "lu-junglinster",
+      "description": "Luxembourg FM transmitter listed by ILR for Junglinster. Program: Eldoradio. Power: 100 W.",
+      "tags": [
+        "fm",
+        "official",
+        "ilr",
+        "luxembourg",
+        "junglinster",
+        "100-w"
+      ],
+      "source": "ILR radio transmitters list",
+      "sourceUrl": "https://www.ilr.lu/publications/liste-des-emetteurs-de-programmes-de-radio/",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "lu-junglinster-lessentiel-radio-104-2",
+      "name": "L’Essentiel Radio",
+      "freqMhz": 104.2,
+      "cityId": "lu-junglinster",
+      "description": "Luxembourg FM transmitter listed by ILR for Junglinster. Program: L’Essentiel Radio. Power: 100 W.",
+      "tags": [
+        "fm",
+        "official",
+        "ilr",
+        "luxembourg",
+        "junglinster",
+        "100-w"
+      ],
+      "source": "ILR radio transmitters list",
+      "sourceUrl": "https://www.ilr.lu/publications/liste-des-emetteurs-de-programmes-de-radio/",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "lu-leudelange-radio-latina-101-2",
+      "name": "Radio Latina",
+      "freqMhz": 101.2,
+      "cityId": "lu-leudelange",
+      "description": "Luxembourg FM transmitter listed by ILR for Leudelange. Program: Radio Latina. Power: 1 kW.",
+      "tags": [
+        "fm",
+        "official",
+        "ilr",
+        "luxembourg",
+        "leudelange",
+        "1-kw"
+      ],
+      "source": "ILR radio transmitters list",
+      "sourceUrl": "https://www.ilr.lu/publications/liste-des-emetteurs-de-programmes-de-radio/",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "lu-luxembourg-radio-ara-102-9",
+      "name": "Radio ARA",
+      "freqMhz": 102.9,
+      "cityId": "lu-luxembourg",
+      "description": "Luxembourg FM transmitter listed by ILR for Luxembourg. Program: Radio ARA. Power: 1 kW.",
+      "tags": [
+        "fm",
+        "official",
+        "ilr",
+        "luxembourg",
+        "luxembourg",
+        "1-kw"
+      ],
+      "source": "ILR radio transmitters list",
+      "sourceUrl": "https://www.ilr.lu/publications/liste-des-emetteurs-de-programmes-de-radio/",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "lu-luxembourg-eldoradio-105",
+      "name": "Eldoradio",
+      "freqMhz": 105,
+      "cityId": "lu-luxembourg",
+      "description": "Luxembourg FM transmitter listed by ILR for Luxembourg. Program: Eldoradio. Power: 500 W.",
+      "tags": [
+        "fm",
+        "official",
+        "ilr",
+        "luxembourg",
+        "luxembourg",
+        "500-w"
+      ],
+      "source": "ILR radio transmitters list",
+      "sourceUrl": "https://www.ilr.lu/publications/liste-des-emetteurs-de-programmes-de-radio/",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "lu-luxembourg-lessentiel-radio-107-7",
+      "name": "L’Essentiel Radio",
+      "freqMhz": 107.7,
+      "cityId": "lu-luxembourg",
+      "description": "Luxembourg FM transmitter listed by ILR for Luxembourg. Program: L’Essentiel Radio. Power: 3 kW.",
+      "tags": [
+        "fm",
+        "official",
+        "ilr",
+        "luxembourg",
+        "luxembourg",
+        "3-kw"
+      ],
+      "source": "ILR radio transmitters list",
+      "sourceUrl": "https://www.ilr.lu/publications/liste-des-emetteurs-de-programmes-de-radio/",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "lu-marnach-eldoradio-105",
+      "name": "Eldoradio",
+      "freqMhz": 105,
+      "cityId": "lu-marnach",
+      "description": "Luxembourg FM transmitter listed by ILR for Marnach. Program: Eldoradio. Power: 100 W.",
+      "tags": [
+        "fm",
+        "official",
+        "ilr",
+        "luxembourg",
+        "marnach",
+        "100-w"
+      ],
+      "source": "ILR radio transmitters list",
+      "sourceUrl": "https://www.ilr.lu/publications/liste-des-emetteurs-de-programmes-de-radio/",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "lu-medernach-rom-lokalradio-vu-miedernach-101-5",
+      "name": "ROM – Lokalradio vu Miedernach",
+      "freqMhz": 101.5,
+      "cityId": "lu-medernach",
+      "description": "Luxembourg FM transmitter listed by ILR for Medernach. Program: ROM – Lokalradio vu Miedernach. Power: 100 W.",
+      "tags": [
+        "fm",
+        "official",
+        "ilr",
+        "luxembourg",
+        "medernach",
+        "100-w"
+      ],
+      "source": "ILR radio transmitters list",
+      "sourceUrl": "https://www.ilr.lu/publications/liste-des-emetteurs-de-programmes-de-radio/",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "lu-rodange-peiteng-on-air-102-2",
+      "name": "Péiteng on Air",
+      "freqMhz": 102.2,
+      "cityId": "lu-rodange",
+      "description": "Luxembourg FM transmitter listed by ILR for Rodange. Program: Péiteng on Air. Power: 100 W.",
+      "tags": [
+        "fm",
+        "official",
+        "ilr",
+        "luxembourg",
+        "rodange",
+        "100-w"
+      ],
+      "source": "ILR radio transmitters list",
+      "sourceUrl": "https://www.ilr.lu/publications/liste-des-emetteurs-de-programmes-de-radio/",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "lu-troisvierges-radio-latina-101-2",
+      "name": "Radio Latina",
+      "freqMhz": 101.2,
+      "cityId": "lu-troisvierges",
+      "description": "Luxembourg FM transmitter listed by ILR for Troisvierges. Program: Radio Latina. Power: 100 W.",
+      "tags": [
+        "fm",
+        "official",
+        "ilr",
+        "luxembourg",
+        "troisvierges",
+        "100-w"
+      ],
+      "source": "ILR radio transmitters list",
+      "sourceUrl": "https://www.ilr.lu/publications/liste-des-emetteurs-de-programmes-de-radio/",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "lu-wiltz-radio-lnw-102-2",
+      "name": "Radio LNW",
+      "freqMhz": 102.2,
+      "cityId": "lu-wiltz",
+      "description": "Luxembourg FM transmitter listed by ILR for Wiltz. Program: Radio LNW. Power: 100 W.",
+      "tags": [
+        "fm",
+        "official",
+        "ilr",
+        "luxembourg",
+        "wiltz",
+        "100-w"
+      ],
+      "source": "ILR radio transmitters list",
+      "sourceUrl": "https://www.ilr.lu/publications/liste-des-emetteurs-de-programmes-de-radio/",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    }
+  ]
+}

@@ -11,6 +11,62 @@ export type CatalogCountry = {
   regionId: string;
 };
 
+export type CatalogCountryCoverageStatus =
+  | "active"
+  | "partial"
+  | "manual"
+  | "blocked";
+
+export type CatalogCountryCoverageTier =
+  | "official-full"
+  | "official-substantial"
+  | "official-partial"
+  | "manual-seed"
+  | "blocked";
+
+export type CatalogCountrySourceQuality =
+  | "official-regulator"
+  | "official-public-sector"
+  | "serious-secondary"
+  | "manual-curated"
+  | "mixed";
+
+export type CatalogCountryCoverageScope =
+  | "national"
+  | "regional"
+  | "public-service-only"
+  | "city-seed";
+
+export type CatalogCountrySourceKind =
+  | "regulator"
+  | "public-sector"
+  | "regional-authority"
+  | "secondary"
+  | "manual";
+
+export type CatalogCountrySourceSummary = {
+  name: string;
+  url?: string;
+  kind?: CatalogCountrySourceKind;
+};
+
+export type CatalogCountrySummary = CatalogCountry & {
+  cityCount: number;
+  stationCount: number;
+  coverageTier: CatalogCountryCoverageTier;
+  sourceQuality: CatalogCountrySourceQuality;
+  coverageStatus: CatalogCountryCoverageStatus;
+  coverageScope: CatalogCountryCoverageScope;
+  coverageScore: number;
+  sourceCount: number;
+  sources: CatalogCountrySourceSummary[];
+  hasOfficialImporter: boolean;
+  lastImportedAt?: string;
+  cachedFallbackUsed?: boolean;
+  notesPath?: string;
+  coverageNotes?: string;
+};
+
 export type CatalogCity = {
   id: string;
   name: string;
@@ -18,6 +74,10 @@ export type CatalogCity = {
   timezone: string;
   latitude: number;
   longitude: number;
+};
+
+export type CatalogCitySummary = CatalogCity & {
+  stationCount: number;
 };
 
 export type SeedFmStation = {
@@ -62,6 +122,29 @@ export type CatalogData = {
   countries: CatalogCountry[];
   cities: CatalogCity[];
   stations: FmStation[];
+};
+
+export type CatalogManifest = {
+  generatedAt: string;
+  regions: CatalogRegion[];
+  countries: CatalogCountrySummary[];
+  stats: {
+    totalCountries: number;
+    totalCities: number;
+    totalStations: number;
+    byCoverageStatus: Partial<Record<CatalogCountryCoverageStatus, number>>;
+  };
+};
+
+export type CatalogCountryShard = {
+  country: CatalogCountrySummary;
+  cities: CatalogCitySummary[];
+  stations: SeedFmStation[];
+};
+
+export type CatalogLookupData = {
+  regions: CatalogRegion[];
+  countries: Array<CatalogCountry | CatalogCountrySummary>;
 };
 
 export type SignalLevelTelemetry = {

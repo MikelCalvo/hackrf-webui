@@ -1,0 +1,442 @@
+{
+  "country": {
+    "id": "us-virgin-islands",
+    "code": "VI",
+    "name": "U.S. Virgin Islands",
+    "regionId": "north-america",
+    "cityCount": 4,
+    "stationCount": 21,
+    "sourceCount": 1,
+    "sources": [
+      {
+        "name": "FCC LMS Public Database",
+        "url": "https://enterpriseefiling.fcc.gov/dataentry/public/tv/lmsDatabase.html"
+      }
+    ],
+    "lastImportedAt": "2026-03-24",
+    "coverageStatus": "active",
+    "coverageTier": "official-substantial",
+    "coverageScope": "national",
+    "sourceQuality": "official-regulator",
+    "hasOfficialImporter": true,
+    "coverageScore": 88
+  },
+  "cities": [
+    {
+      "id": "vi-charlotte-amalie",
+      "name": "Charlotte Amalie",
+      "countryId": "us-virgin-islands",
+      "timezone": "America/St_Thomas",
+      "latitude": 18.3419,
+      "longitude": -64.9307,
+      "stationCount": 7
+    },
+    {
+      "id": "vi-christiansted",
+      "name": "Christiansted",
+      "countryId": "us-virgin-islands",
+      "timezone": "America/St_Thomas",
+      "latitude": 17.74681,
+      "longitude": -64.70557,
+      "stationCount": 8
+    },
+    {
+      "id": "vi-cruz-bay",
+      "name": "Cruz Bay",
+      "countryId": "us-virgin-islands",
+      "timezone": "America/St_Thomas",
+      "latitude": 18.33134,
+      "longitude": -64.79375,
+      "stationCount": 1
+    },
+    {
+      "id": "vi-frederiksted",
+      "name": "Frederiksted",
+      "countryId": "us-virgin-islands",
+      "timezone": "America/St_Thomas",
+      "latitude": 17.71233,
+      "longitude": -64.88179,
+      "stationCount": 5
+    }
+  ],
+  "stations": [
+    {
+      "id": "vi-charlotte-amalie-wtjx-fm-93-1",
+      "name": "WTJX-FM",
+      "freqMhz": 93.1,
+      "cityId": "vi-charlotte-amalie",
+      "description": "Full Power FM service listed by FCC for CHARLOTTE AMALIE, Virgin Islands. Callsign: WTJX-FM.",
+      "tags": [
+        "fm",
+        "official",
+        "fcc",
+        "virgin-islands",
+        "full-power"
+      ],
+      "source": "FCC LMS Public Database",
+      "sourceUrl": "https://enterpriseefiling.fcc.gov/dataentry/public/tv/lmsDatabase.html",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "vi-charlotte-amalie-wwks-96-1",
+      "name": "WWKS",
+      "freqMhz": 96.1,
+      "cityId": "vi-charlotte-amalie",
+      "description": "Full Power FM service listed by FCC for CHARLOTTE AMALIE, Virgin Islands. Callsign: WWKS.",
+      "tags": [
+        "fm",
+        "official",
+        "fcc",
+        "virgin-islands",
+        "full-power"
+      ],
+      "source": "FCC LMS Public Database",
+      "sourceUrl": "https://enterpriseefiling.fcc.gov/dataentry/public/tv/lmsDatabase.html",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "vi-charlotte-amalie-wtjc-lp-96-9",
+      "name": "WTJC-LP",
+      "freqMhz": 96.9,
+      "cityId": "vi-charlotte-amalie",
+      "description": "Low Power FM service listed by FCC for CHARLOTTE AMALIE, Virgin Islands. Callsign: WTJC-LP.",
+      "tags": [
+        "fm",
+        "official",
+        "fcc",
+        "virgin-islands",
+        "low-power"
+      ],
+      "source": "FCC LMS Public Database",
+      "sourceUrl": "https://enterpriseefiling.fcc.gov/dataentry/public/tv/lmsDatabase.html",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "vi-charlotte-amalie-wgod-fm-97-9",
+      "name": "WGOD-FM",
+      "freqMhz": 97.9,
+      "cityId": "vi-charlotte-amalie",
+      "description": "Full Power FM service listed by FCC for CHARLOTTE AMALIE, Virgin Islands. Callsign: WGOD-FM.",
+      "tags": [
+        "fm",
+        "official",
+        "fcc",
+        "virgin-islands",
+        "full-power"
+      ],
+      "source": "FCC LMS Public Database",
+      "sourceUrl": "https://enterpriseefiling.fcc.gov/dataentry/public/tv/lmsDatabase.html",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "vi-charlotte-amalie-wzer-104-3",
+      "name": "WZER",
+      "freqMhz": 104.3,
+      "cityId": "vi-charlotte-amalie",
+      "description": "Full Power FM service listed by FCC for CHARLOTTE AMALIE, Virgin Islands. Callsign: WZER.",
+      "tags": [
+        "fm",
+        "official",
+        "fcc",
+        "virgin-islands",
+        "full-power"
+      ],
+      "source": "FCC LMS Public Database",
+      "sourceUrl": "https://enterpriseefiling.fcc.gov/dataentry/public/tv/lmsDatabase.html",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "vi-charlotte-amalie-wvjz-105-3",
+      "name": "WVJZ",
+      "freqMhz": 105.3,
+      "cityId": "vi-charlotte-amalie",
+      "description": "Full Power FM service listed by FCC for CHARLOTTE AMALIE, Virgin Islands. Callsign: WVJZ.",
+      "tags": [
+        "fm",
+        "official",
+        "fcc",
+        "virgin-islands",
+        "full-power"
+      ],
+      "source": "FCC LMS Public Database",
+      "sourceUrl": "https://enterpriseefiling.fcc.gov/dataentry/public/tv/lmsDatabase.html",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "vi-charlotte-amalie-wvie-107-3",
+      "name": "WVIE",
+      "freqMhz": 107.3,
+      "cityId": "vi-charlotte-amalie",
+      "description": "Full Power FM service listed by FCC for CHARLOTTE AMALIE, Virgin Islands. Callsign: WVIE.",
+      "tags": [
+        "fm",
+        "official",
+        "fcc",
+        "virgin-islands",
+        "full-power"
+      ],
+      "source": "FCC LMS Public Database",
+      "sourceUrl": "https://enterpriseefiling.fcc.gov/dataentry/public/tv/lmsDatabase.html",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "vi-christiansted-wivh-89-9",
+      "name": "WIVH",
+      "freqMhz": 89.9,
+      "cityId": "vi-christiansted",
+      "description": "Full Power FM service listed by FCC for CHRISTIANSTED, Virgin Islands. Callsign: WIVH.",
+      "tags": [
+        "fm",
+        "official",
+        "fcc",
+        "virgin-islands",
+        "full-power"
+      ],
+      "source": "FCC LMS Public Database",
+      "sourceUrl": "https://enterpriseefiling.fcc.gov/dataentry/public/tv/lmsDatabase.html",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "vi-christiansted-wskx-90-7",
+      "name": "WSKX",
+      "freqMhz": 90.7,
+      "cityId": "vi-christiansted",
+      "description": "Full Power FM service listed by FCC for CHRISTIANSTED, Virgin Islands. Callsign: WSKX.",
+      "tags": [
+        "fm",
+        "official",
+        "fcc",
+        "virgin-islands",
+        "full-power"
+      ],
+      "source": "FCC LMS Public Database",
+      "sourceUrl": "https://enterpriseefiling.fcc.gov/dataentry/public/tv/lmsDatabase.html",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "vi-christiansted-wvse-91-9",
+      "name": "WVSE",
+      "freqMhz": 91.9,
+      "cityId": "vi-christiansted",
+      "description": "Full Power FM service listed by FCC for CHRISTIANSTED, Virgin Islands. Callsign: WVSE.",
+      "tags": [
+        "fm",
+        "official",
+        "fcc",
+        "virgin-islands",
+        "full-power"
+      ],
+      "source": "FCC LMS Public Database",
+      "sourceUrl": "https://enterpriseefiling.fcc.gov/dataentry/public/tv/lmsDatabase.html",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "vi-christiansted-wvvi-fm-93-5",
+      "name": "WVVI-FM",
+      "freqMhz": 93.5,
+      "cityId": "vi-christiansted",
+      "description": "Full Power FM service listed by FCC for CHRISTIANSTED, Virgin Islands. Callsign: WVVI-FM.",
+      "tags": [
+        "fm",
+        "official",
+        "fcc",
+        "virgin-islands",
+        "full-power"
+      ],
+      "source": "FCC LMS Public Database",
+      "sourceUrl": "https://enterpriseefiling.fcc.gov/dataentry/public/tv/lmsDatabase.html",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "vi-christiansted-wjkc-95-1",
+      "name": "WJKC",
+      "freqMhz": 95.1,
+      "cityId": "vi-christiansted",
+      "description": "Full Power FM service listed by FCC for CHRISTIANSTED, Virgin Islands. Callsign: WJKC.",
+      "tags": [
+        "fm",
+        "official",
+        "fcc",
+        "virgin-islands",
+        "full-power"
+      ],
+      "source": "FCC LMS Public Database",
+      "sourceUrl": "https://enterpriseefiling.fcc.gov/dataentry/public/tv/lmsDatabase.html",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "vi-christiansted-wviq-99-5",
+      "name": "WVIQ",
+      "freqMhz": 99.5,
+      "cityId": "vi-christiansted",
+      "description": "Full Power FM service listed by FCC for CHRISTIANSTED, Virgin Islands. Callsign: WVIQ.",
+      "tags": [
+        "fm",
+        "official",
+        "fcc",
+        "virgin-islands",
+        "full-power"
+      ],
+      "source": "FCC LMS Public Database",
+      "sourceUrl": "https://enterpriseefiling.fcc.gov/dataentry/public/tv/lmsDatabase.html",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "vi-christiansted-wstx-fm-100-3",
+      "name": "WSTX-FM",
+      "freqMhz": 100.3,
+      "cityId": "vi-christiansted",
+      "description": "Full Power FM service listed by FCC for CHRISTIANSTED, Virgin Islands. Callsign: WSTX-FM.",
+      "tags": [
+        "fm",
+        "official",
+        "fcc",
+        "virgin-islands",
+        "full-power"
+      ],
+      "source": "FCC LMS Public Database",
+      "sourceUrl": "https://enterpriseefiling.fcc.gov/dataentry/public/tv/lmsDatabase.html",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "vi-christiansted-wmng-104-9",
+      "name": "WMNG",
+      "freqMhz": 104.9,
+      "cityId": "vi-christiansted",
+      "description": "Full Power FM service listed by FCC for CHRISTIANSTED, Virgin Islands. Callsign: WMNG.",
+      "tags": [
+        "fm",
+        "official",
+        "fcc",
+        "virgin-islands",
+        "full-power"
+      ],
+      "source": "FCC LMS Public Database",
+      "sourceUrl": "https://enterpriseefiling.fcc.gov/dataentry/public/tv/lmsDatabase.html",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "vi-cruz-bay-wivi-102-1",
+      "name": "WIVI",
+      "freqMhz": 102.1,
+      "cityId": "vi-cruz-bay",
+      "description": "Full Power FM service listed by FCC for CRUZ BAY, Virgin Islands. Callsign: WIVI.",
+      "tags": [
+        "fm",
+        "official",
+        "fcc",
+        "virgin-islands",
+        "full-power"
+      ],
+      "source": "FCC LMS Public Database",
+      "sourceUrl": "https://enterpriseefiling.fcc.gov/dataentry/public/tv/lmsDatabase.html",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "vi-frederiksted-wmyp-98-3",
+      "name": "WMYP",
+      "freqMhz": 98.3,
+      "cityId": "vi-frederiksted",
+      "description": "Full Power FM service listed by FCC for FREDERIKSTED, Virgin Islands. Callsign: WMYP.",
+      "tags": [
+        "fm",
+        "official",
+        "fcc",
+        "virgin-islands",
+        "full-power"
+      ],
+      "source": "FCC LMS Public Database",
+      "sourceUrl": "https://enterpriseefiling.fcc.gov/dataentry/public/tv/lmsDatabase.html",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "vi-frederiksted-wevi-101-3",
+      "name": "WEVI",
+      "freqMhz": 101.3,
+      "cityId": "vi-frederiksted",
+      "description": "Full Power FM service listed by FCC for FREDERIKSTED, Virgin Islands. Callsign: WEVI.",
+      "tags": [
+        "fm",
+        "official",
+        "fcc",
+        "virgin-islands",
+        "full-power"
+      ],
+      "source": "FCC LMS Public Database",
+      "sourceUrl": "https://enterpriseefiling.fcc.gov/dataentry/public/tv/lmsDatabase.html",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "vi-frederiksted-w276ch-103-1",
+      "name": "W276CH",
+      "freqMhz": 103.1,
+      "cityId": "vi-frederiksted",
+      "description": "FM translator service listed by FCC for FREDERIKSTED, Virgin Islands. Callsign: W276CH.",
+      "tags": [
+        "fm",
+        "official",
+        "fcc",
+        "virgin-islands",
+        "translator"
+      ],
+      "source": "FCC LMS Public Database",
+      "sourceUrl": "https://enterpriseefiling.fcc.gov/dataentry/public/tv/lmsDatabase.html",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "vi-frederiksted-waxj-103-5",
+      "name": "WAXJ",
+      "freqMhz": 103.5,
+      "cityId": "vi-frederiksted",
+      "description": "Full Power FM service listed by FCC for FREDERIKSTED, Virgin Islands. Callsign: WAXJ.",
+      "tags": [
+        "fm",
+        "official",
+        "fcc",
+        "virgin-islands",
+        "full-power"
+      ],
+      "source": "FCC LMS Public Database",
+      "sourceUrl": "https://enterpriseefiling.fcc.gov/dataentry/public/tv/lmsDatabase.html",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    },
+    {
+      "id": "vi-frederiksted-wldv-107-9",
+      "name": "WLDV",
+      "freqMhz": 107.9,
+      "cityId": "vi-frederiksted",
+      "description": "Full Power FM service listed by FCC for FREDERIKSTED, Virgin Islands. Callsign: WLDV.",
+      "tags": [
+        "fm",
+        "official",
+        "fcc",
+        "virgin-islands",
+        "full-power"
+      ],
+      "source": "FCC LMS Public Database",
+      "sourceUrl": "https://enterpriseefiling.fcc.gov/dataentry/public/tv/lmsDatabase.html",
+      "verifiedAt": "2026-03-24",
+      "curated": false
+    }
+  ]
+}
