@@ -1,6 +1,7 @@
 #define _POSIX_C_SOURCE 200809L
 
 #include <errno.h>
+#include <fcntl.h>
 #include <getopt.h>
 #include <math.h>
 #include <signal.h>
@@ -1118,6 +1119,10 @@ int main(int argc, char** argv)
     signal(SIGTERM, on_signal);
     signal(SIGPIPE, SIG_IGN);
 
+    /* Non-blocking stdin so the main loop can process retune commands
+     * written by the server without blocking on read(). */
+    fcntl(STDIN_FILENO, F_SETFL, O_NONBLOCK);
+
     result = hackrf_init();
     if (result != HACKRF_SUCCESS) {
         fprintf(stderr, "hackrf_init() failed: %s\n", hackrf_error_name(result));
@@ -1214,9 +1219,34 @@ int main(int argc, char** argv)
         goto cleanup;
     }
 
-    while (!g_signal_stop && !state.stop_requested && hackrf_is_streaming(state.device) == HACKRF_TRUE) {
-        struct timespec sleep_time = {0, 100000000};
-        nanosleep(&sleep_time, NULL);
+    {
+        char cmd_buf[128];
+        int  cmd_len = 0;
+
+        while (!g_signal_stop && !state.stop_requested && hackrf_is_streaming(state.device) == HACKRF_TRUE) {
+            /* Drain stdin for retune commands: "FREQ <hz>\n" */
+            char ch;
+            while (read(STDIN_FILENO, &ch, 1) == 1) {
+                if (ch == '\n' || cmd_len >= (int)sizeof(cmd_buf) - 1) {
+                    cmd_buf[cmd_len] = '\0';
+                    cmd_len = 0;
+                    unsigned long long new_freq_ull = 0;
+                    if (sscanf(cmd_buf, "FREQ %llu", &new_freq_ull) == 1 && new_freq_ull > 0) {
+                        state.freq_hz        = (uint64_t) new_freq_ull;
+                        state.tuned_freq_hz  = state.freq_hz + state.tune_offset_hz;
+                        hackrf_set_freq(state.device, state.tuned_freq_hz);
+                        fprintf(stderr, "RETUNED target=%.6f MHz tuned=%.6f MHz\n",
+                                state.freq_hz / 1e6, state.tuned_freq_hz / 1e6);
+                        fflush(stderr);
+                    }
+                } else {
+                    cmd_buf[cmd_len++] = ch;
+                }
+            }
+
+            struct timespec sleep_time = {0, 5000000}; /* 5 ms */
+            nanosleep(&sleep_time, NULL);
+        }
     }
 
     hackrf_stop_rx(state.device);

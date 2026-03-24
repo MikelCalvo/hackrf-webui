@@ -42,7 +42,7 @@ export async function GET(request: Request) {
   }
 
   try {
-    const stream = hackrfService.startWfmStream(
+    const stream = await hackrfService.startWfmStream(
       {
         label,
         freqHz: Math.round(freqMhz * 1_000_000),

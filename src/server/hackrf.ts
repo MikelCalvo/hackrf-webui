@@ -160,15 +160,45 @@ class HackRFService {
     };
   }
 
-  startWfmStream(request: StreamRequest, signal: AbortSignal): ReadableStream<Uint8Array> {
-    this.stopActiveStream();
+  startWfmStream(request: StreamRequest, signal: AbortSignal): Promise<ReadableStream<Uint8Array>> {
+    return this.startStreamInternal(request, "wfm", "50000", signal);
+  }
 
-    const status = this.getStatus();
-    if (status.state !== "connected") {
-      throw new Error(status.message);
-    }
+  startNfmStream(request: StreamRequest, signal: AbortSignal): Promise<ReadableStream<Uint8Array>> {
+    return this.startStreamInternal(request, "nfm", "50000", signal);
+  }
+
+  /**
+   * Retune the active NFM stream to a new frequency without restarting any process.
+   * Returns true if the command was sent, false if there is no active stream.
+   */
+  retune(freqHz: number, label: string): boolean {
+    if (!this.activeStream) return false;
+    const { hackrf } = this.activeStream;
+    if (!hackrf.stdin?.writable) return false;
+    hackrf.stdin.write(`FREQ ${freqHz}\n`);
+    this.activeStream.session.freqHz = freqHz;
+    this.activeStream.session.label = label;
+    return true;
+  }
+
+  private async startStreamInternal(
+    request: StreamRequest,
+    mode: "wfm" | "nfm",
+    sampleRate: string,
+    signal: AbortSignal,
+  ): Promise<ReadableStream<Uint8Array>> {
+    // Wait for the previous hackrf process to exit and release the USB device before
+    // spawning a new one — avoids the race where hackrf_open() fails on a busy device.
+    await this.stopAndWait();
 
     const binaryPath = nativeBinaryPath();
+    if (!existsSync(binaryPath)) {
+      throw new Error("The native binary is missing. Run npm run build:native.");
+    }
+    if (!commandAvailable("ffmpeg")) {
+      throw new Error("ffmpeg is not available on this system.");
+    }
     const sessionId = `stream-${Date.now()}`;
     const session: StreamSessionSnapshot = {
       id: sessionId,
@@ -183,46 +213,23 @@ class HackRFService {
 
     const hackrf = spawn(
       binaryPath,
-      [
-        "-f",
-        String(request.freqHz),
-        "-m",
-        "wfm",
-        "-l",
-        String(request.lna),
-        "-g",
-        String(request.vga),
-        "-G",
-        request.audioGain.toFixed(2),
-      ],
-      {
-        stdio: ["ignore", "pipe", "pipe"],
-      },
+      ["-f", String(request.freqHz), "-m", mode, "-l", String(request.lna), "-g", String(request.vga), "-G", request.audioGain.toFixed(2)],
+      { stdio: ["pipe", "pipe", "pipe"] },
     );
 
     const ffmpeg = spawn(
       "ffmpeg",
       [
-        "-hide_banner",
-        "-loglevel",
-        "error",
-        "-f",
-        "s16le",
-        "-ar",
-        "50000",
-        "-ac",
-        "1",
-        "-i",
-        "pipe:0",
-        "-f",
-        "mp3",
-        "-b:a",
-        "128k",
+        "-hide_banner", "-loglevel", "error",
+        // Disable input buffering so ffmpeg starts encoding immediately
+        "-fflags", "nobuffer", "-probesize", "32", "-analyzeduration", "0",
+        "-f", "s16le", "-ar", sampleRate, "-ac", "1", "-i", "pipe:0",
+        "-f", "mp3", "-b:a", "128k",
+        // Flush each MP3 frame to the pipe without waiting for an output buffer to fill
+        "-flush_packets", "1",
         "pipe:1",
       ],
-      {
-        stdio: ["pipe", "pipe", "pipe"],
-      },
+      { stdio: ["pipe", "pipe", "pipe"] },
     );
 
     if (!hackrf.stdout || !hackrf.stderr || !ffmpeg.stdin || !ffmpeg.stdout || !ffmpeg.stderr) {
@@ -235,31 +242,15 @@ class HackRFService {
     this.attachTelemetry(hackrf.stderr, sessionId);
 
     ffmpeg.stderr.setEncoding("utf8");
-    ffmpeg.stderr.on("data", () => {
-      // Ignore ffmpeg chatter and keep the stream endpoint quiet.
-    });
+    ffmpeg.stderr.on("data", () => {});
 
-    const activeStream: ActiveStream = {
-      session,
-      telemetry: null,
-      hackrf,
-      ffmpeg,
-    };
-
+    const activeStream: ActiveStream = { session, telemetry: null, hackrf, ffmpeg };
     this.activeStream = activeStream;
 
     const cleanup = () => {
-      if (this.activeStream?.session.id !== sessionId) {
-        return;
-      }
-
+      if (this.activeStream?.session.id !== sessionId) return;
       hackrf.stdout?.unpipe(ffmpeg.stdin);
-      try {
-        ffmpeg.stdin?.end();
-      } catch {
-        // Ignore: the child process may already be gone.
-      }
-
+      try { ffmpeg.stdin?.end(); } catch { /* already gone */ }
       this.killProcess(hackrf);
       this.killProcess(ffmpeg);
       this.activeStream = null;
@@ -307,15 +298,22 @@ class HackRFService {
     });
   }
 
-  private stopActiveStream(): void {
-    if (!this.activeStream) {
-      return;
-    }
+  private stopAndWait(): Promise<void> {
+    if (!this.activeStream) return Promise.resolve();
 
     const { hackrf, ffmpeg } = this.activeStream;
     this.activeStream = null;
+
+    // Register the wait listener before sending SIGTERM so we cannot miss the close event
+    const released =
+      hackrf.exitCode !== null || hackrf.killed
+        ? Promise.resolve()
+        : new Promise<void>(resolve => hackrf.once("close", resolve));
+
     this.killProcess(hackrf);
     this.killProcess(ffmpeg);
+
+    return released;
   }
 
   private killProcess(processRef: ReturnType<typeof spawn>): void {
@@ -328,7 +326,7 @@ class HackRFService {
       if (!processRef.killed && processRef.exitCode === null) {
         processRef.kill("SIGKILL");
       }
-    }, 600);
+    }, 150);
   }
 }
 

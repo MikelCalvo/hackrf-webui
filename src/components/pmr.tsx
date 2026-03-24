@@ -53,6 +53,14 @@ function buildPmrUrl(ch: PmrChannel, controls: Controls): string {
   return `/api/pmr-stream?${p}`;
 }
 
+/** PATCH url to retune an existing stream — no reconnect, no buffering delay */
+function buildRetuneUrl(ch: PmrChannel): string {
+  return `/api/pmr-stream?${new URLSearchParams({
+    label: `${ch.bandId.toUpperCase()} ${ch.label}`,
+    freqMHz: String(ch.freqMhz),
+  })}`;
+}
+
 const CLS_INPUT =
   "w-full rounded-lg border border-white/10 bg-white/[0.04] px-3 py-2 text-sm text-[var(--foreground)] outline-none transition placeholder:text-[var(--muted)] focus:border-[var(--accent)]/50 focus:bg-white/[0.06]";
 const CLS_BTN_PRIMARY =
@@ -159,7 +167,29 @@ export function PmrModule({
     if (!audioRef.current) return;
     setStreamError("");
     setStartingChannelId(ch.id);
+
     const audio = audioRef.current;
+
+    // Fast path: if a PMR stream is already live, retune in-place.
+    // The hackrf process receives a FREQ command via stdin and calls hackrf_set_freq()
+    // without restarting — no process teardown, no reconnect, no re-buffering.
+    if (playingChannelId !== null) {
+      try {
+        const resp = await fetch(buildRetuneUrl(ch), { method: "PATCH" });
+        if (resp.ok) {
+          setPlayingChannelId(ch.id);
+          setSelectedChannelId(ch.id);
+          void onRefreshHardware();
+          setStartingChannelId(null);
+          return;
+        }
+        // 409 = server has no active stream (process died) → fall through to full start
+      } catch {
+        // Network error → fall through to full start
+      }
+    }
+
+    // Full start: stop current audio, set new src, wait for browser to buffer & play
     audio.pause();
     audio.src = buildPmrUrl(ch, controls);
     try {

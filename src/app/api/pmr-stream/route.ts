@@ -19,6 +19,27 @@ function badRequest(message: string, status = 400): Response {
   return Response.json({ error: message }, { status, headers: { "Cache-Control": "no-store" } });
 }
 
+/**
+ * PATCH /api/pmr-stream?freqMHz=...&label=...
+ * Retune the active NFM stream without restarting the process or the browser connection.
+ */
+export async function PATCH(request: Request): Promise<Response> {
+  const { searchParams } = new URL(request.url);
+  const freqMhz = Number.parseFloat(searchParams.get("freqMHz") ?? "");
+  const label   = (searchParams.get("label") ?? "PMR").trim();
+
+  if (!Number.isFinite(freqMhz) || !inPmrRange(freqMhz)) {
+    return badRequest(`Frequency ${freqMhz} MHz is outside all known PMR bands.`);
+  }
+
+  const ok = hackrfService.retune(Math.round(freqMhz * 1_000_000), label);
+  if (!ok) {
+    return badRequest("No active PMR stream to retune.", 409);
+  }
+
+  return Response.json({ ok: true }, { headers: { "Cache-Control": "no-store" } });
+}
+
 export async function GET(request: Request): Promise<Response> {
   const { searchParams } = new URL(request.url);
   const freqMhz   = Number.parseFloat(searchParams.get("freqMHz") ?? "");
@@ -35,7 +56,7 @@ export async function GET(request: Request): Promise<Response> {
   if (!Number.isFinite(audioGain) || audioGain <= 0 || audioGain > 8) return badRequest("Invalid audioGain.");
 
   try {
-    const stream = hackrfService.startNfmStream(
+    const stream = await hackrfService.startNfmStream(
       { label, freqHz: Math.round(freqMhz * 1_000_000), lna, vga, audioGain },
       request.signal,
     );
