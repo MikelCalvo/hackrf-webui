@@ -21,10 +21,13 @@ SKIP_SYSTEM_DEPS="${SKIP_SYSTEM_DEPS:-0}"
 SKIP_NPM="${SKIP_NPM:-0}"
 SKIP_BUILD="${SKIP_BUILD:-0}"
 SKIP_AIS_MAPS="${SKIP_AIS_MAPS:-0}"
+SKIP_ADSB_RUNTIME="${SKIP_ADSB_RUNTIME:-0}"
 FORCE_REBUILD="${REBUILD:-0}"
 AIS_TILE_PACK_URL="${AIS_TILE_PACK_URL:-}"
 AIS_TILE_PACK_FILE="${AIS_TILE_PACK_FILE:-}"
 AIS_TILE_PACK_REINSTALL="${AIS_TILE_PACK_REINSTALL:-0}"
+DUMP1090_FA_REINSTALL="${DUMP1090_FA_REINSTALL:-0}"
+DUMP1090_FA_REF="${DUMP1090_FA_REF:-4f47d12a18db24238ab2d91c8637dae25937fd98}"
 MAP_PACK_PROFILE="${MAP_PACK_PROFILE:-${AIS_TILE_PACK_PROFILE:-}}"
 MAP_PACK_MAX_ZOOM="${MAP_PACK_MAX_ZOOM:-${AIS_TILE_PACK_MAX_ZOOM:-}}"
 CHECK_ONLY=0
@@ -56,11 +59,14 @@ Options:
   --skip-npm           Do not run npm ci.
   --skip-build         Do not run the production build.
   --skip-ais-maps      Do not install or update the offline map pack.
+  --skip-adsb-runtime  Do not install or update the ADS-B decoder backend.
   --ais-tile-pack-url <url>
                        Download and install a map pack (.zip or .pmtiles source).
   --ais-tile-pack-file <path>
                        Install a map pack from a local .zip or .pmtiles file.
   --reinstall-ais-maps Replace an existing offline map pack.
+  --reinstall-adsb-runtime
+                       Rebuild the local dump1090-fa backend.
   --map-profile <name> Select a default offline basemap profile when no source is provided.
   --map-zoom <z>       Force a custom max zoom for the default offline basemap extract.
   --rebuild            Force npm ci and a fresh production build.
@@ -68,9 +74,11 @@ Options:
   -h, --help           Show this help text.
 
 Environment overrides:
-  HOST, PORT, SKIP_SYSTEM_DEPS, SKIP_NPM, SKIP_BUILD, SKIP_AIS_MAPS, REBUILD,
+  HOST, PORT, SKIP_SYSTEM_DEPS, SKIP_NPM, SKIP_BUILD, SKIP_AIS_MAPS,
+  SKIP_ADSB_RUNTIME, REBUILD,
   AIS_TILE_PACK_URL, AIS_TILE_PACK_FILE, AIS_TILE_PACK_REINSTALL,
-  AIS_TILE_PACK_MAX_ZOOM, MAP_PACK_MAX_ZOOM, MAP_PACK_PROFILE, DRY_RUN
+  AIS_TILE_PACK_MAX_ZOOM, MAP_PACK_MAX_ZOOM, MAP_PACK_PROFILE,
+  DUMP1090_FA_REF, DUMP1090_FA_REINSTALL, DRY_RUN
 
 Default map behavior:
   If no map pack URL or file is provided, start.sh installs a dark offline world
@@ -147,12 +155,41 @@ hackrf_pkgconfig_ok() {
   have pkg-config && pkg-config --exists libhackrf 2>/dev/null
 }
 
+ncurses_build_ok() {
+  if ! have cc; then
+    return 1
+  fi
+
+  local tmpdir
+  tmpdir="$(mktemp -d)"
+  cat >"$tmpdir/test.c" <<'EOF'
+#include <curses.h>
+int main(void) { return 0; }
+EOF
+
+  if cc "$tmpdir/test.c" -lncurses -o "$tmpdir/test" >/dev/null 2>&1; then
+    rm -rf "$tmpdir"
+    return 0
+  fi
+
+  rm -rf "$tmpdir"
+  return 1
+}
+
 native_binary_path() {
   printf '%s\n' "$ROOT_DIR/bin/hackrf_audio_stream"
 }
 
 native_binary_ready() {
   [[ -x "$(native_binary_path)" ]]
+}
+
+adsb_decoder_binary_path() {
+  printf '%s\n' "$ROOT_DIR/bin/dump1090-fa"
+}
+
+adsb_decoder_ready() {
+  [[ -x "$(adsb_decoder_binary_path)" ]]
 }
 
 prod_bundle_ready() {
@@ -292,7 +329,7 @@ resolve_map_pack_profile() {
 }
 
 needs_system_deps() {
-  ! node_ok || ! have ffmpeg || ! have hackrf_info || ! have cc || ! have pkg-config || ! hackrf_pkgconfig_ok
+  ! node_ok || ! have ffmpeg || ! have hackrf_info || ! have cc || ! have pkg-config || ! hackrf_pkgconfig_ok || ! ncurses_build_ok
 }
 
 parse_args() {
@@ -313,6 +350,9 @@ parse_args() {
       --skip-ais-maps)
         SKIP_AIS_MAPS=1
         ;;
+      --skip-adsb-runtime)
+        SKIP_ADSB_RUNTIME=1
+        ;;
       --ais-tile-pack-url)
         shift
         [[ $# -gt 0 ]] || fail "--ais-tile-pack-url requires a value."
@@ -331,6 +371,9 @@ parse_args() {
         ;;
       --reinstall-ais-maps)
         AIS_TILE_PACK_REINSTALL=1
+        ;;
+      --reinstall-adsb-runtime)
+        DUMP1090_FA_REINSTALL=1
         ;;
       --map-profile)
         shift
@@ -405,7 +448,7 @@ install_nodesource_setup() {
 install_apt_deps() {
   log "Installing system dependencies with apt."
   run_root apt-get update
-  run_root apt-get install -y curl ca-certificates gnupg build-essential pkg-config ffmpeg hackrf libhackrf-dev
+  run_root apt-get install -y curl ca-certificates gnupg build-essential pkg-config ffmpeg hackrf libhackrf-dev libncurses-dev
 
   if ! node_ok; then
     log "Installing Node.js 22 from NodeSource for Debian/Ubuntu."
@@ -416,7 +459,7 @@ install_apt_deps() {
 
 install_dnf_deps() {
   log "Installing system dependencies with dnf."
-  run_root dnf install -y curl ca-certificates gcc gcc-c++ make pkgconf-pkg-config hackrf hackrf-devel
+  run_root dnf install -y curl ca-certificates gcc gcc-c++ make pkgconf-pkg-config hackrf hackrf-devel ncurses-devel
 
   if ! have ffmpeg; then
     if run_root dnf install -y ffmpeg; then
@@ -435,7 +478,7 @@ install_dnf_deps() {
 
 install_pacman_deps() {
   log "Installing system dependencies with pacman."
-  run_root pacman -Sy --noconfirm --needed base-devel pkgconf ffmpeg hackrf nodejs npm
+  run_root pacman -Sy --noconfirm --needed base-devel pkgconf ffmpeg hackrf ncurses nodejs npm
 }
 
 zypper_install_first_available() {
@@ -459,6 +502,7 @@ install_zypper_deps() {
   zypper_install_first_available "pkg-config" pkg-config pkgconf pkgconf-pkg-config
   zypper_install_first_available "HackRF userspace tools" hackrf
   zypper_install_first_available "HackRF development headers" hackrf-devel libhackrf-devel
+  zypper_install_first_available "ncurses development headers" ncurses-devel ncurses6-devel ncurses5-devel
 
   if ! have ffmpeg; then
     zypper_install_first_available "ffmpeg" ffmpeg ffmpeg-8 ffmpeg-7 ffmpeg-5 ffmpeg-4
@@ -512,6 +556,7 @@ verify_runtime() {
   have cc || fail "A C compiler (cc) is required."
   have pkg-config || fail "pkg-config is required."
   hackrf_pkgconfig_ok || fail "libhackrf development headers are required and must be visible via pkg-config."
+  ncurses_build_ok || fail "ncurses development headers are required to build the ADS-B backend."
 }
 
 port_available() {
@@ -621,6 +666,12 @@ print_status_report() {
     report_line "Native binary" "missing"
   fi
 
+  if adsb_decoder_ready; then
+    report_line "ADS-B backend" "$(adsb_decoder_binary_path)"
+  else
+    report_line "ADS-B backend" "missing"
+  fi
+
   if prod_bundle_ready; then
     report_line "Prod bundle" ".next/BUILD_ID present"
   else
@@ -677,6 +728,7 @@ print_status_report() {
   have hackrf_info || issues=1
   have cc || issues=1
   have pkg-config || issues=1
+  ncurses_build_ok || issues=1
 
   return "$issues"
 }
@@ -733,6 +785,30 @@ install_ais_maps() {
     node ./scripts/install-ais-map-pack.mjs
 }
 
+install_adsb_runtime() {
+  cd "$ROOT_DIR"
+
+  if [[ "$SKIP_ADSB_RUNTIME" == "1" || "$CHECK_ONLY" == "1" ]]; then
+    if [[ "$CHECK_ONLY" == "1" ]]; then
+      log "Check mode: ADS-B backend installation skipped."
+    else
+      log "Skipping ADS-B backend installation because --skip-adsb-runtime was requested."
+    fi
+    return
+  fi
+
+  if adsb_decoder_ready && [[ "$DUMP1090_FA_REINSTALL" != "1" ]]; then
+    log "ADS-B backend already present."
+    return
+  fi
+
+  log "Installing ADS-B backend."
+  run env \
+    DUMP1090_FA_REF="$DUMP1090_FA_REF" \
+    DUMP1090_FA_REINSTALL="$DUMP1090_FA_REINSTALL" \
+    node ./scripts/install-dump1090-fa.mjs
+}
+
 build_app() {
   cd "$ROOT_DIR"
 
@@ -759,6 +835,7 @@ print_start_summary() {
   report_line "Node.js" "$(node_version)"
   report_line "npm" "$(npm_version)"
   report_line "Native binary" "$(native_binary_path)"
+  report_line "ADS-B backend" "$(adsb_decoder_binary_path)"
   report_line "Prod bundle" ".next/BUILD_ID present"
   if ais_tile_pack_ready; then
     report_line "Offline map pack" "$(ais_tile_pack_manifest_path)"
@@ -816,6 +893,7 @@ main() {
   resolve_port
   install_node_modules
   install_ais_maps
+  install_adsb_runtime
   build_app
   print_start_summary
   start_app

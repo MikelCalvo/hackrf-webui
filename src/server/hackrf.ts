@@ -9,6 +9,8 @@ import type {
   StreamRequest,
   StreamSessionSnapshot,
 } from "@/lib/types";
+import { adsbRuntime } from "@/server/adsb-runtime";
+import { hackrfDeviceService } from "@/server/hackrf-device";
 import { aisRuntime } from "@/server/ais-runtime";
 
 const LEVEL_RE = /LEVEL rms=([0-9.]+) peak=([0-9.]+) rf=([0-9.]+)/;
@@ -72,6 +74,8 @@ class HackRFService {
     const ffmpegAvailable = commandAvailable("ffmpeg");
     const aisStatus = aisRuntime.getStatus();
     const aisActive = aisStatus.state === "running" || aisStatus.state === "starting";
+    const adsbStatus = adsbRuntime.getStatus();
+    const adsbActive = adsbStatus.state === "running" || adsbStatus.state === "starting";
     const info = spawnSync("hackrf_info", [], {
       encoding: "utf8",
       stdio: ["ignore", "pipe", "pipe"],
@@ -160,6 +164,8 @@ class HackRFService {
         ? `HackRF ready with an active stream on ${activeStream.label}.`
         : aisActive
           ? "HackRF dedicated to the live AIS decoder."
+          : adsbActive
+            ? "HackRF dedicated to the live ADS-B decoder."
           : "HackRF ready to tune.",
       activeStream,
     };
@@ -194,6 +200,7 @@ class HackRFService {
     signal: AbortSignal,
   ): Promise<ReadableStream<Uint8Array>> {
     await aisRuntime.stop();
+    await adsbRuntime.stop();
 
     // Wait for the previous hackrf process to exit and release the USB device before
     // spawning a new one — avoids the race where hackrf_open() fails on a busy device.
@@ -206,6 +213,8 @@ class HackRFService {
     if (!commandAvailable("ffmpeg")) {
       throw new Error("ffmpeg is not available on this system.");
     }
+    hackrfDeviceService.claim("audio", request.label);
+
     const sessionId = `stream-${Date.now()}`;
     const session: StreamSessionSnapshot = {
       id: sessionId,
@@ -242,6 +251,7 @@ class HackRFService {
     if (!hackrf.stdout || !hackrf.stderr || !ffmpeg.stdin || !ffmpeg.stdout || !ffmpeg.stderr) {
       hackrf.kill("SIGTERM");
       ffmpeg.kill("SIGTERM");
+      hackrfDeviceService.release("audio");
       throw new Error("Could not initialize the local audio pipeline.");
     }
 
@@ -261,6 +271,7 @@ class HackRFService {
       this.killProcess(hackrf);
       this.killProcess(ffmpeg);
       this.activeStream = null;
+      hackrfDeviceService.release("audio");
     };
 
     signal.addEventListener("abort", cleanup, { once: true });
@@ -310,6 +321,7 @@ class HackRFService {
 
     const { hackrf, ffmpeg } = this.activeStream;
     this.activeStream = null;
+    hackrfDeviceService.release("audio");
 
     // Register the wait listener before sending SIGTERM so we cannot miss the close event
     const released =

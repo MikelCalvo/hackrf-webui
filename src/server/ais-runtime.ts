@@ -1,5 +1,5 @@
 import { spawn } from "node:child_process";
-import { existsSync, readFileSync } from "node:fs";
+import { existsSync } from "node:fs";
 import path from "node:path";
 
 import type {
@@ -8,10 +8,12 @@ import type {
   AisFeedSnapshot,
   AisPoint,
   AisRuntimeStatus,
-  AisTilePackSummary,
   AisVesselContact,
 } from "@/lib/types";
+import { hackrfDeviceService } from "@/server/hackrf-device";
+import { pickHackrfRuntimeErrorMessage } from "@/server/hackrf-runtime-errors";
 import { parseAisFrameLine, type DecodedAisMessage } from "@/server/ais-protocol";
+import { buildTilePackSummary } from "@/server/map-packs";
 
 type VesselAccumulator = {
   mmsi: string;
@@ -37,50 +39,10 @@ type VesselAccumulator = {
 
 type ChannelInternalState = AisChannelStatus;
 
-type LocalTilePackManifest = {
-  kind?: "raster" | "pmtiles";
-  name?: string;
-  tileUrlTemplate?: string;
-  pmtilesUrl?: string;
-  flavor?: "light" | "dark" | "white" | "grayscale" | "black";
-  lang?: string;
-  attribution?: string;
-  bounds?: AisBounds | null;
-  minZoom?: number;
-  maxZoom?: number;
-  installedAt?: string;
-};
-
-const DEFAULT_TILE_URL_TEMPLATE = "https://tile.openstreetmap.org/{z}/{x}/{y}.png";
-const DEFAULT_TILE_ATTRIBUTION = "\u00a9 OpenStreetMap contributors";
-const TILE_PACK_MANIFEST_PATH = path.join(
-  /*turbopackIgnore: true*/ process.cwd(),
-  "public",
-  "tiles",
-  "osm",
-  "manifest.json",
-);
-
 const DEFAULT_CENTER_FREQ_HZ = 162_000_000;
 const DEFAULT_SAMPLE_RATE = 1_536_000;
 const DEFAULT_LNA_GAIN = 24;
 const DEFAULT_VGA_GAIN = 20;
-
-function normalizePmtilesFlavor(
-  value: string | undefined,
-): "light" | "dark" | "white" | "grayscale" | "black" {
-  const trimmed = value?.trim();
-
-  switch (trimmed) {
-    case "light":
-    case "white":
-    case "grayscale":
-    case "black":
-      return trimmed;
-    default:
-      return "dark";
-  }
-}
 
 function parseEnvInteger(name: string, fallback: number): number {
   const raw = process.env[name]?.trim();
@@ -146,79 +108,6 @@ function createAccumulator(mmsi: string): VesselAccumulator {
     messageType: "",
     sourceLabel: "",
   };
-}
-
-function buildTilePackSummary(warnings: string[]): AisTilePackSummary {
-  if (!existsSync(TILE_PACK_MANIFEST_PATH)) {
-    warnings.push(
-      "Offline AIS tiles are not installed. The map will use live OpenStreetMap tiles until a local pack is imported.",
-    );
-
-    return {
-      available: false,
-      mode: "remote-live",
-      kind: "raster",
-      name: "OpenStreetMap Live",
-      tileUrlTemplate: DEFAULT_TILE_URL_TEMPLATE,
-      pmtilesUrl: null,
-      flavor: null,
-      lang: null,
-      attribution: DEFAULT_TILE_ATTRIBUTION,
-      bounds: null,
-      minZoom: 3,
-      maxZoom: 19,
-      installedAt: null,
-      manifestPath: null,
-    };
-  }
-
-  try {
-    const manifest = JSON.parse(readFileSync(TILE_PACK_MANIFEST_PATH, "utf8")) as LocalTilePackManifest;
-    const kind = manifest.kind === "pmtiles" ? "pmtiles" : "raster";
-    return {
-      available: true,
-      mode: "local-pack",
-      kind,
-      name:
-        manifest.name?.trim()
-        || (kind === "pmtiles" ? "Protomaps Dark Offline World" : "AIS Offline Tile Pack"),
-      tileUrlTemplate:
-        kind === "raster"
-          ? manifest.tileUrlTemplate?.trim() || "/tiles/osm/{z}/{x}/{y}.png"
-          : null,
-      pmtilesUrl:
-        kind === "pmtiles"
-          ? manifest.pmtilesUrl?.trim() || "/tiles/osm/world.pmtiles"
-          : null,
-      flavor: kind === "pmtiles" ? normalizePmtilesFlavor(manifest.flavor) : null,
-      lang: kind === "pmtiles" ? manifest.lang?.trim() || "en" : null,
-      attribution: manifest.attribution?.trim() || DEFAULT_TILE_ATTRIBUTION,
-      bounds: manifest.bounds ?? null,
-      minZoom: Number.isFinite(manifest.minZoom) ? Math.max(0, manifest.minZoom!) : 0,
-      maxZoom: Number.isFinite(manifest.maxZoom) ? Math.max(0, manifest.maxZoom!) : 12,
-      installedAt: manifest.installedAt?.trim() || null,
-      manifestPath: TILE_PACK_MANIFEST_PATH,
-    };
-  } catch {
-    warnings.push("The offline AIS tile manifest is present but could not be parsed.");
-
-    return {
-      available: false,
-      mode: "remote-live",
-      kind: "raster",
-      name: "OpenStreetMap Live",
-      tileUrlTemplate: DEFAULT_TILE_URL_TEMPLATE,
-      pmtilesUrl: null,
-      flavor: null,
-      lang: null,
-      attribution: DEFAULT_TILE_ATTRIBUTION,
-      bounds: null,
-      minZoom: 3,
-      maxZoom: 19,
-      installedAt: null,
-      manifestPath: TILE_PACK_MANIFEST_PATH,
-    };
-  }
 }
 
 function computeBounds(vessels: AisVesselContact[]): AisBounds | null {
@@ -300,6 +189,8 @@ class AisRuntimeService {
       throw new Error(this.runtime.message);
     }
 
+    hackrfDeviceService.claim("ais", "the AIS decoder");
+
     this.expectedExit = false;
     this.stdoutBuffer = "";
     this.stderrBuffer = "";
@@ -326,6 +217,7 @@ class AisRuntimeService {
 
     if (!proc.stdout || !proc.stderr) {
       proc.kill("SIGTERM");
+      hackrfDeviceService.release("ais");
       this.runtime = this.buildBaseStatus("error", "Could not initialize the AIS runtime process.");
       throw new Error(this.runtime.message);
     }
@@ -338,19 +230,24 @@ class AisRuntimeService {
 
     proc.once("error", (error) => {
       this.process = null;
+      hackrfDeviceService.release("ais");
       this.runtime = this.buildBaseStatus("error", error.message || "Could not start the AIS decoder.");
     });
 
     proc.once("close", (code, signal) => {
       this.process = null;
+      hackrfDeviceService.release("ais");
       if (this.expectedExit) {
         this.runtime = this.buildBaseStatus("stopped", "AIS decoder is stopped.");
         return;
       }
 
-      const tail = this.stderrLines.at(-1);
+      const fallbackMessage = `AIS decoder stopped unexpectedly (code ${code ?? -1}, signal ${signal ?? "none"}).`;
       this.runtime = {
-        ...this.buildBaseStatus("error", tail || `AIS decoder stopped unexpectedly (code ${code ?? -1}, signal ${signal ?? "none"}).`),
+        ...this.buildBaseStatus(
+          "error",
+          pickHackrfRuntimeErrorMessage(this.stderrLines, fallbackMessage),
+        ),
         startedAt: this.runtime.startedAt,
         lastFrameAt: this.runtime.lastFrameAt,
       };
@@ -388,6 +285,7 @@ class AisRuntimeService {
 
   async stop(): Promise<void> {
     if (!this.process) {
+      hackrfDeviceService.release("ais");
       this.runtime = this.buildBaseStatus("stopped", "AIS decoder is stopped.");
       return;
     }

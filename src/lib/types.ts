@@ -203,17 +203,21 @@ export type CustomStationDraft = {
   description: string;
 };
 
-export type AisBounds = {
+export type GeoBounds = {
   west: number;
   south: number;
   east: number;
   north: number;
 };
 
-export type AisPoint = {
+export type GeoPoint = {
   latitude: number;
   longitude: number;
 };
+
+export type AisBounds = GeoBounds;
+
+export type AisPoint = GeoPoint;
 
 export type AisRuntimeState = "stopped" | "starting" | "running" | "error";
 
@@ -239,7 +243,7 @@ export type AisChannelStatus = {
   lastPhase: number | null;
 };
 
-export type AisTilePackSummary = {
+export type MapTilePackSummary = {
   available: boolean;
   mode: "remote-live" | "local-pack";
   kind: "raster" | "pmtiles";
@@ -249,12 +253,14 @@ export type AisTilePackSummary = {
   flavor: "light" | "dark" | "white" | "grayscale" | "black" | null;
   lang: string | null;
   attribution: string;
-  bounds: AisBounds | null;
+  bounds: GeoBounds | null;
   minZoom: number;
   maxZoom: number;
   installedAt: string | null;
   manifestPath: string | null;
 };
+
+export type AisTilePackSummary = MapTilePackSummary;
 
 export type AisVesselContact = {
   mmsi: string;
@@ -288,4 +294,77 @@ export type AisFeedSnapshot = {
   warnings: string[];
   tilePack: AisTilePackSummary;
   runtime: AisRuntimeStatus;
+};
+
+export type AdsbRuntimeState = "stopped" | "starting" | "running" | "error";
+
+export type AdsbRuntimeStatus = {
+  state: AdsbRuntimeState;
+  message: string;
+  binaryAvailable: boolean;
+  binaryPath: string;
+  startedAt: string | null;
+  lastJsonAt: string | null;
+  centerFreqHz: number;
+  sampleRate: number;
+  jsonDir: string;
+  receiverLatitude: number | null;
+  receiverLongitude: number | null;
+};
+
+export type AdsbDecoderStats = {
+  messages: number;
+  modes: number;
+  bad: number;
+  signalDbfs: number | null;
+  noiseDbfs: number | null;
+  peakSignalDbfs: number | null;
+  gainDb: number | null;
+  strongSignals: number;
+  samplesProcessed: number;
+  samplesDropped: number;
+};
+
+export type AdsbReceiverInfo = {
+  latitude: number | null;
+  longitude: number | null;
+  refreshMs: number | null;
+  version: string;
+};
+
+export type AdsbAircraftContact = {
+  hex: string;
+  flight: string;
+  type: string;
+  category: string;
+  squawk: string;
+  emergency: string;
+  latitude: number | null;
+  longitude: number | null;
+  altitudeFeet: number | null;
+  groundSpeedKnots: number | null;
+  trackDeg: number | null;
+  verticalRateFpm: number | null;
+  onGround: boolean;
+  messageCount: number;
+  rssi: number | null;
+  seenAt: string;
+  seenPosAt: string | null;
+  sourceLabel: string;
+};
+
+export type AdsbFeedSnapshot = {
+  generatedAt: string;
+  aircraftCount: number;
+  positionCount: number;
+  airborneCount: number;
+  latestMessageAt: string | null;
+  center: GeoPoint | null;
+  bounds: GeoBounds | null;
+  aircraft: AdsbAircraftContact[];
+  warnings: string[];
+  tilePack: MapTilePackSummary;
+  runtime: AdsbRuntimeStatus;
+  receiver: AdsbReceiverInfo | null;
+  stats: AdsbDecoderStats | null;
 };

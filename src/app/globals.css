@@ -330,6 +330,60 @@ select option:hover {
   border-width: 2px;
 }
 
+.adsb-aircraft-icon-shell {
+  background: transparent;
+  border: 0;
+}
+
+.adsb-aircraft-icon {
+  position: relative;
+  display: block;
+  width: 30px;
+  height: 30px;
+}
+
+.adsb-aircraft-icon__halo,
+.adsb-aircraft-icon__body,
+.adsb-aircraft-icon__wing {
+  position: absolute;
+}
+
+.adsb-aircraft-icon__halo {
+  inset: 4px;
+  border-radius: 9999px;
+  border: 1px solid var(--adsb-halo, rgba(87, 215, 255, 0.28));
+  background: var(--adsb-halo, rgba(87, 215, 255, 0.12));
+  animation: adsb-pulse 2.4s ease-out infinite;
+}
+
+.adsb-aircraft-icon__body {
+  top: 3px;
+  left: 12px;
+  width: 6px;
+  height: 22px;
+  border-radius: 9999px;
+  background: var(--adsb-color, var(--accent));
+  transform-origin: 50% 12px;
+  transform: rotate(var(--adsb-heading, 0deg));
+  box-shadow: 0 0 12px color-mix(in srgb, var(--adsb-color, var(--accent)) 35%, transparent);
+}
+
+.adsb-aircraft-icon__wing {
+  top: 12px;
+  left: 4px;
+  width: 22px;
+  height: 6px;
+  border-radius: 9999px;
+  background: var(--adsb-color, var(--accent));
+  transform-origin: 50% 3px;
+  transform: rotate(var(--adsb-heading, 0deg));
+}
+
+.adsb-aircraft-icon.is-selected .adsb-aircraft-icon__halo {
+  inset: 1px;
+  border-width: 2px;
+}
+
 @keyframes ais-pulse {
   0% {
     transform: scale(0.9);
@@ -344,5 +398,22 @@ select option:hover {
   100% {
     transform: scale(1.15);
     opacity: 0.02;
+  }
+}
+
+@keyframes adsb-pulse {
+  0% {
+    transform: scale(0.92);
+    opacity: 0.68;
+  }
+
+  70% {
+    transform: scale(1.12);
+    opacity: 0.14;
+  }
+
+  100% {
+    transform: scale(1.12);
+    opacity: 0.03;
   }
 }

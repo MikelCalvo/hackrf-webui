@@ -12,6 +12,7 @@ import {
   type FormEvent,
 } from "react";
 
+import { AdsbModule } from "@/components/adsb";
 import { AisModule } from "@/components/ais";
 import { PmrModule } from "@/components/pmr";
 import {
@@ -62,7 +63,7 @@ const DEFAULT_DRAFT: CustomStationDraft = {
 const MODULES = [
   { id: "fm", label: "FM", band: "87.5-108", live: true },
   { id: "pmr", label: "PMR", band: "446 MHz", live: true },
-  { id: "ads-b", label: "ADS-B", band: "1090 MHz", live: false },
+  { id: "ads-b", label: "ADS-B", band: "1090 MHz", live: true },
   { id: "ais", label: "AIS", band: "162 MHz", live: true },
   { id: "airband", label: "Airband", band: "118-137", live: false },
 ] as const;
@@ -726,7 +727,7 @@ export function Dashboard({ manifest }: { manifest: CatalogManifest }) {
   const [loadedCountries, setLoadedCountries] = useState<Record<string, LoadedCountryCatalog>>(
     {},
   );
-  const [activeModule, setActiveModule] = useState<"fm" | "pmr" | "ais">("fm");
+  const [activeModule, setActiveModule] = useState<"fm" | "pmr" | "ads-b" | "ais">("fm");
   const [showWelcome, setShowWelcome] = useState(false);
   const [savedLocation, setSavedLocation] = useState<SavedLocation | null>(null);
   const [query, setQuery] = useState("");
@@ -1468,6 +1469,10 @@ export function Dashboard({ manifest }: { manifest: CatalogManifest }) {
             onControlsChange={setControls}
             onRefreshHardware={refreshHardware}
           />
+        ) : null}
+
+        {activeModule === "ads-b" ? (
+          <AdsbModule hardware={hardware} onRefreshHardware={refreshHardware} />
         ) : null}
 
         {activeModule === "ais" ? (

@@ -1,6 +1,6 @@
 import { adsbRuntime } from "@/server/adsb-runtime";
-import { hackrfService } from "@/server/hackrf";
 import { aisRuntime } from "@/server/ais-runtime";
+import { hackrfService } from "@/server/hackrf";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -16,30 +16,30 @@ function jsonResponse(payload: unknown, init?: ResponseInit): Response {
 }
 
 export async function GET(): Promise<Response> {
-  return jsonResponse(aisRuntime.getStatus());
+  return jsonResponse(adsbRuntime.getStatus());
 }
 
 export async function POST(): Promise<Response> {
   if (hackrfService.getStatus().activeStream) {
     return jsonResponse(
       {
-        message: "Stop the FM or PMR stream before starting AIS.",
-        runtime: aisRuntime.getStatus(),
+        message: "Stop the FM or PMR stream before starting ADS-B.",
+        runtime: adsbRuntime.getStatus(),
       },
       { status: 409 },
     );
   }
 
-  await adsbRuntime.stop();
+  await aisRuntime.stop();
 
   try {
-    const status = await aisRuntime.start();
+    const status = await adsbRuntime.start();
     return jsonResponse(status);
   } catch (error) {
     return jsonResponse(
       {
-        message: error instanceof Error ? error.message : "Could not start the AIS decoder.",
-        runtime: aisRuntime.getStatus(),
+        message: error instanceof Error ? error.message : "Could not start the ADS-B decoder.",
+        runtime: adsbRuntime.getStatus(),
       },
       { status: 503 },
     );
@@ -47,6 +47,6 @@ export async function POST(): Promise<Response> {
 }
 
 export async function DELETE(): Promise<Response> {
-  await aisRuntime.stop();
-  return jsonResponse(aisRuntime.getStatus());
+  await adsbRuntime.stop();
+  return jsonResponse(adsbRuntime.getStatus());
 }

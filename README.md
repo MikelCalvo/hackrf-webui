@@ -2,11 +2,12 @@
 
 `hackrf-webui` is a local-first web interface for `HackRF`.
 
-It runs on the user's own machine, works offline at runtime, exposes radio controls in a browser UI, and currently ships with three real modules:
+It runs on the user's own machine, works offline at runtime, exposes radio controls in a browser UI, and currently ships with four real modules:
 
 - `FM`: browser listening with a large country-sharded station catalog
 - `PMR`: narrowband channel presets with manual listen and automatic scanning
 - `AIS`: native dual-channel HackRF decoding with a live vessel map and offline-capable basemaps
+- `ADS-B`: live aircraft tracking with a managed `dump1090-fa` backend, a local aircraft map and offline-capable basemaps
 
 There is no cloud layer, no account system, and no remote device bridge.
 
@@ -44,12 +45,18 @@ There is no cloud layer, no account system, and no remote device bridge.
 - vessel map with offline-capable dark basemaps
 - local raster packs or PMTiles, plus a default worldwide Protomaps dark extract served from `public/tiles/osm`
 
+### ADS-B
+
+- live ADS-B / Mode S decoding at `1090 MHz`
+- managed `dump1090-fa` backend driven by `hackrf-webui`
+- aircraft map with the same offline-capable basemap system used by AIS
+- local start / stop control, receiver stats and aircraft detail inside the dashboard
+
 ### Planned / Not Landed Yet
 
-- `ADS-B`
 - `Airband`
 
-Those modules already exist in the dashboard structure, but they are not implemented yet.
+That module already exists in the dashboard structure, but it is not implemented yet.
 
 ## Quick Start
 
@@ -65,6 +72,7 @@ By default, `start.sh`:
 - installs Node dependencies
 - offers an offline basemap profile selector in interactive terminals when no map source is provided
 - installs a dark offline world basemap unless `--skip-ais-maps` is used
+- installs or updates the local `dump1090-fa` ADS-B backend unless `--skip-adsb-runtime` is used
 - builds the native `HackRF` receiver binaries
 - builds the Next.js app
 - starts the web UI in production mode
@@ -82,7 +90,9 @@ Useful options:
 ./start.sh --skip-npm --skip-build
 ./start.sh --map-profile detailed
 ./start.sh --map-zoom 12
-./start.sh --ais-tile-pack-file /path/to/custom-ais.pmtiles
+./start.sh --ais-tile-pack-file /path/to/custom-world.pmtiles
+./start.sh --skip-adsb-runtime
+./start.sh --reinstall-adsb-runtime
 ./start.sh --rebuild
 ```
 
@@ -94,8 +104,10 @@ What they do:
 - `--skip-npm` and `--skip-build` reuse existing local artifacts
 - `--map-profile` selects one of the built-in world basemap profiles when using the default Protomaps source
 - `--map-zoom` forces a custom `maxZoom` for the default world extract
-- `--ais-tile-pack-url` and `--ais-tile-pack-file` install an offline AIS pack from a `.zip` raster pack or a `.pmtiles` source archive
+- `--ais-tile-pack-url` and `--ais-tile-pack-file` install an offline map pack from a `.zip` raster pack or a `.pmtiles` source archive
 - `--skip-ais-maps` keeps AIS in live-tile mode
+- `--skip-adsb-runtime` keeps the existing ADS-B backend untouched or skips it entirely
+- `--reinstall-adsb-runtime` rebuilds the pinned local `dump1090-fa` backend
 - `--rebuild` forces a fresh `npm ci` and production rebuild
 
 Environment overrides also work:
@@ -104,7 +116,8 @@ Environment overrides also work:
 HOST=0.0.0.0 PORT=4000 ./start.sh
 MAP_PACK_PROFILE=ultra ./start.sh
 MAP_PACK_MAX_ZOOM=12 ./start.sh
-AIS_TILE_PACK_FILE=/path/to/custom-ais.pmtiles ./start.sh
+AIS_TILE_PACK_FILE=/path/to/custom-world.pmtiles ./start.sh
+DUMP1090_FA_REINSTALL=1 ./start.sh
 ```
 
 If the default port is busy and you did not explicitly force a port, the script automatically falls forward to the next free one it can find.
@@ -136,8 +149,15 @@ If you prefer to handle dependencies yourself:
 
 ```bash
 npm ci
+node ./scripts/install-dump1090-fa.mjs
 npm run build
 npm run start -- --hostname 127.0.0.1 --port 3000
+```
+
+Optional offline maps can also be prepared manually:
+
+```bash
+node ./scripts/install-ais-map-pack.mjs
 ```
 
 You can also validate the environment without starting the server:
@@ -155,6 +175,7 @@ For normal usage, the app needs:
 - `ffmpeg`
 - `cc`
 - `pkg-config`
+- `ncurses` development headers
 - `Node.js` `20+`
 - `npm`
 
@@ -162,6 +183,10 @@ The bundled native receivers are built from:
 
 - [`native/hackrf_audio_stream.c`](native/hackrf_audio_stream.c)
 - [`native/hackrf_ais_stream.c`](native/hackrf_ais_stream.c)
+
+The managed ADS-B backend is built separately into:
+
+- [`bin/dump1090-fa`](bin/dump1090-fa)
 
 ## AIS Runtime Notes
 
@@ -190,12 +215,49 @@ Raster pack archives must contain:
 
 PMTiles sources are re-extracted locally into `public/tiles/osm/world.pmtiles`.
 
-To remove downloaded map data and local map-cache artifacts:
+## ADS-B Runtime Notes
+
+The ADS-B module uses the same local-first dashboard model as AIS, but the decoder backend is `dump1090-fa` compiled locally and managed by `hackrf-webui`.
+
+The runtime:
+
+- claims the `HackRF` exclusively while ADS-B is active
+- starts `dump1090-fa` with `HackRF` input at `1090 MHz`
+- reads `receiver.json`, `aircraft.json` and `stats.json` from `.cache/adsb-runtime/json`
+- normalizes those files into the app's own ADS-B snapshot and UI state
+- reuses the same offline basemap pipeline as AIS
+
+The ADS-B map behavior is:
+
+- if FM already has a saved city in browser local storage, ADS-B starts centered near that city
+- otherwise it falls back to live aircraft bounds when traffic exists
+- if there is still no aircraft position, it falls back to receiver coordinates if configured
+- if there is still no location hint, it falls back to the installed basemap bounds
+
+Useful environment overrides for the ADS-B backend:
 
 ```bash
-./delete_maps.sh
-./delete_maps.sh --dry-run
+ADSB_SAMPLE_RATE=2400000 ./start.sh
+ADSB_LNA_GAIN=32 ADSB_VGA_GAIN=50 ./start.sh
+ADSB_ENABLE_AMP=1 ./start.sh
+ADSB_ENABLE_ANTENNA_POWER=1 ./start.sh
+ADSB_RECEIVER_LAT=40.4168 ADSB_RECEIVER_LON=-3.7038 ./start.sh
 ```
+
+If you prefer to build only the ADS-B backend manually:
+
+```bash
+node ./scripts/install-dump1090-fa.mjs
+```
+
+To remove local generated artifacts and leave the repo close to a fresh clone:
+
+```bash
+./clean.sh
+./clean.sh --dry-run
+```
+
+`./clean.sh` asks for confirmation by default. Use `./clean.sh --yes` in non-interactive environments.
 
 ## Development
 
@@ -212,7 +274,7 @@ Open `http://localhost:3000`.
 npm run dev:turbo
 ```
 
-If the local cache gets corrupted:
+If you only want to clear the Next.js build output:
 
 ```bash
 npm run clean
@@ -294,5 +356,5 @@ At the moment, those docs are FM-specific. PMR does not need the same coverage-t
 - Runtime use is local and offline-friendly.
 - The app does not depend on remote frontend assets.
 - The current radio runtime is focused on `HackRF`.
-- FM, PMR and AIS are the landed modules today.
+- FM, PMR, AIS and ADS-B are the landed modules today.
 - The catalog and band modules are intended to keep growing through importer work and targeted PRs.
