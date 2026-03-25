@@ -4,6 +4,7 @@ import Link from "next/link";
 import dynamic from "next/dynamic";
 import {
   startTransition,
+  useCallback,
   useDeferredValue,
   useEffect,
   useEffectEvent,
@@ -19,6 +20,7 @@ import {
   hydrateCountryShard,
   sortStations,
 } from "@/lib/catalog";
+import { LocationModal } from "@/components/location-modal";
 import {
   CLS_BTN_GHOST,
   CLS_BTN_PRIMARY,
@@ -27,6 +29,15 @@ import {
   cx,
 } from "@/components/module-ui";
 import {
+  buildCatalogScopeFilters,
+  buildCatalogScopeLabel,
+  buildSourceModeLabel,
+  createEmptyStoredAppLocation,
+  readStoredAppLocation,
+  resolveAppLocation,
+  writeStoredAppLocation,
+} from "@/lib/location";
+import {
   APP_MODULES,
   getCookieHeaderForModule,
   LAST_MODULE_STORAGE_KEY,
@@ -34,27 +45,19 @@ import {
 } from "@/lib/modules";
 import type {
   CatalogCountryShard,
-  CatalogCountrySummary,
   CatalogData,
   CatalogManifest,
   CustomStationDraft,
   FmStation,
+  GpsdSnapshot,
   HardwareStatus,
+  StoredAppLocation,
 } from "@/lib/types";
 
 const STORAGE_KEY = "hackrf-webui.custom-stations.v1";
-const LOCATION_KEY = "hackrf-webui.location.v1";
 const STATION_ROW_HEIGHT = 76;
 const STATION_LIST_OVERSCAN = 10;
 const FM_TUNE_SYNC_POLL_MS = 200;
-
-type SavedLocation = {
-  cityId: string;
-  cityName: string;
-  countryId: string;
-  countryName: string;
-  regionId: string;
-};
 
 type LocationOption = { id: string; label: string; count: number };
 type CountryOption = LocationOption & { regionId: string };
@@ -129,6 +132,17 @@ const MaritimeModule = dynamic(
 
 function formatCount(value: number): string {
   return numberFormatter.format(value);
+}
+
+function formatGeoPoint(
+  point: { latitude: number; longitude: number } | null,
+  digits = 5,
+): string | null {
+  if (!point) {
+    return null;
+  }
+
+  return `${point.latitude.toFixed(digits)}, ${point.longitude.toFixed(digits)}`;
 }
 
 function buildStreamUrl(
@@ -437,6 +451,15 @@ async function fetchHardwareStatus(): Promise<HardwareStatus> {
   return (await res.json()) as HardwareStatus;
 }
 
+async function fetchGpsdStatus(): Promise<GpsdSnapshot> {
+  const res = await fetch("/api/location/gpsd", { cache: "no-store" });
+  if (!res.ok) {
+    throw new Error(`HTTP ${res.status}`);
+  }
+
+  return (await res.json()) as GpsdSnapshot;
+}
+
 function SpeakerIcon({ volume }: { volume: number }) {
   if (volume === 0) {
     return (
@@ -543,284 +566,6 @@ function VolumeControl({
     </div>
   );
 }
-
-function WelcomeModal({
-  manifest,
-  onSelect,
-  onLoadCountry,
-  onSkip,
-}: {
-  manifest: CatalogManifest;
-  onSelect: (location: SavedLocation) => void;
-  onLoadCountry: (countryId: string) => Promise<CatalogCountryShard | null>;
-  onSkip: () => void;
-}) {
-  const [search, setSearch] = useState("");
-  const [selectedCountry, setSelectedCountry] = useState<CatalogCountrySummary | null>(null);
-  const [cityOptions, setCityOptions] = useState<LocationOption[]>([]);
-  const [isLoadingCities, setIsLoadingCities] = useState(false);
-  const [loadError, setLoadError] = useState("");
-
-  const regionsById = useMemo(
-    () => new Map(manifest.regions.map((region) => [region.id, region.name])),
-    [manifest.regions],
-  );
-
-  const countryResults = useMemo(() => {
-    const query = search.trim().toLowerCase();
-    const candidates = manifest.countries.map((country) => ({
-      ...country,
-      regionName: regionsById.get(country.regionId) ?? "Other",
-    }));
-
-    if (!query) {
-      return candidates;
-    }
-
-    return candidates.filter((country) => {
-      return (
-        country.name.toLowerCase().includes(query) ||
-        country.code.toLowerCase().includes(query) ||
-        country.regionName.toLowerCase().includes(query)
-      );
-    });
-  }, [manifest.countries, regionsById, search]);
-
-  const cityResults = useMemo(() => {
-    const query = search.trim().toLowerCase();
-    if (!query) {
-      return cityOptions;
-    }
-
-    return cityOptions.filter((city) => city.label.toLowerCase().includes(query));
-  }, [cityOptions, search]);
-
-  const inputClass =
-    "w-full rounded-lg border border-white/10 bg-white/[0.05] px-3 py-2.5 text-sm text-[var(--foreground)] outline-none transition placeholder:text-[var(--muted)] focus:border-[var(--accent)]/50 focus:bg-white/[0.07]";
-
-  async function handleCountrySelect(country: CatalogCountrySummary): Promise<void> {
-    setSelectedCountry(country);
-    setIsLoadingCities(true);
-    setLoadError("");
-
-    try {
-      const shard = await onLoadCountry(country.id);
-      if (!shard) {
-        throw new Error(`Could not load cities for ${country.name}.`);
-      }
-
-      const cities = shard.cities
-        .map((city) => ({
-          id: city.id,
-          label: city.name,
-          count: city.stationCount,
-        }))
-        .sort((left, right) => compareText(left.label, right.label));
-
-      setCityOptions(cities);
-      setSearch("");
-    } catch (error) {
-      setLoadError(
-        error instanceof Error
-          ? error.message
-          : `Could not load cities for ${country.name}.`,
-      );
-    } finally {
-      setIsLoadingCities(false);
-    }
-  }
-
-  function goBackToCountries(): void {
-    setSelectedCountry(null);
-    setCityOptions([]);
-    setLoadError("");
-    setSearch("");
-  }
-
-  return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/75 backdrop-blur-sm">
-      <div
-        className="w-[24rem] rounded-2xl border border-white/10 bg-[#080f1c] p-6 shadow-[0_32px_80px_rgba(0,0,0,0.6)]"
-        style={{
-          boxShadow: "0 32px 80px rgba(0,0,0,0.6), 0 0 0 1px rgba(87,215,255,0.06)",
-        }}
-      >
-        <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-[var(--accent)]">
-          HackRF WebUI
-        </p>
-        <h2 className="mt-2 text-xl font-semibold text-[var(--foreground)]">
-          {selectedCountry ? `Choose a city in ${selectedCountry.name}` : "Choose a country to start"}
-        </h2>
-        <p className="mt-1.5 text-sm leading-5 text-[var(--muted)]">
-          {selectedCountry
-            ? "The dialog is now city-first inside the selected country so the initial filter is much tighter."
-            : "The UI keeps the catalog fast by loading one country at a time. After that, you can pick a city inside that country."}
-        </p>
-
-        <input
-          autoFocus
-          className={cx(inputClass, "mt-4")}
-          placeholder={selectedCountry ? "Search city..." : "Country, code, or region..."}
-          value={search}
-          onChange={(event) => setSearch(event.target.value)}
-        />
-
-        <div className="mt-3 max-h-64 overflow-y-auto rounded-xl border border-white/8 bg-white/[0.02]">
-          {loadError ? (
-            <div className="space-y-3 px-4 py-4">
-              <p className="text-sm text-rose-200">{loadError}</p>
-              <button
-                className={cx(CLS_BTN_GHOST, "w-full justify-center")}
-                onClick={goBackToCountries}
-                type="button"
-              >
-                Back
-              </button>
-            </div>
-          ) : isLoadingCities ? (
-            <div className="flex flex-col items-center gap-3 px-4 py-8 text-center">
-              <Spinner />
-              <p className="text-sm text-[var(--muted)]">
-                Loading cities for {selectedCountry?.name}...
-              </p>
-            </div>
-          ) : selectedCountry ? (
-            cityResults.length === 0 ? (
-              <p className="px-4 py-3 text-sm text-[var(--muted)]">No cities match your search.</p>
-            ) : (
-              <>
-                <button
-                  className="flex w-full items-center justify-between border-b border-white/[0.04] px-4 py-3 text-left transition hover:bg-white/[0.04]"
-                  onClick={() =>
-                    onSelect({
-                      regionId: selectedCountry.regionId,
-                      countryId: selectedCountry.id,
-                      countryName: selectedCountry.name,
-                      cityId: "all",
-                      cityName: "All cities",
-                    })
-                  }
-                  type="button"
-                >
-                  <div className="min-w-0">
-                    <p className="truncate text-sm font-medium text-[var(--foreground)]">
-                      All cities
-                    </p>
-                    <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-[var(--muted)]">
-                      {selectedCountry.name}
-                    </p>
-                  </div>
-                  <p className="font-mono text-[10px] text-[var(--muted)]">
-                    {formatCount(selectedCountry.stationCount)} presets
-                  </p>
-                </button>
-                {cityResults.map((city) => (
-                  <button
-                    key={city.id}
-                    className="flex w-full items-center justify-between border-b border-white/[0.04] px-4 py-3 text-left transition hover:bg-white/[0.04] last:border-0"
-                    onClick={() =>
-                      onSelect({
-                        regionId: selectedCountry.regionId,
-                        countryId: selectedCountry.id,
-                        countryName: selectedCountry.name,
-                        cityId: city.id,
-                        cityName: city.label,
-                      })
-                    }
-                    type="button"
-                  >
-                    <span className="truncate text-sm font-medium text-[var(--foreground)]">
-                      {city.label}
-                    </span>
-                    <span className="font-mono text-[10px] text-[var(--muted)]">
-                      {formatCount(city.count)}
-                    </span>
-                  </button>
-                ))}
-              </>
-            )
-          ) : (
-            countryResults.length === 0 ? (
-              <p className="px-4 py-3 text-sm text-[var(--muted)]">No countries match your search.</p>
-            ) : (
-              countryResults.map((country) => (
-              <button
-                key={country.id}
-                className="flex w-full items-center justify-between border-b border-white/[0.04] px-4 py-3 text-left transition hover:bg-white/[0.04] last:border-0"
-                onClick={() => void handleCountrySelect(country)}
-                type="button"
-              >
-                <div className="min-w-0">
-                  <p className="truncate text-sm font-medium text-[var(--foreground)]">
-                    {country.name}
-                  </p>
-                  <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-[var(--muted)]">
-                    {country.code} · {country.regionName}
-                  </p>
-                </div>
-                <div className="text-right">
-                  <p className="font-mono text-[10px] text-[var(--foreground)]">
-                    {formatCount(country.stationCount)} presets
-                  </p>
-                  <p className="font-mono text-[10px] text-[var(--muted)]">
-                    {formatCount(country.cityCount)} cities
-                  </p>
-                </div>
-              </button>
-              ))
-            )
-          )}
-        </div>
-
-        <div className="mt-5 border-t border-white/[0.06] pt-4">
-          <div
-            className={cx(
-              "grid gap-3",
-              selectedCountry ? "grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)]" : "grid-cols-1",
-            )}
-          >
-          {selectedCountry ? (
-            <button
-              className={cx(CLS_BTN_TILE, "border-white/10 bg-white/[0.04] text-[var(--muted-strong)] hover:border-white/18 hover:bg-white/[0.07]")}
-              onClick={goBackToCountries}
-              type="button"
-            >
-              <span className="font-mono text-[10px] uppercase tracking-[0.18em] text-[var(--muted)]">
-                Step Back
-              </span>
-              <span className="mt-1 text-sm font-semibold text-[var(--foreground)]">
-                Back to countries
-              </span>
-            </button>
-          ) : null}
-          <button
-            className={cx(
-              CLS_BTN_TILE,
-              "border-[var(--accent)]/18 bg-[linear-gradient(135deg,rgba(87,215,255,0.1),rgba(87,215,255,0.03))] text-[var(--muted-strong)] hover:border-[var(--accent)]/38 hover:bg-[linear-gradient(135deg,rgba(87,215,255,0.16),rgba(87,215,255,0.05))]",
-              selectedCountry ? "" : "w-full",
-            )}
-            onClick={onSkip}
-            type="button"
-          >
-            <span className="font-mono text-[10px] uppercase tracking-[0.18em] text-[var(--accent)]">
-              Skip Catalog
-            </span>
-            <span className="mt-1 text-sm font-semibold text-[var(--foreground)]">
-              Use only custom presets
-            </span>
-            <span className="mt-1 text-xs text-[var(--muted)]">
-              You can load a country later from the dashboard filters.
-            </span>
-          </button>
-        </div>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-const CLS_BTN_TILE =
-  "inline-flex min-h-[4.25rem] flex-col items-start justify-center rounded px-4 py-3 text-left transition";
 
 function ModuleIcon({ id }: { id: string }) {
   if (id === "fm") {
@@ -930,8 +675,15 @@ export function Dashboard({
   const [loadedCountries, setLoadedCountries] = useState<Record<string, LoadedCountryCatalog>>(
     {},
   );
-  const [showWelcome, setShowWelcome] = useState(false);
-  const [savedLocation, setSavedLocation] = useState<SavedLocation | null>(null);
+  const [appLocation, setAppLocation] = useState<StoredAppLocation>(
+    () => createEmptyStoredAppLocation(),
+  );
+  const [locationReady, setLocationReady] = useState(false);
+  const [locationModalOpen, setLocationModalOpen] = useState(false);
+  const [gpsd, setGpsd] = useState<GpsdSnapshot | null>(null);
+  const [gpsdLoading, setGpsdLoading] = useState(false);
+  const [gpsdError, setGpsdError] = useState("");
+  const gpsdRequestInFlightRef = useRef<Promise<GpsdSnapshot | null> | null>(null);
   const [query, setQuery] = useState("");
   const deferredQuery = useDeferredValue(query.trim().toLowerCase());
   const [regionFilter, setRegionFilter] = useState("all");
@@ -962,16 +714,19 @@ export function Dashboard({
     () => ({ regions: manifest.regions, countries: manifest.countries }),
     [manifest.countries, manifest.regions],
   );
+  const resolvedLocation = useMemo(
+    () => resolveAppLocation(locationReady ? appLocation : null, gpsd),
+    [appLocation, gpsd, locationReady],
+  );
 
-  function persistLocation(location: SavedLocation | null): void {
-    if (location) {
-      window.localStorage.setItem(LOCATION_KEY, JSON.stringify(location));
-      setSavedLocation(location);
-      return;
-    }
-
-    window.localStorage.setItem(LOCATION_KEY, "skipped");
-    setSavedLocation(null);
+  function applyCatalogScopeToFilters(location: StoredAppLocation): void {
+    const nextFilters = buildCatalogScopeFilters(location.catalogScope);
+    startTransition(() => {
+      setRegionFilter(nextFilters.regionFilter);
+      setCountryFilter(nextFilters.countryFilter);
+      setCityFilter(nextFilters.cityFilter);
+      setQuery("");
+    });
   }
 
   useEffect(() => {
@@ -985,53 +740,77 @@ export function Dashboard({
   }, [activeModule]);
 
   useEffect(() => {
-    if (!isFmModule) {
-      setShowWelcome(false);
+    const stored = readStoredAppLocation();
+    if (stored) {
+      setAppLocation(stored);
+      if (stored.configured) {
+        applyCatalogScopeToFilters(stored);
+      }
+      setLocationModalOpen(false);
+    } else {
+      setAppLocation(createEmptyStoredAppLocation());
+      setLocationModalOpen(true);
+    }
+
+    setLocationReady(true);
+  }, []);
+
+  useEffect(() => {
+    if (!locationReady || appLocation.sourceMode !== "gpsd" || locationModalOpen) {
       return;
     }
 
-    const raw = window.localStorage.getItem(LOCATION_KEY);
-    if (!raw) {
-      setShowWelcome(true);
-      return;
-    }
+    let cancelled = false;
 
-    if (raw === "skipped") {
-      return;
-    }
+    const pollGpsd = async (showLoading: boolean) => {
+      if (showLoading) {
+        setGpsdLoading(true);
+      }
 
-    try {
-      const parsed = JSON.parse(raw) as Partial<SavedLocation>;
-      if (!parsed.countryId) {
-        setShowWelcome(true);
+      if (gpsdRequestInFlightRef.current) {
+        if (showLoading) {
+          setGpsdLoading(false);
+        }
         return;
       }
 
-      const country = countriesById.get(parsed.countryId);
-      if (!country) {
-        setShowWelcome(true);
-        return;
-      }
+      const task = (async () => {
+        try {
+          const snapshot = await fetchGpsdStatus();
+          if (cancelled) {
+            return null;
+          }
 
-      const location: SavedLocation = {
-        regionId: country.regionId,
-        countryId: country.id,
-        countryName: country.name,
-        cityId: typeof parsed.cityId === "string" ? parsed.cityId : "all",
-        cityName:
-          typeof parsed.cityName === "string" && parsed.cityName.trim().length > 0
-            ? parsed.cityName
-            : "All cities",
-      };
+          setGpsd(snapshot);
+          setGpsdError("");
+          return snapshot;
+        } catch (error) {
+          if (!cancelled) {
+            setGpsdError(
+              error instanceof Error ? error.message : "Could not read GPSD status.",
+            );
+          }
+          return null;
+        } finally {
+          gpsdRequestInFlightRef.current = null;
+          if (!cancelled && showLoading) {
+            setGpsdLoading(false);
+          }
+        }
+      })();
 
-      setSavedLocation(location);
-      setRegionFilter(country.regionId);
-      setCountryFilter(country.id);
-      setCityFilter(location.cityId);
-    } catch {
-      setShowWelcome(true);
-    }
-  }, [countriesById, isFmModule]);
+      gpsdRequestInFlightRef.current = task;
+      await task;
+    };
+
+    void pollGpsd(true);
+    const timer = window.setInterval(() => void pollGpsd(false), 5_000);
+
+    return () => {
+      cancelled = true;
+      clearInterval(timer);
+    };
+  }, [appLocation.sourceMode, locationModalOpen, locationReady]);
 
   useEffect(() => {
     window.localStorage.setItem(STORAGE_KEY, JSON.stringify(customStations));
@@ -1043,7 +822,7 @@ export function Dashboard({
     }
   }, [volume]);
 
-  async function refreshHardware(): Promise<void> {
+  const refreshHardware = useCallback(async (): Promise<void> => {
     try {
       setHardware(await fetchHardwareStatus());
       setHardwareError("");
@@ -1052,7 +831,35 @@ export function Dashboard({
         error instanceof Error ? error.message : "Could not read HackRF status.",
       );
     }
-  }
+  }, []);
+
+  const refreshGpsd = useCallback(async (): Promise<void> => {
+    if (gpsdRequestInFlightRef.current) {
+      await gpsdRequestInFlightRef.current;
+      return;
+    }
+
+    setGpsdLoading(true);
+    const task = (async () => {
+      try {
+        const snapshot = await fetchGpsdStatus();
+        setGpsd(snapshot);
+        setGpsdError("");
+        return snapshot;
+      } catch (error) {
+        setGpsdError(
+          error instanceof Error ? error.message : "Could not read GPSD status.",
+        );
+        return null;
+      } finally {
+        gpsdRequestInFlightRef.current = null;
+        setGpsdLoading(false);
+      }
+    })();
+
+    gpsdRequestInFlightRef.current = task;
+    await task;
+  }, []);
 
   function stopListening(): void {
     const audio = audioRef.current;
@@ -1076,7 +883,7 @@ export function Dashboard({
     });
   }
 
-  async function loadCountryCatalog(countryId: string): Promise<LoadedCountryCatalog | null> {
+  const loadCountryCatalog = useCallback(async (countryId: string): Promise<LoadedCountryCatalog | null> => {
     if (cacheRef.current[countryId]) {
       return cacheRef.current[countryId];
     }
@@ -1122,11 +929,19 @@ export function Dashboard({
 
     pendingLoadsRef.current.set(countryId, task);
     return task;
-  }
+  }, [manifest]);
 
   const ensureCountryLoaded = useEffectEvent(
     async (countryId: string): Promise<LoadedCountryCatalog | null> =>
       loadCountryCatalog(countryId),
+  );
+
+  const loadCountryShard = useCallback(
+    async (countryId: string): Promise<CatalogCountryShard | null> => {
+      const loaded = await loadCountryCatalog(countryId);
+      return loaded?.shard ?? null;
+    },
+    [loadCountryCatalog],
   );
 
   useEffect(() => {
@@ -1390,7 +1205,7 @@ export function Dashboard({
 
     const interval = window.setInterval(() => void refreshHardware(), FM_TUNE_SYNC_POLL_MS);
     return () => clearInterval(interval);
-  }, [isFmModule, startingStationId]);
+  }, [isFmModule, refreshHardware, startingStationId]);
 
   function focusPlayingStation(): void {
     if (!actualPlayingId) {
@@ -1413,20 +1228,21 @@ export function Dashboard({
     setPendingScrollId(station.id);
   }
 
-  function handleLocationSelect(location: SavedLocation): void {
-    persistLocation(location);
-    startTransition(() => {
-      setRegionFilter(location.regionId);
-      setCountryFilter(location.countryId);
-      setCityFilter(location.cityId);
-      setQuery("");
-    });
-    setShowWelcome(false);
+  function handleLocationSave(location: StoredAppLocation): void {
+    writeStoredAppLocation(location);
+    setAppLocation(location);
+    applyCatalogScopeToFilters(location);
+    setLocationModalOpen(false);
   }
 
   function handleLocationSkip(): void {
-    persistLocation(null);
-    setShowWelcome(false);
+    const skippedLocation = {
+      ...createEmptyStoredAppLocation(),
+      updatedAt: new Date().toISOString(),
+    };
+    writeStoredAppLocation(skippedLocation);
+    setAppLocation(skippedLocation);
+    setLocationModalOpen(false);
   }
 
   async function startListening(station: FmStation | null): Promise<void> {
@@ -1519,7 +1335,6 @@ export function Dashboard({
   }
 
   function handleRegionChange(nextRegion: string): void {
-    persistLocation(null);
     startTransition(() => {
       setRegionFilter(nextRegion);
       setCountryFilter("all");
@@ -1530,7 +1345,6 @@ export function Dashboard({
 
   function handleCountryChange(nextCountry: string): void {
     if (nextCountry === "all") {
-      persistLocation(null);
       startTransition(() => {
         setCountryFilter("all");
         setCityFilter("all");
@@ -1544,14 +1358,6 @@ export function Dashboard({
       return;
     }
 
-    persistLocation({
-      regionId: country.regionId,
-      countryId: country.id,
-      countryName: country.name,
-      cityId: "all",
-      cityName: "All cities",
-    });
-
     startTransition(() => {
       setRegionFilter(country.regionId);
       setCountryFilter(country.id);
@@ -1562,50 +1368,80 @@ export function Dashboard({
 
   function handleCityChange(nextCity: string): void {
     setCityFilter(nextCity);
-
-    if (activeCountry === "all") {
-      return;
-    }
-
-    const country = countriesById.get(activeCountry);
-    if (!country) {
-      return;
-    }
-
-    if (nextCity === "all") {
-      persistLocation({
-        regionId: country.regionId,
-        countryId: country.id,
-        countryName: country.name,
-        cityId: "all",
-        cityName: "All cities",
-      });
-      return;
-    }
-
-    const city = cityOptions.find((option) => option.id === nextCity);
-    if (!city) {
-      return;
-    }
-
-    persistLocation({
-      regionId: country.regionId,
-      countryId: country.id,
-      countryName: country.name,
-      cityId: city.id,
-      cityName: city.label,
-    });
   }
 
   const hasFilters =
     query.trim().length > 0 || activeRegion !== "all" || activeCountry !== "all" || activeCity !== "all";
   const telemetry = hardware?.activeStream?.telemetry ?? null;
   const hardwareMeta = hwTone(hardware?.state ?? "unknown");
-  const locationLabel = savedLocation
-    ? savedLocation.cityId !== "all"
-      ? savedLocation.cityName
-      : savedLocation.countryName
-    : "All locations";
+  const locationLabel = appLocation.configured
+    ? buildCatalogScopeLabel(appLocation.catalogScope)
+    : "Set location";
+  const gpsdHasFix =
+    gpsd !== null
+    && gpsd.latitude !== null
+    && gpsd.longitude !== null
+    && (gpsd.fixState === "2d" || gpsd.fixState === "3d");
+  const resolvedCoordsLabel = formatGeoPoint(resolvedLocation.resolvedPosition);
+  const gpsFixCoordsLabel = formatGeoPoint(
+    gpsdHasFix && gpsd
+      ? { latitude: gpsd.latitude!, longitude: gpsd.longitude! }
+      : null,
+  );
+  const locationSourceLabel = appLocation.configured ? buildSourceModeLabel(appLocation.sourceMode) : "Location";
+  let locationChipTitle = locationSourceLabel;
+  let locationChipDetail = locationLabel;
+  let locationChipTone =
+    resolvedLocation.sourceStatus === "ready"
+      ? "border-white/10 bg-white/[0.04] text-[var(--foreground)] hover:border-white/18 hover:bg-white/[0.06]"
+      : resolvedLocation.sourceStatus === "waiting"
+        ? "border-amber-300/18 bg-amber-300/10 text-amber-100 hover:border-amber-300/30"
+        : "border-white/8 bg-white/[0.03] text-[var(--muted-strong)] hover:border-white/14 hover:text-[var(--foreground)]";
+  let locationChipDot =
+    resolvedLocation.sourceStatus === "ready"
+      ? "bg-[var(--accent)]"
+      : resolvedLocation.sourceStatus === "waiting"
+        ? "bg-amber-300"
+        : "bg-white/25";
+  let locationChipPulse = false;
+
+  if (appLocation.configured && appLocation.sourceMode === "gpsd") {
+    if (gpsdHasFix) {
+      locationChipTitle = gpsd?.fixState === "3d" ? "GPSD · 3D fix" : "GPSD · 2D fix";
+      locationChipDetail = gpsFixCoordsLabel ?? "Live fix active";
+      locationChipTone = "border-emerald-300/18 bg-emerald-300/10 text-emerald-100 hover:border-emerald-300/30";
+      locationChipDot = "bg-emerald-300";
+      locationChipPulse = true;
+    } else if (gpsd?.available) {
+      locationChipTitle = gpsd.activeDevices === 0 ? "GPSD · no receiver" : "GPSD · no fix";
+      locationChipTone = "border-amber-300/18 bg-amber-300/10 text-amber-100 hover:border-amber-300/30";
+      locationChipDot = "bg-amber-300";
+      if (appLocation.gpsdFallbackMode === "none") {
+        locationChipDetail = "No fallback active";
+      } else {
+        const fallbackLabel =
+          appLocation.gpsdFallbackMode === "catalog"
+            ? locationLabel
+            : resolvedCoordsLabel ?? "Map pin not set";
+        locationChipDetail = `Fallback · ${fallbackLabel}`;
+      }
+    } else {
+      locationChipTitle = "GPSD · offline";
+      locationChipTone = "border-white/8 bg-white/[0.03] text-[var(--muted-strong)] hover:border-white/14 hover:text-[var(--foreground)]";
+      locationChipDot = "bg-white/25";
+      if (appLocation.gpsdFallbackMode === "none") {
+        locationChipDetail = "No fallback active";
+      } else {
+        const fallbackLabel =
+          appLocation.gpsdFallbackMode === "catalog"
+            ? locationLabel
+            : resolvedCoordsLabel ?? "Map pin not set";
+        locationChipDetail = `Fallback · ${fallbackLabel}`;
+      }
+    }
+  } else if (appLocation.configured && appLocation.sourceMode === "map") {
+    locationChipDetail = resolvedCoordsLabel ?? "Map pin not set";
+  }
   const activeCountryLoading =
     activeCountry !== "all" && !activeCountryData && loadingCountryId === activeCountry;
   const shouldShowSelectCountryState =
@@ -1628,15 +1464,20 @@ export function Dashboard({
 
   return (
     <div className="flex h-screen flex-col overflow-hidden">
-      {isFmModule && showWelcome ? (
-        <WelcomeModal
+      {locationModalOpen ? (
+        <LocationModal
+          gpsd={gpsd}
+          gpsdError={gpsdError}
+          gpsdLoading={gpsdLoading}
           manifest={manifest}
-          onLoadCountry={async (countryId) => {
-            const loaded = await loadCountryCatalog(countryId);
-            return loaded?.shard ?? null;
-          }}
-          onSelect={handleLocationSelect}
+          open={locationModalOpen}
+          onClose={() => setLocationModalOpen(false)}
+          onLoadCountry={loadCountryShard}
+          onRefreshGpsd={refreshGpsd}
+          onSave={handleLocationSave}
           onSkip={handleLocationSkip}
+          requireChoice={locationReady && !appLocation.configured}
+          value={appLocation}
         />
       ) : null}
 
@@ -1673,6 +1514,32 @@ export function Dashboard({
         ) : null}
 
         <div className="flex-1" />
+
+        <button
+          className={cx(
+            "mr-3 shrink-0 flex items-center gap-2.5 rounded-full border px-3 py-1.5 transition",
+            locationChipTone,
+          )}
+          onClick={() => setLocationModalOpen(true)}
+          title="Edit global operating location"
+          type="button"
+        >
+          <span
+            className={cx(
+              "h-1.5 w-1.5 rounded-full",
+              locationChipDot,
+              locationChipPulse && "animate-pulse",
+            )}
+          />
+          <span className="flex min-w-0 flex-col items-start text-left leading-tight">
+            <span className="font-mono text-[9px] font-semibold uppercase tracking-[0.14em]">
+              {locationChipTitle}
+            </span>
+            <span className="max-w-48 truncate text-[10px] text-[var(--muted-strong)]">
+              {locationChipDetail}
+            </span>
+          </span>
+        </button>
 
         {hardware?.activeStream ? (
           <button
@@ -1711,7 +1578,7 @@ export function Dashboard({
         ) : null}
 
         <button
-          className="rounded-full border border-white/8 px-3 py-1.5 font-mono text-[11px] text-[var(--muted)] transition hover:border-white/16 hover:text-[var(--foreground)]"
+          className="ml-1 shrink-0 rounded-full border border-white/8 px-3 py-1.5 font-mono text-[11px] text-[var(--muted)] transition hover:border-white/16 hover:text-[var(--foreground)]"
           onClick={() => void refreshHardware()}
           title="Refresh hardware status"
           type="button"
@@ -1797,17 +1664,26 @@ export function Dashboard({
           <MaritimeModule
             controls={controls}
             hardware={hardware}
+            location={resolvedLocation}
             onControlsChange={setControls}
             onRefreshHardware={refreshHardware}
           />
         ) : null}
 
         {activeModule === "adsb" ? (
-          <AdsbModule hardware={hardware} onRefreshHardware={refreshHardware} />
+          <AdsbModule
+            hardware={hardware}
+            location={resolvedLocation}
+            onRefreshHardware={refreshHardware}
+          />
         ) : null}
 
         {activeModule === "ais" ? (
-          <AisModule hardware={hardware} onRefreshHardware={refreshHardware} />
+          <AisModule
+            hardware={hardware}
+            location={resolvedLocation}
+            onRefreshHardware={refreshHardware}
+          />
         ) : null}
 
         {isFmModule ? (
@@ -1837,18 +1713,6 @@ export function Dashboard({
                     </button>
                   ) : null}
                 </div>
-
-                <button
-                  className="mb-2.5 flex w-full items-center gap-1.5 border-b border-white/[0.05] pb-2.5 text-left transition hover:text-[var(--foreground)]"
-                  onClick={() => setShowWelcome(true)}
-                  title="Change location filter"
-                  type="button"
-                >
-                  <span className="min-w-0 flex-1 truncate font-mono text-[10px] text-[var(--muted-strong)]">
-                    {locationLabel}
-                  </span>
-                  <span className="shrink-0 font-mono text-[9px] text-[var(--accent)] opacity-70">edit</span>
-                </button>
 
                 <div className="space-y-2">
                   <input

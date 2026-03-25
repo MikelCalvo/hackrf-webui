@@ -20,7 +20,7 @@ import {
   type MaritimeChannel,
 } from "@/data/maritime-channels";
 import type { AudioControls } from "@/lib/radio";
-import type { HardwareStatus } from "@/lib/types";
+import type { HardwareStatus, ResolvedAppLocation } from "@/lib/types";
 import {
   ACTIVE_LISTEN_TELEMETRY_REFRESH_MS,
   createActivityWindowMetrics,
@@ -33,7 +33,6 @@ import {
 
 const MARITIME_STORAGE_KEY = "hackrf-webui.maritime-presets.v1";
 const MARITIME_CONFIG_KEY = "hackrf-webui.maritime-config.v1";
-const LOCATION_KEY = "hackrf-webui.location.v1";
 const MARITIME_MIN_MHZ = 156.0;
 const MARITIME_MAX_MHZ = 162.55;
 type ScannerState = "idle" | "scanning" | "locked";
@@ -264,11 +263,13 @@ function prioritizeScopedScanChannels(
 
 export function MaritimeModule({
   hardware,
+  location,
   onRefreshHardware,
   controls,
   onControlsChange,
 }: {
   hardware: HardwareStatus | null;
+  location: ResolvedAppLocation | null;
   onRefreshHardware: () => Promise<void>;
   controls: AudioControls;
   onControlsChange: (controls: AudioControls) => void;
@@ -290,7 +291,6 @@ export function MaritimeModule({
   const [scanIndex, setScanIndex] = useState(0);
   const [scanLog, setScanLog] = useState<ScanLogEntry[]>([]);
   const [manualActivityRms, setManualActivityRms] = useState<number | null>(null);
-  const [savedScanLocation, setSavedScanLocation] = useState<SavedScanLocation | null>(null);
 
   const scannerStateRef = useRef<ScannerState>("idle");
   const scanModeRef = useRef<ScanMode>(config.scanMode);
@@ -331,35 +331,19 @@ export function MaritimeModule({
     localStorage.setItem(MARITIME_CONFIG_KEY, JSON.stringify(config));
   }, [config]);
 
-  useEffect(() => {
-    if (typeof window === "undefined") {
-      return;
+  const savedScanLocation = useMemo<SavedScanLocation | null>(() => {
+    const scope = location?.catalogScope;
+    if (!scope?.countryId) {
+      return null;
     }
 
-    try {
-      const raw = window.localStorage.getItem(LOCATION_KEY);
-      if (!raw || raw === "skipped") {
-        setSavedScanLocation(null);
-        return;
-      }
-
-      const parsed = JSON.parse(raw) as Partial<{
-        cityId: string;
-        cityName: string;
-        countryId: string;
-        countryName: string;
-      }>;
-
-      setSavedScanLocation({
-        cityId: typeof parsed.cityId === "string" && parsed.cityId !== "all" ? parsed.cityId : null,
-        cityName: typeof parsed.cityName === "string" ? parsed.cityName : null,
-        countryId: typeof parsed.countryId === "string" ? parsed.countryId : null,
-        countryName: typeof parsed.countryName === "string" ? parsed.countryName : null,
-      });
-    } catch {
-      setSavedScanLocation(null);
-    }
-  }, []);
+    return {
+      cityId: scope.cityId,
+      cityName: scope.cityName,
+      countryId: scope.countryId,
+      countryName: scope.countryName,
+    };
+  }, [location]);
 
   useEffect(() => {
     const audio = audioRef.current;
@@ -471,10 +455,10 @@ export function MaritimeModule({
     }
 
     if (!savedScanLocation?.countryId) {
-      return "Global-only scan. No saved city is available yet.";
+      return "Global-only scan. No shared catalog location is configured yet.";
     }
 
-    const placeLabel = savedScanLocation.cityName ?? savedScanLocation.countryName ?? "saved location";
+    const placeLabel = savedScanLocation.cityName ?? savedScanLocation.countryName ?? "configured location";
     if (smartLocalMatchCount > 0) {
       return savedScanLocation.cityId
         ? `Global channels plus the ${placeLabel} local maritime deck.`
@@ -1371,7 +1355,7 @@ export function MaritimeModule({
                 >
                   <span className="block font-mono text-[10px] uppercase tracking-[0.16em]">Smart Local</span>
                   <span className="mt-1 block text-[11px] leading-5 opacity-80">
-                    Global watch channels plus the saved city deck, or the saved country deck if no city is set.
+                    Global watch channels plus the shared city deck, or the shared country deck if no city is set.
                   </span>
                 </button>
                 <button

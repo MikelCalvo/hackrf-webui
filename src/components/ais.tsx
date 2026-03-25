@@ -8,6 +8,7 @@ import type {
   AisRuntimeState,
   AisVesselContact,
   HardwareStatus,
+  ResolvedAppLocation,
 } from "@/lib/types";
 import {
   buildBasemapSources,
@@ -15,7 +16,6 @@ import {
   isPointBounds,
   syncLeafletBasemap,
   useManagedRuntimeFeed,
-  useSavedCityView,
 } from "@/components/live-map";
 
 const EMPTY_TILE_DATA_URL =
@@ -26,6 +26,7 @@ const DEFAULT_CITY_ZOOM = 9;
 
 type AisModuleProps = {
   hardware: HardwareStatus | null;
+  location: ResolvedAppLocation | null;
   onRefreshHardware: () => Promise<void>;
 };
 
@@ -156,17 +157,23 @@ function buildMarkerIcon(
   });
 }
 
-export function AisModule({ hardware, onRefreshHardware }: AisModuleProps) {
+export function AisModule({ hardware, location, onRefreshHardware }: AisModuleProps) {
   const mapHostRef = useRef<HTMLDivElement>(null);
   const leafletRef = useRef<typeof import("leaflet") | null>(null);
   const mapRef = useRef<LeafletMap | null>(null);
   const markerLayerRef = useRef<LayerGroup | null>(null);
   const basemapLayerRef = useRef<Layer[]>([]);
   const didFitBoundsRef = useRef(false);
+  const userViewportLockedRef = useRef(false);
+  const suppressViewportEventRef = useRef(false);
+  const viewportUnlockFrameRef = useRef<number | null>(null);
+  const lastSavedCityViewKeyRef = useRef("");
   const [selectedMmsi, setSelectedMmsi] = useState("");
   const basemapSignatureRef = useRef("");
 
-  const { savedCityResolved, savedCityView, savedCountryId } = useSavedCityView();
+  const savedCountryId = location?.catalogScope.countryId ?? null;
+  const savedCityView = location?.resolvedPosition ?? null;
+  const savedCityResolved = true;
   const {
     controlRuntime,
     error,
@@ -198,6 +205,7 @@ export function AisModule({ hardware, onRefreshHardware }: AisModuleProps) {
       return;
     }
 
+    userViewportLockedRef.current = true;
     map.panTo([vessel.latitude, vessel.longitude], {
       animate: true,
       duration: 0.7,
@@ -242,6 +250,11 @@ export function AisModule({ hardware, onRefreshHardware }: AisModuleProps) {
       });
 
       leaflet.control.zoom({ position: "bottomright" }).addTo(map);
+      map.on("movestart zoomstart", () => {
+        if (!suppressViewportEventRef.current) {
+          userViewportLockedRef.current = true;
+        }
+      });
       mapRef.current = map;
       markerLayerRef.current = leaflet.layerGroup().addTo(map);
     };
@@ -257,6 +270,14 @@ export function AisModule({ hardware, onRefreshHardware }: AisModuleProps) {
       markerLayerRef.current = null;
       mapRef.current = null;
       leafletRef.current = null;
+      if (viewportUnlockFrameRef.current !== null) {
+        window.cancelAnimationFrame(viewportUnlockFrameRef.current);
+        viewportUnlockFrameRef.current = null;
+      }
+      userViewportLockedRef.current = false;
+      suppressViewportEventRef.current = false;
+      lastSavedCityViewKeyRef.current = "";
+      didFitBoundsRef.current = false;
     };
   }, []);
 
@@ -266,12 +287,30 @@ export function AisModule({ hardware, onRefreshHardware }: AisModuleProps) {
       return;
     }
 
+    if (userViewportLockedRef.current) {
+      return;
+    }
+
+    const viewKey = `${savedCityView.latitude.toFixed(5)},${savedCityView.longitude.toFixed(5)}`;
+    if (lastSavedCityViewKeyRef.current === viewKey) {
+      return;
+    }
+
     const minZoom = mapsMinZoom ?? 0;
     const maxZoom = mapsMaxZoom ?? DEFAULT_CITY_ZOOM;
     const cityZoom = Math.min(Math.max(DEFAULT_CITY_ZOOM, minZoom), maxZoom);
 
+    lastSavedCityViewKeyRef.current = viewKey;
+    suppressViewportEventRef.current = true;
     map.setView([savedCityView.latitude, savedCityView.longitude], cityZoom, {
       animate: false,
+    });
+    if (viewportUnlockFrameRef.current !== null) {
+      window.cancelAnimationFrame(viewportUnlockFrameRef.current);
+    }
+    viewportUnlockFrameRef.current = window.requestAnimationFrame(() => {
+      suppressViewportEventRef.current = false;
+      viewportUnlockFrameRef.current = null;
     });
   }, [savedCityView, snapshot?.bounds, mapsMaxZoom, mapsMinZoom]);
 
@@ -348,6 +387,7 @@ export function AisModule({ hardware, onRefreshHardware }: AisModuleProps) {
         : null
     );
     if (!didFitBoundsRef.current && boundsToFit) {
+      suppressViewportEventRef.current = true;
       if (isPointBounds(boundsToFit)) {
         map.setView(
           [boundsToFit.south, boundsToFit.west],
@@ -360,6 +400,13 @@ export function AisModule({ hardware, onRefreshHardware }: AisModuleProps) {
           animate: false,
         });
       }
+      if (viewportUnlockFrameRef.current !== null) {
+        window.cancelAnimationFrame(viewportUnlockFrameRef.current);
+      }
+      viewportUnlockFrameRef.current = window.requestAnimationFrame(() => {
+        suppressViewportEventRef.current = false;
+        viewportUnlockFrameRef.current = null;
+      });
       didFitBoundsRef.current = true;
     }
 

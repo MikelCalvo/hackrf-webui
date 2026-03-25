@@ -4,19 +4,10 @@ import type { Layer, Map as LeafletMap } from "leaflet";
 import { useEffect, useRef, useState, type MutableRefObject } from "react";
 
 import type {
-  CatalogCountryShard,
   GeoBounds,
-  GeoPoint,
   OfflineMapLayerSummary,
   OfflineMapSummary,
 } from "@/lib/types";
-
-export const LOCATION_KEY = "hackrf-webui.location.v1";
-
-export type SavedLocation = {
-  cityId?: string;
-  countryId?: string;
-};
 
 export type RuntimeMethod = "POST" | "DELETE";
 
@@ -61,79 +52,6 @@ export function buildPointBounds(latitude: number, longitude: number): GeoBounds
     south: latitude,
     north: latitude,
   };
-}
-
-export function useSavedCityView(): {
-  savedCityResolved: boolean;
-  savedCountryId: string | null;
-  savedCityView: GeoPoint | null;
-} {
-  const [savedCountryId, setSavedCountryId] = useState<string | null>(null);
-  const [savedCityView, setSavedCityView] = useState<GeoPoint | null>(null);
-  const [savedCityResolved, setSavedCityResolved] = useState(false);
-
-  useEffect(() => {
-    let cancelled = false;
-
-    const loadSavedCityView = async () => {
-      if (typeof window === "undefined") {
-        setSavedCityResolved(true);
-        return;
-      }
-
-      const raw = window.localStorage.getItem(LOCATION_KEY);
-      if (!raw || raw === "skipped") {
-        setSavedCityResolved(true);
-        return;
-      }
-
-      try {
-        const saved = JSON.parse(raw) as SavedLocation;
-        if (
-          typeof saved.countryId !== "string"
-          || typeof saved.cityId !== "string"
-          || saved.cityId === "all"
-        ) {
-          setSavedCountryId(typeof saved.countryId === "string" ? saved.countryId : null);
-          return;
-        }
-
-        setSavedCountryId(saved.countryId);
-
-        const response = await fetch(`/catalog/countries/${saved.countryId}.json`, {
-          cache: "force-cache",
-        });
-        if (!response.ok) {
-          return;
-        }
-
-        const shard = (await response.json()) as CatalogCountryShard;
-        const city = shard.cities.find((entry) => entry.id === saved.cityId);
-        if (!city || cancelled) {
-          return;
-        }
-
-        setSavedCityView({
-          latitude: city.latitude,
-          longitude: city.longitude,
-        });
-      } catch {
-        // Ignore malformed saved-location payloads and fall back to the default view.
-      } finally {
-        if (!cancelled) {
-          setSavedCityResolved(true);
-        }
-      }
-    };
-
-    void loadSavedCityView();
-
-    return () => {
-      cancelled = true;
-    };
-  }, []);
-
-  return { savedCityResolved, savedCountryId, savedCityView };
 }
 
 function normalizeLayerSource(layer: OfflineMapLayerSummary): BasemapSource {

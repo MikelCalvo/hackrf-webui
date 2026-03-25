@@ -1,6 +1,7 @@
 import { Dashboard } from "@/components/dashboard";
-import { EMPTY_CATALOG_MANIFEST } from "@/lib/empty-catalog";
+import manifest from "@/data/catalog/manifest.json";
+import type { CatalogManifest } from "@/lib/types";
 
 export default function AdsbPage() {
-  return <Dashboard activeModule="adsb" manifest={EMPTY_CATALOG_MANIFEST} />;
+  return <Dashboard activeModule="adsb" manifest={manifest as CatalogManifest} />;
 }

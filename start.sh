@@ -5,6 +5,8 @@ ROOT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
 DEFAULT_HOST="127.0.0.1"
 DEFAULT_PORT=3000
 MIN_NODE_MAJOR=20
+GPSD_HOST="${HACKRF_WEBUI_GPSD_HOST:-127.0.0.1}"
+GPSD_PORT="${HACKRF_WEBUI_GPSD_PORT:-2947}"
 
 HOST_WAS_SET=0
 PORT_WAS_SET=0
@@ -80,7 +82,8 @@ Environment overrides:
   SKIP_ADSB_RUNTIME, REBUILD,
   MAP_REINSTALL, MAP_GLOBAL_BUDGET, MAP_GLOBAL_MAX_ZOOM,
   MAP_COUNTRY, MAP_COUNTRY_MAX_ZOOM,
-  DUMP1090_FA_REF, DUMP1090_FA_REINSTALL, DRY_RUN
+  DUMP1090_FA_REF, DUMP1090_FA_REINSTALL, DRY_RUN,
+  HACKRF_WEBUI_GPSD_HOST, HACKRF_WEBUI_GPSD_PORT
 
 Default map behavior:
   start.sh ensures a managed offline map stack based on the latest Protomaps
@@ -121,6 +124,17 @@ have() {
 
 command_path() {
   command -v "$1" 2>/dev/null || true
+}
+
+command_display() {
+  local resolved
+  resolved="$(command_path "$1")"
+  if [[ -n "$resolved" ]]; then
+    printf '%s\n' "$resolved"
+    return
+  fi
+
+  printf '%s\n' "missing"
 }
 
 node_major() {
@@ -394,6 +408,8 @@ parse_args() {
 
   [[ "$PORT" =~ ^[0-9]+$ ]] || fail "Port must be a number."
   (( PORT >= 1 && PORT <= 65535 )) || fail "Port must be between 1 and 65535."
+  [[ "$GPSD_PORT" =~ ^[0-9]+$ ]] || fail "HACKRF_WEBUI_GPSD_PORT must be a number."
+  (( GPSD_PORT >= 1 && GPSD_PORT <= 65535 )) || fail "HACKRF_WEBUI_GPSD_PORT must be between 1 and 65535."
   [[ "$MAP_COUNTRY_MAX_ZOOM" =~ ^[0-9]+$ ]] || fail "MAP_COUNTRY_MAX_ZOOM must be a number."
   (( MAP_COUNTRY_MAX_ZOOM >= 0 && MAP_COUNTRY_MAX_ZOOM <= 15 )) || fail "MAP_COUNTRY_MAX_ZOOM must be between 0 and 15."
   if [[ -n "$MAP_GLOBAL_MAX_ZOOM" ]]; then
@@ -416,6 +432,9 @@ install_apt_deps() {
   log "Installing system dependencies with apt."
   run_root apt-get update
   run_root apt-get install -y curl ca-certificates gnupg build-essential pkg-config ffmpeg hackrf libhackrf-dev libncurses-dev
+  if ! run_root apt-get install -y gpsd gpsd-clients; then
+    warn "Could not install gpsd packages with apt. GPS auto-location will stay optional."
+  fi
 
   if ! node_ok; then
     log "Installing Node.js 22 from NodeSource for Debian/Ubuntu."
@@ -427,6 +446,9 @@ install_apt_deps() {
 install_dnf_deps() {
   log "Installing system dependencies with dnf."
   run_root dnf install -y curl ca-certificates gcc gcc-c++ make pkgconf-pkg-config hackrf hackrf-devel ncurses-devel
+  if ! run_root dnf install -y gpsd gpsd-clients; then
+    warn "Could not install gpsd packages with dnf. GPS auto-location will stay optional."
+  fi
 
   if ! have ffmpeg; then
     if run_root dnf install -y ffmpeg; then
@@ -446,6 +468,9 @@ install_dnf_deps() {
 install_pacman_deps() {
   log "Installing system dependencies with pacman."
   run_root pacman -Sy --noconfirm --needed base-devel pkgconf ffmpeg hackrf ncurses nodejs npm
+  if ! run_root pacman -Sy --noconfirm --needed gpsd; then
+    warn "Could not install gpsd with pacman. GPS auto-location will stay optional."
+  fi
 }
 
 zypper_install_first_available() {
@@ -470,6 +495,9 @@ install_zypper_deps() {
   zypper_install_first_available "HackRF userspace tools" hackrf
   zypper_install_first_available "HackRF development headers" hackrf-devel libhackrf-devel
   zypper_install_first_available "ncurses development headers" ncurses-devel ncurses6-devel ncurses5-devel
+  if ! run_root zypper --non-interactive install -y gpsd gpsd-clients; then
+    warn "Could not install gpsd packages with zypper. GPS auto-location will stay optional."
+  fi
 
   if ! have ffmpeg; then
     zypper_install_first_available "ffmpeg" ffmpeg ffmpeg-8 ffmpeg-7 ffmpeg-5 ffmpeg-4
@@ -524,6 +552,30 @@ verify_runtime() {
   have pkg-config || fail "pkg-config is required."
   hackrf_pkgconfig_ok || fail "libhackrf development headers are required and must be visible via pkg-config."
   ncurses_build_ok || fail "ncurses development headers are required to build the ADS-B backend."
+}
+
+gpsd_reachable() {
+  node - "$GPSD_HOST" "$GPSD_PORT" <<'NODE' >/dev/null 2>&1
+const net = require("net");
+const [host, portRaw] = process.argv.slice(2);
+const port = Number(portRaw);
+const socket = net.createConnection({ host, port });
+let done = false;
+
+function finish(code) {
+  if (done) {
+    return;
+  }
+  done = true;
+  socket.destroy();
+  process.exit(code);
+}
+
+socket.setTimeout(1000);
+socket.once("connect", () => finish(0));
+socket.once("timeout", () => finish(1));
+socket.once("error", () => finish(1));
+NODE
 }
 
 port_available() {
@@ -602,6 +654,15 @@ hackrf_probe_status() {
   printf '%s\n' "tool-error"
 }
 
+gpsd_probe_status() {
+  if gpsd_reachable; then
+    printf '%s\n' "reachable at ${GPSD_HOST}:${GPSD_PORT}"
+    return
+  fi
+
+  printf '%s\n' "not reachable at ${GPSD_HOST}:${GPSD_PORT}"
+}
+
 report_line() {
   printf '  %-18s %s\n' "$1" "$2"
 }
@@ -615,10 +676,12 @@ print_status_report() {
   log "Setup report"
   report_line "Node.js" "$(node_version)"
   report_line "npm" "$(npm_version)"
-  report_line "ffmpeg" "$(command_path ffmpeg || echo missing)"
-  report_line "hackrf_info" "$(command_path hackrf_info || echo missing)"
-  report_line "cc" "$(command_path cc || echo missing)"
-  report_line "pkg-config" "$(command_path pkg-config || echo missing)"
+  report_line "ffmpeg" "$(command_display ffmpeg)"
+  report_line "hackrf_info" "$(command_display hackrf_info)"
+  report_line "gpsd" "$(command_display gpsd)"
+  report_line "cc" "$(command_display cc)"
+  report_line "pkg-config" "$(command_display pkg-config)"
+  report_line "GPSD daemon" "$(gpsd_probe_status)"
 
   if hackrf_pkgconfig_ok; then
     report_line "libhackrf" "ok"
@@ -812,6 +875,8 @@ print_start_summary() {
   report_line "Native binary" "$(native_binary_path)"
   report_line "ADS-B backend" "$(adsb_decoder_binary_path)"
   report_line "Prod bundle" ".next/BUILD_ID present"
+  report_line "gpsd" "$(command_display gpsd)"
+  report_line "GPSD daemon" "$(gpsd_probe_status)"
   if maps_ready; then
     report_line "Offline maps" "$(maps_manifest_path)"
   else
@@ -838,10 +903,18 @@ start_app() {
   cd "$ROOT_DIR"
   log "Starting hackrf-webui in production mode."
   if [[ "$DRY_RUN" == "1" ]]; then
-    run npm run start -- --hostname "$HOST" --port "$PORT"
+    run env \
+      NEXT_TELEMETRY_DISABLED="$NEXT_TELEMETRY_DISABLED" \
+      HACKRF_WEBUI_GPSD_HOST="$GPSD_HOST" \
+      HACKRF_WEBUI_GPSD_PORT="$GPSD_PORT" \
+      npm run start -- --hostname "$HOST" --port "$PORT"
     return
   fi
-  exec env NEXT_TELEMETRY_DISABLED="$NEXT_TELEMETRY_DISABLED" npm run start -- --hostname "$HOST" --port "$PORT"
+  exec env \
+    NEXT_TELEMETRY_DISABLED="$NEXT_TELEMETRY_DISABLED" \
+    HACKRF_WEBUI_GPSD_HOST="$GPSD_HOST" \
+    HACKRF_WEBUI_GPSD_PORT="$GPSD_PORT" \
+    npm run start -- --hostname "$HOST" --port "$PORT"
 }
 
 main() {

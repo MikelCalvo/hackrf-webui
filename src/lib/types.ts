@@ -224,6 +224,61 @@ export type GeoPoint = {
   longitude: number;
 };
 
+export type AppLocationSourceMode = "catalog" | "map" | "gpsd";
+export type AppLocationGpsdFallbackMode = "none" | "catalog" | "map";
+
+export type AppLocationCatalogScope = {
+  regionId: string | null;
+  regionName: string | null;
+  countryId: string | null;
+  countryCode: string | null;
+  countryName: string | null;
+  cityId: string | null;
+  cityName: string | null;
+  latitude: number | null;
+  longitude: number | null;
+};
+
+export type StoredAppLocation = {
+  version: 2;
+  configured: boolean;
+  sourceMode: AppLocationSourceMode;
+  gpsdFallbackMode: AppLocationGpsdFallbackMode;
+  catalogScope: AppLocationCatalogScope;
+  mapPin: GeoPoint | null;
+  updatedAt: string;
+};
+
+export type GpsdFixState = "unavailable" | "no-fix" | "2d" | "3d";
+
+export type GpsdSnapshot = {
+  available: boolean;
+  host: string;
+  port: number;
+  activeDevices: number;
+  fixState: GpsdFixState;
+  mode: number;
+  latitude: number | null;
+  longitude: number | null;
+  altitudeMeters: number | null;
+  speedMps: number | null;
+  trackDeg: number | null;
+  time: string | null;
+  device: string | null;
+  message: string;
+};
+
+export type ResolvedAppLocation = {
+  configured: boolean;
+  sourceMode: AppLocationSourceMode;
+  gpsdFallbackMode: AppLocationGpsdFallbackMode;
+  catalogScope: AppLocationCatalogScope;
+  mapPin: GeoPoint | null;
+  resolvedPosition: GeoPoint | null;
+  sourceStatus: "ready" | "waiting" | "unavailable";
+  sourceDetail: string;
+};
+
 export type AisBounds = GeoBounds;
 
 export type AisPoint = GeoPoint;

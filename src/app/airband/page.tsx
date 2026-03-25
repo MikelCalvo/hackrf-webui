@@ -1,6 +1,7 @@
 import { Dashboard } from "@/components/dashboard";
-import { EMPTY_CATALOG_MANIFEST } from "@/lib/empty-catalog";
+import manifest from "@/data/catalog/manifest.json";
+import type { CatalogManifest } from "@/lib/types";
 
 export default function AirbandPage() {
-  return <Dashboard activeModule="airband" manifest={EMPTY_CATALOG_MANIFEST} />;
+  return <Dashboard activeModule="airband" manifest={manifest as CatalogManifest} />;
 }

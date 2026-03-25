@@ -13,6 +13,15 @@ It runs on the user's own machine, works offline at runtime, exposes radio contr
 
 There is no cloud layer, no account system, and no remote device bridge.
 
+The app also has a single global location model shared across modules:
+
+- a `catalog scope` for country / city-aware features such as FM filters and regional scan decks
+- an `exact position` for map-centric modules such as `AIS` and `ADS-B`
+- three exact-position modes:
+  - `Catalog centroid`
+  - `Map pin`
+  - `GPSD live`
+
 ## Current Scope
 
 ### FM
@@ -22,6 +31,7 @@ There is no cloud layer, no account system, and no remote device bridge.
 - on-demand country shard loading to keep the UI responsive
 - global coverage metadata with a dedicated coverage page
 - custom presets stored locally in the browser
+- filters can be initialized from the shared global location, but browsing FM does not require changing the exact operating position
 
 ### PMR
 
@@ -58,7 +68,7 @@ There is no cloud layer, no account system, and no remote device bridge.
 - manual tuning with quick retune steps
 - starter channel packs for distress, port ops, working voice, selected Spain port channels, UK MSI, U.S. coastal safety, U.S. VTS and NOAA weather watch
 - PMR-style scanning with dwell, squelch and lock-on-activity
-- smart `All` scanning that can prefer global channels plus the saved city or country scope from browser local storage
+- smart `All` scanning that can prefer global channels plus the shared city or country catalog scope
 - focused on analog voice traffic; digital AIS remains in the dedicated AIS module
 
 ### AIS
@@ -86,6 +96,7 @@ cd hackrf-webui
 By default, `start.sh`:
 
 - installs missing system dependencies on common Linux distributions
+- installs `gpsd` packages when the distribution exposes them, so live GPS positioning is ready when you want it
 - installs Node dependencies
 - ensures a managed offline map stack unless `--skip-maps` is used
 - installs a dark global basemap capped near `4 GB` by default
@@ -125,6 +136,7 @@ Useful options:
 ./start.sh --skip-adsb-runtime
 ./start.sh --reinstall-adsb-runtime
 ./start.sh --rebuild
+HACKRF_WEBUI_GPSD_HOST=127.0.0.1 HACKRF_WEBUI_GPSD_PORT=2947 ./start.sh
 ```
 
 What they do:
@@ -141,6 +153,7 @@ What they do:
 - `--skip-adsb-runtime` keeps the existing ADS-B backend untouched or skips it entirely
 - `--reinstall-adsb-runtime` rebuilds the pinned local `dump1090-fa` backend
 - `--rebuild` forces a fresh `npm ci` and production rebuild
+- `HACKRF_WEBUI_GPSD_HOST` and `HACKRF_WEBUI_GPSD_PORT` point the app at a non-default GPSD listener when needed
 
 Environment overrides also work:
 
@@ -150,6 +163,7 @@ MAP_GLOBAL_BUDGET=4G ./start.sh
 MAP_GLOBAL_MAX_ZOOM=10 ./start.sh
 MAP_COUNTRY=ES MAP_COUNTRY_MAX_ZOOM=14 ./start.sh
 DUMP1090_FA_REINSTALL=1 ./start.sh
+HACKRF_WEBUI_GPSD_PORT=2947 ./start.sh
 ```
 
 If the default port is busy and you did not explicitly force a port, the script automatically falls forward to the next free one it can find.
@@ -208,6 +222,35 @@ For normal usage, the app needs:
 - `Node.js` `20+`
 - `npm`
 
+Optional but supported:
+
+- `gpsd`
+- a compatible GPS receiver, such as a USB `u-blox`, if you want live physical positioning
+
+`start.sh` tries to install `gpsd` on the supported Linux package managers, but the app still runs without it if you only want fixed manual positions.
+
+## Global Location
+
+The top bar exposes a shared location button on every module. That dialog controls two separate things:
+
+- `Catalog scope`
+  - country and optional city
+  - used by FM defaults and regional scan logic such as Maritime Smart Local
+- `Exact position`
+  - used by map-centric views and any feature that needs true operating coordinates
+  - can come from:
+    - the selected city centroid
+    - an exact map pin you place manually
+    - a live fix from local `gpsd`
+
+This split matters:
+
+- you can keep `Bilbao` as the catalog scope for FM and Maritime
+- while using a more exact rooftop antenna pin for map centering
+- or while letting `gpsd` drive the exact coordinates when operating mobile
+
+The exact position picker uses the same offline-capable basemap stack as `AIS` and `ADS-B`, so it stays usable without internet once the local map pack is installed.
+
 The bundled native receivers are built from:
 
 - [`native/hackrf_audio_stream.c`](native/hackrf_audio_stream.c)
@@ -228,9 +271,9 @@ Offline basemaps are served from `public/tiles/osm`. By default, `./start.sh` en
 
 The AIS map behavior is:
 
-- if FM already has a saved city in browser local storage, AIS starts centered near that city
+- if a global exact position is configured, AIS starts from that point
 - otherwise it falls back to decoded AIS bounds when traffic exists
-- if there is still no traffic, it falls back to the installed basemap bounds
+- if there is still no traffic, it falls back to the selected country overlay or the installed basemap bounds
 
 ## ADS-B Runtime Notes
 
@@ -246,10 +289,10 @@ The runtime:
 
 The ADS-B map behavior is:
 
-- if FM already has a saved city in browser local storage, ADS-B starts centered near that city
+- if a global exact position is configured, ADS-B starts from that point
 - otherwise it falls back to live aircraft bounds when traffic exists
 - if there is still no aircraft position, it falls back to receiver coordinates if configured
-- if there is still no location hint, it falls back to the installed basemap bounds
+- if there is still no location hint, it falls back to the selected country overlay or the installed basemap bounds
 
 ## Offline Map Management
 
