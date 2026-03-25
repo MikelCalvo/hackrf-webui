@@ -155,6 +155,16 @@ export type SignalLevelTelemetry = {
 };
 
 export type AudioDemodMode = "am" | "nfm" | "wfm";
+export type AudioCaptureModule = "pmr" | "airband" | "maritime";
+export type AudioCaptureMode = "manual" | "scan";
+
+export type ActivityCaptureRequestMeta = {
+  module: AudioCaptureModule;
+  mode: AudioCaptureMode;
+  bandId?: string | null;
+  channelId?: string | null;
+  channelNumber?: number | null;
+};
 
 export type StreamSessionPhase = "starting" | "running" | "retuning";
 
@@ -202,6 +212,7 @@ export type StreamRequest = {
   lna: number;
   vga: number;
   audioGain: number;
+  activityCapture?: ActivityCaptureRequestMeta | null;
 };
 
 export type CustomStationDraft = {

@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { ConfirmDialog } from "@/components/module-ui";
+import { ActivityCaptureActions, ConfirmDialog } from "@/components/module-ui";
 import {
   buildRadioRetuneUrl,
   buildRadioStreamUrl,
@@ -36,6 +36,7 @@ type ScannerState = "idle" | "scanning" | "locked";
 type ScanMode = "sequential" | "random";
 
 const STORAGE_KEY = "hackrf-webui.pmr-config.v1";
+const CONTACT_REFRESH_MS = 4000;
 
 type PersistedConfig = {
   scanMode: ScanMode;
@@ -53,20 +54,28 @@ function loadConfig(): PersistedConfig | null {
   }
 }
 
-function buildPmrUrl(ch: PmrChannel, controls: AudioControls): string {
+function buildPmrUrl(
+  ch: PmrChannel,
+  controls: AudioControls,
+  mode: "manual" | "scan",
+): string {
   return buildRadioStreamUrl(
     "/api/pmr-stream",
     { ...ch, label: `${ch.bandId.toUpperCase()} ${ch.label}` },
     controls,
+    { module: "pmr", mode },
   );
 }
 
 /** PATCH url to retune an existing stream — no reconnect, no buffering delay */
-function buildRetuneUrl(ch: PmrChannel): string {
+function buildRetuneUrl(
+  ch: PmrChannel,
+  mode: "manual" | "scan",
+): string {
   return buildRadioRetuneUrl("/api/pmr-stream", {
     ...ch,
     label: `${ch.bandId.toUpperCase()} ${ch.label}`,
-  });
+  }, { module: "pmr", mode });
 }
 
 export function PmrModule({
@@ -133,16 +142,23 @@ export function PmrModule({
 
   useEffect(() => {
     let cancelled = false;
-    void fetchActivityEvents("pmr", ACTIVITY_EVENTS_DEFAULT_LIMIT)
-      .then((events) => {
+    const refreshLog = async () => {
+      try {
+        const events = await fetchActivityEvents("pmr", ACTIVITY_EVENTS_DEFAULT_LIMIT);
         if (!cancelled) {
           setScanLog(events);
         }
-      })
-      .catch(() => undefined);
+      } catch {
+        // Ignore transient polling failures; the next refresh will retry.
+      }
+    };
+
+    void refreshLog();
+    const interval = window.setInterval(() => void refreshLog(), CONTACT_REFRESH_MS);
 
     return () => {
       cancelled = true;
+      clearInterval(interval);
     };
   }, []);
 
@@ -181,7 +197,7 @@ export function PmrModule({
 
   // ── Stream control ────────────────────────────────────────────────────────
 
-  async function startChannel(ch: PmrChannel): Promise<void> {
+  async function startChannel(ch: PmrChannel, mode: "manual" | "scan"): Promise<void> {
     if (!audioRef.current) return;
     setStreamError("");
     setPlayingChannelId(null);
@@ -195,7 +211,7 @@ export function PmrModule({
     // without restarting — no process teardown, no reconnect, no re-buffering.
     if (hardwareRef.current?.activeStream?.demodMode === "nfm") {
       try {
-        const resp = await fetch(buildRetuneUrl(ch), { method: "PATCH" });
+        const resp = await fetch(buildRetuneUrl(ch, mode), { method: "PATCH" });
         if (resp.ok) {
           setPlayingChannelId(ch.id);
           setSelectedChannelId(ch.id);
@@ -211,7 +227,7 @@ export function PmrModule({
 
     // Full start: stop current audio, set new src, wait for browser to buffer & play
     audio.pause();
-    audio.src = buildPmrUrl(ch, controls);
+    audio.src = buildPmrUrl(ch, controls, mode);
     try {
       await audio.play();
       setPlayingChannelId(ch.id);
@@ -338,7 +354,7 @@ export function PmrModule({
     const ch = chs[scanIndex % chs.length];
     if (!ch) return;
 
-    void startChannel(ch);
+    void startChannel(ch, "scan");
 
     const startedAt = Date.now();
     const activateAt = startedAt + SCANNER_STARTUP_MS;
@@ -597,7 +613,7 @@ export function PmrModule({
                   )}
                   onClick={e => {
                     e.stopPropagation();
-                    if (isPlay) { stopChannel(); } else { void startChannel(ch); }
+                    if (isPlay) { stopChannel(); } else { void startChannel(ch, "manual"); }
                   }}
                   type="button"
                 >
@@ -840,7 +856,7 @@ export function PmrModule({
                   return;
                 }
                 const ch = channels.find(c => c.id === selectedChannelId);
-                if (ch) void startChannel(ch);
+                if (ch) void startChannel(ch, "manual");
               }}
               type="button"
             >
@@ -901,6 +917,7 @@ export function PmrModule({
                       RMS {entry.rms.toFixed(4)}
                     </span>
                   </div>
+                  <ActivityCaptureActions entry={entry} />
                 </div>
               ))}
             </div>
@@ -912,7 +929,7 @@ export function PmrModule({
         busy={clearingActivity}
         cancelLabel="Keep Log"
         confirmLabel="Delete Activity"
-        description="This clears the PMR activity log from the current view and permanently deletes the stored entries from the local SQLite database."
+        description="This clears the PMR contacts from the current view, removes the stored entries from the local SQLite database, and deletes any linked WAV/IQ capture files."
         onCancel={() => {
           if (!clearingActivity) {
             setClearDialogOpen(false);

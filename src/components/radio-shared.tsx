@@ -2,13 +2,15 @@
 
 import { CLS_BTN_GHOST, CLS_BTN_PRIMARY, Spinner, cx } from "@/components/module-ui";
 import type { AudioControls, RadioChannel } from "@/lib/radio";
+import type { ActivityCaptureRequestMeta } from "@/lib/types";
 
 export { CLS_BTN_GHOST, CLS_BTN_PRIMARY, Spinner, cx };
 
 export function buildRadioStreamUrl(
   pathname: string,
-  channel: Pick<RadioChannel, "label" | "freqMhz">,
+  channel: Pick<RadioChannel, "label" | "freqMhz"> & Partial<Pick<RadioChannel, "id" | "bandId" | "number">>,
   controls: AudioControls,
+  activityCapture?: Partial<ActivityCaptureRequestMeta> | null,
 ): string {
   const params = new URLSearchParams({
     label: channel.label,
@@ -19,17 +21,62 @@ export function buildRadioStreamUrl(
     t: String(Date.now()),
   });
 
+  if (activityCapture?.module) {
+    params.set("module", activityCapture.module);
+  }
+  if (activityCapture?.mode) {
+    params.set("activityMode", activityCapture.mode);
+  }
+
+  const bandId = activityCapture?.bandId ?? channel.bandId ?? null;
+  const channelId = activityCapture?.channelId ?? channel.id ?? null;
+  const channelNumber = activityCapture?.channelNumber ?? channel.number ?? null;
+
+  if (bandId) {
+    params.set("bandId", bandId);
+  }
+  if (channelId) {
+    params.set("channelId", channelId);
+  }
+  if (Number.isFinite(channelNumber)) {
+    params.set("channelNumber", String(channelNumber));
+  }
+
   return `${pathname}?${params.toString()}`;
 }
 
 export function buildRadioRetuneUrl(
   pathname: string,
-  channel: Pick<RadioChannel, "label" | "freqMhz">,
+  channel: Pick<RadioChannel, "label" | "freqMhz"> & Partial<Pick<RadioChannel, "id" | "bandId" | "number">>,
+  activityCapture?: Partial<ActivityCaptureRequestMeta> | null,
 ): string {
-  return `${pathname}?${new URLSearchParams({
+  const params = new URLSearchParams({
     label: channel.label,
     freqMHz: String(channel.freqMhz),
-  })}`;
+  });
+
+  if (activityCapture?.module) {
+    params.set("module", activityCapture.module);
+  }
+  if (activityCapture?.mode) {
+    params.set("activityMode", activityCapture.mode);
+  }
+
+  const bandId = activityCapture?.bandId ?? channel.bandId ?? null;
+  const channelId = activityCapture?.channelId ?? channel.id ?? null;
+  const channelNumber = activityCapture?.channelNumber ?? channel.number ?? null;
+
+  if (bandId) {
+    params.set("bandId", bandId);
+  }
+  if (channelId) {
+    params.set("channelId", channelId);
+  }
+  if (Number.isFinite(channelNumber)) {
+    params.set("channelNumber", String(channelNumber));
+  }
+
+  return `${pathname}?${params.toString()}`;
 }
 
 export function formatAdaptiveFrequency(freqMhz: number): string {

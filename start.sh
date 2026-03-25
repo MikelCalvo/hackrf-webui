@@ -233,6 +233,54 @@ node_modules_ready() {
   [[ -d "$ROOT_DIR/node_modules" && -f "$ROOT_DIR/node_modules/.package-lock.json" ]]
 }
 
+sqlite_addon_probe() {
+  (
+    cd "$ROOT_DIR"
+    node -e 'require("better-sqlite3")'
+  ) >/dev/null 2>&1
+}
+
+repair_native_node_modules_if_needed() {
+  if [[ "$DRY_RUN" == "1" ]]; then
+    log "Dry run: native Node addon compatibility check skipped."
+    return
+  fi
+
+  if ! node_modules_ready; then
+    return
+  fi
+
+  if sqlite_addon_probe; then
+    return
+  fi
+
+  if [[ "$SKIP_NPM" == "1" ]]; then
+    fail "Native Node modules need a rebuild for Node.js $(node_version), but --skip-npm was requested."
+  fi
+
+  log "Detected a native Node addon mismatch for Node.js $(node_version). Rebuilding better-sqlite3."
+  if (cd "$ROOT_DIR" && npm rebuild better-sqlite3 >/dev/null); then
+    if sqlite_addon_probe; then
+      log "Native Node modules rebuilt for the current Node.js runtime."
+      return
+    fi
+
+    warn "better-sqlite3 rebuilt cleanly but still does not load. Reinstalling Node dependencies."
+  else
+    warn "better-sqlite3 rebuild failed. Reinstalling Node dependencies."
+  fi
+
+  log "Reinstalling Node dependencies for the current Node.js runtime."
+  run npm ci
+
+  if sqlite_addon_probe; then
+    log "Node dependencies reinstalled for the current Node.js runtime."
+    return
+  fi
+
+  fail "Node dependencies were reinstalled, but better-sqlite3 still does not load on Node.js $(node_version)."
+}
+
 interactive_terminal() {
   [[ -t 0 && -t 1 ]]
 }
@@ -960,6 +1008,7 @@ main() {
   verify_runtime
   resolve_port
   install_node_modules
+  repair_native_node_modules_if_needed
   prepare_local_storage
   install_maps
   install_adsb_runtime

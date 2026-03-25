@@ -2,7 +2,7 @@
 
 import { useEffect, useEffectEvent, useMemo, useRef, useState } from "react";
 
-import { ConfirmDialog } from "@/components/module-ui";
+import { ActivityCaptureActions, ConfirmDialog } from "@/components/module-ui";
 import { CLS_INPUT } from "@/components/module-ui";
 import {
   buildRadioRetuneUrl,
@@ -45,6 +45,7 @@ const AIRBAND_MIN_MHZ = 118.0;
 const AIRBAND_MAX_MHZ = 137.0;
 const AIRBAND_SWEEP_MAX_MHZ = 136.975;
 const AIRBAND_SWEEP_STEP_MHZ = 0.025;
+const CONTACT_REFRESH_MS = 4000;
 type ScannerState = "idle" | "scanning" | "locked";
 type ScanMode = "sequential" | "random";
 
@@ -145,12 +146,19 @@ function createManualChannel(
   };
 }
 
-function buildAirbandUrl(channel: AirbandChannel, controls: AudioControls): string {
-  return buildRadioStreamUrl("/api/airband-stream", channel, controls);
+function buildAirbandUrl(
+  channel: AirbandChannel,
+  controls: AudioControls,
+  mode: "manual" | "scan",
+): string {
+  return buildRadioStreamUrl("/api/airband-stream", channel, controls, { module: "airband", mode });
 }
 
-function buildAirbandRetuneUrl(channel: AirbandChannel): string {
-  return buildRadioRetuneUrl("/api/airband-stream", channel);
+function buildAirbandRetuneUrl(
+  channel: AirbandChannel,
+  mode: "manual" | "scan",
+): string {
+  return buildRadioRetuneUrl("/api/airband-stream", channel, { module: "airband", mode });
 }
 
 function StepButton({
@@ -310,16 +318,23 @@ export function AirbandModule({
 
   useEffect(() => {
     let cancelled = false;
-    void fetchActivityEvents("airband", ACTIVITY_EVENTS_DEFAULT_LIMIT)
-      .then((events) => {
+    const refreshLog = async () => {
+      try {
+        const events = await fetchActivityEvents("airband", ACTIVITY_EVENTS_DEFAULT_LIMIT);
         if (!cancelled) {
           setScanLog(events);
         }
-      })
-      .catch(() => undefined);
+      } catch {
+        // Ignore transient polling failures; the next refresh will retry.
+      }
+    };
+
+    void refreshLog();
+    const interval = window.setInterval(() => void refreshLog(), CONTACT_REFRESH_MS);
 
     return () => {
       cancelled = true;
+      clearInterval(interval);
     };
   }, []);
 
@@ -556,7 +571,11 @@ export function AirbandModule({
     };
   }, [playingChannelId, scannerState, startingChannelId]);
 
-  async function startChannel(channel: AirbandChannel, allowRetune = true): Promise<void> {
+  async function startChannel(
+    channel: AirbandChannel,
+    mode: "manual" | "scan",
+    allowRetune = true,
+  ): Promise<void> {
     if (!audioRef.current) {
       return;
     }
@@ -571,7 +590,7 @@ export function AirbandModule({
 
     if (allowRetune && hardwareRef.current?.activeStream?.demodMode === "am") {
       try {
-        const response = await fetch(buildAirbandRetuneUrl(channel), { method: "PATCH" });
+        const response = await fetch(buildAirbandRetuneUrl(channel, mode), { method: "PATCH" });
         if (response.ok) {
           setPlayingChannelId(channel.id);
           setStartingChannelId(null);
@@ -584,7 +603,7 @@ export function AirbandModule({
     }
 
     audio.pause();
-    audio.src = buildAirbandUrl(channel, controls);
+    audio.src = buildAirbandUrl(channel, controls, mode);
 
     try {
       await audio.play();
@@ -614,7 +633,7 @@ export function AirbandModule({
       return;
     }
 
-    void startChannel(channel, true);
+    void startChannel(channel, "scan", true);
 
     const startedAt = Date.now();
     const activateAt = startedAt + SCANNER_STARTUP_MS;
@@ -758,7 +777,7 @@ export function AirbandModule({
       config.selectedBandId,
     );
     setManualChannel(nextManualChannel);
-    void startChannel(nextManualChannel, false);
+    void startChannel(nextManualChannel, "manual", false);
   }
 
   function stepTune(deltaMhz: number): void {
@@ -786,7 +805,7 @@ export function AirbandModule({
       config.selectedBandId,
     );
     setManualChannel(nextManualChannel);
-    void startChannel(nextManualChannel, true);
+    void startChannel(nextManualChannel, "manual", true);
   }
 
   function saveSelectedPreset(): void {
@@ -1008,7 +1027,7 @@ export function AirbandModule({
                       if (scannerState !== "idle") {
                         stopScan();
                       }
-                      void startChannel(channel, false);
+                      void startChannel(channel, "manual", false);
                     }}
                     type="button"
                   >
@@ -1178,7 +1197,7 @@ export function AirbandModule({
                       stopChannel();
                       return;
                     }
-                    void startChannel(selectedChannel, false);
+                    void startChannel(selectedChannel, "manual", false);
                   }}
                   type="button"
                 >
@@ -1398,6 +1417,9 @@ export function AirbandModule({
                   <span className="font-mono text-[10px] text-[var(--accent)]">
                     RMS {entry.rms.toFixed(4)}
                   </span>
+                  <div className="col-span-2">
+                    <ActivityCaptureActions entry={entry} />
+                  </div>
                 </div>
               ))}
             </div>
@@ -1417,7 +1439,7 @@ export function AirbandModule({
         busy={clearingActivity}
         cancelLabel="Keep Log"
         confirmLabel="Delete Activity"
-        description="This clears the AIRBAND activity log from the current view and permanently deletes the stored entries from the local SQLite database."
+        description="This clears the AIRBAND contacts from the current view, removes the stored entries from the local SQLite database, and deletes any linked WAV/IQ capture files."
         onCancel={() => {
           if (!clearingActivity) {
             setClearDialogOpen(false);

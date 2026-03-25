@@ -4,6 +4,16 @@ export type ActivityEventModule = "pmr" | "airband" | "maritime";
 export type ActivityEventMode = "manual" | "scan";
 export const ACTIVITY_EVENTS_DEFAULT_LIMIT = 100;
 
+export type ActivityCaptureStatus = "none" | "saved";
+
+export type ActivityCaptureFileSummary = {
+  id: string;
+  kind: "audio" | "raw_iq";
+  format: string;
+  relativePath: string;
+  url: string;
+};
+
 export type ActivityLogEntry = {
   id: string;
   module: ActivityEventModule;
@@ -16,6 +26,10 @@ export type ActivityLogEntry = {
   bandId: string | null;
   channelId: string | null;
   channelNumber: number | null;
+  captureStatus: ActivityCaptureStatus;
+  captureSessionId: string | null;
+  audioCapture: ActivityCaptureFileSummary | null;
+  rawIqCapture: ActivityCaptureFileSummary | null;
 };
 
 export type CreateActivityEventInput = {
@@ -63,6 +77,10 @@ export function createActivityLogEntryFallback(
     bandId: input.bandId ?? null,
     channelId: input.channelId ?? null,
     channelNumber: input.channelNumber ?? null,
+    captureStatus: "none",
+    captureSessionId: null,
+    audioCapture: null,
+    rawIqCapture: null,
   };
 }
 

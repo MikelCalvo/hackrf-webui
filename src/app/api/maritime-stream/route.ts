@@ -1,4 +1,5 @@
 import { hackrfService } from "@/server/hackrf";
+import type { ActivityCaptureRequestMeta } from "@/lib/types";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -14,6 +15,23 @@ function inMaritimeRange(freqMhz: number): boolean {
   return freqMhz >= MARITIME_MIN_MHZ && freqMhz <= MARITIME_MAX_MHZ;
 }
 
+function parseActivityCapture(searchParams: URLSearchParams): ActivityCaptureRequestMeta | null {
+  const moduleId = searchParams.get("module");
+  const mode = searchParams.get("activityMode");
+  if (moduleId !== "maritime" || (mode !== "manual" && mode !== "scan")) {
+    return null;
+  }
+
+  const rawChannelNumber = Number.parseInt(searchParams.get("channelNumber") ?? "", 10);
+  return {
+    module: moduleId,
+    mode,
+    bandId: searchParams.get("bandId"),
+    channelId: searchParams.get("channelId"),
+    channelNumber: Number.isFinite(rawChannelNumber) ? rawChannelNumber : null,
+  };
+}
+
 export async function PATCH(request: Request): Promise<Response> {
   const { searchParams } = new URL(request.url);
   const freqMhz = Number.parseFloat(searchParams.get("freqMHz") ?? "");
@@ -23,7 +41,12 @@ export async function PATCH(request: Request): Promise<Response> {
     return badRequest(`Frequency ${freqMhz} MHz is outside ${MARITIME_MIN_MHZ}-${MARITIME_MAX_MHZ} MHz.`);
   }
 
-  const ok = hackrfService.retune(Math.round(freqMhz * 1_000_000), label, "nfm");
+  const ok = hackrfService.retune(
+    Math.round(freqMhz * 1_000_000),
+    label,
+    "nfm",
+    parseActivityCapture(searchParams),
+  );
   if (!ok) {
     return badRequest("No active MARITIME stream to retune.", 409);
   }
@@ -38,6 +61,7 @@ export async function GET(request: Request): Promise<Response> {
   const vga = Number.parseInt(searchParams.get("vga") ?? "20", 10);
   const audioGain = Number.parseFloat(searchParams.get("audioGain") ?? "1");
   const label = (searchParams.get("label") ?? "MARITIME").trim();
+  const activityCapture = parseActivityCapture(searchParams);
 
   if (!Number.isFinite(freqMhz) || !inMaritimeRange(freqMhz)) {
     return badRequest(`Frequency ${freqMhz} MHz is outside ${MARITIME_MIN_MHZ}-${MARITIME_MAX_MHZ} MHz.`);
@@ -48,7 +72,7 @@ export async function GET(request: Request): Promise<Response> {
 
   try {
     const stream = await hackrfService.startNfmStream(
-      { label, freqHz: Math.round(freqMhz * 1_000_000), lna, vga, audioGain },
+      { label, freqHz: Math.round(freqMhz * 1_000_000), lna, vga, audioGain, activityCapture },
       request.signal,
     );
     return new Response(stream, {

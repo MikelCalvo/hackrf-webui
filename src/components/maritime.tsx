@@ -2,7 +2,7 @@
 
 import { useEffect, useEffectEvent, useMemo, useRef, useState } from "react";
 
-import { ConfirmDialog } from "@/components/module-ui";
+import { ActivityCaptureActions, ConfirmDialog } from "@/components/module-ui";
 import { CLS_INPUT } from "@/components/module-ui";
 import {
   buildRadioRetuneUrl,
@@ -44,6 +44,7 @@ const MARITIME_STORAGE_KEY = "hackrf-webui.maritime-presets.v1";
 const MARITIME_CONFIG_KEY = "hackrf-webui.maritime-config.v1";
 const MARITIME_MIN_MHZ = 156.0;
 const MARITIME_MAX_MHZ = 162.55;
+const CONTACT_REFRESH_MS = 4000;
 type ScannerState = "idle" | "scanning" | "locked";
 type ScanMode = "sequential" | "random";
 type AllScanScope = "smart" | "full";
@@ -155,12 +156,19 @@ function createManualChannel(
   };
 }
 
-function buildMaritimeUrl(channel: MaritimeChannel, controls: AudioControls): string {
-  return buildRadioStreamUrl("/api/maritime-stream", channel, controls);
+function buildMaritimeUrl(
+  channel: MaritimeChannel,
+  controls: AudioControls,
+  mode: "manual" | "scan",
+): string {
+  return buildRadioStreamUrl("/api/maritime-stream", channel, controls, { module: "maritime", mode });
 }
 
-function buildMaritimeRetuneUrl(channel: MaritimeChannel): string {
-  return buildRadioRetuneUrl("/api/maritime-stream", channel);
+function buildMaritimeRetuneUrl(
+  channel: MaritimeChannel,
+  mode: "manual" | "scan",
+): string {
+  return buildRadioRetuneUrl("/api/maritime-stream", channel, { module: "maritime", mode });
 }
 
 function StepButton({
@@ -337,16 +345,23 @@ export function MaritimeModule({
 
   useEffect(() => {
     let cancelled = false;
-    void fetchActivityEvents("maritime", ACTIVITY_EVENTS_DEFAULT_LIMIT)
-      .then((events) => {
+    const refreshLog = async () => {
+      try {
+        const events = await fetchActivityEvents("maritime", ACTIVITY_EVENTS_DEFAULT_LIMIT);
         if (!cancelled) {
           setScanLog(events);
         }
-      })
-      .catch(() => undefined);
+      } catch {
+        // Ignore transient polling failures; the next refresh will retry.
+      }
+    };
+
+    void refreshLog();
+    const interval = window.setInterval(() => void refreshLog(), CONTACT_REFRESH_MS);
 
     return () => {
       cancelled = true;
+      clearInterval(interval);
     };
   }, []);
 
@@ -660,7 +675,11 @@ export function MaritimeModule({
     };
   }, [playingChannelId, scannerState, startingChannelId]);
 
-  async function startChannel(channel: MaritimeChannel, allowRetune = true): Promise<void> {
+  async function startChannel(
+    channel: MaritimeChannel,
+    mode: "manual" | "scan",
+    allowRetune = true,
+  ): Promise<void> {
     if (!audioRef.current) {
       return;
     }
@@ -675,7 +694,7 @@ export function MaritimeModule({
 
     if (allowRetune && hardwareRef.current?.activeStream?.demodMode === "nfm") {
       try {
-        const response = await fetch(buildMaritimeRetuneUrl(channel), { method: "PATCH" });
+        const response = await fetch(buildMaritimeRetuneUrl(channel, mode), { method: "PATCH" });
         if (response.ok) {
           setPlayingChannelId(channel.id);
           setStartingChannelId(null);
@@ -688,7 +707,7 @@ export function MaritimeModule({
     }
 
     audio.pause();
-    audio.src = buildMaritimeUrl(channel, controls);
+    audio.src = buildMaritimeUrl(channel, controls, mode);
 
     try {
       await audio.play();
@@ -718,7 +737,7 @@ export function MaritimeModule({
       return;
     }
 
-    void startChannel(channel, true);
+    void startChannel(channel, "scan", true);
 
     const startedAt = Date.now();
     const activateAt = startedAt + SCANNER_STARTUP_MS;
@@ -862,7 +881,7 @@ export function MaritimeModule({
       config.selectedBandId,
     );
     setManualChannel(nextManualChannel);
-    void startChannel(nextManualChannel, false);
+    void startChannel(nextManualChannel, "manual", false);
   }
 
   function stepTune(deltaMhz: number): void {
@@ -890,7 +909,7 @@ export function MaritimeModule({
       config.selectedBandId,
     );
     setManualChannel(nextManualChannel);
-    void startChannel(nextManualChannel, true);
+    void startChannel(nextManualChannel, "manual", true);
   }
 
   function saveSelectedPreset(): void {
@@ -1112,7 +1131,7 @@ export function MaritimeModule({
                       if (scannerState !== "idle") {
                         stopScan();
                       }
-                      void startChannel(channel, false);
+                      void startChannel(channel, "manual", false);
                     }}
                     type="button"
                   >
@@ -1290,7 +1309,7 @@ export function MaritimeModule({
                       stopChannel();
                       return;
                     }
-                    void startChannel(selectedChannel, false);
+                    void startChannel(selectedChannel, "manual", false);
                   }}
                   type="button"
                 >
@@ -1555,6 +1574,9 @@ export function MaritimeModule({
                   <span className="font-mono text-[10px] text-[var(--accent)]">
                     RMS {entry.rms.toFixed(4)}
                   </span>
+                  <div className="col-span-2">
+                    <ActivityCaptureActions entry={entry} />
+                  </div>
                 </div>
               ))}
             </div>
@@ -1574,7 +1596,7 @@ export function MaritimeModule({
         busy={clearingActivity}
         cancelLabel="Keep Log"
         confirmLabel="Delete Activity"
-        description="This clears the MARITIME activity log from the current view and permanently deletes the stored entries from the local SQLite database."
+        description="This clears the MARITIME contacts from the current view, removes the stored entries from the local SQLite database, and deletes any linked WAV/IQ capture files."
         onCancel={() => {
           if (!clearingActivity) {
             setClearDialogOpen(false);

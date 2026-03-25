@@ -49,6 +49,10 @@ The app also has a single global location model shared across modules:
   - lock-on-activity behavior
   - activity log
 - local activity log persistence in `SQLite`, so hits survive reloads and restarts
+- automatic activity capture while listening or scanning:
+  - demodulated `WAV`
+  - raw `IQ .cs8`
+  - files are linked back to each contact entry
 - in-place retune of the active PMR stream without restarting the browser audio pipeline
 
 ### AIRBAND
@@ -60,6 +64,7 @@ The app also has a single global location model shared across modules:
 - starter channel packs for global common and guard frequencies
 - PMR-style scanning with dwell, squelch and lock-on-activity
 - local activity log persistence in `SQLite`
+- automatic activity capture while listening or scanning, with linked `WAV` + raw `IQ .cs8` files per contact
 - shared RF/audio controls with the other live audio modules
 
 ### MARITIME
@@ -71,6 +76,7 @@ The app also has a single global location model shared across modules:
 - starter channel packs for distress, port ops, working voice, selected Spain port channels, UK MSI, U.S. coastal safety, U.S. VTS and NOAA weather watch
 - PMR-style scanning with dwell, squelch and lock-on-activity
 - local activity log persistence in `SQLite`
+- automatic activity capture while listening or scanning, with linked `WAV` + raw `IQ .cs8` files per contact
 - smart `All` scanning that can prefer global channels plus the shared city or country catalog scope
 - focused on analog voice traffic; digital AIS remains in the dedicated AIS module
 
@@ -187,14 +193,16 @@ Managed map model:
 
 - `db/app.sqlite`
   - the local `SQLite` database
-  - stores module activity events, route history for `AIS` / `ADS-B`, and schema placeholders for future captures and analysis
+  - stores module activity events, route history for `AIS` / `ADS-B`, and capture metadata for linked audio / IQ evidence
 - `data/captures/`
-  - reserved for future audio, raw IQ, and derived artifacts
-  - capture metadata is intended to live in `SQLite`, while large binaries stay on disk
+  - stores activity-triggered `WAV` audio and raw `IQ .cs8` captures for `PMR`, `AIRBAND` and `MARITIME`
+  - is organized per day and per stream session under the project tree
+  - keeps large binaries on disk while `SQLite` stores the linkage and metadata
 
 What already persists today:
 
 - `PMR`, `AIRBAND`, `MARITIME` activity logs
+- `PMR`, `AIRBAND`, `MARITIME` activity-linked `WAV` and raw `IQ` captures
 - `AIS` vessel position history
 - `ADS-B` aircraft position history
 

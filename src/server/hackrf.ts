@@ -4,6 +4,7 @@ import { Readable } from "node:stream";
 import path from "node:path";
 
 import type {
+  ActivityCaptureRequestMeta,
   AudioDemodMode,
   HardwareStatus,
   SignalLevelTelemetry,
@@ -12,11 +13,44 @@ import type {
 } from "@/lib/types";
 import { TELEMETRY_REPORT_INTERVAL_MS } from "@/lib/signal-activity";
 import { adsbRuntime } from "@/server/adsb-runtime";
+import { persistCapturedActivity } from "@/server/activity-events";
 import { hackrfDeviceService } from "@/server/hackrf-device";
 import { aisRuntime } from "@/server/ais-runtime";
+import { capturePrefixForSession } from "@/server/storage";
 
 const LEVEL_RE = /LEVEL rms=([0-9.]+) peak=([0-9.]+) rf=([0-9.]+)/;
+const RECORDING_OPEN_WAV_RE = /^Recording activity WAV: (.+)$/;
+const RECORDING_OPEN_IQ_RE = /^Recording activity IQ: (.+)$/;
+const RECORDING_SAVED_WAV_RE = /^Recording saved WAV: (.+)$/;
+const RECORDING_SAVED_IQ_RE = /^Recording saved IQ: (.+)$/;
 const RETUNE_SETTLE_MS = 450;
+
+type CaptureDescriptor = {
+  module: ActivityCaptureRequestMeta["module"];
+  mode: ActivityCaptureRequestMeta["mode"];
+  bandId: string | null;
+  channelId: string | null;
+  channelNumber: number | null;
+  label: string;
+  freqHz: number;
+  demodMode: AudioDemodMode;
+};
+
+type PendingActivityCapture = {
+  startedAtMs: number;
+  descriptor: CaptureDescriptor;
+  audioPath: string | null;
+  iqPath: string | null;
+  savedAudioPath: string | null;
+  savedIqPath: string | null;
+  finalizeTimer: ReturnType<typeof setTimeout> | null;
+};
+
+type StreamCaptureContext = {
+  capturePrefix: string;
+  descriptor: CaptureDescriptor;
+  pendingSegment: PendingActivityCapture | null;
+};
 
 type ActiveStream = {
   session: StreamSessionSnapshot;
@@ -24,6 +58,7 @@ type ActiveStream = {
   hackrf: ReturnType<typeof spawn>;
   ffmpeg: ReturnType<typeof spawn>;
   retuneTimer: ReturnType<typeof setTimeout> | null;
+  captureContext: StreamCaptureContext | null;
 };
 
 function audioRateForMode(mode: AudioDemodMode): string {
@@ -201,7 +236,12 @@ class HackRFService {
    * Retune the active audio stream to a new frequency without restarting any process.
    * Returns true if the command was sent, false if there is no compatible active stream.
    */
-  retune(freqHz: number, label: string, mode?: AudioDemodMode): boolean {
+  retune(
+    freqHz: number,
+    label: string,
+    mode?: AudioDemodMode,
+    activityCapture?: ActivityCaptureRequestMeta | null,
+  ): boolean {
     if (!this.activeStream) return false;
     if (mode && this.activeStream.session.demodMode !== mode) {
       return false;
@@ -233,6 +273,19 @@ class HackRFService {
       this.activeStream.session.pendingFreqHz = null;
       this.activeStream.session.pendingLabel = null;
       this.activeStream.retuneTimer = null;
+
+      if (this.activeStream.captureContext) {
+        this.activeStream.captureContext.descriptor = {
+          module: activityCapture?.module ?? this.activeStream.captureContext.descriptor.module,
+          mode: activityCapture?.mode ?? this.activeStream.captureContext.descriptor.mode,
+          bandId: activityCapture?.bandId ?? this.activeStream.captureContext.descriptor.bandId,
+          channelId: activityCapture?.channelId ?? this.activeStream.captureContext.descriptor.channelId,
+          channelNumber: activityCapture?.channelNumber ?? this.activeStream.captureContext.descriptor.channelNumber,
+          label,
+          freqHz,
+          demodMode: this.activeStream.session.demodMode,
+        };
+      }
     }, RETUNE_SETTLE_MS);
 
     return true;
@@ -260,6 +313,7 @@ class HackRFService {
     hackrfDeviceService.claim("audio", request.label);
 
     const sessionId = `stream-${Date.now()}`;
+    const captureContext = this.buildCaptureContext(sessionId, request, mode);
     const session: StreamSessionSnapshot = {
       id: sessionId,
       label: request.label,
@@ -291,6 +345,7 @@ class HackRFService {
         request.audioGain.toFixed(2),
         "-R",
         String(TELEMETRY_REPORT_INTERVAL_MS),
+        ...(captureContext ? ["-P", captureContext.capturePrefix] : []),
       ],
       { stdio: ["pipe", "pipe", "pipe"] },
     );
@@ -323,7 +378,14 @@ class HackRFService {
     ffmpeg.stderr.setEncoding("utf8");
     ffmpeg.stderr.on("data", () => {});
 
-    const activeStream: ActiveStream = { session, telemetry: null, hackrf, ffmpeg, retuneTimer: null };
+    const activeStream: ActiveStream = {
+      session,
+      telemetry: null,
+      hackrf,
+      ffmpeg,
+      retuneTimer: null,
+      captureContext,
+    };
     this.activeStream = activeStream;
 
     const cleanup = () => {
@@ -331,6 +393,10 @@ class HackRFService {
       if (activeStream.retuneTimer) {
         clearTimeout(activeStream.retuneTimer);
         activeStream.retuneTimer = null;
+      }
+      if (activeStream.captureContext?.pendingSegment?.finalizeTimer) {
+        clearTimeout(activeStream.captureContext.pendingSegment.finalizeTimer);
+        activeStream.captureContext.pendingSegment.finalizeTimer = null;
       }
       hackrf.stdout?.unpipe(ffmpeg.stdin);
       try { ffmpeg.stdin?.end(); } catch { /* already gone */ }
@@ -361,6 +427,31 @@ class HackRFService {
     };
   }
 
+  private buildCaptureContext(
+    sessionId: string,
+    request: StreamRequest,
+    mode: AudioDemodMode,
+  ): StreamCaptureContext | null {
+    if (!request.activityCapture) {
+      return null;
+    }
+
+    return {
+      capturePrefix: capturePrefixForSession(request.activityCapture.module, sessionId),
+      descriptor: {
+        module: request.activityCapture.module,
+        mode: request.activityCapture.mode,
+        bandId: request.activityCapture.bandId ?? null,
+        channelId: request.activityCapture.channelId ?? null,
+        channelNumber: request.activityCapture.channelNumber ?? null,
+        label: request.label,
+        freqHz: request.freqHz,
+        demodMode: mode,
+      },
+      pendingSegment: null,
+    };
+  }
+
   private attachTelemetry(stderr: NodeJS.ReadableStream, sessionId: string): void {
     let buffer = "";
     stderr.setEncoding("utf8");
@@ -371,29 +462,163 @@ class HackRFService {
 
       for (const line of lines) {
         const match = LEVEL_RE.exec(line);
-        if (!match || this.activeStream?.session.id !== sessionId) {
+        if (match && this.activeStream?.session.id === sessionId) {
+          this.activeStream.telemetry = {
+            rms: Number.parseFloat(match[1]),
+            peak: Number.parseFloat(match[2]),
+            rf: Number.parseFloat(match[3]),
+            updatedAt: new Date().toISOString(),
+          };
           continue;
         }
 
-        this.activeStream.telemetry = {
-          rms: Number.parseFloat(match[1]),
-          peak: Number.parseFloat(match[2]),
-          rf: Number.parseFloat(match[3]),
-          updatedAt: new Date().toISOString(),
-        };
+        const recordingOpenWav = RECORDING_OPEN_WAV_RE.exec(line);
+        if (recordingOpenWav) {
+          this.noteCapturePath(sessionId, "audio", recordingOpenWav[1]);
+          continue;
+        }
+
+        const recordingOpenIq = RECORDING_OPEN_IQ_RE.exec(line);
+        if (recordingOpenIq) {
+          this.noteCapturePath(sessionId, "raw_iq", recordingOpenIq[1]);
+          continue;
+        }
+
+        const recordingSavedWav = RECORDING_SAVED_WAV_RE.exec(line);
+        if (recordingSavedWav) {
+          this.noteSavedCapturePath(sessionId, "audio", recordingSavedWav[1]);
+          continue;
+        }
+
+        const recordingSavedIq = RECORDING_SAVED_IQ_RE.exec(line);
+        if (recordingSavedIq) {
+          this.noteSavedCapturePath(sessionId, "raw_iq", recordingSavedIq[1]);
+        }
       }
+    });
+  }
+
+  private noteCapturePath(
+    sessionId: string,
+    kind: "audio" | "raw_iq",
+    absolutePath: string,
+  ): void {
+    if (this.activeStream?.session.id !== sessionId || !this.activeStream.captureContext) {
+      return;
+    }
+
+    const context = this.activeStream.captureContext;
+    const pending = context.pendingSegment ?? {
+      startedAtMs: Date.now(),
+      descriptor: { ...context.descriptor },
+      audioPath: null,
+      iqPath: null,
+      savedAudioPath: null,
+      savedIqPath: null,
+      finalizeTimer: null,
+    };
+
+    if (kind === "audio") {
+      pending.audioPath = absolutePath;
+    } else {
+      pending.iqPath = absolutePath;
+    }
+
+    context.pendingSegment = pending;
+  }
+
+  private noteSavedCapturePath(
+    sessionId: string,
+    kind: "audio" | "raw_iq",
+    absolutePath: string,
+  ): void {
+    if (this.activeStream?.session.id !== sessionId || !this.activeStream.captureContext) {
+      return;
+    }
+
+    const context = this.activeStream.captureContext;
+    const pending = context.pendingSegment ?? {
+      startedAtMs: Date.now(),
+      descriptor: { ...context.descriptor },
+      audioPath: null,
+      iqPath: null,
+      savedAudioPath: null,
+      savedIqPath: null,
+      finalizeTimer: null,
+    };
+
+    if (kind === "audio") {
+      pending.savedAudioPath = absolutePath;
+      pending.audioPath = pending.audioPath ?? absolutePath;
+    } else {
+      pending.savedIqPath = absolutePath;
+      pending.iqPath = pending.iqPath ?? absolutePath;
+    }
+
+    if (pending.finalizeTimer) {
+      clearTimeout(pending.finalizeTimer);
+    }
+
+    pending.finalizeTimer = setTimeout(() => {
+      this.persistPendingCapture(sessionId);
+    }, 120);
+
+    context.pendingSegment = pending;
+  }
+
+  private persistPendingCapture(sessionId: string): void {
+    if (this.activeStream?.session.id !== sessionId || !this.activeStream.captureContext?.pendingSegment) {
+      return;
+    }
+
+    const context = this.activeStream.captureContext;
+    const pending = context.pendingSegment;
+    if (!pending) {
+      return;
+    }
+    context.pendingSegment = null;
+
+    if (pending.finalizeTimer) {
+      clearTimeout(pending.finalizeTimer);
+    }
+
+    if (!pending.savedAudioPath && !pending.savedIqPath) {
+      return;
+    }
+
+    persistCapturedActivity({
+      module: pending.descriptor.module,
+      mode: pending.descriptor.mode,
+      label: pending.descriptor.label,
+      freqHz: pending.descriptor.freqHz,
+      demodMode: pending.descriptor.demodMode,
+      bandId: pending.descriptor.bandId,
+      channelId: pending.descriptor.channelId,
+      channelNumber: pending.descriptor.channelNumber,
+      startedAtMs: pending.startedAtMs,
+      endedAtMs: Date.now(),
+      rms: this.activeStream.telemetry?.rms ?? null,
+      audioAbsolutePath: pending.savedAudioPath ?? pending.audioPath,
+      iqAbsolutePath: pending.savedIqPath ?? pending.iqPath,
+      metadata: {
+        captureSource: "native-activity",
+        sessionId,
+      },
     });
   }
 
   private stopAndWait(): Promise<void> {
     if (!this.activeStream) return Promise.resolve();
 
-    const { hackrf, ffmpeg, retuneTimer } = this.activeStream;
+    const { hackrf, ffmpeg, retuneTimer, captureContext } = this.activeStream;
     this.activeStream = null;
     hackrfDeviceService.release("audio");
 
     if (retuneTimer) {
       clearTimeout(retuneTimer);
+    }
+    if (captureContext?.pendingSegment?.finalizeTimer) {
+      clearTimeout(captureContext.pendingSegment.finalizeTimer);
     }
 
     // Register the wait listener before sending SIGTERM so we cannot miss the close event

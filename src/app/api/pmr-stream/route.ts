@@ -1,4 +1,5 @@
 import { hackrfService } from "@/server/hackrf";
+import type { ActivityCaptureRequestMeta } from "@/lib/types";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -19,6 +20,23 @@ function badRequest(message: string, status = 400): Response {
   return Response.json({ error: message }, { status, headers: { "Cache-Control": "no-store" } });
 }
 
+function parseActivityCapture(searchParams: URLSearchParams): ActivityCaptureRequestMeta | null {
+  const moduleId = searchParams.get("module");
+  const mode = searchParams.get("activityMode");
+  if (moduleId !== "pmr" || (mode !== "manual" && mode !== "scan")) {
+    return null;
+  }
+
+  const rawChannelNumber = Number.parseInt(searchParams.get("channelNumber") ?? "", 10);
+  return {
+    module: moduleId,
+    mode,
+    bandId: searchParams.get("bandId"),
+    channelId: searchParams.get("channelId"),
+    channelNumber: Number.isFinite(rawChannelNumber) ? rawChannelNumber : null,
+  };
+}
+
 /**
  * PATCH /api/pmr-stream?freqMHz=...&label=...
  * Retune the active NFM stream without restarting the process or the browser connection.
@@ -32,7 +50,12 @@ export async function PATCH(request: Request): Promise<Response> {
     return badRequest(`Frequency ${freqMhz} MHz is outside all known PMR bands.`);
   }
 
-  const ok = hackrfService.retune(Math.round(freqMhz * 1_000_000), label);
+  const ok = hackrfService.retune(
+    Math.round(freqMhz * 1_000_000),
+    label,
+    "nfm",
+    parseActivityCapture(searchParams),
+  );
   if (!ok) {
     return badRequest("No active PMR stream to retune.", 409);
   }
@@ -47,6 +70,7 @@ export async function GET(request: Request): Promise<Response> {
   const vga       = Number.parseInt(searchParams.get("vga") ?? "20", 10);
   const audioGain = Number.parseFloat(searchParams.get("audioGain") ?? "1");
   const label     = (searchParams.get("label") ?? "PMR").trim();
+  const activityCapture = parseActivityCapture(searchParams);
 
   if (!Number.isFinite(freqMhz) || !inPmrRange(freqMhz)) {
     return badRequest(`Frequency ${freqMhz} MHz is outside all known PMR bands.`);
@@ -57,7 +81,7 @@ export async function GET(request: Request): Promise<Response> {
 
   try {
     const stream = await hackrfService.startNfmStream(
-      { label, freqHz: Math.round(freqMhz * 1_000_000), lna, vga, audioGain },
+      { label, freqHz: Math.round(freqMhz * 1_000_000), lna, vga, audioGain, activityCapture },
       request.signal,
     );
     return new Response(stream, {
