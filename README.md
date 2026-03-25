@@ -43,7 +43,7 @@ There is no cloud layer, no account system, and no remote device bridge.
 - live AIS decoding from the HackRF across channels A and B at `161.975 MHz` / `162.025 MHz`
 - native demodulation and message parsing inside `hackrf-webui`, without `SDRangel`
 - vessel map with offline-capable dark basemaps
-- local raster packs or PMTiles, plus a default worldwide Protomaps dark extract served from `public/tiles/osm`
+- managed PMTiles layers, plus a default worldwide Protomaps dark extract served from `public/tiles/osm`
 
 ### ADS-B
 
@@ -70,8 +70,10 @@ By default, `start.sh`:
 
 - installs missing system dependencies on common Linux distributions
 - installs Node dependencies
-- offers an offline basemap profile selector in interactive terminals when no map source is provided
-- installs a dark offline world basemap unless `--skip-ais-maps` is used
+- ensures a managed offline map stack unless `--skip-maps` is used
+- installs a dark global basemap capped near `4 GB` by default
+- optionally adds one high-detail country overlay when `--map-country` is set
+- prompts for a country overlay in interactive terminals if none is configured yet
 - installs or updates the local `dump1090-fa` ADS-B backend unless `--skip-adsb-runtime` is used
 - builds the native `HackRF` receiver binaries
 - builds the Next.js app
@@ -97,9 +99,10 @@ Useful options:
 ./start.sh --host 0.0.0.0 --port 4000
 ./start.sh --skip-system-deps
 ./start.sh --skip-npm --skip-build
-./start.sh --map-profile detailed
-./start.sh --map-zoom 12
-./start.sh --ais-tile-pack-file /path/to/custom-world.pmtiles
+./start.sh --map-global-budget 4G
+./start.sh --map-global-zoom 10
+./start.sh --map-country ES
+./start.sh --map-country ES --map-country-zoom 14
 ./start.sh --skip-adsb-runtime
 ./start.sh --reinstall-adsb-runtime
 ./start.sh --rebuild
@@ -111,10 +114,11 @@ What they do:
 - `--host` and `--port` override the bind address
 - `--skip-system-deps` avoids package-manager changes
 - `--skip-npm` and `--skip-build` reuse existing local artifacts
-- `--map-profile` selects one of the built-in world basemap profiles when using the default Protomaps source
-- `--map-zoom` forces a custom `maxZoom` for the default world extract
-- `--ais-tile-pack-url` and `--ais-tile-pack-file` install an offline map pack from a `.zip` raster pack or a `.pmtiles` source archive
-- `--skip-ais-maps` keeps AIS in live-tile mode
+- `--map-global-budget` controls the target size of the shared global basemap layer
+- `--map-global-zoom` forces the shared global basemap max zoom
+- `--map-country` installs or refreshes one high-detail country overlay on top of the shared world layer
+- `--map-country-zoom` controls the overlay max zoom for that country
+- `--skip-maps` keeps AIS and ADS-B in live-tile mode
 - `--skip-adsb-runtime` keeps the existing ADS-B backend untouched or skips it entirely
 - `--reinstall-adsb-runtime` rebuilds the pinned local `dump1090-fa` backend
 - `--rebuild` forces a fresh `npm ci` and production rebuild
@@ -123,25 +127,20 @@ Environment overrides also work:
 
 ```bash
 HOST=0.0.0.0 PORT=4000 ./start.sh
-MAP_PACK_PROFILE=ultra ./start.sh
-MAP_PACK_MAX_ZOOM=12 ./start.sh
-AIS_TILE_PACK_FILE=/path/to/custom-world.pmtiles ./start.sh
+MAP_GLOBAL_BUDGET=4G ./start.sh
+MAP_GLOBAL_MAX_ZOOM=10 ./start.sh
+MAP_COUNTRY=ES MAP_COUNTRY_MAX_ZOOM=14 ./start.sh
 DUMP1090_FA_REINSTALL=1 ./start.sh
 ```
 
 If the default port is busy and you did not explicitly force a port, the script automatically falls forward to the next free one it can find.
 
-Built-in map profiles:
+Managed map model:
 
-- `compact`: world up to `z8`, about `526 MB`
-- `balanced`: world up to `z9`, about `1.5 GB`
-- `detailed`: world up to `z10`, about `3.5 GB`
-- `xdetail`: world up to `z11`, about `7.4 GB`
-- `ultra`: world up to `z12`, about `16 GB`
-- `max`: world up to `z13`, about `33 GB`
-- `custom`: choose your own `maxZoom`
-
-If `start.sh` runs without an interactive terminal and no map source is provided, it defaults to `balanced`.
+- the global layer is chosen from a size budget, not a hardcoded profile
+- the default `4 GB` budget currently lands on a world extract up to `z10`
+- country overlays start at the first zoom above the global layer and extend to the configured country zoom
+- maps are stored under `public/tiles/osm/global` and `public/tiles/osm/countries`
 
 ## Supported Package Managers In `start.sh`
 
@@ -166,7 +165,9 @@ npm run start -- --hostname 127.0.0.1 --port 3000
 Optional offline maps can also be prepared manually:
 
 ```bash
-node ./scripts/install-ais-map-pack.mjs
+./manage_maps.sh ensure
+./manage_maps.sh add-country ES
+./manage_maps.sh status
 ```
 
 You can also validate the environment without starting the server:
@@ -201,28 +202,16 @@ The managed ADS-B backend is built separately into:
 
 The AIS module tunes the HackRF directly, demodulates AIS in the native binary, validates frames, parses AIS messages in the backend and renders decoded vessels on the map in real time.
 
-Offline basemaps are served from `public/tiles/osm`. By default, `./start.sh` extracts a dark worldwide PMTiles basemap from the latest Protomaps world archive, using the selected profile or `--map-zoom` override.
+Offline basemaps are served from `public/tiles/osm`. By default, `./start.sh` ensures a managed PMTiles stack made of:
+
+- one shared dark world layer sized by `--map-global-budget` or `--map-global-zoom`
+- zero or more country overlays managed by `./manage_maps.sh`
 
 The AIS map behavior is:
 
 - if FM already has a saved city in browser local storage, AIS starts centered near that city
 - otherwise it falls back to decoded AIS bounds when traffic exists
 - if there is still no traffic, it falls back to the installed basemap bounds
-
-You can override the source during startup:
-
-```bash
-./start.sh --ais-tile-pack-file /path/to/ais-pack.zip
-./start.sh --ais-tile-pack-file /path/to/custom-world.pmtiles
-AIS_TILE_PACK_URL=https://example.org/custom-world.pmtiles ./start.sh
-```
-
-Raster pack archives must contain:
-
-- `manifest.json`
-- `z/x/y.png` tiles under the same root
-
-PMTiles sources are re-extracted locally into `public/tiles/osm/world.pmtiles`.
 
 ## ADS-B Runtime Notes
 
@@ -242,6 +231,45 @@ The ADS-B map behavior is:
 - otherwise it falls back to live aircraft bounds when traffic exists
 - if there is still no aircraft position, it falls back to receiver coordinates if configured
 - if there is still no location hint, it falls back to the installed basemap bounds
+
+## Offline Map Management
+
+The map stack is managed by [`manage_maps.sh`](manage_maps.sh), which wraps [`scripts/manage-maps.mjs`](scripts/manage-maps.mjs).
+
+Useful commands:
+
+```bash
+./manage_maps.sh status
+./manage_maps.sh ensure
+./manage_maps.sh ensure --global-budget 4G
+./manage_maps.sh add-country ES
+./manage_maps.sh add-country ES --country-max-zoom 14
+./manage_maps.sh remove-country ES
+./manage_maps.sh list-countries
+./manage_maps.sh clean
+```
+
+Upgrade examples:
+
+```bash
+./manage_maps.sh install-global --global-max-zoom 11 --reinstall
+./manage_maps.sh add-country ES --country-max-zoom 14 --reinstall
+./manage_maps.sh ensure --global-max-zoom 11 --country ES --country-max-zoom 14 --reinstall
+```
+
+Behavior:
+
+- if a layer already exists at the same or higher zoom, the manager keeps it
+- use `--reinstall` when you want to force a rebuild or move to a higher target zoom
+- with the current Protomaps `v4.pmtiles` source, the practical hard limit is `z15`
+
+The managed manifest lives at `public/tiles/osm/manifest.json` and uses a single clean layered schema:
+
+- `version: 1`
+- one global PMTiles layer
+- zero or more country PMTiles overlays
+
+There is no legacy compatibility layer for earlier map manifest formats in the current tree.
 
 Useful environment overrides for the ADS-B backend:
 

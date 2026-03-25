@@ -20,16 +20,16 @@ PORT="${PORT:-$DEFAULT_PORT}"
 SKIP_SYSTEM_DEPS="${SKIP_SYSTEM_DEPS:-0}"
 SKIP_NPM="${SKIP_NPM:-0}"
 SKIP_BUILD="${SKIP_BUILD:-0}"
-SKIP_AIS_MAPS="${SKIP_AIS_MAPS:-0}"
+SKIP_MAPS="${SKIP_MAPS:-0}"
 SKIP_ADSB_RUNTIME="${SKIP_ADSB_RUNTIME:-0}"
 FORCE_REBUILD="${REBUILD:-0}"
-AIS_TILE_PACK_URL="${AIS_TILE_PACK_URL:-}"
-AIS_TILE_PACK_FILE="${AIS_TILE_PACK_FILE:-}"
-AIS_TILE_PACK_REINSTALL="${AIS_TILE_PACK_REINSTALL:-0}"
+MAP_REINSTALL="${MAP_REINSTALL:-0}"
+MAP_GLOBAL_BUDGET="${MAP_GLOBAL_BUDGET:-4G}"
+MAP_GLOBAL_MAX_ZOOM="${MAP_GLOBAL_MAX_ZOOM:-}"
+MAP_COUNTRY="${MAP_COUNTRY:-}"
+MAP_COUNTRY_MAX_ZOOM="${MAP_COUNTRY_MAX_ZOOM:-14}"
 DUMP1090_FA_REINSTALL="${DUMP1090_FA_REINSTALL:-0}"
 DUMP1090_FA_REF="${DUMP1090_FA_REF:-4f47d12a18db24238ab2d91c8637dae25937fd98}"
-MAP_PACK_PROFILE="${MAP_PACK_PROFILE:-${AIS_TILE_PACK_PROFILE:-}}"
-MAP_PACK_MAX_ZOOM="${MAP_PACK_MAX_ZOOM:-${AIS_TILE_PACK_MAX_ZOOM:-}}"
 CHECK_ONLY=0
 DRY_RUN="${DRY_RUN:-0}"
 NEXT_TELEMETRY_DISABLED="${NEXT_TELEMETRY_DISABLED:-1}"
@@ -58,33 +58,36 @@ Options:
   --skip-system-deps   Do not install system packages.
   --skip-npm           Do not run npm ci.
   --skip-build         Do not run the production build.
-  --skip-ais-maps      Do not install or update the offline map pack.
+  --skip-maps          Do not install or update local offline maps.
   --skip-adsb-runtime  Do not install or update the ADS-B decoder backend.
-  --ais-tile-pack-url <url>
-                       Download and install a map pack (.zip or .pmtiles source).
-  --ais-tile-pack-file <path>
-                       Install a map pack from a local .zip or .pmtiles file.
-  --reinstall-ais-maps Replace an existing offline map pack.
+  --reinstall-maps     Rebuild the managed offline maps.
   --reinstall-adsb-runtime
                        Rebuild the local dump1090-fa backend.
-  --map-profile <name> Select a default offline basemap profile when no source is provided.
-  --map-zoom <z>       Force a custom max zoom for the default offline basemap extract.
+  --map-global-budget <size>
+                       Set the target budget for the global basemap layer. Default: 4G
+  --map-global-zoom <z>
+                       Force the global basemap max zoom.
+  --map-country <value>
+                       Add or refresh one high-detail country overlay by id, ISO code or exact name.
+  --map-country-zoom <z>
+                       Set the country overlay max zoom. Default: 14
   --rebuild            Force npm ci and a fresh production build.
   --dry-run            Print the actions without executing them.
   -h, --help           Show this help text.
 
 Environment overrides:
-  HOST, PORT, SKIP_SYSTEM_DEPS, SKIP_NPM, SKIP_BUILD, SKIP_AIS_MAPS,
+  HOST, PORT, SKIP_SYSTEM_DEPS, SKIP_NPM, SKIP_BUILD, SKIP_MAPS,
   SKIP_ADSB_RUNTIME, REBUILD,
-  AIS_TILE_PACK_URL, AIS_TILE_PACK_FILE, AIS_TILE_PACK_REINSTALL,
-  AIS_TILE_PACK_MAX_ZOOM, MAP_PACK_MAX_ZOOM, MAP_PACK_PROFILE,
+  MAP_REINSTALL, MAP_GLOBAL_BUDGET, MAP_GLOBAL_MAX_ZOOM,
+  MAP_COUNTRY, MAP_COUNTRY_MAX_ZOOM,
   DUMP1090_FA_REF, DUMP1090_FA_REINSTALL, DRY_RUN
 
 Default map behavior:
-  If no map pack URL or file is provided, start.sh installs a dark offline world
-  basemap extracted from the latest Protomaps world archive. In an interactive
-  terminal it lets you choose a profile first; otherwise it defaults to the
-  "balanced" profile (~1.5 GB, z9).
+  start.sh ensures a managed offline map stack based on the latest Protomaps
+  world archive. By default it installs a dark global basemap capped near 4 GB.
+  If --map-country is provided, it also installs a high-detail overlay for that
+  country on top of the shared global layer. In an interactive terminal, if no
+  country overlay is installed yet, start.sh offers to configure one.
 EOF
 }
 
@@ -196,12 +199,12 @@ prod_bundle_ready() {
   [[ -f "$ROOT_DIR/.next/BUILD_ID" ]]
 }
 
-ais_tile_pack_manifest_path() {
+maps_manifest_path() {
   printf '%s\n' "$ROOT_DIR/public/tiles/osm/manifest.json"
 }
 
-ais_tile_pack_ready() {
-  [[ -f "$(ais_tile_pack_manifest_path)" ]]
+maps_ready() {
+  [[ -f "$(maps_manifest_path)" ]]
 }
 
 node_modules_ready() {
@@ -212,120 +215,81 @@ interactive_terminal() {
   [[ -t 0 && -t 1 ]]
 }
 
-map_profile_zoom() {
-  case "$1" in
-    compact) printf '%s\n' 8 ;;
-    balanced) printf '%s\n' 9 ;;
-    detailed) printf '%s\n' 10 ;;
-    xdetail) printf '%s\n' 11 ;;
-    ultra) printf '%s\n' 12 ;;
-    max) printf '%s\n' 13 ;;
-    *)
-      return 1
-      ;;
-  esac
-}
-
-map_profile_size() {
-  case "$1" in
-    compact) printf '%s\n' "~526 MB" ;;
-    balanced) printf '%s\n' "~1.5 GB" ;;
-    detailed) printf '%s\n' "~3.5 GB" ;;
-    xdetail) printf '%s\n' "~7.4 GB" ;;
-    ultra) printf '%s\n' "~16 GB" ;;
-    max) printf '%s\n' "~33 GB" ;;
-    *)
-      return 1
-      ;;
-  esac
-}
-
 validate_map_zoom() {
   [[ "$1" =~ ^[0-9]+$ ]] || return 1
-  (( "$1" >= 0 && "$1" <= 14 ))
+  (( "$1" >= 0 && "$1" <= 15 ))
 }
 
-choose_map_profile_interactive() {
-  local choice=""
-  local custom_zoom=""
+maps_have_country_overlays() {
+  local manifest_path
+  manifest_path="$(maps_manifest_path)"
+
+  if [[ ! -f "$manifest_path" ]]; then
+    return 1
+  fi
+
+  node - "$manifest_path" <<'EOF' >/dev/null 2>&1
+const fs = require("node:fs");
+
+const manifestPath = process.argv[2];
+try {
+  const manifest = JSON.parse(fs.readFileSync(manifestPath, "utf8"));
+  const layers = Array.isArray(manifest.layers) ? manifest.layers : [];
+  const hasCountry = layers.some((layer) => layer && layer.role === "country");
+  process.exit(hasCountry ? 0 : 1);
+} catch {
+  process.exit(1);
+}
+EOF
+}
+
+prompt_map_country_if_missing() {
+  local answer=""
+  local country_value=""
+
+  if [[ "$DRY_RUN" == "1" ]]; then
+    return
+  fi
+
+  if [[ -n "$MAP_COUNTRY" ]]; then
+    return
+  fi
+
+  if ! interactive_terminal; then
+    return
+  fi
+
+  if maps_have_country_overlays; then
+    return
+  fi
 
   echo
-  log "Choose the default offline basemap profile:"
-  printf '  1) compact   %s  world up to z%s\n' "$(map_profile_size compact)" "$(map_profile_zoom compact)"
-  printf '  2) balanced  %s  world up to z%s  [default]\n' "$(map_profile_size balanced)" "$(map_profile_zoom balanced)"
-  printf '  3) detailed  %s  world up to z%s\n' "$(map_profile_size detailed)" "$(map_profile_zoom detailed)"
-  printf '  4) xdetail   %s  world up to z%s\n' "$(map_profile_size xdetail)" "$(map_profile_zoom xdetail)"
-  printf '  5) ultra     %s  world up to z%s\n' "$(map_profile_size ultra)" "$(map_profile_zoom ultra)"
-  printf '  6) max       %s  world up to z%s\n' "$(map_profile_size max)" "$(map_profile_zoom max)"
-  printf '  7) custom    choose your own max zoom\n'
-  printf 'Select profile [2]: '
-  read -r choice || choice=""
+  log "No high-detail country overlay is configured yet."
+  printf 'Add one now? [y/N] '
+  read -r answer || answer=""
 
-  case "${choice:-2}" in
-    1|compact)
-      MAP_PACK_PROFILE="compact"
-      ;;
-    2|balanced|"")
-      MAP_PACK_PROFILE="balanced"
-      ;;
-    3|detailed)
-      MAP_PACK_PROFILE="detailed"
-      ;;
-    4|xdetail)
-      MAP_PACK_PROFILE="xdetail"
-      ;;
-    5|ultra)
-      MAP_PACK_PROFILE="ultra"
-      ;;
-    6|max)
-      MAP_PACK_PROFILE="max"
-      ;;
-    7|custom)
-      while true; do
-        printf 'Custom max zoom [0-14]: '
-        read -r custom_zoom || custom_zoom=""
-        if validate_map_zoom "$custom_zoom"; then
-          MAP_PACK_PROFILE="custom"
-          MAP_PACK_MAX_ZOOM="$custom_zoom"
-          break
-        fi
-        warn "Invalid custom zoom '${custom_zoom}'. Enter a number between 0 and 14."
-      done
+  case "$answer" in
+    y|Y|yes|YES)
       ;;
     *)
-      warn "Unknown profile selection '${choice}'. Falling back to balanced."
-      MAP_PACK_PROFILE="balanced"
+      return
       ;;
   esac
-}
 
-resolve_map_pack_profile() {
-  if [[ -n "$MAP_PACK_MAX_ZOOM" || -n "$AIS_TILE_PACK_URL" || -n "$AIS_TILE_PACK_FILE" ]]; then
-    return
-  fi
+  while true; do
+    printf 'Country id, ISO code or exact name: '
+    read -r country_value || country_value=""
+    country_value="${country_value#"${country_value%%[![:space:]]*}"}"
+    country_value="${country_value%"${country_value##*[![:space:]]}"}"
 
-  if [[ -z "$MAP_PACK_PROFILE" ]]; then
-    if interactive_terminal; then
-      choose_map_profile_interactive
-    else
-      MAP_PACK_PROFILE="balanced"
+    if [[ -n "$country_value" ]]; then
+      MAP_COUNTRY="$country_value"
+      log "Selected high-detail country overlay: $MAP_COUNTRY"
+      return
     fi
-  fi
 
-  if [[ -z "$MAP_PACK_MAX_ZOOM" ]]; then
-    MAP_PACK_MAX_ZOOM="$(map_profile_zoom "$MAP_PACK_PROFILE")" \
-      || fail "Unknown map profile: $MAP_PACK_PROFILE"
-  fi
-
-  validate_map_zoom "$MAP_PACK_MAX_ZOOM" \
-    || fail "Invalid MAP_PACK_MAX_ZOOM: $MAP_PACK_MAX_ZOOM"
-
-  if [[ "$MAP_PACK_PROFILE" == "custom" ]]; then
-    log "Selected offline basemap profile: custom (z${MAP_PACK_MAX_ZOOM})."
-    return
-  fi
-
-  log "Selected offline basemap profile: $MAP_PACK_PROFILE ($(map_profile_size "$MAP_PACK_PROFILE"), z${MAP_PACK_MAX_ZOOM})."
+    warn "Enter a country id, ISO code or exact name, or press Ctrl+C to cancel."
+  done
 }
 
 needs_system_deps() {
@@ -347,51 +311,49 @@ parse_args() {
       --skip-build)
         SKIP_BUILD=1
         ;;
-      --skip-ais-maps)
-        SKIP_AIS_MAPS=1
+      --skip-maps)
+        SKIP_MAPS=1
         ;;
       --skip-adsb-runtime)
         SKIP_ADSB_RUNTIME=1
         ;;
-      --ais-tile-pack-url)
-        shift
-        [[ $# -gt 0 ]] || fail "--ais-tile-pack-url requires a value."
-        AIS_TILE_PACK_URL="$1"
-        ;;
-      --ais-tile-pack-url=*)
-        AIS_TILE_PACK_URL="${1#*=}"
-        ;;
-      --ais-tile-pack-file)
-        shift
-        [[ $# -gt 0 ]] || fail "--ais-tile-pack-file requires a value."
-        AIS_TILE_PACK_FILE="$1"
-        ;;
-      --ais-tile-pack-file=*)
-        AIS_TILE_PACK_FILE="${1#*=}"
-        ;;
-      --reinstall-ais-maps)
-        AIS_TILE_PACK_REINSTALL=1
+      --reinstall-maps)
+        MAP_REINSTALL=1
         ;;
       --reinstall-adsb-runtime)
         DUMP1090_FA_REINSTALL=1
         ;;
-      --map-profile)
+      --map-global-budget)
         shift
-        [[ $# -gt 0 ]] || fail "--map-profile requires a value."
-        MAP_PACK_PROFILE="$1"
+        [[ $# -gt 0 ]] || fail "--map-global-budget requires a value."
+        MAP_GLOBAL_BUDGET="$1"
         ;;
-      --map-profile=*)
-        MAP_PACK_PROFILE="${1#*=}"
+      --map-global-budget=*)
+        MAP_GLOBAL_BUDGET="${1#*=}"
         ;;
-      --map-zoom)
+      --map-global-zoom)
         shift
-        [[ $# -gt 0 ]] || fail "--map-zoom requires a value."
-        MAP_PACK_MAX_ZOOM="$1"
-        MAP_PACK_PROFILE="custom"
+        [[ $# -gt 0 ]] || fail "--map-global-zoom requires a value."
+        MAP_GLOBAL_MAX_ZOOM="$1"
         ;;
-      --map-zoom=*)
-        MAP_PACK_MAX_ZOOM="${1#*=}"
-        MAP_PACK_PROFILE="custom"
+      --map-global-zoom=*)
+        MAP_GLOBAL_MAX_ZOOM="${1#*=}"
+        ;;
+      --map-country)
+        shift
+        [[ $# -gt 0 ]] || fail "--map-country requires a value."
+        MAP_COUNTRY="$1"
+        ;;
+      --map-country=*)
+        MAP_COUNTRY="${1#*=}"
+        ;;
+      --map-country-zoom)
+        shift
+        [[ $# -gt 0 ]] || fail "--map-country-zoom requires a value."
+        MAP_COUNTRY_MAX_ZOOM="$1"
+        ;;
+      --map-country-zoom=*)
+        MAP_COUNTRY_MAX_ZOOM="${1#*=}"
         ;;
       --rebuild)
         FORCE_REBUILD=1
@@ -432,6 +394,11 @@ parse_args() {
 
   [[ "$PORT" =~ ^[0-9]+$ ]] || fail "Port must be a number."
   (( PORT >= 1 && PORT <= 65535 )) || fail "Port must be between 1 and 65535."
+  [[ "$MAP_COUNTRY_MAX_ZOOM" =~ ^[0-9]+$ ]] || fail "MAP_COUNTRY_MAX_ZOOM must be a number."
+  (( MAP_COUNTRY_MAX_ZOOM >= 0 && MAP_COUNTRY_MAX_ZOOM <= 15 )) || fail "MAP_COUNTRY_MAX_ZOOM must be between 0 and 15."
+  if [[ -n "$MAP_GLOBAL_MAX_ZOOM" ]]; then
+    validate_map_zoom "$MAP_GLOBAL_MAX_ZOOM" || fail "MAP_GLOBAL_MAX_ZOOM must be between 0 and 15."
+  fi
 }
 
 install_nodesource_setup() {
@@ -678,10 +645,10 @@ print_status_report() {
     report_line "Prod bundle" "missing"
   fi
 
-  if ais_tile_pack_ready; then
-    report_line "Offline map pack" "$(ais_tile_pack_manifest_path)"
+  if maps_ready; then
+    report_line "Offline maps" "$(maps_manifest_path)"
   else
-    report_line "Offline map pack" "not installed"
+    report_line "Offline maps" "not installed"
   fi
 
   if node_ok; then
@@ -756,33 +723,41 @@ install_node_modules() {
   fi
 }
 
-install_ais_maps() {
+install_maps() {
   cd "$ROOT_DIR"
 
-  if [[ "$SKIP_AIS_MAPS" == "1" || "$CHECK_ONLY" == "1" ]]; then
+  if [[ "$SKIP_MAPS" == "1" || "$CHECK_ONLY" == "1" ]]; then
     if [[ "$CHECK_ONLY" == "1" ]]; then
-      log "Check mode: offline map-pack installation skipped."
+      log "Check mode: offline map installation skipped."
     else
-      log "Skipping offline map-pack installation because --skip-ais-maps was requested."
+      log "Skipping offline map installation because --skip-maps was requested."
     fi
     return
   fi
 
-  if ais_tile_pack_ready && [[ "$AIS_TILE_PACK_REINSTALL" != "1" ]]; then
-    log "Offline map pack already present."
-    return
+  prompt_map_country_if_missing
+
+  local -a map_args=(
+    ./manage_maps.sh
+    ensure
+    --global-budget "$MAP_GLOBAL_BUDGET"
+    --country-max-zoom "$MAP_COUNTRY_MAX_ZOOM"
+  )
+
+  if [[ -n "$MAP_GLOBAL_MAX_ZOOM" ]]; then
+    map_args+=(--global-max-zoom "$MAP_GLOBAL_MAX_ZOOM")
   fi
 
-  resolve_map_pack_profile
+  if [[ -n "$MAP_COUNTRY" ]]; then
+    map_args+=(--country "$MAP_COUNTRY")
+  fi
 
-  log "Installing offline map pack."
-  run env \
-    AIS_TILE_PACK_URL="$AIS_TILE_PACK_URL" \
-    AIS_TILE_PACK_FILE="$AIS_TILE_PACK_FILE" \
-    AIS_TILE_PACK_REINSTALL="$AIS_TILE_PACK_REINSTALL" \
-    AIS_TILE_PACK_MAX_ZOOM="$MAP_PACK_MAX_ZOOM" \
-    MAP_PACK_PROFILE="$MAP_PACK_PROFILE" \
-    node ./scripts/install-ais-map-pack.mjs
+  if [[ "$MAP_REINSTALL" == "1" ]]; then
+    map_args+=(--reinstall)
+  fi
+
+  log "Ensuring offline maps."
+  run "${map_args[@]}"
 }
 
 install_adsb_runtime() {
@@ -837,10 +812,10 @@ print_start_summary() {
   report_line "Native binary" "$(native_binary_path)"
   report_line "ADS-B backend" "$(adsb_decoder_binary_path)"
   report_line "Prod bundle" ".next/BUILD_ID present"
-  if ais_tile_pack_ready; then
-    report_line "Offline map pack" "$(ais_tile_pack_manifest_path)"
+  if maps_ready; then
+    report_line "Offline maps" "$(maps_manifest_path)"
   else
-    report_line "Offline map pack" "not installed"
+    report_line "Offline maps" "not installed"
   fi
 
   case "$(hackrf_probe_status)" in
@@ -892,7 +867,7 @@ main() {
   verify_runtime
   resolve_port
   install_node_modules
-  install_ais_maps
+  install_maps
   install_adsb_runtime
   build_app
   print_start_summary

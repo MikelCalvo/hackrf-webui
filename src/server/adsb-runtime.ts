@@ -17,7 +17,7 @@ import {
 } from "@/server/adsb-protocol";
 import { hackrfDeviceService } from "@/server/hackrf-device";
 import { pickHackrfRuntimeErrorMessage } from "@/server/hackrf-runtime-errors";
-import { buildTilePackSummary } from "@/server/map-packs";
+import { buildOfflineMapSummary } from "@/server/maps";
 
 const DEFAULT_CENTER_FREQ_HZ = 1_090_000_000;
 const DEFAULT_SAMPLE_RATE = 2_400_000;
@@ -285,7 +285,7 @@ class AdsbRuntimeService {
 
   getSnapshot(): AdsbFeedSnapshot {
     const warnings: string[] = [];
-    const tilePack = buildTilePackSummary(warnings);
+    const maps = buildOfflineMapSummary(warnings);
     const receiver = this.readReceiverInfo();
     const stats = this.readStats();
     const aircraftData = this.readAircraft();
@@ -331,7 +331,7 @@ class AdsbRuntimeService {
       bounds,
       aircraft,
       warnings,
-      tilePack,
+      maps,
       runtime: this.getStatus(),
       receiver,
       stats,

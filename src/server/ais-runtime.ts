@@ -13,7 +13,7 @@ import type {
 import { hackrfDeviceService } from "@/server/hackrf-device";
 import { pickHackrfRuntimeErrorMessage } from "@/server/hackrf-runtime-errors";
 import { parseAisFrameLine, type DecodedAisMessage } from "@/server/ais-protocol";
-import { buildTilePackSummary } from "@/server/map-packs";
+import { buildOfflineMapSummary } from "@/server/maps";
 
 type VesselAccumulator = {
   mmsi: string;
@@ -315,7 +315,7 @@ class AisRuntimeService {
 
   getSnapshot(): AisFeedSnapshot {
     const warnings: string[] = [];
-    const tilePack = buildTilePackSummary(warnings);
+    const maps = buildOfflineMapSummary(warnings);
 
     if (this.runtime.state === "error") {
       warnings.push(this.runtime.message);
@@ -383,7 +383,7 @@ class AisRuntimeService {
       vessels,
       channels: this.channels.map((channel) => ({ ...channel })),
       warnings,
-      tilePack,
+      maps,
       runtime: this.getStatus(),
     };
   }

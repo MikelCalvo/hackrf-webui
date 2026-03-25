@@ -10,6 +10,7 @@ import type {
   HardwareStatus,
 } from "@/lib/types";
 import {
+  buildBasemapSources,
   buildBoundsPairs,
   buildPointBounds,
   isPointBounds,
@@ -173,12 +174,12 @@ export function AdsbModule({ hardware, onRefreshHardware }: AdsbModuleProps) {
   const leafletRef = useRef<typeof import("leaflet") | null>(null);
   const mapRef = useRef<LeafletMap | null>(null);
   const markerLayerRef = useRef<LayerGroup | null>(null);
-  const basemapLayerRef = useRef<Layer | null>(null);
+  const basemapLayerRef = useRef<Layer[]>([]);
   const didFitBoundsRef = useRef(false);
   const [selectedHex, setSelectedHex] = useState("");
   const basemapSignatureRef = useRef("");
 
-  const { savedCityResolved, savedCityView } = useSavedCityView();
+  const { savedCityResolved, savedCityView, savedCountryId } = useSavedCityView();
   const {
     controlRuntime,
     error,
@@ -197,14 +198,12 @@ export function AdsbModule({ hardware, onRefreshHardware }: AdsbModuleProps) {
     startRuntime: () => requestAdsbRuntime("POST"),
     stopRuntime: () => requestAdsbRuntime("DELETE"),
   });
-  const tilePackKind = snapshot?.tilePack.kind ?? null;
-  const tilePackTileUrlTemplate = snapshot?.tilePack.tileUrlTemplate ?? null;
-  const tilePackPmtilesUrl = snapshot?.tilePack.pmtilesUrl ?? null;
-  const tilePackFlavor = snapshot?.tilePack.flavor ?? null;
-  const tilePackLang = snapshot?.tilePack.lang ?? null;
-  const tilePackMinZoom = snapshot?.tilePack.minZoom ?? null;
-  const tilePackMaxZoom = snapshot?.tilePack.maxZoom ?? null;
-  const tilePackAttribution = snapshot?.tilePack.attribution ?? null;
+  const mapsMinZoom = snapshot?.maps.minZoom ?? null;
+  const mapsMaxZoom = snapshot?.maps.maxZoom ?? null;
+  const selectedCountryLayer = snapshot?.maps.layers.find(
+    (layer) => layer.role === "country" && layer.countryId === savedCountryId,
+  ) ?? null;
+  const selectedCountryBounds = selectedCountryLayer?.bounds ?? null;
 
   function focusAircraft(aircraft: AdsbAircraftContact): void {
     if (aircraft.latitude === null || aircraft.longitude === null) {
@@ -263,10 +262,10 @@ export function AdsbModule({ hardware, onRefreshHardware }: AdsbModuleProps) {
 
     return () => {
       active = false;
-      basemapLayerRef.current?.remove();
+      basemapLayerRef.current.forEach((layer) => layer.remove());
       markerLayerRef.current?.clearLayers();
       mapRef.current?.remove();
-      basemapLayerRef.current = null;
+      basemapLayerRef.current = [];
       markerLayerRef.current = null;
       mapRef.current = null;
       leafletRef.current = null;
@@ -279,14 +278,14 @@ export function AdsbModule({ hardware, onRefreshHardware }: AdsbModuleProps) {
       return;
     }
 
-    const minZoom = tilePackMinZoom ?? 0;
-    const maxZoom = tilePackMaxZoom ?? DEFAULT_CITY_ZOOM;
+    const minZoom = mapsMinZoom ?? 0;
+    const maxZoom = mapsMaxZoom ?? DEFAULT_CITY_ZOOM;
     const cityZoom = Math.min(Math.max(DEFAULT_CITY_ZOOM, minZoom), maxZoom);
 
     map.setView([savedCityView.latitude, savedCityView.longitude], cityZoom, {
       animate: false,
     });
-  }, [savedCityView, snapshot?.bounds, tilePackMaxZoom, tilePackMinZoom]);
+  }, [savedCityView, snapshot?.bounds, mapsMaxZoom, mapsMinZoom]);
 
   useEffect(() => {
     const leaflet = leafletRef.current;
@@ -296,6 +295,7 @@ export function AdsbModule({ hardware, onRefreshHardware }: AdsbModuleProps) {
     }
 
     let cancelled = false;
+    const sources = buildBasemapSources(snapshot?.maps ?? null, savedCountryId);
     void syncLeafletBasemap({
       cancelled: () => cancelled,
       emptyTileDataUrl: EMPTY_TILE_DATA_URL,
@@ -305,16 +305,7 @@ export function AdsbModule({ hardware, onRefreshHardware }: AdsbModuleProps) {
       map,
       onError: setError,
       signatureRef: basemapSignatureRef,
-      source: {
-        kind: tilePackKind,
-        tileUrlTemplate: tilePackTileUrlTemplate,
-        pmtilesUrl: tilePackPmtilesUrl,
-        flavor: tilePackFlavor,
-        lang: tilePackLang,
-        minZoom: tilePackMinZoom,
-        maxZoom: tilePackMaxZoom,
-        attribution: tilePackAttribution,
-      },
+      sources,
     });
 
     return () => {
@@ -322,14 +313,8 @@ export function AdsbModule({ hardware, onRefreshHardware }: AdsbModuleProps) {
     };
   }, [
     setError,
-    tilePackAttribution,
-    tilePackFlavor,
-    tilePackKind,
-    tilePackLang,
-    tilePackMaxZoom,
-    tilePackMinZoom,
-    tilePackPmtilesUrl,
-    tilePackTileUrlTemplate,
+    savedCountryId,
+    snapshot?.maps,
   ]);
 
   const selected =
@@ -380,7 +365,7 @@ export function AdsbModule({ hardware, onRefreshHardware }: AdsbModuleProps) {
         : null;
     const boundsToFit = snapshot.bounds ?? (
       savedCityResolved && !savedCityView
-        ? receiverBounds ?? snapshot.tilePack.bounds
+        ? receiverBounds ?? selectedCountryBounds ?? snapshot.maps.bounds
         : null
     );
 
@@ -388,7 +373,7 @@ export function AdsbModule({ hardware, onRefreshHardware }: AdsbModuleProps) {
       if (isPointBounds(boundsToFit)) {
         map.setView(
           [boundsToFit.south, boundsToFit.west],
-          Math.min(snapshot.tilePack.maxZoom, 11),
+          Math.min(snapshot.maps.maxZoom, 11),
           { animate: false },
         );
       } else {
@@ -399,7 +384,7 @@ export function AdsbModule({ hardware, onRefreshHardware }: AdsbModuleProps) {
       }
       didFitBoundsRef.current = true;
     }
-  }, [savedCityResolved, savedCityView, selected, snapshot]);
+  }, [savedCityResolved, savedCityView, selected, selectedCountryBounds, snapshot]);
 
   const runtimeState = snapshot?.runtime.state ?? null;
   const runtimeRunning = runtimeState === "running";
@@ -561,27 +546,29 @@ export function AdsbModule({ hardware, onRefreshHardware }: AdsbModuleProps) {
               <span
                 className={cx(
                   "rounded-full border px-2 py-0.5 font-mono text-[9px] uppercase tracking-[0.14em]",
-                  snapshot?.tilePack.available
+                  snapshot?.maps.available
                     ? "border-emerald-400/20 bg-emerald-400/10 text-emerald-200"
                     : "border-amber-400/20 bg-amber-400/10 text-amber-200",
                 )}
               >
-                {snapshot?.tilePack.available ? "offline" : "live"}
+                {snapshot?.maps.available ? "offline" : "live"}
               </span>
             </div>
             <p className="mt-2 text-sm text-[var(--foreground)]">
-              {snapshot?.tilePack.name ?? "OpenStreetMap Live"}
+              {snapshot?.maps.name ?? "OpenStreetMap Live"}
             </p>
             <p className="mt-1 text-xs leading-5 text-[var(--muted)]">
-              {snapshot?.tilePack.available
-                ? snapshot.tilePack.kind === "pmtiles"
-                  ? `Local dark PMTiles basemap ready up to z${snapshot.tilePack.maxZoom}.`
-                  : `Local raster pack ready up to z${snapshot.tilePack.maxZoom}.`
-                : "No local tile pack installed yet. The module falls back to live OpenStreetMap tiles."}
+              {snapshot?.maps.available
+                ? snapshot.maps.kind === "pmtiles"
+                  ? snapshot.maps.countryLayerCount > 0
+                    ? `Local dark PMTiles layers ready up to z${snapshot.maps.maxZoom}, including ${snapshot.maps.countryLayerCount} country overlay${snapshot.maps.countryLayerCount === 1 ? "" : "s"}.`
+                    : `Local dark PMTiles basemap ready up to z${snapshot.maps.maxZoom}.`
+                  : `Local raster layer set ready up to z${snapshot.maps.maxZoom}.`
+                : "No local map layers installed yet. The module falls back to live OpenStreetMap tiles."}
             </p>
-            {snapshot?.tilePack.installedAt ? (
+            {snapshot?.maps.installedAt ? (
               <p className="mt-2 font-mono text-[10px] text-[var(--muted)]">
-                installed {formatTimestamp(snapshot.tilePack.installedAt)}
+                installed {formatTimestamp(snapshot.maps.installedAt)}
               </p>
             ) : null}
           </div>
@@ -622,10 +609,10 @@ export function AdsbModule({ hardware, onRefreshHardware }: AdsbModuleProps) {
               ? "live dump1090-fa decoder"
               : runtimeStarting
                 ? "starting decoder"
-                : snapshot?.tilePack.available
-                  ? snapshot.tilePack.kind === "pmtiles"
+                : snapshot?.maps.available
+                  ? snapshot.maps.kind === "pmtiles"
                     ? "offline dark basemap"
-                    : "offline raster basemap"
+                    : "offline raster layers"
                   : "live OpenStreetMap"}
           </span>
         </div>
@@ -634,7 +621,7 @@ export function AdsbModule({ hardware, onRefreshHardware }: AdsbModuleProps) {
           <div
             className={cx(
               "ais-map h-full w-full",
-              snapshot?.tilePack.kind === "pmtiles" && "ais-map--blue-dark",
+              snapshot?.maps.kind === "pmtiles" && "ais-map--blue-dark",
             )}
             ref={mapHostRef}
           />
@@ -658,7 +645,7 @@ export function AdsbModule({ hardware, onRefreshHardware }: AdsbModuleProps) {
               Attribution
             </p>
             <p className="mt-1 text-xs leading-5 text-[var(--muted-strong)]">
-              {snapshot?.tilePack.attribution ?? "© OpenStreetMap contributors"}
+              {snapshot?.maps.attribution ?? "© OpenStreetMap contributors"}
             </p>
           </div>
 

@@ -219,6 +219,27 @@ export type AisBounds = GeoBounds;
 
 export type AisPoint = GeoPoint;
 
+export type OfflineMapLayerRole = "global" | "country";
+
+export type OfflineMapLayerSummary = {
+  id: string;
+  role: OfflineMapLayerRole;
+  countryId: string | null;
+  countryName: string | null;
+  kind: "raster" | "pmtiles";
+  name: string;
+  tileUrlTemplate: string | null;
+  pmtilesUrl: string | null;
+  flavor: "light" | "dark" | "white" | "grayscale" | "black" | null;
+  lang: string | null;
+  attribution: string;
+  bounds: GeoBounds | null;
+  minZoom: number;
+  maxZoom: number;
+  installedAt: string | null;
+  manifestPath: string | null;
+};
+
 export type AisRuntimeState = "stopped" | "starting" | "running" | "error";
 
 export type AisRuntimeStatus = {
@@ -243,7 +264,8 @@ export type AisChannelStatus = {
   lastPhase: number | null;
 };
 
-export type MapTilePackSummary = {
+export type OfflineMapSummary = {
+  version: 1;
   available: boolean;
   mode: "remote-live" | "local-pack";
   kind: "raster" | "pmtiles";
@@ -258,9 +280,9 @@ export type MapTilePackSummary = {
   maxZoom: number;
   installedAt: string | null;
   manifestPath: string | null;
+  countryLayerCount: number;
+  layers: OfflineMapLayerSummary[];
 };
-
-export type AisTilePackSummary = MapTilePackSummary;
 
 export type AisVesselContact = {
   mmsi: string;
@@ -292,7 +314,7 @@ export type AisFeedSnapshot = {
   vessels: AisVesselContact[];
   channels: AisChannelStatus[];
   warnings: string[];
-  tilePack: AisTilePackSummary;
+  maps: OfflineMapSummary;
   runtime: AisRuntimeStatus;
 };
 
@@ -363,7 +385,7 @@ export type AdsbFeedSnapshot = {
   bounds: GeoBounds | null;
   aircraft: AdsbAircraftContact[];
   warnings: string[];
-  tilePack: MapTilePackSummary;
+  maps: OfflineMapSummary;
   runtime: AdsbRuntimeStatus;
   receiver: AdsbReceiverInfo | null;
   stats: AdsbDecoderStats | null;

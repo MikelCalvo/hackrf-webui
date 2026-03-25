@@ -3,7 +3,13 @@
 import type { Layer, Map as LeafletMap } from "leaflet";
 import { useEffect, useRef, useState, type MutableRefObject } from "react";
 
-import type { CatalogCountryShard, GeoBounds, GeoPoint } from "@/lib/types";
+import type {
+  CatalogCountryShard,
+  GeoBounds,
+  GeoPoint,
+  OfflineMapLayerSummary,
+  OfflineMapSummary,
+} from "@/lib/types";
 
 export const LOCATION_KEY = "hackrf-webui.location.v1";
 
@@ -21,7 +27,12 @@ export type RuntimeMessages = {
 };
 
 export type BasemapSource = {
+  id: string;
+  role: "global" | "country";
+  countryId: string | null;
+  countryName: string | null;
   kind: string | null;
+  name: string;
   tileUrlTemplate: string | null;
   pmtilesUrl: string | null;
   flavor: string | null;
@@ -29,6 +40,7 @@ export type BasemapSource = {
   minZoom: number | null;
   maxZoom: number | null;
   attribution: string | null;
+  bounds: GeoBounds | null;
 };
 
 export function buildBoundsPairs(bounds: GeoBounds): [[number, number], [number, number]] {
@@ -53,8 +65,10 @@ export function buildPointBounds(latitude: number, longitude: number): GeoBounds
 
 export function useSavedCityView(): {
   savedCityResolved: boolean;
+  savedCountryId: string | null;
   savedCityView: GeoPoint | null;
 } {
+  const [savedCountryId, setSavedCountryId] = useState<string | null>(null);
   const [savedCityView, setSavedCityView] = useState<GeoPoint | null>(null);
   const [savedCityResolved, setSavedCityResolved] = useState(false);
 
@@ -80,8 +94,11 @@ export function useSavedCityView(): {
           || typeof saved.cityId !== "string"
           || saved.cityId === "all"
         ) {
+          setSavedCountryId(typeof saved.countryId === "string" ? saved.countryId : null);
           return;
         }
+
+        setSavedCountryId(saved.countryId);
 
         const response = await fetch(`/catalog/countries/${saved.countryId}.json`, {
           cache: "force-cache",
@@ -116,7 +133,113 @@ export function useSavedCityView(): {
     };
   }, []);
 
-  return { savedCityResolved, savedCityView };
+  return { savedCityResolved, savedCountryId, savedCityView };
+}
+
+function normalizeLayerSource(layer: OfflineMapLayerSummary): BasemapSource {
+  return {
+    id: layer.id,
+    role: layer.role,
+    countryId: layer.countryId,
+    countryName: layer.countryName,
+    kind: layer.kind,
+    name: layer.name,
+    tileUrlTemplate: layer.tileUrlTemplate,
+    pmtilesUrl: layer.pmtilesUrl,
+    flavor: layer.flavor,
+    lang: layer.lang,
+    minZoom: layer.minZoom,
+    maxZoom: layer.maxZoom,
+    attribution: layer.attribution,
+    bounds: layer.bounds,
+  };
+}
+
+function normalizeSummarySource(maps: OfflineMapSummary): BasemapSource | null {
+  if (maps.kind === "pmtiles" && maps.pmtilesUrl) {
+    return {
+      id: "default",
+      role: "global",
+      countryId: null,
+      countryName: null,
+      kind: maps.kind,
+      name: maps.name,
+      tileUrlTemplate: null,
+      pmtilesUrl: maps.pmtilesUrl,
+      flavor: maps.flavor,
+      lang: maps.lang,
+      minZoom: maps.minZoom,
+      maxZoom: maps.maxZoom,
+      attribution: maps.attribution,
+      bounds: maps.bounds,
+    };
+  }
+
+  if (maps.tileUrlTemplate) {
+    return {
+      id: "default",
+      role: "global",
+      countryId: null,
+      countryName: null,
+      kind: maps.kind,
+      name: maps.name,
+      tileUrlTemplate: maps.tileUrlTemplate,
+      pmtilesUrl: null,
+      flavor: maps.flavor,
+      lang: maps.lang,
+      minZoom: maps.minZoom,
+      maxZoom: maps.maxZoom,
+      attribution: maps.attribution,
+      bounds: maps.bounds,
+    };
+  }
+
+  return null;
+}
+
+export function buildBasemapSources(
+  maps: OfflineMapSummary | null,
+  savedCountryId: string | null,
+): BasemapSource[] {
+  if (!maps) {
+    return [];
+  }
+
+  const layers = maps?.layers ?? [];
+  if (layers.length === 0) {
+    const fallback = normalizeSummarySource(maps);
+    return fallback ? [fallback] : [];
+  }
+
+  const normalized = layers.map(normalizeLayerSource);
+  const globals = normalized.filter((layer) => layer.role === "global");
+  const globalDetailMaxZoom = globals.reduce(
+    (maxZoom, layer) => Math.max(maxZoom, layer.maxZoom ?? 0),
+    0,
+  );
+  const overlays = normalized
+    .filter((layer) => layer.role === "country")
+    .map((layer) => ({
+      ...layer,
+      minZoom:
+        layer.minZoom === null
+          ? null
+          : Math.min(
+            layer.maxZoom ?? Math.max(layer.minZoom, globalDetailMaxZoom + 2),
+            Math.max(layer.minZoom, globalDetailMaxZoom + 2),
+          ),
+    }));
+  if (savedCountryId) {
+    const prioritized = overlays.filter((layer) => layer.countryId === savedCountryId);
+    const remaining = overlays.filter((layer) => layer.countryId !== savedCountryId);
+    if (globals.length > 0 || prioritized.length > 0 || remaining.length > 0) {
+      return [...globals, ...prioritized, ...remaining];
+    }
+  } else if (globals.length > 0 || overlays.length > 0) {
+    return [...globals, ...overlays];
+  }
+
+  return normalized;
 }
 
 type RuntimeFeedOptions<TSnapshot> = {
@@ -282,9 +405,9 @@ type LeafletBasemapOptions = {
   leaflet: typeof import("leaflet");
   map: LeafletMap;
   onError: (message: string) => void;
-  layerRef: MutableRefObject<Layer | null>;
+  layerRef: MutableRefObject<Layer[]>;
   signatureRef: MutableRefObject<string>;
-  source: BasemapSource;
+  sources: BasemapSource[];
 };
 
 export async function syncLeafletBasemap({
@@ -296,79 +419,125 @@ export async function syncLeafletBasemap({
   onError,
   layerRef,
   signatureRef,
-  source,
+  sources,
 }: LeafletBasemapOptions): Promise<void> {
-  if (
-    source.kind === null
-    || source.minZoom === null
-    || source.maxZoom === null
-    || !source.attribution
-  ) {
+  if (sources.length === 0) {
+    signatureRef.current = "empty";
+    layerRef.current.forEach((layer) => layer.remove());
+    layerRef.current = [];
     return;
   }
 
-  const nextSignature = [
-    source.kind,
-    source.tileUrlTemplate ?? "",
-    source.pmtilesUrl ?? "",
-    source.flavor ?? "",
-    source.lang ?? "",
-    source.minZoom,
-    source.maxZoom,
-    source.attribution,
-  ].join("|");
+  const nextSignature = sources
+    .map((source) => [
+      source.id,
+      source.role,
+      source.countryId ?? "",
+      source.kind,
+      source.tileUrlTemplate ?? "",
+      source.pmtilesUrl ?? "",
+      source.flavor ?? "",
+      source.lang ?? "",
+      source.minZoom,
+      source.maxZoom,
+      source.attribution,
+      source.bounds?.west ?? "",
+      source.bounds?.south ?? "",
+      source.bounds?.east ?? "",
+      source.bounds?.north ?? "",
+    ].join("|"))
+    .join("||");
 
   if (signatureRef.current === nextSignature) {
     return;
   }
 
-  signatureRef.current = nextSignature;
-  map.setMinZoom(source.minZoom);
-  map.setMaxZoom(source.maxZoom);
+  const nextLayers: Layer[] = [];
+  const minZoom = Math.min(...sources.map((source) => source.minZoom ?? 0));
+  const maxZoom = Math.max(...sources.map((source) => source.maxZoom ?? 19));
+
+  try {
+    const protomapsModule = sources.some((source) => source.kind === "pmtiles")
+      ? await import("protomaps-leaflet")
+      : null;
+    const basemapsModule = sources.some((source) => source.kind === "pmtiles")
+      ? await import("@protomaps/basemaps")
+      : null;
+
+    for (const source of sources) {
+      if (
+        source.kind === null
+        || source.minZoom === null
+        || source.maxZoom === null
+        || !source.attribution
+      ) {
+        continue;
+      }
+
+      if (source.kind === "pmtiles" && source.pmtilesUrl) {
+        const flavor = basemapsModule?.namedFlavor(source.flavor ?? "dark");
+        const layer = protomapsModule?.leafletLayer({
+          url: source.pmtilesUrl,
+          paintRules: flavor ? protomapsModule?.paintRules(flavor) : undefined,
+          labelRules: flavor ? protomapsModule?.labelRules(flavor, source.lang ?? "en") : undefined,
+          backgroundColor: source.role === "global" ? flavor?.background : undefined,
+          minZoom: source.minZoom,
+          maxZoom,
+          maxDataZoom: source.maxZoom,
+          bounds: source.bounds ? buildBoundsPairs(source.bounds) : undefined,
+          attribution: source.attribution,
+          noWrap: true,
+        }) as unknown as Layer | undefined;
+
+        if (layer) {
+          nextLayers.push(layer);
+        }
+        continue;
+      }
+
+      if (!source.tileUrlTemplate) {
+        continue;
+      }
+
+      nextLayers.push(
+        leaflet.tileLayer(source.tileUrlTemplate, {
+          minZoom: source.minZoom,
+          maxZoom,
+          maxNativeZoom: source.maxZoom,
+          errorTileUrl: emptyTileDataUrl,
+          attribution: source.attribution,
+          bounds: source.bounds ? buildBoundsPairs(source.bounds) : undefined,
+          noWrap: true,
+        }),
+      );
+    }
+  } catch {
+    if (!cancelled()) {
+      onError(errorMessage);
+    }
+    return;
+  }
+
+  if (cancelled()) {
+    return;
+  }
+
+  layerRef.current.forEach((layer) => layer.remove());
+  layerRef.current = nextLayers;
+  for (const layer of nextLayers) {
+    layer.addTo(map);
+  }
+
+  map.setMinZoom(minZoom);
+  map.setMaxZoom(maxZoom);
 
   const currentZoom = map.getZoom();
   if (Number.isFinite(currentZoom)) {
-    const clampedZoom = Math.min(Math.max(currentZoom, source.minZoom), source.maxZoom);
+    const clampedZoom = Math.min(Math.max(currentZoom, minZoom), maxZoom);
     if (clampedZoom !== currentZoom) {
       map.setZoom(clampedZoom, { animate: false });
     }
   }
 
-  layerRef.current?.remove();
-  layerRef.current = null;
-
-  if (source.kind === "pmtiles" && source.pmtilesUrl) {
-    try {
-      const protomapsModule = await import("protomaps-leaflet");
-      if (cancelled() || !map) {
-        return;
-      }
-
-      layerRef.current = protomapsModule.leafletLayer({
-        url: source.pmtilesUrl,
-        flavor: source.flavor ?? "dark",
-        lang: source.lang ?? "en",
-        noWrap: true,
-      }) as unknown as Layer;
-      layerRef.current.addTo(map);
-    } catch {
-      if (!cancelled()) {
-        onError(errorMessage);
-      }
-    }
-    return;
-  }
-
-  if (!source.tileUrlTemplate) {
-    return;
-  }
-
-  layerRef.current = leaflet.tileLayer(source.tileUrlTemplate, {
-    minZoom: source.minZoom,
-    maxZoom: source.maxZoom,
-    maxNativeZoom: source.maxZoom,
-    errorTileUrl: emptyTileDataUrl,
-    attribution: source.attribution,
-  });
-  layerRef.current.addTo(map);
+  signatureRef.current = nextSignature;
 }
