@@ -704,8 +704,8 @@ int main(int argc, char** argv)
     state.center_freq_hz = 162000000ULL;
     state.sample_rate = 1536000U;
     state.branch_rate = AIS_BRANCH_RATE;
-    state.lna_gain = 24U;
-    state.vga_gain = 20U;
+    state.lna_gain = 40U;
+    state.vga_gain = 40U;
 
     while ((opt = getopt(argc, argv, "f:r:l:g:h")) != -1) {
         switch (opt) {

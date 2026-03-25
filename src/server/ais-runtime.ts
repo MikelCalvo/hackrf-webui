@@ -43,8 +43,8 @@ type ChannelInternalState = AisChannelStatus;
 
 const DEFAULT_CENTER_FREQ_HZ = 162_000_000;
 const DEFAULT_SAMPLE_RATE = 1_536_000;
-const DEFAULT_LNA_GAIN = 24;
-const DEFAULT_VGA_GAIN = 20;
+const DEFAULT_LNA_GAIN = 40;
+const DEFAULT_VGA_GAIN = 40;
 
 function parseEnvInteger(name: string, fallback: number): number {
   const raw = process.env[name]?.trim();
