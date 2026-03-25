@@ -4,9 +4,10 @@ import type { GpsdFixState, GpsdSnapshot } from "@/lib/types";
 
 const DEFAULT_GPSD_HOST = process.env.HACKRF_WEBUI_GPSD_HOST?.trim() || "127.0.0.1";
 const DEFAULT_GPSD_PORT = Number.parseInt(process.env.HACKRF_WEBUI_GPSD_PORT ?? "2947", 10) || 2947;
-const GPSD_TIMEOUT_MS = 1_500;
+const GPSD_TIMEOUT_MS = 2_500;
 
 type GpsdTpv = {
+  class?: string;
   mode?: number;
   lat?: number;
   lon?: number;
@@ -15,12 +16,6 @@ type GpsdTpv = {
   track?: number;
   time?: string;
   device?: string;
-};
-
-type GpsdPollResponse = {
-  class?: string;
-  active?: number;
-  tpv?: GpsdTpv[];
 };
 
 type GpsdDevice = {
@@ -33,6 +28,10 @@ type GpsdDevice = {
 type GpsdDevicesResponse = {
   class?: string;
   devices?: GpsdDevice[];
+};
+
+type GpsdDeviceResponse = GpsdDevice & {
+  class?: string;
 };
 
 function classifyFixState(mode: number): GpsdFixState {
@@ -108,9 +107,33 @@ function pickBestTpv(entries: GpsdTpv[]): GpsdTpv | null {
   return ranked[0] ?? null;
 }
 
+function hasUsableFix(entry: GpsdTpv | null): boolean {
+  if (!entry) {
+    return false;
+  }
+
+  return (
+    typeof entry.lat === "number"
+    && typeof entry.lon === "number"
+    && typeof entry.mode === "number"
+    && classifyFixState(Math.max(0, Math.round(entry.mode))) !== "no-fix"
+  );
+}
+
+function upsertDevice(devices: Map<string, GpsdDevice>, device: GpsdDevice): void {
+  const path = typeof device.path === "string" && device.path.length > 0
+    ? device.path
+    : `__anonymous__:${devices.size}`;
+  const current = devices.get(path) ?? {};
+  devices.set(path, {
+    ...current,
+    ...device,
+  });
+}
+
 async function requestGpsdState(): Promise<{
-  poll: GpsdPollResponse;
-  devices: GpsdDevicesResponse;
+  devices: GpsdDevice[];
+  tpvEntries: GpsdTpv[];
 }> {
   return new Promise((resolve, reject) => {
     const socket = net.createConnection({
@@ -119,10 +142,16 @@ async function requestGpsdState(): Promise<{
     });
     let buffer = "";
     let settled = false;
-    let pollPayload: GpsdPollResponse | null = null;
-    let devicesPayload: GpsdDevicesResponse | null = null;
+    let sawPayload = false;
+    const devices = new Map<string, GpsdDevice>();
+    const tpvEntries: GpsdTpv[] = [];
 
     const timeout = setTimeout(() => {
+      if (sawPayload || devices.size > 0 || tpvEntries.length > 0) {
+        settleWithResult();
+        return;
+      }
+
       socket.destroy(new Error("Timed out waiting for GPSD."));
     }, GPSD_TIMEOUT_MS);
 
@@ -141,12 +170,8 @@ async function requestGpsdState(): Promise<{
       reject(error);
     }
 
-    function maybeSettle(): void {
+    function settleWithResult(): void {
       if (settled) {
-        return;
-      }
-
-      if (!pollPayload || !devicesPayload) {
         return;
       }
 
@@ -154,9 +179,25 @@ async function requestGpsdState(): Promise<{
       cleanup();
       socket.end();
       resolve({
-        poll: pollPayload,
-        devices: devicesPayload,
+        devices: [...devices.values()],
+        tpvEntries,
       });
+    }
+
+    function maybeSettle(): void {
+      if (settled) {
+        return;
+      }
+
+      const bestTpv = pickBestTpv(tpvEntries);
+      if (hasUsableFix(bestTpv)) {
+        settleWithResult();
+        return;
+      }
+
+      if (devices.size > 0 && tpvEntries.length > 0) {
+        settleWithResult();
+      }
     }
 
     function parseLine(line: string): void {
@@ -166,15 +207,32 @@ async function requestGpsdState(): Promise<{
       }
 
       try {
-        const payload = JSON.parse(trimmed) as GpsdPollResponse | GpsdDevicesResponse;
-        if (payload.class === "POLL") {
-          pollPayload = payload as GpsdPollResponse;
+        const payload = JSON.parse(trimmed) as
+          | GpsdDevicesResponse
+          | GpsdDeviceResponse
+          | GpsdTpv;
+        if (payload.class === "DEVICES") {
+          sawPayload = true;
+          const devicesPayload = payload as GpsdDevicesResponse;
+          if (Array.isArray(devicesPayload.devices)) {
+            for (const device of devicesPayload.devices) {
+              upsertDevice(devices, device);
+            }
+          }
           maybeSettle();
           return;
         }
 
-        if (payload.class === "DEVICES") {
-          devicesPayload = payload as GpsdDevicesResponse;
+        if (payload.class === "DEVICE") {
+          sawPayload = true;
+          upsertDevice(devices, payload as GpsdDeviceResponse);
+          maybeSettle();
+          return;
+        }
+
+        if (payload.class === "TPV") {
+          sawPayload = true;
+          tpvEntries.push(payload as GpsdTpv);
           maybeSettle();
         }
       } catch {
@@ -184,7 +242,7 @@ async function requestGpsdState(): Promise<{
 
     socket.setEncoding("utf8");
     socket.once("connect", () => {
-      socket.write("?DEVICES;\n?POLL;\n");
+      socket.write("?WATCH={\"enable\":true,\"json\":true};\n?DEVICES;\n");
     });
     socket.on("data", (chunk: string) => {
       buffer += chunk;
@@ -208,8 +266,13 @@ async function requestGpsdState(): Promise<{
         parseLine(buffer);
       }
 
+      if (sawPayload || devices.size > 0 || tpvEntries.length > 0) {
+        settleWithResult();
+        return;
+      }
+
       if (!settled) {
-        settleWithError(new Error("GPSD closed the connection before returning device and poll data."));
+        settleWithError(new Error("GPSD closed the connection before returning any usable state."));
       }
     });
   });
@@ -217,16 +280,15 @@ async function requestGpsdState(): Promise<{
 
 export async function readGpsdSnapshot(): Promise<GpsdSnapshot> {
   try {
-    const { poll, devices } = await requestGpsdState();
-    const knownDevices = Array.isArray(devices.devices) ? devices.devices : [];
+    const { devices, tpvEntries } = await requestGpsdState();
+    const knownDevices = Array.isArray(devices) ? devices : [];
     const activeDevices = knownDevices.length > 0
       ? knownDevices.length
-      : typeof poll.active === "number" && Number.isFinite(poll.active)
-        ? poll.active
-        : Array.isArray(poll.tpv)
-          ? poll.tpv.length
-          : 0;
-    const tpvEntries = Array.isArray(poll.tpv) ? poll.tpv : [];
+      : new Set(
+        tpvEntries
+          .map((entry) => (typeof entry.device === "string" ? entry.device.trim() : ""))
+          .filter((device) => device.length > 0),
+      ).size;
     const bestTpv = pickBestTpv(tpvEntries);
     const mode =
       typeof bestTpv?.mode === "number" && Number.isFinite(bestTpv.mode)
