@@ -125,6 +125,7 @@ export const analysisJobs = sqliteTable(
   },
   (table) => ({
     captureStatusIdx: index("analysis_jobs_capture_status_idx").on(table.captureSessionId, table.status),
+    captureEngineIdx: uniqueIndex("analysis_jobs_capture_engine_idx").on(table.captureSessionId, table.engine),
   }),
 );
 

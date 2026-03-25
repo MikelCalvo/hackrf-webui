@@ -1,7 +1,7 @@
 "use client";
 
 import type { Layer, LayerGroup, Map as LeafletMap } from "leaflet";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 import {
   fetchSigintCaptureDetail,
@@ -9,6 +9,8 @@ import {
   fetchSigintTrackHistory,
   fetchSigintTrackSummaries,
   updateSigintCaptureReview,
+  type SigintAnalysisFilter,
+  type SigintAnalysisStatus,
   type SigintCaptureDetail,
   type SigintCaptureListFilters,
   type SigintCaptureSummary,
@@ -42,6 +44,7 @@ const DEFAULT_ZOOM = 2;
 const DEFAULT_CAPTURE_FILTERS: SigintCaptureListFilters = {
   module: "all",
   reviewStatus: "all",
+  analysis: "all",
   hasAudio: false,
   hasRawIq: false,
   q: "",
@@ -133,6 +136,125 @@ function moduleTone(moduleId: SigintCaptureSummary["module"]): string {
     default:
       return "text-[var(--muted-strong)]";
   }
+}
+
+function analysisTone(status: SigintAnalysisStatus, classification: SigintCaptureSummary["analysisSummary"]["classification"]): string {
+  if (status === "failed") {
+    return "border-rose-300/30 bg-rose-300/10 text-rose-100";
+  }
+  if (status === "running") {
+    return "border-cyan-300/30 bg-cyan-300/10 text-cyan-100";
+  }
+  if (status === "queued") {
+    return "border-amber-300/25 bg-amber-300/10 text-amber-100";
+  }
+
+  switch (classification) {
+    case "speech":
+      return "border-emerald-300/25 bg-emerald-300/10 text-emerald-100";
+    case "music":
+      return "border-fuchsia-300/25 bg-fuchsia-300/10 text-fuchsia-100";
+    case "noise":
+      return "border-white/12 bg-white/[0.05] text-[var(--muted-strong)]";
+    case "unknown":
+      return "border-cyan-300/25 bg-cyan-300/10 text-cyan-100";
+    default:
+      return "border-white/10 bg-white/[0.04] text-[var(--muted-strong)]";
+  }
+}
+
+function analysisSummaryTone(summary: SigintCaptureSummary["analysisSummary"] | SigintCaptureDetail["analysisSummary"]): string {
+  if (summary.voiceDetected) {
+    return "border-emerald-300/25 bg-emerald-300/10 text-emerald-100";
+  }
+  return analysisTone(summary.status, summary.classification);
+}
+
+function isAnalysisBusy(summary: SigintCaptureSummary["analysisSummary"] | SigintCaptureDetail["analysisSummary"]): boolean {
+  return summary.status === "queued" || summary.status === "running";
+}
+
+function analysisLabel(item: SigintCaptureSummary["analysisSummary"]): string {
+  if (item.isCurrentEngine === false) {
+    return "legacy";
+  }
+  if (item.status === "queued") {
+    return "queued";
+  }
+  if (item.status === "running") {
+    return "running";
+  }
+  if (item.status === "failed") {
+    return "failed";
+  }
+  if (item.voiceDetected) {
+    return "voice";
+  }
+  if (item.status === "completed" && item.classification) {
+    return item.classification;
+  }
+  return "idle";
+}
+
+function sentenceCase(value: string): string {
+  return value.length > 0 ? `${value.charAt(0).toUpperCase()}${value.slice(1)}` : value;
+}
+
+function formatAnalysisPercent(value: number | null): string {
+  return value === null ? "—" : `${Math.round(Math.max(0, Math.min(1, value)) * 100)}%`;
+}
+
+function buildAnalysisHeadline(summary: SigintCaptureDetail["analysisSummary"]): string {
+  if (summary.isCurrentEngine === false) {
+    return "Legacy AI result detected";
+  }
+  if (summary.status === "queued") {
+    return "Queued for local AI";
+  }
+  if (summary.status === "running") {
+    return "Local AI is analyzing this capture";
+  }
+  if (summary.status === "failed") {
+    return "Local AI analysis failed";
+  }
+  if (summary.voiceDetected) {
+    return "Voice activity detected";
+  }
+  if (summary.classification === "music") {
+    return "Music-like audio detected";
+  }
+  if (summary.classification === "noise") {
+    return "No clear voice detected";
+  }
+  if (summary.classification === "unknown") {
+    return "AI result is inconclusive";
+  }
+  if (summary.classification === "speech") {
+    return "Speech-like audio detected";
+  }
+  return "No AI result yet";
+}
+
+function buildAnalysisSubline(summary: SigintCaptureDetail["analysisSummary"]): string {
+  if (summary.isCurrentEngine === false) {
+    return "This capture still shows an older AI result. The current local engine will re-check it in the background.";
+  }
+  if (summary.status === "queued") {
+    return "The saved WAV is waiting in the local analysis queue.";
+  }
+  if (summary.status === "running") {
+    return "The local CPU pipeline is processing the saved clip right now.";
+  }
+  if (summary.status === "failed") {
+    return summary.errorText ?? "The local analysis worker returned an error.";
+  }
+  if (summary.explanation) {
+    return summary.explanation;
+  }
+  if (summary.sceneLabel) {
+    return `Ambient scene: ${summary.sceneLabel.toLowerCase()}.`;
+  }
+  return "No analysis detail is available for this capture yet.";
 }
 
 function compactModuleLabel(moduleId: SigintCaptureSummary["module"]): string {
@@ -380,6 +502,8 @@ export function SigintModule({ location }: SigintModuleProps) {
   const [trackHistoryError, setTrackHistoryError] = useState("");
   const [replayIndex, setReplayIndex] = useState(0);
   const [replayPlaying, setReplayPlaying] = useState(false);
+  const capturesRequestIdRef = useRef(0);
+  const detailRequestIdRef = useRef(0);
 
   const trackKind = tab === "ais" ? "ais" : "adsb";
   const activeTrack = useMemo(
@@ -387,36 +511,67 @@ export function SigintModule({ location }: SigintModuleProps) {
     [selectedTrackKey, trackItems],
   );
   const replayPoints = useMemo(() => buildReplayPoints(tab, trackHistory), [tab, trackHistory]);
-
-  useEffect(() => {
-    let cancelled = false;
-
-    const load = async () => {
-      setCapturesLoading(true);
+  const loadCaptures = useCallback(
+    async (background = false) => {
+      const requestId = capturesRequestIdRef.current + 1;
+      capturesRequestIdRef.current = requestId;
+      if (!background) {
+        setCapturesLoading(true);
+      }
       try {
         const payload = await fetchSigintCaptures(filters);
-        if (cancelled) {
+        if (capturesRequestIdRef.current !== requestId) {
           return;
         }
         setCaptureItems(payload.items);
         setCaptureCounts(payload.counts);
         setCapturesError("");
       } catch (error) {
-        if (!cancelled) {
+        if (capturesRequestIdRef.current === requestId) {
           setCapturesError(error instanceof Error ? error.message : "Could not load capture queue.");
         }
       } finally {
-        if (!cancelled) {
+        if (!background && capturesRequestIdRef.current === requestId) {
           setCapturesLoading(false);
         }
       }
-    };
+    },
+    [filters],
+  );
 
-    void load();
-    return () => {
-      cancelled = true;
-    };
-  }, [filters]);
+  const loadCaptureDetail = useCallback(
+    async (captureSessionId: string, background = false) => {
+      const requestId = detailRequestIdRef.current + 1;
+      detailRequestIdRef.current = requestId;
+      if (!background) {
+        setCaptureDetailLoading(true);
+      }
+      try {
+        const detail = await fetchSigintCaptureDetail(captureSessionId);
+        if (detailRequestIdRef.current !== requestId) {
+          return;
+        }
+        setCaptureDetail(detail);
+        setCaptureDetailError("");
+        setCaptureItems((current) =>
+          current.map((item) => (item.id === detail.id ? detail : item)),
+        );
+      } catch (error) {
+        if (detailRequestIdRef.current === requestId) {
+          setCaptureDetailError(error instanceof Error ? error.message : "Could not load capture detail.");
+        }
+      } finally {
+        if (!background && detailRequestIdRef.current === requestId) {
+          setCaptureDetailLoading(false);
+        }
+      }
+    },
+    [],
+  );
+
+  useEffect(() => {
+    void loadCaptures(false);
+  }, [loadCaptures]);
 
   useEffect(() => {
     if (!captureItems.some((item) => item.id === selectedCaptureId)) {
@@ -429,40 +584,54 @@ export function SigintModule({ location }: SigintModuleProps) {
       setCaptureDetail(null);
       return;
     }
-
-    let cancelled = false;
-
-    const load = async () => {
-      setCaptureDetailLoading(true);
-      try {
-        const detail = await fetchSigintCaptureDetail(selectedCaptureId);
-        if (cancelled) {
-          return;
-        }
-        setCaptureDetail(detail);
-        setCaptureDetailError("");
-      } catch (error) {
-        if (!cancelled) {
-          setCaptureDetailError(error instanceof Error ? error.message : "Could not load capture detail.");
-        }
-      } finally {
-        if (!cancelled) {
-          setCaptureDetailLoading(false);
-        }
-      }
-    };
-
-    void load();
-    return () => {
-      cancelled = true;
-    };
-  }, [selectedCaptureId]);
+    void loadCaptureDetail(selectedCaptureId, false);
+  }, [loadCaptureDetail, selectedCaptureId]);
 
   useEffect(() => {
     setReviewStatus(captureDetail?.reviewStatus ?? "pending");
     setReviewPriority(captureDetail?.reviewPriority ?? "normal");
     setReviewNotes(captureDetail?.reviewNotes ?? "");
   }, [captureDetail]);
+
+  useEffect(() => {
+    if (tab !== "captures") {
+      return;
+    }
+
+    const selectedSummary = captureItems.find((item) => item.id === selectedCaptureId) ?? null;
+    const shouldPollList = captureItems.some((item) => isAnalysisBusy(item.analysisSummary));
+    const shouldPollDetail =
+      !!selectedCaptureId
+      && !!(
+        (selectedSummary && isAnalysisBusy(selectedSummary.analysisSummary))
+        || (captureDetail && isAnalysisBusy(captureDetail.analysisSummary))
+      );
+
+    if (!shouldPollList && !shouldPollDetail) {
+      return;
+    }
+
+    let cancelled = false;
+    const tick = async () => {
+      if (cancelled || document.visibilityState === "hidden") {
+        return;
+      }
+      await loadCaptures(true);
+      if (!cancelled && shouldPollDetail && selectedCaptureId) {
+        await loadCaptureDetail(selectedCaptureId, true);
+      }
+    };
+
+    void tick();
+    const interval = window.setInterval(() => {
+      void tick();
+    }, 2000);
+
+    return () => {
+      cancelled = true;
+      window.clearInterval(interval);
+    };
+  }, [captureDetail, captureItems, loadCaptureDetail, loadCaptures, selectedCaptureId, tab]);
 
   useEffect(() => {
     let cancelled = false;
@@ -532,8 +701,13 @@ export function SigintModule({ location }: SigintModuleProps) {
   useEffect(() => {
     if (tab === "captures" || !selectedTrackKey) {
       setTrackHistory(null);
+      setTrackHistoryError("");
       return;
     }
+
+    setTrackHistory(null);
+    setTrackHistoryError("");
+    setReplayPlaying(false);
 
     let cancelled = false;
     const loadHistory = async () => {
@@ -623,6 +797,10 @@ export function SigintModule({ location }: SigintModuleProps) {
     replayPoints.length > 0
       ? replayPoints[Math.max(0, Math.min(replayIndex, replayPoints.length - 1))]
       : null;
+  const busyCaptureCount = useMemo(
+    () => captureItems.filter((item) => isAnalysisBusy(item.analysisSummary)).length,
+    [captureItems],
+  );
 
   const hasReviewChanges =
     captureDetail
@@ -719,6 +897,26 @@ export function SigintModule({ location }: SigintModuleProps) {
                 <option value="discarded">Discarded</option>
               </select>
 
+              <select
+                className={CLS_INPUT}
+                value={filters.analysis}
+                onChange={(event) =>
+                  setFilters((current) => ({
+                    ...current,
+                    analysis: event.target.value as SigintAnalysisFilter,
+                  }))
+                }
+              >
+                <option value="all">All AI states</option>
+                <option value="speech">Speech</option>
+                <option value="noise">Noise</option>
+                <option value="music">Music</option>
+                <option value="unknown">Unknown</option>
+                <option value="queued">Queued</option>
+                <option value="running">Running</option>
+                <option value="failed">Failed</option>
+              </select>
+
               <label className="flex cursor-pointer items-center gap-2.5 rounded border border-white/[0.07] bg-white/[0.03] px-3 py-2 text-xs text-[var(--muted-strong)] transition hover:bg-white/[0.05]">
                 <input
                   checked={filters.hasAudio}
@@ -770,14 +968,22 @@ export function SigintModule({ location }: SigintModuleProps) {
       <main className="flex min-w-0 flex-1 border-r border-white/8 bg-black/10">
         {tab === "captures" ? (
           <div className="flex min-w-0 flex-1 flex-col">
-            <div className="flex items-center justify-between border-b border-white/[0.07] px-5 py-4">
-              <div>
+            <div className="flex items-center justify-between border-b border-white/[0.07] px-5 py-2.5">
+              <div className="flex items-center gap-3">
                 <p className="font-mono text-[10px] uppercase tracking-[0.24em] text-[var(--muted)]">Queue</p>
-                <h3 className="mt-1 text-lg font-semibold text-[var(--foreground)]">
-                  {captureCounts.total.toLocaleString("en")} filtered captures
-                </h3>
+                <span className="font-mono text-[11px] tabular-nums text-[var(--foreground)]">
+                  {captureCounts.total.toLocaleString("en")}
+                </span>
               </div>
-              {capturesLoading ? <Spinner /> : null}
+              <div className="flex items-center gap-2">
+                {busyCaptureCount > 0 ? (
+                  <span className="flex items-center gap-1 font-mono text-[9px] uppercase tracking-[0.14em] text-cyan-300">
+                    <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-cyan-300" />
+                    AI · {busyCaptureCount}
+                  </span>
+                ) : null}
+                {capturesLoading ? <Spinner /> : null}
+              </div>
             </div>
 
             <div className="min-h-0 flex-1 overflow-y-auto">
@@ -792,8 +998,8 @@ export function SigintModule({ location }: SigintModuleProps) {
                     <button
                       key={item.id}
                       className={cx(
-                        "flex w-full flex-col gap-3 border-b border-white/[0.05] px-5 py-4 text-left transition",
-                        isActive ? "bg-[var(--accent)]/10" : "hover:bg-white/[0.03]",
+                        "flex w-full flex-col gap-2 border-b border-white/[0.05] px-5 py-3 text-left transition",
+                        isActive ? "border-l-accent bg-[var(--accent)]/[0.07]" : "border-l-clear hover:bg-white/[0.03]",
                       )}
                       onClick={() => setSelectedCaptureId(item.id)}
                       type="button"
@@ -801,46 +1007,49 @@ export function SigintModule({ location }: SigintModuleProps) {
                       <div className="flex items-start justify-between gap-4">
                         <div className="min-w-0">
                           <div className="flex items-center gap-2">
-                            <span className={cx("font-mono text-[10px] uppercase tracking-[0.2em]", moduleTone(item.module))}>
+                            <span className={cx("font-mono text-[9px] uppercase tracking-[0.2em]", moduleTone(item.module))}>
                               {compactModuleLabel(item.module)}
                             </span>
-                            <span className={cx("rounded-full border px-2 py-0.5 font-mono text-[9px] uppercase tracking-[0.18em]", statusTone(item.reviewStatus))}>
+                            <span className={cx("rounded border px-1.5 py-0.5 font-mono text-[9px] uppercase tracking-[0.14em]", statusTone(item.reviewStatus))}>
                               {item.reviewStatus}
                             </span>
+                            {item.reviewPriority === "high" ? (
+                              <span className="rounded border border-amber-300/25 bg-amber-300/10 px-1.5 py-0.5 font-mono text-[9px] uppercase tracking-[0.14em] text-amber-100">
+                                ★
+                              </span>
+                            ) : null}
                           </div>
-                          <p className="mt-2 truncate text-lg font-semibold text-[var(--foreground)]">{item.label}</p>
-                          <p className="mt-1 text-sm text-[var(--muted)]">
+                          <p className="mt-1 truncate font-semibold text-[var(--foreground)]">{item.label}</p>
+                          <p className="mt-0.5 font-mono text-[10px] text-[var(--muted)]">
                             {formatFrequency(item.freqMhz)} · {item.locationLabel}
                           </p>
                         </div>
 
                         <div className="shrink-0 text-right">
-                          <p className="font-mono text-[11px] text-[var(--foreground)]">{formatTimestamp(item.startedAt)}</p>
-                          <p className="mt-1 font-mono text-[10px] uppercase tracking-[0.16em] text-[var(--muted)]">
-                            {formatDuration(item.durationMs)}
-                          </p>
+                          <p className="font-mono text-[10px] text-[var(--muted-strong)]">{formatTimestamp(item.startedAt)}</p>
+                          <p className="mt-0.5 font-mono text-[9px] text-[var(--muted)]">{formatDuration(item.durationMs)}</p>
                         </div>
                       </div>
 
-                      <div className="flex flex-wrap items-center gap-2">
+                      <div className="flex flex-wrap items-center gap-1.5">
                         {item.audioCapture ? (
-                          <span className="rounded-full border border-emerald-300/25 bg-emerald-300/10 px-2 py-1 font-mono text-[9px] uppercase tracking-[0.16em] text-emerald-100">
+                          <span className="rounded border border-emerald-300/25 bg-emerald-300/10 px-1.5 py-0.5 font-mono text-[9px] uppercase tracking-[0.14em] text-emerald-100">
                             WAV
                           </span>
                         ) : null}
                         {item.rawIqCapture ? (
-                          <span className="rounded-full border border-cyan-300/25 bg-cyan-300/10 px-2 py-1 font-mono text-[9px] uppercase tracking-[0.16em] text-cyan-100">
+                          <span className="rounded border border-cyan-300/25 bg-cyan-300/10 px-1.5 py-0.5 font-mono text-[9px] uppercase tracking-[0.14em] text-cyan-100">
                             IQ
                           </span>
                         ) : null}
-                        {item.locationSource ? (
-                          <span className="rounded-full border border-white/10 bg-white/[0.04] px-2 py-1 font-mono text-[9px] uppercase tracking-[0.16em] text-[var(--muted-strong)]">
-                            {item.locationSource}
+                        {item.analysisSummary.status !== "none" ? (
+                          <span className={cx("rounded border px-1.5 py-0.5 font-mono text-[9px] uppercase tracking-[0.14em]", analysisSummaryTone(item.analysisSummary))}>
+                            {isAnalysisBusy(item.analysisSummary) ? <>{analysisLabel(item.analysisSummary)}</> : `AI · ${analysisLabel(item.analysisSummary)}`}
                           </span>
                         ) : null}
-                        {item.reviewPriority === "high" ? (
-                          <span className="rounded-full border border-amber-300/25 bg-amber-300/10 px-2 py-1 font-mono text-[9px] uppercase tracking-[0.16em] text-amber-100">
-                            high priority
+                        {item.locationSource ? (
+                          <span className="rounded border border-white/10 bg-white/[0.03] px-1.5 py-0.5 font-mono text-[9px] uppercase tracking-[0.14em] text-[var(--muted)]">
+                            {item.locationSource}
                           </span>
                         ) : null}
                       </div>
@@ -852,12 +1061,12 @@ export function SigintModule({ location }: SigintModuleProps) {
           </div>
         ) : (
           <div className="flex min-w-0 flex-1 flex-col">
-            <div className="flex items-center justify-between border-b border-white/[0.07] px-5 py-4">
-              <div>
-                <p className="font-mono text-[10px] uppercase tracking-[0.24em] text-[var(--muted)]">Replay targets</p>
-                <h3 className="mt-1 text-lg font-semibold text-[var(--foreground)]">
-                  {tab === "adsb" ? "Aircraft route archive" : "Vessel route archive"}
-                </h3>
+            <div className="flex items-center justify-between border-b border-white/[0.07] px-5 py-2.5">
+              <div className="flex items-center gap-3">
+                <p className="font-mono text-[10px] uppercase tracking-[0.24em] text-[var(--muted)]">
+                  {tab === "adsb" ? "Aircraft archive" : "Vessel archive"}
+                </p>
+                <span className="font-mono text-[11px] tabular-nums text-[var(--foreground)]">{trackItems.length}</span>
               </div>
               {tracksLoading ? <Spinner /> : null}
             </div>
@@ -953,8 +1162,8 @@ export function SigintModule({ location }: SigintModuleProps) {
                   <div className="border-b border-white/[0.05] px-5 py-2.5">
                     <p className="font-mono text-[9px] uppercase tracking-[0.22em] text-[var(--muted)]">Signal metadata</p>
                   </div>
-                  <div className="grid grid-cols-2">
-                    {([
+                  <div className="divide-y divide-white/[0.05]">
+                    {(([
                       ["Captured at", formatTimestamp(captureDetail.startedAt)],
                       ["Duration", formatDuration(captureDetail.durationMs)],
                       ["Demod", captureDetail.demodMode?.toUpperCase() ?? "—"],
@@ -965,13 +1174,99 @@ export function SigintModule({ location }: SigintModuleProps) {
                       ["Vol / squelch", `${captureDetail.audioGain?.toFixed(1) ?? "—"}× · ${captureDetail.squelch?.toFixed(4) ?? "—"}`],
                       ["Signal", `RMS ${captureDetail.rmsPeak?.toFixed(4) ?? "—"} · RF ${captureDetail.rfPeak?.toFixed(4) ?? "—"}`],
                       ["Reason", captureDetail.reason],
-                    ] as [string, string][]).map(([label, value]) => (
-                      <div key={label} className="border-b border-r border-white/[0.05] px-4 py-2.5 last:border-r-0">
-                        <p className="font-mono text-[9px] uppercase tracking-[0.16em] text-[var(--muted)]">{label}</p>
-                        <p className="mt-0.5 font-mono text-[11px] text-[var(--foreground)]">{value}</p>
+                    ] as [string, string][]).reduce<[string, string][][]>((acc, item, i) => {
+                      if (i % 2 === 0) acc.push([item]);
+                      else acc[acc.length - 1].push(item);
+                      return acc;
+                    }, [])).map((row) => (
+                      <div key={row[0][0]} className="grid grid-cols-2 divide-x divide-white/[0.05]">
+                        {row.map(([label, value]) => (
+                          <div key={label} className="px-4 py-2.5">
+                            <p className="font-mono text-[9px] uppercase tracking-[0.16em] text-[var(--muted)]">{label}</p>
+                            <p className="mt-0.5 font-mono text-[11px] text-[var(--foreground)]">{value}</p>
+                          </div>
+                        ))}
                       </div>
                     ))}
                   </div>
+                </div>
+
+                <div className="border-b border-white/[0.07]">
+                  <div className="border-b border-white/[0.05] px-5 py-2.5">
+                    <p className="font-mono text-[9px] uppercase tracking-[0.22em] text-[var(--muted)]">AI summary</p>
+                  </div>
+                  <div className="space-y-3 px-5 py-3">
+                    <div className="flex flex-wrap items-center gap-2">
+                      <span className={cx("rounded border px-2 py-1 font-mono text-[9px] uppercase tracking-[0.16em]", analysisSummaryTone(captureDetail.analysisSummary))}>
+                        {captureDetail.analysisSummary.status === "completed"
+                          ? captureDetail.analysisSummary.voiceDetected
+                            ? "voice detected"
+                            : captureDetail.analysisSummary.classification ?? "completed"
+                          : captureDetail.analysisSummary.status}
+                      </span>
+                      {captureDetail.analysisSummary.classification ? (
+                        <span className="rounded border border-white/10 bg-white/[0.04] px-2 py-1 font-mono text-[9px] uppercase tracking-[0.16em] text-[var(--muted-strong)]">
+                          {sentenceCase(captureDetail.analysisSummary.classification)}
+                        </span>
+                      ) : null}
+                      {captureDetail.analysisSummary.isCurrentEngine === false ? (
+                        <span className="rounded border border-amber-300/25 bg-amber-300/10 px-2 py-1 font-mono text-[9px] uppercase tracking-[0.16em] text-amber-100">
+                          Legacy AI
+                        </span>
+                      ) : null}
+                      {captureDetail.analysisSummary.sceneLabel ? (
+                        <span className="rounded border border-white/10 bg-white/[0.04] px-2 py-1 font-mono text-[9px] uppercase tracking-[0.16em] text-[var(--muted-strong)]">
+                          Scene · {captureDetail.analysisSummary.sceneLabel}
+                        </span>
+                      ) : null}
+                    </div>
+                    <div className="space-y-1">
+                      <p className="text-sm font-semibold text-[var(--foreground)]">{buildAnalysisHeadline(captureDetail.analysisSummary)}</p>
+                      <p className="text-sm leading-6 text-[var(--muted-strong)]">{buildAnalysisSubline(captureDetail.analysisSummary)}</p>
+                    </div>
+                    {captureDetail.analysisSummary.errorText ? (
+                      <p className="text-xs text-rose-200">{captureDetail.analysisSummary.errorText}</p>
+                    ) : null}
+                  </div>
+                  <div className="divide-y divide-white/[0.05]">
+                    {([
+                      ["Engine", captureDetail.analysisSummary.engine ?? "—"],
+                      ["Model", captureDetail.analysisSummary.model ?? "—"],
+                      ["Class conf.", formatAnalysisPercent(captureDetail.analysisSummary.confidence)],
+                      ["Voice conf.", formatAnalysisPercent(captureDetail.analysisSummary.voiceConfidence)],
+                      ["Voice activity", captureDetail.analysisSummary.voiceDetected === null ? "—" : captureDetail.analysisSummary.voiceDetected ? "Detected" : "Not detected"],
+                      ["Voice seconds", captureDetail.analysisSummary.voiceSeconds === null ? "—" : `${captureDetail.analysisSummary.voiceSeconds.toFixed(2)} s`],
+                      ["Voice ratio", formatAnalysisPercent(captureDetail.analysisSummary.voiceRatio)],
+                      ["Scene", captureDetail.analysisSummary.sceneLabel ?? "—"],
+                      ["Scene conf.", formatAnalysisPercent(captureDetail.analysisSummary.sceneConfidence)],
+                      ["Audio", captureDetail.analysisSummary.audioSeconds === null ? "—" : `${captureDetail.analysisSummary.audioSeconds.toFixed(2)} s`],
+                    ] as [string, string][]).reduce<[string, string][][]>((acc, item, i) => {
+                      if (i % 2 === 0) acc.push([item]);
+                      else acc[acc.length - 1].push(item);
+                      return acc;
+                    }, []).map((row) => (
+                      <div key={row[0][0]} className="grid grid-cols-2 divide-x divide-white/[0.05]">
+                        {row.map(([label, value]) => (
+                          <div key={label} className="px-4 py-2.5">
+                            <p className="font-mono text-[9px] uppercase tracking-[0.16em] text-[var(--muted)]">{label}</p>
+                            <p className="mt-0.5 font-mono text-[11px] text-[var(--foreground)]">{value}</p>
+                          </div>
+                        ))}
+                      </div>
+                    ))}
+                  </div>
+                  {captureDetail.analysisSummary.topLabels.length > 0 ? (
+                    <div className="space-y-1.5 px-5 py-3">
+                      <p className="font-mono text-[9px] uppercase tracking-[0.16em] text-[var(--muted)]">Acoustic labels</p>
+                      <div className="flex flex-wrap gap-1.5">
+                        {captureDetail.analysisSummary.topLabels.map((item) => (
+                          <span key={`${item.label}-${item.score}`} className="rounded border border-white/10 bg-white/[0.04] px-2 py-0.5 font-mono text-[9px] text-[var(--muted-strong)]">
+                            {item.label} <span className="text-[var(--muted)]">{item.score.toFixed(2)}</span>
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                  ) : null}
                 </div>
 
                 {/* Review */}
@@ -1055,6 +1350,9 @@ export function SigintModule({ location }: SigintModuleProps) {
                           <p className="mt-0.5 font-mono text-[10px] text-[var(--muted)]">
                             {formatTimestamp(job.createdAt)}
                           </p>
+                          {job.errorText ? (
+                            <p className="mt-1 text-xs text-rose-200">{job.errorText}</p>
+                          ) : null}
                         </div>
                       ))}
                     </div>

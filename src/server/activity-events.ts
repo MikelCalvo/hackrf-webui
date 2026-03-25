@@ -10,6 +10,7 @@ import type {
   CreateActivityEventInput,
 } from "@/lib/activity-events";
 import type { AudioDemodMode } from "@/lib/types";
+import { queueCaptureAnalysisJob } from "@/server/analysis-worker";
 import { appDb } from "@/server/db/client";
 import { activityEvents, captureFiles, captureSessions } from "@/server/db/schema";
 import { captureAbsolutePath, capturePathExists, captureRelativePath } from "@/server/storage";
@@ -451,6 +452,10 @@ export function persistCapturedActivity(input: CaptureFinalizeInput): void {
 
   if (filesToInsert.length > 0) {
     appDb.insert(captureFiles).values(filesToInsert).run();
+  }
+
+  if (filesToInsert.some((file) => file.kind === "audio")) {
+    queueCaptureAnalysisJob(sessionId);
   }
 }
 

@@ -1,6 +1,7 @@
 import { desc, eq, inArray } from "drizzle-orm";
 
 import type {
+  SigintAnalysisSummary,
   SigintCaptureDetail,
   SigintCaptureListFilters,
   SigintCaptureListResponse,
@@ -11,9 +12,11 @@ import type {
   SigintTrackKind,
   SigintTrackSummaryResponse,
 } from "@/lib/sigint";
+import { AUDIO_ANALYSIS_ENGINE } from "@/server/analysis-worker";
 import { appDb, sqliteDb } from "@/server/db/client";
 import {
   activityEvents,
+  analysisFindings,
   analysisJobs,
   captureFiles,
   captureReviews,
@@ -53,12 +56,112 @@ function numberOrNull(value: unknown): number | null {
   return typeof value === "number" && Number.isFinite(value) ? value : null;
 }
 
+function booleanOrNull(value: unknown): boolean | null {
+  return typeof value === "boolean" ? value : null;
+}
+
 function normalizeReviewStatus(value: string | null | undefined): SigintReviewStatus {
   return value === "kept" || value === "discarded" || value === "flagged" ? value : "pending";
 }
 
 function normalizeReviewPriority(value: string | null | undefined): SigintReviewPriority {
   return value === "high" ? "high" : "normal";
+}
+
+function normalizeAnalysisStatus(value: string | null | undefined): SigintAnalysisSummary["status"] {
+  return value === "queued" || value === "running" || value === "completed" || value === "failed"
+    ? value
+    : "none";
+}
+
+function emptyAnalysisSummary(): SigintAnalysisSummary {
+  return {
+    status: "none",
+    engine: null,
+    isCurrentEngine: null,
+    model: null,
+    classification: null,
+    subclass: null,
+    confidence: null,
+    errorText: null,
+    updatedAt: null,
+    audioSeconds: null,
+    rms: null,
+    sceneLabel: null,
+    sceneConfidence: null,
+    voiceDetected: null,
+    voiceConfidence: null,
+    voiceRatio: null,
+    voiceSeconds: null,
+    voiceDetector: null,
+    explanation: null,
+    topLabels: [],
+  };
+}
+
+function parseAnalysisSummary(
+  jobs: Array<typeof analysisJobs.$inferSelect>,
+  findingsByJobId: Map<string, Array<typeof analysisFindings.$inferSelect>>,
+): SigintAnalysisSummary {
+  if (jobs.length === 0) {
+    return emptyAnalysisSummary();
+  }
+
+  const latestJob = [...jobs].sort((left, right) => right.createdAtMs - left.createdAtMs)[0];
+  const summary: SigintAnalysisSummary = {
+    ...emptyAnalysisSummary(),
+    status: "none",
+    engine: null,
+    isCurrentEngine: null,
+  };
+
+  const preferredJob = [...jobs]
+    .filter((row) => row.engine === AUDIO_ANALYSIS_ENGINE)
+    .sort((left, right) => right.createdAtMs - left.createdAtMs)[0];
+  const activeJob = preferredJob ?? latestJob;
+
+  summary.status = normalizeAnalysisStatus(activeJob.status);
+  summary.engine = activeJob.engine;
+  summary.isCurrentEngine = activeJob.engine === AUDIO_ANALYSIS_ENGINE;
+  summary.errorText = activeJob.errorText ?? null;
+  summary.updatedAt = toIso(activeJob.endedAtMs ?? activeJob.startedAtMs ?? activeJob.createdAtMs);
+
+  if (summary.status !== "completed") {
+    return summary;
+  }
+
+  const findings = findingsByJobId.get(activeJob.id) ?? [];
+  const classification = findings.find((row) => row.kind === "classification") ?? null;
+  const classificationData = classification ? parseJsonRecord(classification.dataJson) : null;
+  const broadClass = stringOrNull(classificationData?.class);
+
+  summary.classification =
+    broadClass === "speech" || broadClass === "music" || broadClass === "noise" || broadClass === "unknown"
+      ? broadClass
+      : null;
+  summary.subclass = stringOrNull(classificationData?.subclass);
+  summary.confidence = classification?.score ?? numberOrNull(classificationData?.confidence);
+  summary.model = stringOrNull(classificationData?.model);
+  summary.audioSeconds = numberOrNull(classificationData?.audioSeconds);
+  summary.rms = numberOrNull(classificationData?.rms);
+  summary.sceneLabel = stringOrNull(classificationData?.sceneLabel);
+  summary.sceneConfidence = numberOrNull(classificationData?.sceneConfidence);
+  summary.voiceDetected = booleanOrNull(classificationData?.voiceDetected);
+  summary.voiceConfidence = numberOrNull(classificationData?.voiceConfidence);
+  summary.voiceRatio = numberOrNull(classificationData?.voiceRatio);
+  summary.voiceSeconds = numberOrNull(classificationData?.voiceSeconds);
+  summary.voiceDetector = stringOrNull(classificationData?.voiceDetector);
+  summary.explanation = stringOrNull(classificationData?.explanation);
+  summary.topLabels = findings
+    .filter((row) => row.kind === "top_label")
+    .map((row) => ({
+      label: stringOrNull(parseJsonRecord(row.dataJson)?.label) ?? "Unknown",
+      score: row.score ?? 0,
+    }))
+    .sort((left, right) => right.score - left.score)
+    .slice(0, 5);
+
+  return summary;
 }
 
 function buildLocationSummary(
@@ -145,6 +248,7 @@ function buildCaptureSummary(
     tagCount: number;
     transcriptCount: number;
     analysisJobCount: number;
+    analysisSummary: SigintAnalysisSummary;
   },
 ): SigintCaptureSummary {
   const sessionMetadata = parseJsonRecord(session.metadataJson);
@@ -201,6 +305,7 @@ function buildCaptureSummary(
     tagCount: options.tagCount,
     transcriptCount: options.transcriptCount,
     analysisJobCount: options.analysisJobCount,
+    analysisSummary: options.analysisSummary,
   };
 }
 
@@ -229,6 +334,18 @@ function matchesCaptureFilters(item: SigintCaptureSummary, filters: SigintCaptur
   if (filters.reviewStatus !== "all" && item.reviewStatus !== filters.reviewStatus) {
     return false;
   }
+  if (filters.analysis !== "all") {
+    if (filters.analysis === "queued" || filters.analysis === "running" || filters.analysis === "failed") {
+      if (item.analysisSummary.status !== filters.analysis) {
+        return false;
+      }
+    } else if (
+      item.analysisSummary.status !== "completed"
+      || item.analysisSummary.classification !== filters.analysis
+    ) {
+      return false;
+    }
+  }
   if (filters.hasAudio && !item.audioCapture) {
     return false;
   }
@@ -255,6 +372,7 @@ function loadCaptureContext(
   tagCountBySessionId: Map<string, number>;
   transcriptCountBySessionId: Map<string, number>;
   analysisJobCountBySessionId: Map<string, number>;
+  analysisSummaryBySessionId: Map<string, SigintAnalysisSummary>;
 } {
   if (sessions.length === 0) {
     return {
@@ -265,6 +383,7 @@ function loadCaptureContext(
       tagCountBySessionId: new Map(),
       transcriptCountBySessionId: new Map(),
       analysisJobCountBySessionId: new Map(),
+      analysisSummaryBySessionId: new Map(),
     };
   }
 
@@ -301,6 +420,13 @@ function loadCaptureContext(
     .from(analysisJobs)
     .where(inArray(analysisJobs.captureSessionId, sessionIds))
     .all();
+  const findings = jobs.length > 0
+    ? appDb
+      .select()
+      .from(analysisFindings)
+      .where(inArray(analysisFindings.analysisJobId, jobs.map((job) => job.id)))
+      .all()
+    : [];
 
   const eventsById = new Map(events.map((row) => [row.id, row]));
   const reviewBySessionId = new Map(reviews.map((row) => [row.captureSessionId, row]));
@@ -329,11 +455,27 @@ function loadCaptureContext(
   }
 
   const analysisJobCountBySessionId = new Map<string, number>();
+  const jobsBySessionId = new Map<string, Array<typeof analysisJobs.$inferSelect>>();
   for (const job of jobs) {
     analysisJobCountBySessionId.set(
       job.captureSessionId,
       (analysisJobCountBySessionId.get(job.captureSessionId) ?? 0) + 1,
     );
+    const current = jobsBySessionId.get(job.captureSessionId) ?? [];
+    current.push(job);
+    jobsBySessionId.set(job.captureSessionId, current);
+  }
+
+  const findingsByJobId = new Map<string, Array<typeof analysisFindings.$inferSelect>>();
+  for (const finding of findings) {
+    const current = findingsByJobId.get(finding.analysisJobId) ?? [];
+    current.push(finding);
+    findingsByJobId.set(finding.analysisJobId, current);
+  }
+
+  const analysisSummaryBySessionId = new Map<string, SigintAnalysisSummary>();
+  for (const [sessionId, sessionJobs] of jobsBySessionId) {
+    analysisSummaryBySessionId.set(sessionId, parseAnalysisSummary(sessionJobs, findingsByJobId));
   }
 
   return {
@@ -344,6 +486,7 @@ function loadCaptureContext(
     tagCountBySessionId,
     transcriptCountBySessionId,
     analysisJobCountBySessionId,
+    analysisSummaryBySessionId,
   };
 }
 
@@ -368,6 +511,7 @@ export function listSigintCaptureSummaries(
         tagCount: context.tagCountBySessionId.get(session.id) ?? 0,
         transcriptCount: context.transcriptCountBySessionId.get(session.id) ?? 0,
         analysisJobCount: context.analysisJobCountBySessionId.get(session.id) ?? 0,
+        analysisSummary: context.analysisSummaryBySessionId.get(session.id) ?? emptyAnalysisSummary(),
       }),
     )
     .filter((item) => matchesCaptureFilters(item, filters))
@@ -409,6 +553,7 @@ export function getSigintCaptureDetail(captureSessionId: string): SigintCaptureD
     tagCount: context.tagCountBySessionId.get(session.id) ?? 0,
     transcriptCount: context.transcriptCountBySessionId.get(session.id) ?? 0,
     analysisJobCount: context.analysisJobCountBySessionId.get(session.id) ?? 0,
+    analysisSummary: context.analysisSummaryBySessionId.get(session.id) ?? emptyAnalysisSummary(),
   });
 
   const tags = appDb

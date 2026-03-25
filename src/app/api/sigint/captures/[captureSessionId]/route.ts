@@ -1,6 +1,7 @@
 import type { NextRequest } from "next/server";
 
 import type { SigintReviewPriority, SigintReviewStatus, SigintReviewUpdateInput } from "@/lib/sigint";
+import { ensureCaptureAnalysisUpToDate, warmAnalysisBackfill } from "@/server/analysis-worker";
 import { getSigintCaptureDetail, updateSigintCaptureReview } from "@/server/sigint-store";
 
 export const runtime = "nodejs";
@@ -20,7 +21,9 @@ export async function GET(
   _request: NextRequest,
   context: { params: Promise<{ captureSessionId: string }> },
 ): Promise<Response> {
+  warmAnalysisBackfill();
   const { captureSessionId } = await context.params;
+  ensureCaptureAnalysisUpToDate(captureSessionId);
   const detail = getSigintCaptureDetail(captureSessionId);
   if (!detail) {
     return Response.json({ message: "Capture session not found." }, { status: 404 });

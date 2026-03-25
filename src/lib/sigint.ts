@@ -9,6 +9,42 @@ export type SigintReviewStatus = "pending" | "kept" | "discarded" | "flagged";
 export type SigintReviewPriority = "normal" | "high";
 export type SigintCaptureTab = "captures" | "adsb" | "ais";
 export type SigintTrackKind = "adsb" | "ais";
+export type SigintAnalysisStatus = "none" | "queued" | "running" | "completed" | "failed";
+export type SigintAnalysisFilter =
+  | "all"
+  | "speech"
+  | "music"
+  | "noise"
+  | "unknown"
+  | "queued"
+  | "running"
+  | "failed";
+
+export type SigintAnalysisSummary = {
+  status: SigintAnalysisStatus;
+  engine: string | null;
+  isCurrentEngine: boolean | null;
+  model: string | null;
+  classification: "speech" | "music" | "noise" | "unknown" | null;
+  subclass: string | null;
+  confidence: number | null;
+  errorText: string | null;
+  updatedAt: string | null;
+  audioSeconds: number | null;
+  rms: number | null;
+  sceneLabel: string | null;
+  sceneConfidence: number | null;
+  voiceDetected: boolean | null;
+  voiceConfidence: number | null;
+  voiceRatio: number | null;
+  voiceSeconds: number | null;
+  voiceDetector: string | null;
+  explanation: string | null;
+  topLabels: Array<{
+    label: string;
+    score: number;
+  }>;
+};
 
 export type SigintCaptureFile = {
   id: string;
@@ -56,6 +92,7 @@ export type SigintCaptureSummary = {
   tagCount: number;
   transcriptCount: number;
   analysisJobCount: number;
+  analysisSummary: SigintAnalysisSummary;
 };
 
 export type SigintCaptureDetail = SigintCaptureSummary & {
@@ -102,6 +139,7 @@ export type SigintCaptureListResponse = {
 export type SigintCaptureListFilters = {
   module: "all" | AudioCaptureModule;
   reviewStatus: "all" | SigintReviewStatus;
+  analysis: SigintAnalysisFilter;
   hasAudio: boolean;
   hasRawIq: boolean;
   q: string;
@@ -158,6 +196,9 @@ export async function fetchSigintCaptures(
   }
   if (filters.reviewStatus && filters.reviewStatus !== "all") {
     params.set("reviewStatus", filters.reviewStatus);
+  }
+  if (filters.analysis && filters.analysis !== "all") {
+    params.set("analysis", filters.analysis);
   }
   if (filters.hasAudio) {
     params.set("hasAudio", "1");

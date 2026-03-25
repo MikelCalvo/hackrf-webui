@@ -25,6 +25,13 @@
 /db/*.sqlite-wal
 /data/captures/*
 !/data/captures/.gitkeep
+/assets/ai/
+/runtime/ai-venv/
+/runtime/python/
+/runtime/tools/
+/runtime/uv-cache/
+__pycache__/
+*.pyc
 
 # misc
 .DS_Store

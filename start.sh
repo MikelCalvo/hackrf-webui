@@ -10,6 +10,23 @@ GPSD_PORT="${HACKRF_WEBUI_GPSD_PORT:-2947}"
 DB_DIR="${ROOT_DIR}/db"
 DB_PATH="${HACKRF_WEBUI_DB_PATH:-${DB_DIR}/app.sqlite}"
 CAPTURES_DIR="${ROOT_DIR}/data/captures"
+RUNTIME_DIR="${ROOT_DIR}/runtime"
+AI_TOOLS_DIR="${RUNTIME_DIR}/tools/uv"
+AI_UV_BIN="${AI_TOOLS_DIR}/uv"
+AI_PYTHON_DIR="${RUNTIME_DIR}/python"
+AI_VENV_DIR="${RUNTIME_DIR}/ai-venv"
+AI_CACHE_DIR="${RUNTIME_DIR}/uv-cache"
+AI_PYTHON_VERSION="${HACKRF_WEBUI_AI_PYTHON:-3.13}"
+AI_SCRIPT_PATH="${ROOT_DIR}/scripts/ai/audio_tagger.py"
+AI_REQUIREMENTS_PATH="${ROOT_DIR}/scripts/ai/requirements.txt"
+AI_ASSETS_DIR="${ROOT_DIR}/assets/ai"
+AI_MODEL_PATH="${ROOT_DIR}/assets/ai/yamnet.tflite"
+AI_LABELS_PATH="${ROOT_DIR}/assets/ai/yamnet_class_map.csv"
+AI_MODEL_URL="${AI_MODEL_URL:-https://storage.googleapis.com/mediapipe-models/audio_classifier/yamnet/float32/latest/yamnet.tflite}"
+AI_LABELS_URL="${AI_LABELS_URL:-https://raw.githubusercontent.com/tensorflow/models/master/research/audioset/yamnet/yamnet_class_map.csv}"
+AI_REINSTALL="${AI_REINSTALL:-0}"
+SKIP_AI="${SKIP_AI:-0}"
+UV_INSTALL_SCRIPT_URL="${UV_INSTALL_SCRIPT_URL:-https://astral.sh/uv/install.sh}"
 
 HOST_WAS_SET=0
 PORT_WAS_SET=0
@@ -65,9 +82,11 @@ Options:
   --skip-build         Do not run the production build.
   --skip-maps          Do not install or update local offline maps.
   --skip-adsb-runtime  Do not install or update the ADS-B decoder backend.
+  --skip-ai            Do not install or update the local SIGINT AI runtime.
   --reinstall-maps     Rebuild the managed offline maps.
   --reinstall-adsb-runtime
                        Rebuild the local dump1090-fa backend.
+  --reinstall-ai       Rebuild the local AI runtime and packages.
   --map-global-budget <size>
                        Set the target budget for the global basemap layer. Default: 4G
   --map-global-zoom <z>
@@ -82,10 +101,11 @@ Options:
 
 Environment overrides:
   HOST, PORT, SKIP_SYSTEM_DEPS, SKIP_NPM, SKIP_BUILD, SKIP_MAPS,
-  SKIP_ADSB_RUNTIME, REBUILD,
+  SKIP_ADSB_RUNTIME, SKIP_AI, REBUILD,
   MAP_REINSTALL, MAP_GLOBAL_BUDGET, MAP_GLOBAL_MAX_ZOOM,
   MAP_COUNTRY, MAP_COUNTRY_MAX_ZOOM,
-  DUMP1090_FA_REF, DUMP1090_FA_REINSTALL, DRY_RUN,
+  DUMP1090_FA_REF, DUMP1090_FA_REINSTALL, AI_REINSTALL,
+  HACKRF_WEBUI_AI_PYTHON, UV_INSTALL_SCRIPT_URL, DRY_RUN,
   HACKRF_WEBUI_GPSD_HOST, HACKRF_WEBUI_GPSD_PORT
   HACKRF_WEBUI_DB_PATH
 
@@ -201,6 +221,10 @@ native_binary_path() {
   printf '%s\n' "$ROOT_DIR/bin/hackrf_audio_stream"
 }
 
+ai_python_path() {
+  printf '%s\n' "$AI_VENV_DIR/bin/python"
+}
+
 native_binary_ready() {
   [[ -x "$(native_binary_path)" ]]
 }
@@ -219,6 +243,29 @@ prod_bundle_ready() {
 
 db_ready() {
   [[ -f "$DB_PATH" ]]
+}
+
+ai_runtime_code_ready() {
+  [[ -f "$AI_SCRIPT_PATH" && -f "$AI_REQUIREMENTS_PATH" ]]
+}
+
+ai_assets_ready() {
+  [[ -f "$AI_MODEL_PATH" && -f "$AI_LABELS_PATH" ]]
+}
+
+uv_ready() {
+  [[ -x "$AI_UV_BIN" ]]
+}
+
+ai_runtime_ready() {
+  [[ -x "$(ai_python_path)" ]] || return 1
+  ai_runtime_code_ready || return 1
+  ai_assets_ready || return 1
+
+  env PYTHONNOUSERSITE=1 "$(ai_python_path)" "$AI_SCRIPT_PATH" \
+    --check \
+    --model "$AI_MODEL_PATH" \
+    --labels "$AI_LABELS_PATH" >/dev/null 2>&1
 }
 
 maps_manifest_path() {
@@ -387,11 +434,17 @@ parse_args() {
       --skip-adsb-runtime)
         SKIP_ADSB_RUNTIME=1
         ;;
+      --skip-ai)
+        SKIP_AI=1
+        ;;
       --reinstall-maps)
         MAP_REINSTALL=1
         ;;
       --reinstall-adsb-runtime)
         DUMP1090_FA_REINSTALL=1
+        ;;
+      --reinstall-ai)
+        AI_REINSTALL=1
         ;;
       --map-global-budget)
         shift
@@ -487,7 +540,7 @@ install_nodesource_setup() {
 install_apt_deps() {
   log "Installing system dependencies with apt."
   run_root apt-get update
-  run_root apt-get install -y curl ca-certificates gnupg build-essential pkg-config ffmpeg hackrf libhackrf-dev libncurses-dev
+  run_root apt-get install -y curl ca-certificates gnupg build-essential pkg-config ffmpeg hackrf libhackrf-dev libncurses-dev python3
   if ! run_root apt-get install -y gpsd gpsd-clients; then
     warn "Could not install gpsd packages with apt. GPS auto-location will stay optional."
   fi
@@ -501,7 +554,7 @@ install_apt_deps() {
 
 install_dnf_deps() {
   log "Installing system dependencies with dnf."
-  run_root dnf install -y curl ca-certificates gcc gcc-c++ make pkgconf-pkg-config hackrf hackrf-devel ncurses-devel
+  run_root dnf install -y curl ca-certificates gcc gcc-c++ make pkgconf-pkg-config hackrf hackrf-devel ncurses-devel python3
   if ! run_root dnf install -y gpsd gpsd-clients; then
     warn "Could not install gpsd packages with dnf. GPS auto-location will stay optional."
   fi
@@ -523,7 +576,7 @@ install_dnf_deps() {
 
 install_pacman_deps() {
   log "Installing system dependencies with pacman."
-  run_root pacman -Sy --noconfirm --needed base-devel pkgconf ffmpeg hackrf ncurses nodejs npm
+  run_root pacman -Sy --noconfirm --needed base-devel pkgconf ffmpeg hackrf ncurses nodejs npm python
   if ! run_root pacman -Sy --noconfirm --needed gpsd; then
     warn "Could not install gpsd with pacman. GPS auto-location will stay optional."
   fi
@@ -546,7 +599,7 @@ zypper_install_first_available() {
 install_zypper_deps() {
   log "Installing system dependencies with zypper."
   run_root zypper --non-interactive refresh
-  run_root zypper --non-interactive install -y curl ca-certificates gcc gcc-c++ make
+  run_root zypper --non-interactive install -y curl ca-certificates gcc gcc-c++ make python3
   zypper_install_first_available "pkg-config" pkg-config pkgconf pkgconf-pkg-config
   zypper_install_first_available "HackRF userspace tools" hackrf
   zypper_install_first_available "HackRF development headers" hackrf-devel libhackrf-devel
@@ -719,6 +772,128 @@ gpsd_probe_status() {
   printf '%s\n' "not reachable at ${GPSD_HOST}:${GPSD_PORT}"
 }
 
+install_local_uv() {
+  mkdir -p "$AI_TOOLS_DIR"
+
+  if [[ "$DRY_RUN" == "1" ]]; then
+    run env UV_UNMANAGED_INSTALL="$AI_TOOLS_DIR" sh -c "curl -fsSL \"$UV_INSTALL_SCRIPT_URL\" | sh"
+    return
+  fi
+
+  env UV_UNMANAGED_INSTALL="$AI_TOOLS_DIR" sh -c "curl -fsSL \"$UV_INSTALL_SCRIPT_URL\" | sh"
+}
+
+download_ai_asset() {
+  local url="$1"
+  local destination="$2"
+  local label="$3"
+  local tmp="${destination}.tmp"
+
+  mkdir -p "$(dirname "$destination")"
+
+  if [[ "$DRY_RUN" == "1" ]]; then
+    run curl -fsSL "$url" -o "$destination"
+    return
+  fi
+
+  log "Downloading ${label}."
+  curl -fsSL "$url" -o "$tmp"
+  mv "$tmp" "$destination"
+}
+
+ensure_ai_assets() {
+  if [[ "$SKIP_AI" == "1" || "$CHECK_ONLY" == "1" ]]; then
+    return
+  fi
+
+  mkdir -p "$AI_ASSETS_DIR"
+
+  if [[ "$AI_REINSTALL" == "1" || ! -f "$AI_MODEL_PATH" ]]; then
+    download_ai_asset "$AI_MODEL_URL" "$AI_MODEL_PATH" "YAMNet model"
+  fi
+
+  if [[ "$AI_REINSTALL" == "1" || ! -f "$AI_LABELS_PATH" ]]; then
+    download_ai_asset "$AI_LABELS_URL" "$AI_LABELS_PATH" "YAMNet label map"
+  fi
+}
+
+ensure_local_uv() {
+  if uv_ready; then
+    return
+  fi
+
+  log "Installing a local uv toolchain under runtime/tools/uv."
+  install_local_uv
+  if [[ "$DRY_RUN" == "1" ]]; then
+    return
+  fi
+  uv_ready || fail "Local uv bootstrap failed."
+}
+
+install_ai_runtime() {
+  cd "$ROOT_DIR"
+
+  if [[ "$SKIP_AI" == "1" || "$CHECK_ONLY" == "1" ]]; then
+    if [[ "$CHECK_ONLY" == "1" ]]; then
+      log "Check mode: local AI runtime installation skipped."
+    else
+      log "Skipping local AI runtime because --skip-ai was requested."
+    fi
+    return
+  fi
+
+  ai_runtime_code_ready || fail "The local AI scripts or requirements are missing from the repository."
+  ensure_ai_assets
+
+  mkdir -p "$RUNTIME_DIR" "$AI_PYTHON_DIR" "$AI_CACHE_DIR"
+  ensure_local_uv
+
+  if [[ "$AI_REINSTALL" == "1" ]]; then
+    log "Reinstalling the local SIGINT AI runtime."
+    run rm -rf "$AI_VENV_DIR"
+  fi
+
+  log "Ensuring local Python ${AI_PYTHON_VERSION} for the AI runtime."
+  run env \
+    UV_CACHE_DIR="$AI_CACHE_DIR" \
+    UV_LINK_MODE=copy \
+    "$AI_UV_BIN" python install \
+    --install-dir "$AI_PYTHON_DIR" \
+    --no-bin \
+    "$AI_PYTHON_VERSION"
+
+  if [[ ! -x "$(ai_python_path)" ]]; then
+    log "Creating the local AI virtual environment."
+    run env \
+      UV_CACHE_DIR="$AI_CACHE_DIR" \
+      UV_LINK_MODE=copy \
+      UV_PYTHON_INSTALL_DIR="$AI_PYTHON_DIR" \
+      "$AI_UV_BIN" venv \
+      --python "$AI_PYTHON_VERSION" \
+      "$AI_VENV_DIR"
+  fi
+
+  if [[ "$AI_REINSTALL" == "1" ]] || ! ai_runtime_ready; then
+    log "Installing the local SIGINT AI packages."
+    run env \
+      UV_CACHE_DIR="$AI_CACHE_DIR" \
+      UV_LINK_MODE=copy \
+      UV_PYTHON_INSTALL_DIR="$AI_PYTHON_DIR" \
+      "$AI_UV_BIN" pip install \
+      --python "$(ai_python_path)" \
+      -r "$AI_REQUIREMENTS_PATH"
+  else
+    log "Local SIGINT AI runtime already looks ready."
+  fi
+
+  if [[ "$DRY_RUN" == "1" ]]; then
+    log "Dry run: local SIGINT AI runtime self-check skipped."
+    return
+  fi
+
+  ai_runtime_ready || fail "Local SIGINT AI runtime failed its self-check."
+}
+
 report_line() {
   printf '  %-18s %s\n' "$1" "$2"
 }
@@ -740,6 +915,9 @@ print_status_report() {
   report_line "GPSD daemon" "$(gpsd_probe_status)"
   report_line "SQLite DB" "$(db_ready && printf '%s' "$DB_PATH" || printf '%s' 'not initialized yet')"
   report_line "Capture store" "$CAPTURES_DIR"
+  report_line "AI assets" "$(ai_assets_ready && printf '%s' "$AI_MODEL_PATH" || printf '%s' 'missing')"
+  report_line "AI Python" "$([[ -x "$(ai_python_path)" ]] && printf '%s' "$(ai_python_path)" || printf '%s' 'missing')"
+  report_line "AI runtime" "$(ai_runtime_ready && printf '%s' 'ready' || printf '%s' 'not initialized yet')"
 
   if hackrf_pkgconfig_ok; then
     report_line "libhackrf" "ok"
@@ -943,6 +1121,8 @@ print_start_summary() {
   report_line "Prod bundle" ".next/BUILD_ID present"
   report_line "SQLite DB" "$DB_PATH"
   report_line "Capture store" "$CAPTURES_DIR"
+  report_line "AI Python" "$([[ -x "$(ai_python_path)" ]] && printf '%s' "$(ai_python_path)" || printf '%s' 'missing')"
+  report_line "AI runtime" "$(ai_runtime_ready && printf '%s' 'ready' || printf '%s' 'not initialized yet')"
   report_line "gpsd" "$(command_display gpsd)"
   report_line "GPSD daemon" "$(gpsd_probe_status)"
   if maps_ready; then
@@ -1012,6 +1192,7 @@ main() {
   prepare_local_storage
   install_maps
   install_adsb_runtime
+  install_ai_runtime
   build_app
   print_start_summary
   start_app

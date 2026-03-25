@@ -2,8 +2,9 @@
 
 `hackrf-webui` is a local-first web interface for `HackRF`.
 
-It runs on the user's own machine, works offline at runtime, exposes radio controls in a browser UI, and currently ships with six real modules:
+It runs on the user's own machine, works offline at runtime, exposes radio controls in a browser UI, and currently ships with seven real modules:
 
+- `SIGINT`: local capture review, AI triage and persisted ADS-B / AIS route replay
 - `FM`: browser listening with a large country-sharded station catalog
 - `PMR`: narrowband channel presets with manual listen and automatic scanning
 - `AIRBAND`: AM airband listening with local presets, manual tuning and shared HackRF audio controls
@@ -80,6 +81,20 @@ The app also has a single global location model shared across modules:
 - smart `All` scanning that can prefer global channels plus the shared city or country catalog scope
 - focused on analog voice traffic; digital AIS remains in the dedicated AIS module
 
+### SIGINT
+
+- a dedicated intelligence workspace above the radio modules
+- capture review queue backed by local `SQLite`
+- shared evidence detail for `PMR`, `AIRBAND` and `MARITIME`
+- local AI audio triage for linked `WAV` captures:
+  - background queue with backfill for old captures
+  - hybrid `YAMNet + WebRTC VAD` scoring for low-resource local voice triage
+  - broad classification into `speech`, `noise`, `music` or `unknown`
+  - separate `voice detected` and `ambient scene` summaries retained alongside each capture
+  - top-label evidence retained alongside each capture
+- persisted `ADS-B` and `AIS` route replay from local track history
+- analyst review state, notes and priority per capture
+
 ### AIS
 
 - live AIS decoding from the HackRF across channels A and B at `161.975 MHz` / `162.025 MHz`
@@ -110,6 +125,8 @@ By default, `start.sh`:
 - installs `gpsd` packages when the distribution exposes them, so live GPS positioning is ready when you want it
 - installs Node dependencies
 - prepares the local `SQLite` runtime storage under `db/` and runs pending migrations automatically
+- downloads the local AI model assets into `assets/ai/` if they are missing
+- installs a local AI runtime under `runtime/` using `uv`, a managed `Python 3.13`, `ai-edge-litert` and `webrtcvad-wheels`
 - ensures a managed offline map stack unless `--skip-maps` is used
 - installs a dark global basemap capped near `4 GB` by default
 - optionally adds one high-detail country overlay when `--map-country` is set
@@ -125,6 +142,7 @@ Default address:
 
 Module routes:
 
+- `/sigint`
 - `/fm`
 - `/pmr`
 - `/airband`
@@ -141,6 +159,7 @@ Useful options:
 ./start.sh --host 0.0.0.0 --port 4000
 ./start.sh --skip-system-deps
 ./start.sh --skip-npm --skip-build
+./start.sh --skip-ai
 ./start.sh --map-global-budget 4G
 ./start.sh --map-global-zoom 10
 ./start.sh --map-country ES
@@ -157,6 +176,7 @@ What they do:
 - `--host` and `--port` override the bind address
 - `--skip-system-deps` avoids package-manager changes
 - `--skip-npm` and `--skip-build` reuse existing local artifacts
+- `--skip-ai` leaves the local SIGINT AI runtime untouched or absent
 - `--map-global-budget` controls the target size of the shared global basemap layer
 - `--map-global-zoom` forces the shared global basemap max zoom
 - `--map-country` installs or refreshes one high-detail country overlay on top of the shared world layer
@@ -164,6 +184,7 @@ What they do:
 - `--skip-maps` keeps AIS and ADS-B in live-tile mode
 - `--skip-adsb-runtime` keeps the existing ADS-B backend untouched or skips it entirely
 - `--reinstall-adsb-runtime` rebuilds the pinned local `dump1090-fa` backend
+- `--reinstall-ai` rebuilds the local SIGINT AI runtime and Python packages
 - `--rebuild` forces a fresh `npm ci` and production rebuild
 - `HACKRF_WEBUI_GPSD_HOST` and `HACKRF_WEBUI_GPSD_PORT` point the app at a non-default GPSD listener when needed
 
@@ -175,6 +196,8 @@ MAP_GLOBAL_BUDGET=4G ./start.sh
 MAP_GLOBAL_MAX_ZOOM=10 ./start.sh
 MAP_COUNTRY=ES MAP_COUNTRY_MAX_ZOOM=14 ./start.sh
 DUMP1090_FA_REINSTALL=1 ./start.sh
+AI_REINSTALL=1 ./start.sh
+HACKRF_WEBUI_AI_PYTHON=3.13 ./start.sh
 HACKRF_WEBUI_GPSD_PORT=2947 ./start.sh
 ```
 
@@ -193,16 +216,20 @@ Managed map model:
 
 - `db/app.sqlite`
   - the local `SQLite` database
-  - stores module activity events, route history for `AIS` / `ADS-B`, and capture metadata for linked audio / IQ evidence
+  - stores module activity events, route history for `AIS` / `ADS-B`, capture metadata for linked audio / IQ evidence, and `SIGINT` review / AI state
 - `data/captures/`
   - stores activity-triggered `WAV` audio and raw `IQ .cs8` captures for `PMR`, `AIRBAND` and `MARITIME`
   - is organized per day and per stream session under the project tree
   - keeps large binaries on disk while `SQLite` stores the linkage and metadata
+- `runtime/`
+  - stores the local AI toolchain
+  - includes the managed `uv` bootstrap, the pinned `Python 3.13` install, the AI virtualenv and its cache
 
 What already persists today:
 
 - `PMR`, `AIRBAND`, `MARITIME` activity logs
 - `PMR`, `AIRBAND`, `MARITIME` activity-linked `WAV` and raw `IQ` captures
+- local AI queue state, classifications and tags for `PMR`, `AIRBAND` and `MARITIME` captures
 - `AIS` vessel position history
 - `ADS-B` aircraft position history
 
@@ -227,6 +254,20 @@ npm run db:migrate
 node ./scripts/install-dump1090-fa.mjs
 npm run build
 npm run start -- --hostname 127.0.0.1 --port 3000
+```
+
+If you also want the local SIGINT AI runtime without using `start.sh`, install it under the project tree:
+
+```bash
+export UV_UNMANAGED_INSTALL="$PWD/runtime/tools/uv"
+curl -fsSL https://astral.sh/uv/install.sh | sh
+runtime/tools/uv/uv python install --install-dir runtime/python 3.13
+runtime/tools/uv/uv venv --python 3.13 runtime/ai-venv
+runtime/tools/uv/uv pip install --python runtime/ai-venv/bin/python -r scripts/ai/requirements.txt
+mkdir -p assets/ai
+curl -fsSL https://storage.googleapis.com/mediapipe-models/audio_classifier/yamnet/float32/latest/yamnet.tflite -o assets/ai/yamnet.tflite
+curl -fsSL https://raw.githubusercontent.com/tensorflow/models/master/research/audioset/yamnet/yamnet_class_map.csv -o assets/ai/yamnet_class_map.csv
+runtime/ai-venv/bin/python scripts/ai/audio_tagger.py --check --model assets/ai/yamnet.tflite --labels assets/ai/yamnet_class_map.csv
 ```
 
 Optional offline maps can also be prepared manually:
@@ -255,6 +296,7 @@ For normal usage, the app needs:
 - `ncurses` development headers
 - `Node.js` `20+`
 - `npm`
+- `curl`
 
 Optional but supported:
 
@@ -516,5 +558,5 @@ At the moment, those docs are FM-specific. PMR does not need the same coverage-t
 - Runtime use is local and offline-friendly.
 - The app does not depend on remote frontend assets.
 - The current radio runtime is focused on `HackRF`.
-- FM, PMR, AIRBAND, MARITIME, AIS and ADS-B are the landed modules today.
+- SIGINT, FM, PMR, AIRBAND, MARITIME, AIS and ADS-B are the landed modules today.
 - The catalog and band modules are intended to keep growing through importer work and targeted PRs.
