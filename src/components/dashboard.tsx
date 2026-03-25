@@ -46,6 +46,7 @@ const STORAGE_KEY = "hackrf-webui.custom-stations.v1";
 const LOCATION_KEY = "hackrf-webui.location.v1";
 const STATION_ROW_HEIGHT = 76;
 const STATION_LIST_OVERSCAN = 10;
+const FM_TUNE_SYNC_POLL_MS = 200;
 
 type SavedLocation = {
   cityId: string;
@@ -136,6 +137,103 @@ function buildStreamUrl(
   });
 
   return `/api/stream?${params.toString()}`;
+}
+
+function buildRetuneUrl(station: FmStation): string {
+  return `/api/stream?${new URLSearchParams({
+    label: station.name,
+    freqMHz: String(station.freqMhz),
+  })}`;
+}
+
+function normalizeStationLabel(value: string): string {
+  return value
+    .normalize("NFKD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/[^a-zA-Z0-9]+/g, " ")
+    .trim()
+    .toLowerCase();
+}
+
+function resolvePlayingStationId(
+  stations: FmStation[],
+  activeStream: HardwareStatus["activeStream"],
+): string | null {
+  if (!activeStream || activeStream.demodMode !== "wfm" || activeStream.phase !== "running") {
+    return null;
+  }
+
+  return resolveStationId(stations, activeStream.label, activeStream.freqHz);
+}
+
+function resolvePendingStationId(
+  stations: FmStation[],
+  activeStream: HardwareStatus["activeStream"],
+): string | null {
+  if (
+    !activeStream
+    || activeStream.demodMode !== "wfm"
+    || activeStream.phase !== "retuning"
+    || activeStream.pendingLabel === null
+    || activeStream.pendingFreqHz === null
+  ) {
+    return null;
+  }
+
+  return resolveStationId(stations, activeStream.pendingLabel, activeStream.pendingFreqHz);
+}
+
+function resolveStationId(
+  stations: FmStation[],
+  label: string,
+  freqHz: number,
+): string | null {
+  if (!label) {
+    return null;
+  }
+
+  const normalizedLabel = normalizeStationLabel(label);
+
+  const exact = stations.find(
+    (station) =>
+      Math.round(station.freqMhz * 1_000_000) === freqHz
+      && station.name === label,
+  );
+  if (exact) {
+    return exact.id;
+  }
+
+  const normalizedExact = stations.find(
+    (station) =>
+      Math.round(station.freqMhz * 1_000_000) === freqHz
+      && normalizeStationLabel(station.name) === normalizedLabel,
+  );
+  if (normalizedExact) {
+    return normalizedExact.id;
+  }
+
+  const labelMatch = stations.find(
+    (station) =>
+      station.name === label
+      && Math.abs(Math.round(station.freqMhz * 1_000_000) - freqHz) <= 5_000,
+  );
+  if (labelMatch) {
+    return labelMatch.id;
+  }
+
+  const normalizedLabelMatch = stations.find(
+    (station) =>
+      normalizeStationLabel(station.name) === normalizedLabel
+      && Math.abs(Math.round(station.freqMhz * 1_000_000) - freqHz) <= 5_000,
+  );
+  if (normalizedLabelMatch) {
+    return normalizedLabelMatch.id;
+  }
+
+  const frequencyMatch = stations.find(
+    (station) => Math.abs(Math.round(station.freqMhz * 1_000_000) - freqHz) <= 5_000,
+  );
+  return frequencyMatch?.id ?? null;
 }
 
 function downloadCustomStations(stations: FmStation[]): void {
@@ -819,7 +917,6 @@ export function Dashboard({
   const [countryFilter, setCountryFilter] = useState("all");
   const [cityFilter, setCityFilter] = useState("all");
   const [selectedId, setSelectedId] = useState("");
-  const [playingId, setPlayingId] = useState<string | null>(null);
   const [pendingScrollId, setPendingScrollId] = useState<string | null>(null);
   const [hardware, setHardware] = useState<HardwareStatus | null>(null);
   const [hardwareError, setHardwareError] = useState("");
@@ -945,7 +1042,6 @@ export function Dashboard({
     audio.pause();
     audio.removeAttribute("src");
     audio.load();
-    setPlayingId(null);
     setStartingStationId(null);
   }
 
@@ -1137,7 +1233,6 @@ export function Dashboard({
       ...Object.values(loadedCountries).flatMap((country) => country.catalog.stations),
     ];
   }, [customStations, loadedCountries]);
-
   const visible = useMemo(() => {
     return allStations.filter((station) => {
       if (activeRegion !== "all" && station.location.regionId !== activeRegion) {
@@ -1153,6 +1248,21 @@ export function Dashboard({
       return matchesStationSearch(station, deferredQuery);
     });
   }, [activeCity, activeCountry, activeRegion, allStations, deferredQuery]);
+
+  const actualPlayingId = useMemo(
+    () =>
+      resolvePlayingStationId(visible, hardware?.activeStream ?? null)
+      ?? resolvePlayingStationId(allStations, hardware?.activeStream ?? null)
+      ?? resolvePlayingStationId(knownStations, hardware?.activeStream ?? null),
+    [allStations, hardware?.activeStream, knownStations, visible],
+  );
+  const pendingPlayingId = useMemo(
+    () =>
+      resolvePendingStationId(visible, hardware?.activeStream ?? null)
+      ?? resolvePendingStationId(allStations, hardware?.activeStream ?? null)
+      ?? resolvePendingStationId(knownStations, hardware?.activeStream ?? null),
+    [allStations, hardware?.activeStream, knownStations, visible],
+  );
 
   const selected =
     visible.find((station) => station.id === selectedId) ||
@@ -1236,12 +1346,37 @@ export function Dashboard({
   const bottomSpacerHeight =
     (visible.length - windowedRange.end) * STATION_ROW_HEIGHT;
 
-  function focusPlayingStation(): void {
-    if (!playingId) {
+  useEffect(() => {
+    if (!isFmModule) {
       return;
     }
 
-    const station = knownStations.find((candidate) => candidate.id === playingId);
+    if (
+      startingStationId
+      && hardware?.activeStream?.demodMode === "wfm"
+      && hardware.activeStream.phase === "running"
+      && hardware.activeStream.pendingFreqHz === null
+      && hardware.activeStream.pendingLabel === null
+    ) {
+      setStartingStationId(null);
+    }
+  }, [actualPlayingId, hardware?.activeStream, isFmModule, startingStationId]);
+
+  useEffect(() => {
+    if (!isFmModule || startingStationId === null) {
+      return;
+    }
+
+    const interval = window.setInterval(() => void refreshHardware(), FM_TUNE_SYNC_POLL_MS);
+    return () => clearInterval(interval);
+  }, [isFmModule, startingStationId]);
+
+  function focusPlayingStation(): void {
+    if (!actualPlayingId) {
+      return;
+    }
+
+    const station = knownStations.find((candidate) => candidate.id === actualPlayingId);
     if (!station) {
       return;
     }
@@ -1279,17 +1414,37 @@ export function Dashboard({
     }
 
     setStreamError("");
-    setPlayingId(null);
     setSelectedId(station.id);
     setStartingStationId(station.id);
 
     const audio = audioRef.current;
+    const activeStream = hardware?.activeStream;
+    const canRetuneInPlace = Boolean(
+      activeStream
+      && activeStream.demodMode === "wfm"
+      && activeStream.lna === controls.lna
+      && activeStream.vga === controls.vga
+      && Math.abs(activeStream.audioGain - controls.audioGain) < 0.001,
+    );
+
+    if (canRetuneInPlace) {
+      try {
+        const response = await fetch(buildRetuneUrl(station), { method: "PATCH" });
+        if (response.ok) {
+          setSelectedId(station.id);
+          void refreshHardware();
+          return;
+        }
+      } catch {
+        // Fall back to a full restart if in-place retune fails.
+      }
+    }
+
     audio.pause();
     audio.src = buildStreamUrl(station, controls);
 
     try {
       await audio.play();
-      setPlayingId(station.id);
       void refreshHardware();
     } catch (error) {
       if (error instanceof DOMException && error.name === "AbortError") {
@@ -1298,7 +1453,6 @@ export function Dashboard({
 
       audio.removeAttribute("src");
       audio.load();
-      setPlayingId(null);
       setStreamError(
         error instanceof Error
           ? error.message
@@ -1336,7 +1490,7 @@ export function Dashboard({
   }
 
   function removeCustom(id: string): void {
-    if (playingId === id || startingStationId === id) {
+    if (actualPlayingId === id || transitionStationId === id) {
       stopListening();
     }
 
@@ -1435,6 +1589,21 @@ export function Dashboard({
     activeCountry !== "all" && !activeCountryData && loadingCountryId === activeCountry;
   const shouldShowSelectCountryState =
     isFmModule && activeCountry === "all" && customStations.length === 0;
+  const fmPhase =
+    isFmModule && hardware?.activeStream?.demodMode === "wfm"
+      ? hardware.activeStream.phase
+      : null;
+  const transitionStationId =
+    pendingPlayingId
+    ?? (
+      startingStationId !== null && (fmPhase === null || fmPhase === "starting")
+        ? startingStationId
+        : null
+    );
+  const fmStarting =
+    fmPhase === "starting";
+  const fmRetuning =
+    fmPhase === "retuning";
 
   return (
     <div className="flex h-screen flex-col overflow-hidden">
@@ -1488,12 +1657,12 @@ export function Dashboard({
           <button
             className={cx(
               "flex items-center gap-2 rounded-full border border-[var(--accent)]/20 bg-[var(--accent)]/6 px-3 py-1",
-              isFmModule && playingId
+              isFmModule && actualPlayingId
                 ? "transition hover:border-[var(--accent)]/40 hover:bg-[var(--accent)]/10"
                 : "cursor-default",
             )}
-            onClick={isFmModule && playingId ? focusPlayingStation : undefined}
-            title={isFmModule && playingId ? "Show in station list" : undefined}
+            onClick={isFmModule && actualPlayingId ? focusPlayingStation : undefined}
+            title={isFmModule && actualPlayingId ? "Show in station list" : undefined}
             type="button"
           >
             <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-[var(--accent)]" />
@@ -1503,10 +1672,15 @@ export function Dashboard({
             <span className="text-xs text-[var(--muted)]">
               {hardware.activeStream.label}
             </span>
+            {fmRetuning ? (
+              <span className="font-mono text-[9px] uppercase tracking-[0.18em] text-amber-200">
+                retuning
+              </span>
+            ) : null}
           </button>
         ) : null}
 
-        {isFmModule && playingId ? (
+        {isFmModule && actualPlayingId ? (
           <>
             <VolumeControl volume={volume} onChange={setVolume} />
             <button className={CLS_BTN_GHOST} onClick={stopListening} type="button">
@@ -1866,8 +2040,10 @@ export function Dashboard({
                 <div style={{ height: topSpacerHeight }} />
                 {windowedStations.map((station) => {
                   const isSelected = selected?.id === station.id;
-                  const isPlaying = playingId === station.id;
-                  const isStarting = startingStationId === station.id;
+                  const isPlaying = actualPlayingId === station.id;
+                  const isPending = transitionStationId === station.id;
+                  const isRetuning = isPending && fmRetuning;
+                  const isStarting = isPending && !fmRetuning;
 
                   return (
                     <div
@@ -1919,15 +2095,17 @@ export function Dashboard({
                       ) : isStarting ? (
                         <span className="flex shrink-0 items-center gap-1 font-mono text-[9px] uppercase tracking-[0.2em] text-amber-200">
                           <Spinner />
-                          starting
+                          {isRetuning ? "retuning" : "starting"}
                         </span>
                       ) : null}
 
                       <button
                         className={cx(
                           "shrink-0 rounded-full border px-2.5 py-1 font-mono text-[10px] font-semibold transition",
-                          isPlaying || isStarting
+                          isPlaying
                             ? "border-[var(--accent)]/35 bg-[var(--accent)]/10 text-[var(--accent)]"
+                            : isPending
+                              ? "border-amber-300/30 bg-amber-300/10 text-amber-200"
                             : "border-white/10 bg-white/[0.03] text-[var(--muted)] opacity-0 group-hover:opacity-100",
                         )}
                         onClick={(event) => {
@@ -1937,11 +2115,16 @@ export function Dashboard({
                             return;
                           }
 
+                          if (isPending) {
+                            return;
+                          }
+
                           void startListening(station);
                         }}
+                        disabled={isPending}
                         type="button"
                       >
-                        {isStarting ? <Spinner /> : isPlaying ? "■" : "▶"}
+                        {isPending ? <Spinner /> : isPlaying ? "■" : "▶"}
                       </button>
 
                       {!station.curated ? (
@@ -2098,26 +2281,42 @@ export function Dashboard({
                 </div>
 
                 <div className="space-y-3 p-5">
+                  {actualPlayingId && actualPlayingId !== selected.id ? (
+                    <div className="rounded border border-amber-300/20 bg-amber-300/8 px-3 py-2 text-xs text-amber-100">
+                      Another FM station is currently on air. Use the header pill to jump to it.
+                    </div>
+                  ) : null}
+
                   <button
                     className={cx(
                       "w-full inline-flex items-center justify-center gap-1.5 rounded border px-4 py-2 text-sm font-semibold transition",
-                      playingId === selected.id || startingStationId === selected.id
+                      actualPlayingId === selected.id
                         ? "border-rose-400/25 bg-rose-400/[0.08] text-rose-300 hover:border-rose-400/45"
+                        : transitionStationId === selected.id
+                          ? "border-amber-300/30 bg-amber-300/10 text-amber-200"
                         : "border-[var(--accent)]/40 bg-[var(--accent)]/12 text-[var(--foreground)] hover:border-[var(--accent)]/70 hover:bg-[var(--accent)]/20 disabled:cursor-not-allowed disabled:opacity-40",
                     )}
-                    disabled={startingStationId !== null && startingStationId !== selected.id}
+                    disabled={
+                      transitionStationId !== null
+                      && transitionStationId !== selected.id
+                    }
                     onClick={() => {
-                      if (playingId === selected.id || startingStationId === selected.id) {
+                      if (actualPlayingId === selected.id) {
                         stopListening();
                         return;
                       }
+
+                      if (transitionStationId === selected.id) {
+                        return;
+                      }
+
                       void startListening(selected);
                     }}
                     type="button"
                   >
-                    {startingStationId === selected.id ? (
-                      <><Spinner />Starting…</>
-                    ) : playingId === selected.id ? (
+                    {transitionStationId === selected.id ? (
+                      <><Spinner />{fmRetuning ? "Retuning…" : fmStarting ? "Starting…" : "Syncing…"}</>
+                    ) : actualPlayingId === selected.id ? (
                       "Stop"
                     ) : (
                       "▶ Listen"
@@ -2128,11 +2327,9 @@ export function Dashboard({
                     className="w-full rounded-lg opacity-90"
                     controls
                     onEnded={() => {
-                      setPlayingId(null);
                       setStartingStationId(null);
                     }}
                     onError={() => {
-                      setPlayingId(null);
                       setStartingStationId(null);
                       setStreamError(
                         "Could not open stream. Check HackRF status, ffmpeg, and the native binary.",

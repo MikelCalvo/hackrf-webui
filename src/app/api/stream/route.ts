@@ -17,6 +17,23 @@ function badRequest(message: string, status = 400): Response {
   );
 }
 
+export async function PATCH(request: Request) {
+  const { searchParams } = new URL(request.url);
+  const freqMhz = Number.parseFloat(searchParams.get("freqMHz") || "");
+  const label = (searchParams.get("label") || "FM").trim();
+
+  if (!Number.isFinite(freqMhz) || freqMhz < 64 || freqMhz > 108) {
+    return badRequest("freqMHz is out of range. Use a valid FM frequency.");
+  }
+
+  const ok = hackrfService.retune(Math.round(freqMhz * 1_000_000), label, "wfm");
+  if (!ok) {
+    return badRequest("No active FM stream to retune.", 409);
+  }
+
+  return Response.json({ ok: true }, { headers: { "Cache-Control": "no-store" } });
+}
+
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
   const freqMhz = Number.parseFloat(searchParams.get("freqMHz") || "");

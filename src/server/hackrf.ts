@@ -10,17 +10,20 @@ import type {
   StreamRequest,
   StreamSessionSnapshot,
 } from "@/lib/types";
+import { TELEMETRY_REPORT_INTERVAL_MS } from "@/lib/signal-activity";
 import { adsbRuntime } from "@/server/adsb-runtime";
 import { hackrfDeviceService } from "@/server/hackrf-device";
 import { aisRuntime } from "@/server/ais-runtime";
 
 const LEVEL_RE = /LEVEL rms=([0-9.]+) peak=([0-9.]+) rf=([0-9.]+)/;
+const RETUNE_SETTLE_MS = 450;
 
 type ActiveStream = {
   session: StreamSessionSnapshot;
   telemetry: SignalLevelTelemetry | null;
   hackrf: ReturnType<typeof spawn>;
   ffmpeg: ReturnType<typeof spawn>;
+  retuneTimer: ReturnType<typeof setTimeout> | null;
 };
 
 function audioRateForMode(mode: AudioDemodMode): string {
@@ -206,8 +209,32 @@ class HackRFService {
     const { hackrf } = this.activeStream;
     if (!hackrf.stdin?.writable) return false;
     hackrf.stdin.write(`FREQ ${freqHz}\n`);
-    this.activeStream.session.freqHz = freqHz;
-    this.activeStream.session.label = label;
+
+    if (this.activeStream.retuneTimer) {
+      clearTimeout(this.activeStream.retuneTimer);
+      this.activeStream.retuneTimer = null;
+    }
+
+    this.activeStream.session.phase = "retuning";
+    this.activeStream.session.phaseSince = new Date().toISOString();
+    this.activeStream.session.pendingFreqHz = freqHz;
+    this.activeStream.session.pendingLabel = label;
+
+    const sessionId = this.activeStream.session.id;
+    this.activeStream.retuneTimer = setTimeout(() => {
+      if (!this.activeStream || this.activeStream.session.id !== sessionId) {
+        return;
+      }
+
+      this.activeStream.session.freqHz = freqHz;
+      this.activeStream.session.label = label;
+      this.activeStream.session.phase = "running";
+      this.activeStream.session.phaseSince = new Date().toISOString();
+      this.activeStream.session.pendingFreqHz = null;
+      this.activeStream.session.pendingLabel = null;
+      this.activeStream.retuneTimer = null;
+    }, RETUNE_SETTLE_MS);
+
     return true;
   }
 
@@ -239,15 +266,32 @@ class HackRFService {
       freqHz: request.freqHz,
       demodMode: mode,
       startedAt: new Date().toISOString(),
+      phase: "starting",
+      phaseSince: new Date().toISOString(),
       lna: request.lna,
       vga: request.vga,
       audioGain: request.audioGain,
+      pendingLabel: null,
+      pendingFreqHz: null,
       telemetry: null,
     };
 
     const hackrf = spawn(
       binaryPath,
-      ["-f", String(request.freqHz), "-m", mode, "-l", String(request.lna), "-g", String(request.vga), "-G", request.audioGain.toFixed(2)],
+      [
+        "-f",
+        String(request.freqHz),
+        "-m",
+        mode,
+        "-l",
+        String(request.lna),
+        "-g",
+        String(request.vga),
+        "-G",
+        request.audioGain.toFixed(2),
+        "-R",
+        String(TELEMETRY_REPORT_INTERVAL_MS),
+      ],
       { stdio: ["pipe", "pipe", "pipe"] },
     );
 
@@ -279,11 +323,15 @@ class HackRFService {
     ffmpeg.stderr.setEncoding("utf8");
     ffmpeg.stderr.on("data", () => {});
 
-    const activeStream: ActiveStream = { session, telemetry: null, hackrf, ffmpeg };
+    const activeStream: ActiveStream = { session, telemetry: null, hackrf, ffmpeg, retuneTimer: null };
     this.activeStream = activeStream;
 
     const cleanup = () => {
       if (this.activeStream?.session.id !== sessionId) return;
+      if (activeStream.retuneTimer) {
+        clearTimeout(activeStream.retuneTimer);
+        activeStream.retuneTimer = null;
+      }
       hackrf.stdout?.unpipe(ffmpeg.stdin);
       try { ffmpeg.stdin?.end(); } catch { /* already gone */ }
       this.killProcess(hackrf);
@@ -295,6 +343,9 @@ class HackRFService {
     signal.addEventListener("abort", cleanup, { once: true });
     hackrf.once("close", cleanup);
     ffmpeg.once("close", cleanup);
+
+    activeStream.session.phase = "running";
+    activeStream.session.phaseSince = new Date().toISOString();
 
     return Readable.toWeb(ffmpeg.stdout) as ReadableStream<Uint8Array>;
   }
@@ -337,9 +388,13 @@ class HackRFService {
   private stopAndWait(): Promise<void> {
     if (!this.activeStream) return Promise.resolve();
 
-    const { hackrf, ffmpeg } = this.activeStream;
+    const { hackrf, ffmpeg, retuneTimer } = this.activeStream;
     this.activeStream = null;
     hackrfDeviceService.release("audio");
+
+    if (retuneTimer) {
+      clearTimeout(retuneTimer);
+    }
 
     // Register the wait listener before sending SIGTERM so we cannot miss the close event
     const released =

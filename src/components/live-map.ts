@@ -276,6 +276,8 @@ export function useManagedRuntimeFeed<TSnapshot>({
   const startRuntimeRef = useRef(startRuntime);
   const stopRuntimeRef = useRef(stopRuntime);
   const messagesRef = useRef(messages);
+  const hardwareRefreshTaskRef = useRef<Promise<void> | null>(null);
+  const snapshotRefreshTaskRef = useRef<Promise<void> | null>(null);
   const refreshHardwareRef = useRef<() => Promise<void>>(async () => undefined);
   const refreshSnapshotRef = useRef<() => Promise<void>>(async () => undefined);
 
@@ -300,24 +302,58 @@ export function useManagedRuntimeFeed<TSnapshot>({
   }, [messages]);
 
   refreshHardwareRef.current = async () => {
+    if (hardwareRefreshTaskRef.current) {
+      await hardwareRefreshTaskRef.current;
+      return;
+    }
+
+    const task = (async () => {
+      try {
+        await onRefreshHardwareRef.current();
+      } catch {
+        // Hardware status is refreshed globally by the caller.
+      }
+    })();
+
+    hardwareRefreshTaskRef.current = task;
+
     try {
-      await onRefreshHardwareRef.current();
-    } catch {
-      // Hardware status is refreshed globally by the caller.
+      await task;
+    } finally {
+      if (hardwareRefreshTaskRef.current === task) {
+        hardwareRefreshTaskRef.current = null;
+      }
     }
   };
 
   refreshSnapshotRef.current = async () => {
+    if (snapshotRefreshTaskRef.current) {
+      await snapshotRefreshTaskRef.current;
+      return;
+    }
+
+    const task = (async () => {
+      try {
+        const nextSnapshot = await fetchSnapshotRef.current();
+        setSnapshot(nextSnapshot);
+        setError("");
+      } catch (pollError) {
+        setError(
+          pollError instanceof Error ? pollError.message : messagesRef.current.refresh,
+        );
+      } finally {
+        setLoading(false);
+      }
+    })();
+
+    snapshotRefreshTaskRef.current = task;
+
     try {
-      const nextSnapshot = await fetchSnapshotRef.current();
-      setSnapshot(nextSnapshot);
-      setError("");
-    } catch (pollError) {
-      setError(
-        pollError instanceof Error ? pollError.message : messagesRef.current.refresh,
-      );
+      await task;
     } finally {
-      setLoading(false);
+      if (snapshotRefreshTaskRef.current === task) {
+        snapshotRefreshTaskRef.current = null;
+      }
     }
   };
 
@@ -384,8 +420,39 @@ export function useManagedRuntimeFeed<TSnapshot>({
   }, []);
 
   useEffect(() => {
-    const timer = window.setInterval(() => void refreshSnapshotRef.current(), pollMs);
-    return () => clearInterval(timer);
+    let cancelled = false;
+    let timer: number | null = null;
+
+    const poll = async () => {
+      if (cancelled) {
+        return;
+      }
+
+      if (typeof document === "undefined" || document.visibilityState === "visible") {
+        await refreshSnapshotRef.current();
+      }
+
+      if (!cancelled) {
+        timer = window.setTimeout(() => void poll(), pollMs);
+      }
+    };
+
+    const handleVisibilityChange = () => {
+      if (typeof document !== "undefined" && document.visibilityState === "visible") {
+        void refreshSnapshotRef.current();
+      }
+    };
+
+    timer = window.setTimeout(() => void poll(), pollMs);
+    document.addEventListener("visibilitychange", handleVisibilityChange);
+
+    return () => {
+      cancelled = true;
+      if (timer !== null) {
+        clearTimeout(timer);
+      }
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
+    };
   }, [pollMs]);
 
   return {

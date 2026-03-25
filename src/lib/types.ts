@@ -156,15 +156,21 @@ export type SignalLevelTelemetry = {
 
 export type AudioDemodMode = "am" | "nfm" | "wfm";
 
+export type StreamSessionPhase = "starting" | "running" | "retuning";
+
 export type StreamSessionSnapshot = {
   id: string;
   label: string;
   freqHz: number;
   demodMode: AudioDemodMode;
   startedAt: string;
+  phase: StreamSessionPhase;
+  phaseSince: string;
   lna: number;
   vga: number;
   audioGain: number;
+  pendingLabel: string | null;
+  pendingFreqHz: number | null;
   telemetry: SignalLevelTelemetry | null;
 };
 

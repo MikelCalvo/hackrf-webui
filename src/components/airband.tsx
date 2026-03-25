@@ -20,6 +20,15 @@ import {
 } from "@/data/airband-channels";
 import type { AudioControls } from "@/lib/radio";
 import type { HardwareStatus } from "@/lib/types";
+import {
+  ACTIVE_LISTEN_TELEMETRY_REFRESH_MS,
+  createActivityWindowMetrics,
+  hasRmsActivity,
+  mergeActivityWindowMetrics,
+  SCANNER_HOLD_GRACE_MS,
+  SCANNER_STARTUP_MS,
+  TELEMETRY_REFRESH_MS,
+} from "@/lib/signal-activity";
 
 const AIRBAND_STORAGE_KEY = "hackrf-webui.airband-presets.v1";
 const AIRBAND_CONFIG_KEY = "hackrf-webui.airband-config.v1";
@@ -27,8 +36,6 @@ const AIRBAND_MIN_MHZ = 118.0;
 const AIRBAND_MAX_MHZ = 137.0;
 const AIRBAND_SWEEP_MAX_MHZ = 136.975;
 const AIRBAND_SWEEP_STEP_MHZ = 0.025;
-const STARTUP_MS = 2800;
-
 type ScannerState = "idle" | "scanning" | "locked";
 type ScanMode = "sequential" | "random";
 
@@ -249,6 +256,7 @@ export function AirbandModule({
   const [scannerState, setScannerState] = useState<ScannerState>("idle");
   const [scanIndex, setScanIndex] = useState(0);
   const [scanLog, setScanLog] = useState<ScanLogEntry[]>([]);
+  const [manualActivityRms, setManualActivityRms] = useState<number | null>(null);
 
   const scannerStateRef = useRef<ScannerState>("idle");
   const scanModeRef = useRef<ScanMode>(config.scanMode);
@@ -256,6 +264,8 @@ export function AirbandModule({
   const dwellTimeRef = useRef(config.dwellTime);
   const playingIdRef = useRef<string | null>(null);
   const hardwareRef = useRef<HardwareStatus | null>(null);
+  const refreshHardwareRef = useRef(onRefreshHardware);
+  const pollInFlightRef = useRef(false);
 
   useEffect(() => {
     scannerStateRef.current = scannerState;
@@ -274,6 +284,10 @@ export function AirbandModule({
   useEffect(() => {
     hardwareRef.current = hardware;
   }, [hardware]);
+
+  useEffect(() => {
+    refreshHardwareRef.current = onRefreshHardware;
+  }, [onRefreshHardware]);
 
   useEffect(() => {
     localStorage.setItem(AIRBAND_STORAGE_KEY, JSON.stringify(savedPresets));
@@ -358,6 +372,13 @@ export function AirbandModule({
 
   const isStarting = startingChannelId !== null;
   const selectedChannelIsManual = Boolean(selectedChannel?.id.startsWith("manual-"));
+  const telemetry = hardware?.activeStream?.telemetry ?? null;
+  const monitoringChannel = scannerState === "idle"
+    ? (
+      channels.find((channel) => channel.id === playingChannelId)
+      ?? (manualChannel?.id === playingChannelId ? manualChannel : null)
+    )
+    : null;
 
   useEffect(() => {
     if (!selectedChannel) {
@@ -381,6 +402,102 @@ export function AirbandModule({
     setStartingChannelId(null);
   }
 
+  useEffect(() => {
+    if (scannerState !== "idle" || !monitoringChannel) {
+      setManualActivityRms(null);
+      return;
+    }
+
+    let lastActivityAt = 0;
+    let peakRms = 0;
+    let burstOpen = false;
+
+    const interval = window.setInterval(() => {
+      const now = Date.now();
+      const currentTelemetry = hardwareRef.current?.activeStream?.telemetry ?? null;
+
+      if (hasRmsActivity(currentTelemetry, squelchRef.current, now)) {
+        const currentRms = currentTelemetry?.rms ?? 0;
+        lastActivityAt = now;
+        peakRms = Math.max(peakRms, currentRms);
+        burstOpen = true;
+        setManualActivityRms(peakRms);
+        return;
+      }
+
+      if (!burstOpen || now - lastActivityAt < SCANNER_HOLD_GRACE_MS) {
+        return;
+      }
+
+      burstOpen = false;
+      setManualActivityRms(null);
+      setScanLog((entries) => [
+        {
+          label: monitoringChannel.label,
+          freqMhz: monitoringChannel.freqMhz,
+          rms: peakRms,
+          time: new Date().toLocaleTimeString("en-GB", {
+            hour: "2-digit",
+            minute: "2-digit",
+            second: "2-digit",
+          }),
+        },
+        ...entries.slice(0, 9),
+      ]);
+      peakRms = 0;
+    }, TELEMETRY_REFRESH_MS);
+
+    return () => {
+      clearInterval(interval);
+      setManualActivityRms(null);
+    };
+  }, [monitoringChannel, scannerState]);
+
+  function nextScanIndex(channelCount: number, currentIndex: number): number {
+    if (channelCount <= 0) {
+      return 0;
+    }
+
+    return scanModeRef.current === "random"
+      ? Math.floor(Math.random() * channelCount)
+      : (currentIndex + 1) % channelCount;
+  }
+
+  useEffect(() => {
+    const shouldPollTelemetry =
+      scannerState !== "idle" || playingChannelId !== null || startingChannelId !== null;
+
+    if (!shouldPollTelemetry) {
+      return;
+    }
+
+    const refreshIntervalMs =
+      scannerState !== "idle" ? TELEMETRY_REFRESH_MS : ACTIVE_LISTEN_TELEMETRY_REFRESH_MS;
+
+    let cancelled = false;
+
+    const pollHardware = async () => {
+      if (cancelled || pollInFlightRef.current) {
+        return;
+      }
+
+      pollInFlightRef.current = true;
+      try {
+        await refreshHardwareRef.current();
+      } finally {
+        pollInFlightRef.current = false;
+      }
+    };
+
+    void pollHardware();
+    const interval = window.setInterval(() => void pollHardware(), refreshIntervalMs);
+
+    return () => {
+      cancelled = true;
+      clearInterval(interval);
+    };
+  }, [playingChannelId, scannerState, startingChannelId]);
+
   async function startChannel(channel: AirbandChannel, allowRetune = true): Promise<void> {
     if (!audioRef.current) {
       return;
@@ -394,7 +511,7 @@ export function AirbandModule({
 
     const audio = audioRef.current;
 
-    if (allowRetune && playingChannelId !== null) {
+    if (allowRetune && hardwareRef.current?.activeStream?.demodMode === "am") {
       try {
         const response = await fetch(buildAirbandRetuneUrl(channel), { method: "PATCH" });
         if (response.ok) {
@@ -441,19 +558,34 @@ export function AirbandModule({
 
     void startChannel(channel, true);
 
-    const timer = setTimeout(() => {
-      if (scannerStateRef.current !== "scanning") {
+    const startedAt = Date.now();
+    const activateAt = startedAt + SCANNER_STARTUP_MS;
+    const deadlineAt = activateAt + dwellTimeRef.current * 1000;
+    let peakWindow = createActivityWindowMetrics();
+    let finished = false;
+
+    const timer = window.setInterval(() => {
+      if (finished || scannerStateRef.current !== "scanning") {
         return;
       }
 
-      const rms = hardwareRef.current?.activeStream?.telemetry?.rms ?? 0;
-      if (rms > squelchRef.current) {
+      const now = Date.now();
+      const telemetry = hardwareRef.current?.activeStream?.telemetry ?? null;
+      peakWindow = mergeActivityWindowMetrics(peakWindow, telemetry, now);
+
+      if (now < activateAt) {
+        return;
+      }
+
+      if (hasRmsActivity(telemetry, squelchRef.current, now)) {
+        finished = true;
+        clearInterval(timer);
         setScannerState("locked");
         setScanLog((entries) => [
           {
             label: channel.label,
             freqMhz: channel.freqMhz,
-            rms,
+            rms: peakWindow.rms,
             time: new Date().toLocaleTimeString("en-GB", {
               hour: "2-digit",
               minute: "2-digit",
@@ -462,16 +594,17 @@ export function AirbandModule({
           },
           ...entries.slice(0, 9),
         ]);
-      } else {
-        const next =
-          scanModeRef.current === "random"
-            ? Math.floor(Math.random() * scanChannels.length)
-            : (scanIndex + 1) % scanChannels.length;
-        setScanIndex(next);
+        return;
       }
-    }, STARTUP_MS + dwellTimeRef.current * 1000);
 
-    return () => clearTimeout(timer);
+      if (now >= deadlineAt) {
+        finished = true;
+        clearInterval(timer);
+        setScanIndex(nextScanIndex(scanChannels.length, scanIndex));
+      }
+    }, TELEMETRY_REFRESH_MS);
+
+    return () => clearInterval(timer);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [scanChannels, scanIndex, scannerState, config.selectedBandId, config.freeScan]);
 
@@ -480,19 +613,33 @@ export function AirbandModule({
       return;
     }
 
-    const interval = setInterval(() => {
-      const rms = hardwareRef.current?.activeStream?.telemetry?.rms ?? 0;
-      if (rms < squelchRef.current * 0.5) {
-        const lockedIndex = scanChannels.findIndex((channel) => channel.id === playingIdRef.current);
-        const base = lockedIndex >= 0 ? lockedIndex : 0;
-        const next =
-          scanModeRef.current === "random"
-            ? Math.floor(Math.random() * scanChannels.length)
-            : (base + 1) % scanChannels.length;
-        setScanIndex(next);
-        setScannerState("scanning");
+    let lastActivityAt = Date.now();
+    let released = false;
+
+    const interval = window.setInterval(() => {
+      if (released) {
+        return;
       }
-    }, 2000);
+
+      const now = Date.now();
+      const telemetry = hardwareRef.current?.activeStream?.telemetry ?? null;
+
+      if (hasRmsActivity(telemetry, squelchRef.current, now)) {
+        lastActivityAt = now;
+        return;
+      }
+
+      if (now - lastActivityAt < SCANNER_HOLD_GRACE_MS) {
+        return;
+      }
+
+      const lockedIndex = scanChannels.findIndex((channel) => channel.id === playingIdRef.current);
+      const base = lockedIndex >= 0 ? lockedIndex : 0;
+      released = true;
+      clearInterval(interval);
+      setScanIndex(nextScanIndex(scanChannels.length, base));
+      setScannerState("scanning");
+    }, TELEMETRY_REFRESH_MS);
 
     return () => clearInterval(interval);
   }, [scanChannels, scannerState]);
@@ -850,16 +997,43 @@ export function AirbandModule({
             {scannerState === "idle" ? (
               <div className="space-y-2">
                 <div className="flex items-center gap-2">
-                  <span className="h-2 w-2 rounded-full border border-white/20 bg-transparent" />
-                  <span className="font-mono text-sm font-semibold text-[var(--muted-strong)]">IDLE</span>
+                  <span
+                    className={cx(
+                      "h-2 w-2 rounded-full",
+                      manualActivityRms !== null
+                        ? "bg-[var(--highlight)] animate-pulse"
+                        : monitoringChannel
+                          ? "bg-[var(--accent)]/80"
+                          : "border border-white/20 bg-transparent",
+                    )}
+                  />
+                  <span
+                    className={cx(
+                      "font-mono text-sm font-semibold",
+                      manualActivityRms !== null
+                        ? "text-[var(--highlight)]"
+                        : monitoringChannel
+                          ? "text-[var(--accent)]"
+                          : "text-[var(--muted-strong)]",
+                    )}
+                  >
+                    {manualActivityRms !== null ? "ACTIVITY" : monitoringChannel ? "MONITORING" : "IDLE"}
+                  </span>
                 </div>
-                {selectedChannel ? (
+                {monitoringChannel ? (
                   <>
                     <p className="font-mono text-2xl font-bold leading-none tabular-nums text-[var(--foreground)]">
-                      {formatAirbandFrequency(selectedChannel.freqMhz)}
+                      {formatAirbandFrequency(monitoringChannel.freqMhz)}
                       <span className="ml-1 text-sm font-normal text-[var(--muted)]">MHz</span>
                     </p>
-                    <p className="text-xs text-[var(--muted)]">{selectedChannel.label}</p>
+                    <p className="text-xs text-[var(--muted)]">
+                      {monitoringChannel.label} · {manualActivityRms !== null ? "live activity detected" : "listening on fixed channel"}
+                    </p>
+                    {manualActivityRms !== null ? (
+                      <p className="font-mono text-xs text-[var(--highlight)]">
+                        RMS {manualActivityRms.toFixed(4)} · live monitor
+                      </p>
+                    ) : null}
                   </>
                 ) : (
                   <p className="text-xs text-[var(--muted)]">
@@ -898,8 +1072,13 @@ export function AirbandModule({
                       <span className="ml-1 text-sm font-normal text-[var(--muted)]">MHz</span>
                     </p>
                     <p className="font-mono text-xs text-[var(--muted)]">
-                      {currentScanChannel.label} · voice detected
+                      {currentScanChannel.label} · activity detected
                     </p>
+                    {telemetry ? (
+                      <p className="font-mono text-xs text-[var(--highlight)]">
+                        RMS {telemetry.rms.toFixed(4)} · peak {telemetry.peak.toFixed(4)} · RF {telemetry.rf.toFixed(4)}
+                      </p>
+                    ) : null}
                   </>
                 ) : null}
               </div>
@@ -1071,19 +1250,19 @@ export function AirbandModule({
           <label className="block space-y-1.5">
             <div className="flex items-center justify-between">
               <span className="font-mono text-[11px] uppercase tracking-[0.18em] text-[var(--muted-strong)]">Squelch</span>
-              <span className="font-mono text-[11px] tabular-nums text-[var(--foreground)]">{config.squelch.toFixed(3)}</span>
+              <span className="font-mono text-[11px] tabular-nums text-[var(--foreground)]">{config.squelch.toFixed(4)}</span>
             </div>
             <input
               className="rf-slider w-full"
               max={0.08}
-              min={0.001}
-              step={0.001}
+              min={0.0005}
+              step={0.0005}
               type="range"
               value={config.squelch}
               onChange={(event) => setConfig((current) => ({ ...current, squelch: Number.parseFloat(event.target.value) }))}
             />
             <p className="font-mono text-[9px] text-[var(--muted)]">
-              Min RMS to lock · resume at {(config.squelch * 0.5).toFixed(3)}
+              RMS activity threshold · hold for {(SCANNER_HOLD_GRACE_MS / 1000).toFixed(1)}s after last activity
             </p>
           </label>
 
@@ -1102,7 +1281,7 @@ export function AirbandModule({
               onChange={(event) => setConfig((current) => ({ ...current, dwellTime: Number.parseInt(event.target.value, 10) }))}
             />
             <p className="font-mono text-[9px] text-[var(--muted)]">
-              Listen time per channel · ~{(STARTUP_MS / 1000 + config.dwellTime).toFixed(1)}s total
+              Max listen time per channel · ~{(SCANNER_STARTUP_MS / 1000 + config.dwellTime).toFixed(1)}s total
             </p>
           </label>
 

@@ -13,6 +13,15 @@ import {
 import type { HardwareStatus } from "@/lib/types";
 import type { AudioControls } from "@/lib/radio";
 import { PMR_BANDS, getChannelsForBand, type PmrChannel } from "@/data/pmr-channels";
+import {
+  ACTIVE_LISTEN_TELEMETRY_REFRESH_MS,
+  createActivityWindowMetrics,
+  hasRmsActivity,
+  mergeActivityWindowMetrics,
+  SCANNER_HOLD_GRACE_MS,
+  SCANNER_STARTUP_MS,
+  TELEMETRY_REFRESH_MS,
+} from "@/lib/signal-activity";
 
 type ScannerState = "idle" | "scanning" | "locked";
 type ScanMode = "sequential" | "random";
@@ -23,9 +32,6 @@ type ScanLogEntry = {
   rms: number;
   time: string;
 };
-
-// Time before checking RMS after a channel starts (HackRF init + buffer fill)
-const STARTUP_MS = 2800;
 
 const STORAGE_KEY = "hackrf-webui.pmr-config.v1";
 
@@ -83,13 +89,14 @@ export function PmrModule({
   const [scannerState, setScannerState] = useState<ScannerState>("idle");
   const [scanMode, setScanMode] = useState<ScanMode>(() => loadConfig()?.scanMode ?? "sequential");
   const [scanIndex, setScanIndex] = useState(0);
-  const [squelch, setSquelch] = useState(() => loadConfig()?.squelch ?? 0.020);
+  const [squelch, setSquelch] = useState(() => loadConfig()?.squelch ?? 0.004);
   const [dwellTime, setDwellTime] = useState(() => loadConfig()?.dwellTime ?? 3);
 
   const [startingChannelId, setStartingChannelId] = useState<string | null>(null);
   const isStarting = startingChannelId !== null;
   const [streamError, setStreamError] = useState("");
   const [scanLog, setScanLog] = useState<ScanLogEntry[]>([]);
+  const [manualActivityRms, setManualActivityRms] = useState<number | null>(null);
 
   // Refs to avoid stale closures in timer callbacks — initialised from state (which already has restored values)
   const scannerStateRef  = useRef<ScannerState>("idle");
@@ -99,6 +106,8 @@ export function PmrModule({
   const hardwareRef      = useRef<HardwareStatus | null>(null);
   const playingIdRef     = useRef<string | null>(null);
   const selectedBandRef  = useRef(selectedBandId);
+  const refreshHardwareRef = useRef(onRefreshHardware);
+  const pollInFlightRef = useRef(false);
 
   useEffect(() => { scannerStateRef.current = scannerState; }, [scannerState]);
   useEffect(() => { scanModeRef.current = scanMode; }, [scanMode]);
@@ -107,6 +116,7 @@ export function PmrModule({
   useEffect(() => { hardwareRef.current = hardware; }, [hardware]);
   useEffect(() => { playingIdRef.current = playingChannelId; }, [playingChannelId]);
   useEffect(() => { selectedBandRef.current = selectedBandId; }, [selectedBandId]);
+  useEffect(() => { refreshHardwareRef.current = onRefreshHardware; }, [onRefreshHardware]);
 
   // Persist config on every change (initial values already come from localStorage via useState initializers)
   useEffect(() => {
@@ -160,7 +170,7 @@ export function PmrModule({
     // Fast path: if a PMR stream is already live, retune in-place.
     // The hackrf process receives a FREQ command via stdin and calls hackrf_set_freq()
     // without restarting — no process teardown, no reconnect, no re-buffering.
-    if (playingChannelId !== null) {
+    if (hardwareRef.current?.activeStream?.demodMode === "nfm") {
       try {
         const resp = await fetch(buildRetuneUrl(ch), { method: "PATCH" });
         if (resp.ok) {
@@ -207,6 +217,51 @@ export function PmrModule({
     setPlayingChannelId(null);
   }
 
+  function nextScanIndex(channelCount: number, currentIndex: number): number {
+    if (channelCount <= 0) {
+      return 0;
+    }
+
+    return scanModeRef.current === "random"
+      ? Math.floor(Math.random() * channelCount)
+      : (currentIndex + 1) % channelCount;
+  }
+
+  useEffect(() => {
+    const shouldPollTelemetry =
+      scannerState !== "idle" || playingChannelId !== null || startingChannelId !== null;
+
+    if (!shouldPollTelemetry) {
+      return;
+    }
+
+    const refreshIntervalMs =
+      scannerState !== "idle" ? TELEMETRY_REFRESH_MS : ACTIVE_LISTEN_TELEMETRY_REFRESH_MS;
+
+    let cancelled = false;
+
+    const pollHardware = async () => {
+      if (cancelled || pollInFlightRef.current) {
+        return;
+      }
+
+      pollInFlightRef.current = true;
+      try {
+        await refreshHardwareRef.current();
+      } finally {
+        pollInFlightRef.current = false;
+      }
+    };
+
+    void pollHardware();
+    const interval = window.setInterval(() => void pollHardware(), refreshIntervalMs);
+
+    return () => {
+      cancelled = true;
+      clearInterval(interval);
+    };
+  }, [playingChannelId, scannerState, startingChannelId]);
+
   // ── Scanner: cycle through channels while state === "scanning" ────────────
 
   useEffect(() => {
@@ -218,35 +273,49 @@ export function PmrModule({
 
     void startChannel(ch);
 
-    const timer = setTimeout(() => {
-      if (scannerStateRef.current !== "scanning") return;
+    const startedAt = Date.now();
+    const activateAt = startedAt + SCANNER_STARTUP_MS;
+    const deadlineAt = activateAt + dwellTimeRef.current * 1000;
+    let peakWindow = createActivityWindowMetrics();
+    let finished = false;
 
-      const rms = hardwareRef.current?.activeStream?.telemetry?.rms ?? 0;
+    const timer = window.setInterval(() => {
+      if (finished || scannerStateRef.current !== "scanning") {
+        return;
+      }
 
-      if (rms > squelchRef.current) {
-        // Voice detected — lock on this channel
+      const now = Date.now();
+      const telemetry = hardwareRef.current?.activeStream?.telemetry ?? null;
+      peakWindow = mergeActivityWindowMetrics(peakWindow, telemetry, now);
+
+      if (now < activateAt) {
+        return;
+      }
+
+      if (hasRmsActivity(telemetry, squelchRef.current, now)) {
+        finished = true;
+        clearInterval(timer);
         setScannerState("locked");
         setScanLog(log => [
           {
             label: ch.label,
             freqMhz: ch.freqMhz,
-            rms,
+            rms: peakWindow.rms,
             time: new Date().toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit", second: "2-digit" }),
           },
           ...log.slice(0, 9),
         ]);
-      } else {
-        // Quiet — advance to next channel
-        const count = chs.length;
-        const next =
-          scanModeRef.current === "random"
-            ? Math.floor(Math.random() * count)
-            : (scanIndex + 1) % count;
-        setScanIndex(next);
+        return;
       }
-    }, STARTUP_MS + dwellTimeRef.current * 1000);
 
-    return () => clearTimeout(timer);
+      if (now >= deadlineAt) {
+        finished = true;
+        clearInterval(timer);
+        setScanIndex(nextScanIndex(chs.length, scanIndex));
+      }
+    }, TELEMETRY_REFRESH_MS);
+
+    return () => clearInterval(timer);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [scannerState, scanIndex, selectedBandId]);
 
@@ -255,21 +324,34 @@ export function PmrModule({
   useEffect(() => {
     if (scannerState !== "locked") return;
 
-    const interval = setInterval(() => {
-      const rms = hardwareRef.current?.activeStream?.telemetry?.rms ?? 0;
-      if (rms < squelchRef.current * 0.5) {
-        // Silence resumed — continue scanning from next channel
-        const chs = getChannelsForBand(selectedBandRef.current);
-        const lockedIdx = chs.findIndex(c => c.id === playingIdRef.current);
-        const base = lockedIdx >= 0 ? lockedIdx : 0;
-        const next =
-          scanModeRef.current === "random"
-            ? Math.floor(Math.random() * chs.length)
-            : (base + 1) % chs.length;
-        setScanIndex(next);
-        setScannerState("scanning");
+    let lastActivityAt = Date.now();
+    let released = false;
+
+    const interval = window.setInterval(() => {
+      if (released) {
+        return;
       }
-    }, 2000);
+
+      const now = Date.now();
+      const telemetry = hardwareRef.current?.activeStream?.telemetry ?? null;
+
+      if (hasRmsActivity(telemetry, squelchRef.current, now)) {
+        lastActivityAt = now;
+        return;
+      }
+
+      if (now - lastActivityAt < SCANNER_HOLD_GRACE_MS) {
+        return;
+      }
+
+      const chs = getChannelsForBand(selectedBandRef.current);
+      const lockedIdx = chs.findIndex(c => c.id === playingIdRef.current);
+      const base = lockedIdx >= 0 ? lockedIdx : 0;
+      released = true;
+      clearInterval(interval);
+      setScanIndex(nextScanIndex(chs.length, base));
+      setScannerState("scanning");
+    }, TELEMETRY_REFRESH_MS);
 
     return () => clearInterval(interval);
   }, [scannerState]);
@@ -288,6 +370,56 @@ export function PmrModule({
 
   const band = PMR_BANDS.find(b => b.id === selectedBandId);
   const telemetry = hardware?.activeStream?.telemetry ?? null;
+  const manualChannel = scannerState === "idle"
+    ? (channels.find(ch => ch.id === playingChannelId) ?? null)
+    : null;
+
+  useEffect(() => {
+    if (scannerState !== "idle" || !manualChannel) {
+      setManualActivityRms(null);
+      return;
+    }
+
+    let lastActivityAt = 0;
+    let peakRms = 0;
+    let burstOpen = false;
+
+    const interval = window.setInterval(() => {
+      const now = Date.now();
+      const currentTelemetry = hardwareRef.current?.activeStream?.telemetry ?? null;
+
+      if (hasRmsActivity(currentTelemetry, squelchRef.current, now)) {
+        const currentRms = currentTelemetry?.rms ?? 0;
+        lastActivityAt = now;
+        peakRms = Math.max(peakRms, currentRms);
+        burstOpen = true;
+        setManualActivityRms(peakRms);
+        return;
+      }
+
+      if (!burstOpen || now - lastActivityAt < SCANNER_HOLD_GRACE_MS) {
+        return;
+      }
+
+      burstOpen = false;
+      setManualActivityRms(null);
+      setScanLog(log => [
+        {
+          label: manualChannel.label,
+          freqMhz: manualChannel.freqMhz,
+          rms: peakRms,
+          time: new Date().toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit", second: "2-digit" }),
+        },
+        ...log.slice(0, 9),
+      ]);
+      peakRms = 0;
+    }, TELEMETRY_REFRESH_MS);
+
+    return () => {
+      clearInterval(interval);
+      setManualActivityRms(null);
+    };
+  }, [manualChannel, scannerState]);
 
   // ── Render ────────────────────────────────────────────────────────────────
 
@@ -437,12 +569,49 @@ export function PmrModule({
             {scannerState === "idle" ? (
               <div className="space-y-1">
                 <div className="flex items-center gap-2">
-                  <span className="h-2 w-2 rounded-full border border-white/20 bg-transparent" />
-                  <span className="font-mono text-sm font-semibold text-[var(--muted-strong)]">IDLE</span>
+                  <span
+                    className={cx(
+                      "h-2 w-2 rounded-full",
+                      manualActivityRms !== null
+                        ? "bg-[var(--highlight)] animate-pulse"
+                        : manualChannel
+                          ? "bg-[var(--accent)]/80"
+                          : "border border-white/20 bg-transparent",
+                    )}
+                  />
+                  <span
+                    className={cx(
+                      "font-mono text-sm font-semibold",
+                      manualActivityRms !== null
+                        ? "text-[var(--highlight)]"
+                        : manualChannel
+                          ? "text-[var(--accent)]"
+                          : "text-[var(--muted-strong)]",
+                    )}
+                  >
+                    {manualActivityRms !== null ? "ACTIVITY" : manualChannel ? "MONITORING" : "IDLE"}
+                  </span>
                 </div>
-                <p className="text-xs text-[var(--muted)]">
-                  Select a channel to listen, or start scan to sweep automatically.
-                </p>
+                {manualChannel ? (
+                  <>
+                    <p className="font-mono text-2xl font-bold tabular-nums text-[var(--foreground)] leading-none">
+                      {formatAdaptiveFrequency(manualChannel.freqMhz)}
+                      <span className="ml-1 text-sm font-normal text-[var(--muted)]">MHz</span>
+                    </p>
+                    <p className="font-mono text-xs text-[var(--muted)]">
+                      {manualChannel.label} · {manualActivityRms !== null ? "live activity detected" : "listening on fixed channel"}
+                    </p>
+                    {manualActivityRms !== null ? (
+                      <p className="font-mono text-xs text-[var(--highlight)]">
+                        RMS {manualActivityRms.toFixed(4)} · live monitor
+                      </p>
+                    ) : null}
+                  </>
+                ) : (
+                  <p className="text-xs text-[var(--muted)]">
+                    Select a channel to listen, or start scan to sweep automatically.
+                  </p>
+                )}
               </div>
             ) : scannerState === "scanning" ? (
               <div className="space-y-2">
@@ -476,11 +645,11 @@ export function PmrModule({
                       <span className="ml-1 text-sm font-normal text-[var(--muted)]">MHz</span>
                     </p>
                     <p className="font-mono text-xs text-[var(--muted)]">
-                      {currentScanChannel.label} · voice detected
+                      {currentScanChannel.label} · activity detected
                     </p>
                     {telemetry ? (
                       <p className="font-mono text-xs text-[var(--highlight)]">
-                        RMS {telemetry.rms.toFixed(4)} · peak {telemetry.peak.toFixed(4)}
+                        RMS {telemetry.rms.toFixed(4)} · peak {telemetry.peak.toFixed(4)} · RF {telemetry.rf.toFixed(4)}
                       </p>
                     ) : null}
                   </>
@@ -543,12 +712,12 @@ export function PmrModule({
           <label className="block space-y-1.5">
             <div className="flex items-center justify-between">
               <span className="font-mono text-[11px] uppercase tracking-[0.18em] text-[var(--muted-strong)]">Squelch</span>
-              <span className="font-mono text-[11px] tabular-nums text-[var(--foreground)]">{squelch.toFixed(3)}</span>
+              <span className="font-mono text-[11px] tabular-nums text-[var(--foreground)]">{squelch.toFixed(4)}</span>
             </div>
-            <input className="rf-slider w-full" max={0.1} min={0.001} step={0.001} type="range" value={squelch}
+            <input className="rf-slider w-full" max={0.05} min={0.0005} step={0.0005} type="range" value={squelch}
               onChange={e => setSquelch(Number.parseFloat(e.target.value))} />
             <p className="font-mono text-[9px] text-[var(--muted)]">
-              Min RMS to lock · resume at {(squelch * 0.5).toFixed(3)}
+              RMS activity threshold · hold for {(SCANNER_HOLD_GRACE_MS / 1000).toFixed(1)}s after last activity
             </p>
           </label>
 
@@ -561,7 +730,7 @@ export function PmrModule({
             <input className="rf-slider w-full" max={10} min={1} step={1} type="range" value={dwellTime}
               onChange={e => setDwellTime(Number.parseInt(e.target.value, 10))} />
             <p className="font-mono text-[9px] text-[var(--muted)]">
-              Listen time per channel · ~{(STARTUP_MS / 1000 + dwellTime).toFixed(1)}s total
+              Max listen time per channel · ~{(SCANNER_STARTUP_MS / 1000 + dwellTime).toFixed(1)}s total
             </p>
           </label>
         </div>
