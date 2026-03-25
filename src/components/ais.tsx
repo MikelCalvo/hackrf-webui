@@ -1,7 +1,7 @@
 "use client";
 
 import type { Layer, LayerGroup, Map as LeafletMap } from "leaflet";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 import type {
   AisFeedSnapshot,
@@ -10,6 +10,7 @@ import type {
   HardwareStatus,
   ResolvedAppLocation,
 } from "@/lib/types";
+import { MapOverlayCard } from "@/components/map-overlay-card";
 import {
   buildBasemapSources,
   buildBoundsPairs,
@@ -169,8 +170,12 @@ function buildMarkerIcon(
   vessel: AisVesselContact,
   isSelected: boolean,
 ) {
-  const heading = Number.isFinite(vessel.courseDeg ?? NaN) ? vessel.courseDeg : 0;
-  const arrowOpacity = vessel.courseDeg === null ? 0.3 : 1;
+  const heading = Number.isFinite(vessel.headingDeg ?? NaN)
+    ? vessel.headingDeg!
+    : Number.isFinite(vessel.courseDeg ?? NaN)
+      ? vessel.courseDeg!
+      : 0;
+  const arrowOpacity = vessel.headingDeg !== null || vessel.courseDeg !== null ? 1 : 0.3;
 
   return leaflet.divIcon({
     className: "ais-vessel-icon-shell",
@@ -199,6 +204,7 @@ export function AisModule({ hardware, location, onRefreshHardware }: AisModulePr
   const viewportUnlockFrameRef = useRef<number | null>(null);
   const lastSavedCityViewKeyRef = useRef("");
   const [selectedMmsi, setSelectedMmsi] = useState("");
+  const [followSelected, setFollowSelected] = useState(false);
   const basemapSignatureRef = useRef("");
 
   const savedCountryId = location?.catalogScope.countryId ?? null;
@@ -229,28 +235,74 @@ export function AisModule({ hardware, location, onRefreshHardware }: AisModulePr
   ) ?? null;
   const selectedCountryBounds = selectedCountryLayer?.bounds ?? null;
   const contactList = buildAisContactList(snapshot);
+  const liveMmsiSet = useMemo(
+    () => new Set((snapshot?.vessels ?? []).map((vessel) => vessel.mmsi)),
+    [snapshot?.vessels],
+  );
 
-  function focusVessel(vessel: AisVesselContact): void {
+  const focusVessel = useCallback((vessel: AisVesselContact, reason: "select" | "follow" = "select"): void => {
     const map = mapRef.current;
     if (!map) {
       return;
     }
 
     userViewportLockedRef.current = true;
-    map.panTo([vessel.latitude, vessel.longitude], {
+    if (reason === "follow" && map.getZoom() >= 12.5) {
+      const targetPoint = map.latLngToContainerPoint([vessel.latitude, vessel.longitude]);
+      const mapSize = map.getSize();
+      const dx = targetPoint.x - mapSize.x / 2;
+      const dy = targetPoint.y - mapSize.y / 2;
+      if (Math.hypot(dx, dy) < 28) {
+        return;
+      }
+      map.panTo([vessel.latitude, vessel.longitude], {
+        animate: true,
+        duration: 0.7,
+      });
+      return;
+    }
+
+    if (reason === "follow") {
+      map.panTo([vessel.latitude, vessel.longitude], {
+        animate: true,
+        duration: 0.7,
+      });
+      return;
+    }
+
+    map.flyTo([vessel.latitude, vessel.longitude], Math.max(map.getZoom(), 12.5), {
       animate: true,
-      duration: 0.7,
+      duration: 0.85,
     });
+  }, []);
+
+  const selectVessel = useCallback((mmsi: string, vessel?: AisVesselContact): void => {
+    setSelectedMmsi(mmsi);
+    const nextVessel = vessel ?? contactList.find((entry) => entry.mmsi === mmsi);
+    if (nextVessel) {
+      const nextCanFollow = liveMmsiSet.has(nextVessel.mmsi);
+      setFollowSelected(true);
+      if (nextCanFollow) {
+        focusVessel(nextVessel, "follow");
+      }
+    }
+  }, [contactList, focusVessel, liveMmsiSet]);
+
+  function clearSelectedVessel(): void {
+    setFollowSelected(false);
+    setSelectedMmsi("");
   }
 
   useEffect(() => {
     if (contactList.length === 0) {
+      setFollowSelected(false);
       setSelectedMmsi("");
       return;
     }
 
-    if (!contactList.some((vessel) => vessel.mmsi === selectedMmsi)) {
-      setSelectedMmsi(contactList[0].mmsi);
+    if (selectedMmsi && !contactList.some((vessel) => vessel.mmsi === selectedMmsi)) {
+      setFollowSelected(false);
+      setSelectedMmsi("");
     }
   }, [contactList, selectedMmsi]);
 
@@ -377,12 +429,26 @@ export function AisModule({ hardware, location, onRefreshHardware }: AisModulePr
     snapshot?.maps,
   ]);
 
-  const selected =
-    contactList.find((vessel) => vessel.mmsi === selectedMmsi) ??
-    contactList[0] ??
-    null;
-  const liveMmsiSet = new Set((snapshot?.vessels ?? []).map((vessel) => vessel.mmsi));
+  const selected = selectedMmsi
+    ? contactList.find((vessel) => vessel.mmsi === selectedMmsi) ?? null
+    : null;
   const selectedIsLive = selected ? liveMmsiSet.has(selected.mmsi) : false;
+  const canFollowSelected = selectedIsLive;
+  const followIsArmed = !!selected && followSelected;
+  const followIsActive = followIsArmed && canFollowSelected;
+
+  useEffect(() => {
+    if (!selected) {
+      setFollowSelected(false);
+    }
+  }, [selected]);
+
+  useEffect(() => {
+    if (!selected || !followSelected || !canFollowSelected) {
+      return;
+    }
+    focusVessel(selected, "follow");
+  }, [canFollowSelected, followSelected, focusVessel, selected]);
 
   useEffect(() => {
     const leaflet = leafletRef.current;
@@ -401,6 +467,7 @@ export function AisModule({ hardware, location, onRefreshHardware }: AisModulePr
         [
           vessel.mmsi === selected?.mmsi ? "selected" : "idle",
           vessel.isMoving ? "moving" : "still",
+          vessel.headingDeg ?? "none",
           vessel.courseDeg ?? "none",
         ].join("|"),
       getTooltipText: (vessel) => `${displayVesselName(vessel)} \u00b7 ${formatSpeed(vessel.speedKnots)}`,
@@ -408,7 +475,7 @@ export function AisModule({ hardware, location, onRefreshHardware }: AisModulePr
       leaflet,
       layerGroup: markerLayer,
       recordsRef: markerRecordsRef,
-      onSelect: (mmsi) => setSelectedMmsi(mmsi),
+      onSelect: (mmsi) => selectVessel(mmsi),
       tooltipOptions: {
         className: "ais-tooltip",
         direction: "top",
@@ -446,7 +513,7 @@ export function AisModule({ hardware, location, onRefreshHardware }: AisModulePr
       didFitBoundsRef.current = true;
     }
 
-  }, [savedCityResolved, savedCityView, selected, selectedCountryBounds, snapshot]);
+  }, [focusVessel, savedCityResolved, savedCityView, selectVessel, selected, selectedCountryBounds, snapshot]);
 
   const runtimeState = snapshot?.runtime.state ?? null;
   const runtimeRunning = runtimeState === "running";
@@ -623,7 +690,7 @@ export function AisModule({ hardware, location, onRefreshHardware }: AisModulePr
           </span>
         </div>
 
-        <div className="relative flex-1 overflow-hidden">
+        <div className="relative isolate flex-1 overflow-hidden">
           <div
             className={cx(
               "ais-map h-full w-full",
@@ -632,18 +699,102 @@ export function AisModule({ hardware, location, onRefreshHardware }: AisModulePr
             ref={mapHostRef}
           />
 
-          {selected && selectedIsLive ? (
-            <div className="pointer-events-none absolute left-4 top-4 z-[1200] max-w-sm rounded-lg border border-white/10 bg-[rgba(6,11,20,0.86)] px-4 py-3 shadow-[0_18px_60px_rgba(0,0,0,0.35)] backdrop-blur-sm">
-              <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-[var(--accent)]">
-                Selected Vessel
-              </p>
-              <p className="mt-1 text-lg font-semibold text-[var(--foreground)]">
-                {displayVesselName(selected)}
-              </p>
-              <p className="mt-1 font-mono text-[11px] text-[var(--muted)]">
-                MMSI {selected.mmsi} · {formatSpeed(selected.speedKnots)} · {formatCourse(selected.courseDeg)}
-              </p>
-            </div>
+          {selected ? (
+            <MapOverlayCard
+              badge={(
+                <span className={cx(
+                  "mt-0.5 shrink-0 rounded-sm px-1.5 py-0.5 font-mono text-[9px] uppercase tracking-[0.1em]",
+                  !selectedIsLive
+                    ? "bg-white/[0.05] text-[var(--muted-strong)]"
+                    : selected.isMoving
+                      ? "bg-[var(--highlight)]/10 text-[var(--highlight)]"
+                      : "bg-[var(--accent)]/10 text-[var(--accent)]",
+                )}>
+                  {!selectedIsLive ? "History" : selected.isMoving ? "Underway" : "At anchor"}
+                </span>
+              )}
+              eyebrow="Selected Vessel"
+              position="top-left"
+              footer={(
+                <div className="flex items-center justify-between gap-3">
+                  <p className="text-[11px] leading-5 text-[var(--muted)]">
+                    {followIsActive
+                      ? "Map follow is active for this vessel."
+                      : followIsArmed
+                        ? "Follow is armed. Tracking will start when this vessel returns to the live map."
+                        : canFollowSelected
+                        ? "Pinned to the map overlay. Toggle follow to keep it centered."
+                        : "Historical contact pinned from the archive list."}
+                  </p>
+                  <button
+                    className={cx(
+                      "inline-flex shrink-0 items-center gap-5 rounded-full border px-3 py-1.5 font-mono text-[10px] uppercase tracking-[0.14em] transition",
+                      followIsArmed
+                        ? "border-emerald-300/45 bg-emerald-300/14 text-emerald-50 shadow-[0_0_0_1px_rgba(110,231,183,0.22)] hover:border-emerald-300/65"
+                        : "",
+                      followIsActive
+                        ? "border-emerald-300/45 bg-emerald-300/14 text-emerald-50 shadow-[0_0_0_1px_rgba(110,231,183,0.22)] hover:border-emerald-300/65"
+                        : "border-white/10 bg-white/[0.04] text-[var(--muted-strong)] hover:border-white/20 hover:bg-white/[0.08] hover:text-[var(--foreground)]",
+                    )}
+                    onClick={() => {
+                      setFollowSelected((current) => {
+                        const next = !current;
+                        if (next && canFollowSelected) {
+                          focusVessel(selected, "follow");
+                        }
+                        return next;
+                      });
+                    }}
+                    type="button"
+                  >
+                    <span>{followIsActive ? "Following" : followIsArmed ? "Waiting live" : "Follow"}</span>
+                    <span className={cx(
+                      "inline-flex h-4 w-4 shrink-0 items-center justify-center self-center rounded-full border text-[9px] leading-none",
+                      followIsArmed
+                        ? "border-emerald-200/70 bg-emerald-200/22 text-emerald-50"
+                        : "",
+                      followIsActive
+                        ? "border-emerald-200/70 bg-emerald-200/22 text-emerald-50"
+                        : "border-white/20 text-white/35",
+                    )}>
+                      {followIsArmed ? "✓" : ""}
+                    </span>
+                  </button>
+                </div>
+              )}
+              onClose={clearSelectedVessel}
+              title={displayVesselName(selected)}
+              subtitle={`MMSI ${selected.mmsi}${selected.callsign ? ` · ${selected.callsign}` : ""}${selected.shipType ? ` · ${selected.shipType}` : ""}`}
+            >
+              <div className="grid grid-cols-2 gap-2">
+                {[
+                  { label: "SPD", value: formatSpeed(selected.speedKnots) },
+                  { label: "COG", value: formatCourse(selected.courseDeg) },
+                ].map((stat) => (
+                  <div key={stat.label} className="rounded-xl border border-white/8 bg-white/[0.025] px-3 py-2">
+                    <p className="font-mono text-[8px] uppercase tracking-[0.16em] text-[var(--muted)]">{stat.label}</p>
+                    <p className="mt-1 font-mono text-[12px] font-medium tabular-nums text-[var(--foreground)]">{stat.value}</p>
+                  </div>
+                ))}
+              </div>
+
+              <div className="mt-3 grid grid-cols-[5.25rem_1fr] gap-y-2 font-mono text-[10px]">
+                <span className="text-[var(--muted)]">Status</span>
+                <span className="text-[var(--muted-strong)]">{selected.navStatus || "—"}</span>
+                <span className="text-[var(--muted)]">Type</span>
+                <span className="text-[var(--muted-strong)]">{selected.shipType || "—"}</span>
+                <span className="text-[var(--muted)]">Callsign</span>
+                <span className="text-[var(--muted-strong)]">{selected.callsign || "—"}</span>
+                <span className="text-[var(--muted)]">IMO</span>
+                <span className="text-[var(--muted-strong)]">{selected.imo || "—"}</span>
+                <span className="text-[var(--muted)]">Dest.</span>
+                <span className="text-[var(--muted-strong)]">{selected.destination || "—"}</span>
+                <span className="text-[var(--muted)]">Position</span>
+                <span className="text-[var(--muted-strong)]">{formatCoordinates(selected)}</span>
+                <span className="text-[var(--muted)]">Last seen</span>
+                <span className="text-[var(--muted-strong)]">{formatTimestamp(selected.lastSeenAt)}</span>
+              </div>
+            </MapOverlayCard>
           ) : null}
 
           <div className="pointer-events-none absolute bottom-3 left-3 z-[1200] max-w-xs rounded border border-white/[0.07] bg-[rgba(4,8,15,0.72)] px-2.5 py-1.5 backdrop-blur-sm">
@@ -686,60 +837,14 @@ export function AisModule({ hardware, location, onRefreshHardware }: AisModulePr
       </main>
 
       <aside className="flex w-80 shrink-0 flex-col overflow-hidden border-l border-white/8 bg-black/15">
-        <div className="border-b border-white/[0.07] px-5 py-4">
+        <div className="border-b border-white/[0.07] px-5 py-3">
           {selected ? (
-            <>
-              <div className="flex items-start justify-between gap-2">
-                <div className="min-w-0">
-                  <p className="font-mono text-[10px] uppercase tracking-[0.22em] text-[var(--muted)]">Vessel</p>
-                  <h3 className="mt-1 truncate text-base font-semibold leading-tight text-[var(--foreground)]">
-                    {displayVesselName(selected)}
-                  </h3>
-                  <p className="mt-0.5 font-mono text-[10px] text-[var(--muted)]">MMSI {selected.mmsi}</p>
-                </div>
-                <span className={cx(
-                  "mt-0.5 shrink-0 rounded-sm px-1.5 py-0.5 font-mono text-[9px] uppercase tracking-[0.1em]",
-                  !selectedIsLive
-                    ? "bg-white/[0.05] text-[var(--muted-strong)]"
-                    : selected.isMoving
-                      ? "bg-[var(--highlight)]/10 text-[var(--highlight)]"
-                      : "bg-[var(--accent)]/10 text-[var(--accent)]",
-                )}>
-                  {!selectedIsLive ? "History" : selected.isMoving ? "Underway" : "At anchor"}
-                </span>
-              </div>
-
-              <div className="mt-3 grid grid-cols-2 gap-1.5">
-                {[
-                  { label: "SPD", value: formatSpeed(selected.speedKnots) },
-                  { label: "COG", value: formatCourse(selected.courseDeg) },
-                ].map((s) => (
-                  <div key={s.label} className="rounded-sm border border-white/8 bg-white/[0.025] px-2 py-1.5">
-                    <p className="font-mono text-[8px] uppercase tracking-[0.14em] text-[var(--muted)]">{s.label}</p>
-                    <p className="mt-0.5 font-mono text-[11px] font-medium tabular-nums text-[var(--foreground)]">{s.value}</p>
-                  </div>
-                ))}
-              </div>
-
-              <div className="mt-3 grid grid-cols-[4.5rem_1fr] gap-y-1.5 font-mono text-[10px]">
-                <span className="text-[var(--muted)]">Status</span>
-                <span className="text-[var(--muted-strong)]">{selected.navStatus || "\u2014"}</span>
-                <span className="text-[var(--muted)]">Type</span>
-                <span className="text-[var(--muted-strong)]">{selected.shipType || "\u2014"}</span>
-                <span className="text-[var(--muted)]">Callsign</span>
-                <span className="text-[var(--muted-strong)]">{selected.callsign || "\u2014"}</span>
-                <span className="text-[var(--muted)]">IMO</span>
-                <span className="text-[var(--muted-strong)]">{selected.imo || "\u2014"}</span>
-                <span className="text-[var(--muted)]">Dest.</span>
-                <span className="text-[var(--muted-strong)]">{selected.destination || "\u2014"}</span>
-                <span className="text-[var(--muted)]">Position</span>
-                <span className="text-[var(--muted-strong)]">{formatCoordinates(selected)}</span>
-                <span className="text-[var(--muted)]">Last seen</span>
-                <span className="text-[var(--muted-strong)]">{formatTimestamp(selected.lastSeenAt)}</span>
-              </div>
-            </>
+            <div className="min-w-0">
+              <p className="font-mono text-[10px] uppercase tracking-[0.22em] text-[var(--muted)]">Pinned on map</p>
+              <p className="mt-1 truncate text-sm font-medium text-[var(--foreground)]">{displayVesselName(selected)}</p>
+            </div>
           ) : (
-            <p className="text-xs leading-5 text-[var(--muted)]">Select a vessel from the map or list to inspect it.</p>
+            <p className="text-xs leading-5 text-[var(--muted)]">Select a vessel from the map or list to inspect it in the overlay.</p>
           )}
         </div>
 
@@ -760,10 +865,7 @@ export function AisModule({ hardware, location, onRefreshHardware }: AisModulePr
                   isSelected ? "bg-[var(--accent)]/8 border-l-accent" : "hover:bg-white/[0.025] border-l-clear",
                 )}
                 onClick={() => {
-                  setSelectedMmsi(vessel.mmsi);
-                  if (isLive) {
-                    focusVessel(vessel);
-                  }
+                  selectVessel(vessel.mmsi, vessel);
                 }}
                 type="button"
               >

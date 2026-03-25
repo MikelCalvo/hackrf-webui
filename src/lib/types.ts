@@ -385,6 +385,7 @@ export type AisVesselContact = {
   longitude: number;
   speedKnots: number | null;
   courseDeg: number | null;
+  headingDeg: number | null;
   navStatus: string;
   lastSeenAt: string;
   lastPositionAt: string;

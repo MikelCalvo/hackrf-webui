@@ -385,6 +385,7 @@ export function listRecentAisContacts(limit = 100): AisVesselContact[] {
           longitude,
           speed_knots AS speedKnots,
           course_deg AS courseDeg,
+          heading_deg AS headingDeg,
           is_moving AS isMoving,
           last_seen_at_ms AS lastSeenAtMs,
           last_position_at_ms AS lastPositionAtMs,
@@ -413,6 +414,7 @@ export function listRecentAisContacts(limit = 100): AisVesselContact[] {
       longitude: number;
       speedKnots: number | null;
       courseDeg: number | null;
+      headingDeg: number | null;
       isMoving: number;
       lastSeenAtMs: number;
       lastPositionAtMs: number;
@@ -430,6 +432,7 @@ export function listRecentAisContacts(limit = 100): AisVesselContact[] {
     longitude: row.longitude,
     speedKnots: row.speedKnots,
     courseDeg: row.courseDeg,
+    headingDeg: row.headingDeg,
     navStatus: row.navStatus ?? "",
     lastSeenAt: new Date(row.lastSeenAtMs).toISOString(),
     lastPositionAt: new Date(row.lastPositionAtMs).toISOString(),

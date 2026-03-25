@@ -27,6 +27,7 @@ type VesselAccumulator = {
   longitude: number | null;
   speedKnots: number | null;
   courseDeg: number | null;
+  headingDeg: number | null;
   navStatus: string;
   lastSeenAt: string | null;
   lastSeenMs: number;
@@ -100,6 +101,7 @@ function createAccumulator(mmsi: string): VesselAccumulator {
     longitude: null,
     speedKnots: null,
     courseDeg: null,
+    headingDeg: null,
     navStatus: "",
     lastSeenAt: null,
     lastSeenMs: -1,
@@ -434,7 +436,8 @@ class AisRuntimeService {
         vessel.latitude = message.latitude;
         vessel.longitude = message.longitude;
         vessel.speedKnots = message.speedKnots ?? null;
-        vessel.courseDeg = message.courseDeg ?? message.headingDeg ?? null;
+        vessel.courseDeg = message.courseDeg ?? null;
+        vessel.headingDeg = message.headingDeg ?? vessel.headingDeg ?? null;
         vessel.navStatus = message.navStatus ?? vessel.navStatus;
         vessel.lastPositionAt = message.receivedAt;
         vessel.lastPositionMs = seenAtMs;
@@ -521,6 +524,7 @@ class AisRuntimeService {
       longitude: vessel.longitude,
       speedKnots: vessel.speedKnots,
       courseDeg: vessel.courseDeg,
+      headingDeg: vessel.headingDeg,
       navStatus: vessel.navStatus,
       lastSeenAt: vessel.lastSeenAt,
       lastPositionAt: vessel.lastPositionAt,

@@ -326,9 +326,22 @@ select option:hover {
 }
 
 .ais-vessel-icon.is-selected .ais-vessel-icon__pulse {
-  inset: 1px;
+  inset: 0;
   border-width: 2px;
+  border-color: rgba(255, 106, 106, 0.82);
+  background: rgba(255, 106, 106, 0.18);
+  box-shadow: 0 0 22px rgba(255, 106, 106, 0.26);
   animation: ais-pulse 2.6s ease-out infinite;
+}
+
+.ais-vessel-icon.is-selected .ais-vessel-icon__dot {
+  background: rgba(255, 106, 106, 0.96);
+  box-shadow: 0 0 14px rgba(255, 106, 106, 0.42);
+}
+
+.ais-vessel-icon.is-selected .ais-vessel-icon__arrow {
+  border-bottom-color: rgba(255, 106, 106, 0.96);
+  filter: drop-shadow(0 0 10px rgba(255, 106, 106, 0.34));
 }
 
 .adsb-aircraft-icon-shell {
@@ -339,50 +352,49 @@ select option:hover {
 .adsb-aircraft-icon {
   position: relative;
   display: block;
-  width: 30px;
-  height: 30px;
+  width: 34px;
+  height: 34px;
 }
 
 .adsb-aircraft-icon__halo,
-.adsb-aircraft-icon__body,
-.adsb-aircraft-icon__wing {
+.adsb-aircraft-icon__frame {
   position: absolute;
 }
 
 .adsb-aircraft-icon__halo {
-  inset: 4px;
+  inset: 5px;
   border-radius: 9999px;
   border: 1px solid var(--adsb-halo, rgba(87, 215, 255, 0.28));
   background: var(--adsb-halo, rgba(87, 215, 255, 0.12));
   opacity: 0.52;
 }
 
-.adsb-aircraft-icon__body {
-  top: 3px;
-  left: 12px;
-  width: 6px;
-  height: 22px;
-  border-radius: 9999px;
-  background: var(--adsb-color, var(--accent));
-  transform-origin: 50% 12px;
+.adsb-aircraft-icon__frame {
+  inset: 3px;
   transform: rotate(var(--adsb-heading, 0deg));
-  box-shadow: 0 0 12px color-mix(in srgb, var(--adsb-color, var(--accent)) 35%, transparent);
+  transform-origin: 50% 50%;
+  filter: drop-shadow(0 0 10px color-mix(in srgb, var(--adsb-color, var(--accent)) 32%, transparent));
 }
 
-.adsb-aircraft-icon__wing {
-  top: 12px;
-  left: 4px;
-  width: 22px;
-  height: 6px;
-  border-radius: 9999px;
-  background: var(--adsb-color, var(--accent));
-  transform-origin: 50% 3px;
-  transform: rotate(var(--adsb-heading, 0deg));
+.adsb-aircraft-icon__plane {
+  display: block;
+  width: 100%;
+  height: 100%;
+  fill: var(--adsb-color, var(--accent));
+}
+
+.adsb-aircraft-icon__plane path {
+  stroke: rgba(4, 10, 18, 0.88);
+  stroke-width: 2;
+  vector-effect: non-scaling-stroke;
 }
 
 .adsb-aircraft-icon.is-selected .adsb-aircraft-icon__halo {
-  inset: 1px;
+  inset: 0;
   border-width: 2px;
+  border-color: rgba(255, 106, 106, 0.82);
+  background: rgba(255, 106, 106, 0.16);
+  box-shadow: 0 0 22px rgba(255, 106, 106, 0.24);
   animation: adsb-pulse 2.4s ease-out infinite;
 }
 

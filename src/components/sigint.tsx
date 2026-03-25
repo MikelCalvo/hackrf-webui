@@ -41,6 +41,8 @@ const EMPTY_TILE_DATA_URL =
   "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=";
 const DEFAULT_CENTER: [number, number] = [20, 0];
 const DEFAULT_ZOOM = 2;
+const AIRCRAFT_ICON_PATH =
+  "M32 4c2 0 3.5 1.6 3.5 3.6v14.7l13.8 5.6c2 .8 3.2 2.7 3.2 4.8v2.7l-17-2.7v8.2l6.2 4.2c1.1.8 1.9 1.9 2.1 3.3L45 60h-5.4L32 53.4 24.4 60H19l1.1-9.8c.2-1.4 1-2.5 2.1-3.3l6.2-4.2v-8.2l-17 2.7v-2.7c0-2.1 1.3-4 3.2-4.8l13.8-5.6V7.6C28.5 5.6 30 4 32 4z";
 const DEFAULT_CAPTURE_FILTERS: SigintCaptureListFilters = {
   module: "all",
   reviewStatus: "all",
@@ -56,11 +58,24 @@ type SigintModuleProps = {
 };
 
 type ReplayPoint = {
+  kind: "adsb" | "ais";
   latitude: number;
   longitude: number;
   observedAt: string;
   primaryLabel: string;
   secondaryLabel: string;
+  headingDeg: number | null;
+  isAlert: boolean;
+  isMoving: boolean;
+  isOnGround: boolean;
+  stats: Array<{
+    label: string;
+    value: string;
+  }>;
+  details: Array<{
+    label: string;
+    value: string;
+  }>;
 };
 
 type MapsPayload = {
@@ -105,11 +120,27 @@ function formatFrequency(freqMhz: number | null): string {
   return freqMhz === null ? "—" : `${freqMhz.toFixed(freqMhz < 200 ? 3 : 5)} MHz`;
 }
 
-function formatCoordinatePair(latitude: number | null, longitude: number | null): string {
-  if (latitude === null || longitude === null) {
+function isFiniteNumber(value: number | null | undefined): value is number {
+  return typeof value === "number" && Number.isFinite(value);
+}
+
+function formatCoordinatePair(latitude: number | null | undefined, longitude: number | null | undefined): string {
+  if (!isFiniteNumber(latitude) || !isFiniteNumber(longitude)) {
     return "—";
   }
   return `${latitude.toFixed(5)}, ${longitude.toFixed(5)}`;
+}
+
+function formatKnots(value: number | null | undefined): string {
+  return isFiniteNumber(value) ? `${value.toFixed(1)} kn` : "—";
+}
+
+function formatDegrees(value: number | null | undefined): string {
+  return isFiniteNumber(value) ? `${value.toFixed(1)}°` : "—";
+}
+
+function formatFeet(value: number | null | undefined): string {
+  return isFiniteNumber(value) ? `${Math.round(value).toLocaleString("en")} ft` : "—";
 }
 
 function statusTone(status: SigintReviewStatus): string {
@@ -288,22 +319,102 @@ function buildReplayPoints(
   if (tab === "adsb") {
     const adsb = history as AdsbTrackHistoryResponse;
     return adsb.points.map((point) => ({
+      kind: "adsb" as const,
       latitude: point.latitude,
       longitude: point.longitude,
       observedAt: point.seenPosAt ?? point.seenAt,
       primaryLabel: point.flight || point.hex,
       secondaryLabel: [point.type || null, point.hex].filter(Boolean).join(" · "),
+      headingDeg: point.trackDeg,
+      isAlert: Boolean(point.emergency),
+      isMoving: !point.onGround && (point.groundSpeedKnots ?? 0) > 30,
+      isOnGround: point.onGround,
+      stats: [
+        { label: "ALT", value: formatFeet(point.altitudeFeet) },
+        { label: "SPD", value: formatKnots(point.groundSpeedKnots) },
+        { label: "TRK", value: formatDegrees(point.trackDeg) },
+      ],
+      details: [
+        { label: "Status", value: point.emergency || (point.onGround ? "Ground" : "Airborne") },
+        { label: "Category", value: point.category || "—" },
+        { label: "Source", value: point.sourceLabel || "—" },
+        { label: "Observed", value: formatTimestamp(point.seenPosAt ?? point.seenAt) },
+      ],
     }));
   }
 
   const ais = history as AisTrackHistoryResponse;
   return ais.points.map((point) => ({
+    kind: "ais" as const,
     latitude: point.latitude,
     longitude: point.longitude,
     observedAt: point.lastPositionAt,
     primaryLabel: point.name || point.callsign || point.mmsi,
     secondaryLabel: [point.shipType || null, point.mmsi].filter(Boolean).join(" · "),
+    headingDeg: point.headingDeg ?? point.courseDeg,
+    isAlert: false,
+    isMoving: point.isMoving,
+    isOnGround: !point.isMoving,
+    stats: [
+      { label: "SPD", value: formatKnots(point.speedKnots) },
+      { label: "COG", value: formatDegrees(point.courseDeg) },
+    ],
+    details: [
+      { label: "Status", value: point.navStatus || "—" },
+      { label: "Type", value: point.shipType || "—" },
+      { label: "Source", value: point.sourceLabel || "—" },
+      { label: "Observed", value: formatTimestamp(point.lastPositionAt) },
+    ],
   }));
+}
+
+function buildReplayAircraftIcon(
+  leaflet: typeof import("leaflet"),
+  point: ReplayPoint,
+) {
+  const heading = Number.isFinite(point.headingDeg ?? NaN) ? point.headingDeg : 0;
+  const color = point.isAlert
+    ? "var(--rose-300, #fda4af)"
+    : point.isOnGround
+      ? "var(--accent, #57d7ff)"
+      : "var(--highlight, #3dd9b8)";
+
+  return leaflet.divIcon({
+    className: "adsb-aircraft-icon-shell",
+    html: `
+      <span class="adsb-aircraft-icon is-selected" style="--adsb-heading:${heading}deg; --adsb-color:${color}; --adsb-halo:rgba(255, 92, 92, 0.24);">
+        <span class="adsb-aircraft-icon__halo"></span>
+        <span class="adsb-aircraft-icon__frame">
+          <svg class="adsb-aircraft-icon__plane" viewBox="0 0 64 64" aria-hidden="true" focusable="false">
+            <path d="${AIRCRAFT_ICON_PATH}"></path>
+          </svg>
+        </span>
+      </span>
+    `,
+    iconSize: [34, 34],
+    iconAnchor: [17, 17],
+  });
+}
+
+function buildReplayVesselIcon(
+  leaflet: typeof import("leaflet"),
+  point: ReplayPoint,
+) {
+  const heading = Number.isFinite(point.headingDeg ?? NaN) ? point.headingDeg : 0;
+  const arrowOpacity = point.headingDeg === null ? 0.3 : 1;
+
+  return leaflet.divIcon({
+    className: "ais-vessel-icon-shell",
+    html: `
+      <span class="ais-vessel-icon ${point.isMoving ? "is-moving" : "is-idle"} is-selected" style="--ais-heading:${heading}deg; --ais-arrow-opacity:${arrowOpacity};">
+        <span class="ais-vessel-icon__pulse"></span>
+        <span class="ais-vessel-icon__dot"></span>
+        <span class="ais-vessel-icon__arrow"></span>
+      </span>
+    `,
+    iconSize: [28, 28],
+    iconAnchor: [14, 14],
+  });
 }
 
 function RouteReplayMap({
@@ -322,7 +433,8 @@ function RouteReplayMap({
   const mapHostRef = useRef<HTMLDivElement>(null);
   const leafletRef = useRef<typeof import("leaflet") | null>(null);
   const mapRef = useRef<LeafletMap | null>(null);
-  const routeLayerRef = useRef<LayerGroup | null>(null);
+  const pathLayerRef = useRef<LayerGroup | null>(null);
+  const activeMarkerLayerRef = useRef<LayerGroup | null>(null);
   const basemapLayerRef = useRef<Layer[]>([]);
   const lastTrackKeyRef = useRef("");
   const basemapSignatureRef = useRef("");
@@ -346,11 +458,14 @@ function RouteReplayMap({
         center: DEFAULT_CENTER,
         zoom: DEFAULT_ZOOM,
         zoomControl: true,
+        inertia: true,
+        tapTolerance: 24,
         preferCanvas: true,
         attributionControl: false,
       });
       leaflet.tileLayer(EMPTY_TILE_DATA_URL, { attribution: "" }).addTo(map);
-      routeLayerRef.current = leaflet.layerGroup().addTo(map);
+      pathLayerRef.current = leaflet.layerGroup().addTo(map);
+      activeMarkerLayerRef.current = leaflet.layerGroup().addTo(map);
       mapRef.current = map;
       setMapReady(true);
     };
@@ -363,7 +478,8 @@ function RouteReplayMap({
         mapRef.current.remove();
         mapRef.current = null;
       }
-      routeLayerRef.current = null;
+      pathLayerRef.current = null;
+      activeMarkerLayerRef.current = null;
       leafletRef.current = null;
       basemapLayerRef.current = [];
       basemapSignatureRef.current = "";
@@ -425,46 +541,94 @@ function RouteReplayMap({
   useEffect(() => {
     const map = mapRef.current;
     const leaflet = leafletRef.current;
-    const routeLayer = routeLayerRef.current;
-    if (!map || !leaflet || !routeLayer || !mapReady) {
+    const pathLayer = pathLayerRef.current;
+    if (!map || !leaflet || !pathLayer || !mapReady) {
       return;
     }
 
-    routeLayer.clearLayers();
+    pathLayer.clearLayers();
     if (points.length === 0) {
       return;
     }
 
     const latLngs = points.map((point) => [point.latitude, point.longitude] as [number, number]);
+    const glowLine = leaflet.polyline(latLngs, {
+      color: "rgba(24, 97, 173, 0.4)",
+      weight: 8,
+      opacity: 0.55,
+    });
+    pathLayer.addLayer(glowLine);
+
     const polyline = leaflet.polyline(latLngs, {
       color: "rgba(87, 215, 255, 0.86)",
       weight: 3,
       opacity: 0.92,
     });
-    routeLayer.addLayer(polyline);
-
-    const safeIndex = Math.max(0, Math.min(activeIndex, points.length - 1));
-    const activePoint = points[safeIndex];
-    const marker = leaflet.circleMarker([activePoint.latitude, activePoint.longitude], {
-      radius: 7,
-      weight: 2,
-      color: "#57d7ff",
-      fillColor: "#0a1526",
-      fillOpacity: 1,
-    });
-    routeLayer.addLayer(marker);
+    pathLayer.addLayer(polyline);
 
     if (lastTrackKeyRef.current !== trackKey) {
       lastTrackKeyRef.current = trackKey;
       if (points.length === 1) {
-        map.setView([activePoint.latitude, activePoint.longitude], 7, { animate: false });
+        map.setView([points[0].latitude, points[0].longitude], 7, { animate: false });
       } else {
         map.fitBounds(polyline.getBounds().pad(0.42), { animate: false });
       }
     }
   }, [activeIndex, mapReady, points, trackKey]);
 
-  return <div className="h-full w-full" ref={mapHostRef} />;
+  useEffect(() => {
+    const leaflet = leafletRef.current;
+    const activeMarkerLayer = activeMarkerLayerRef.current;
+    if (!leaflet || !activeMarkerLayer || !mapReady) {
+      return;
+    }
+
+    activeMarkerLayer.clearLayers();
+    if (points.length === 0) {
+      return;
+    }
+
+    const safeIndex = Math.max(0, Math.min(activeIndex, points.length - 1));
+    const activePoint = points[safeIndex];
+    const halo = leaflet.circleMarker([activePoint.latitude, activePoint.longitude], {
+      radius: activePoint.kind === "adsb" ? 15 : 13,
+      weight: 2,
+      color: "rgba(255, 104, 104, 0.86)",
+      fillColor: "rgba(255, 104, 104, 0.14)",
+      fillOpacity: 1,
+      interactive: false,
+    });
+    activeMarkerLayer.addLayer(halo);
+
+    const marker = activePoint.kind === "adsb"
+      ? leaflet.marker([activePoint.latitude, activePoint.longitude], {
+        icon: buildReplayAircraftIcon(leaflet, activePoint),
+        keyboard: false,
+      })
+      : leaflet.marker([activePoint.latitude, activePoint.longitude], {
+        icon: buildReplayVesselIcon(leaflet, activePoint),
+        keyboard: false,
+      });
+    activeMarkerLayer.addLayer(marker);
+  }, [activeIndex, mapReady, points]);
+
+  return (
+    <div className="relative isolate h-full w-full">
+      <div
+        className={cx(
+          "ais-map h-full w-full",
+          maps?.kind === "pmtiles" && "ais-map--blue-dark",
+        )}
+        ref={mapHostRef}
+      />
+
+      <div className="pointer-events-none absolute bottom-3 left-3 z-[1200] max-w-xs rounded border border-white/[0.07] bg-[rgba(4,8,15,0.72)] px-2.5 py-1.5 backdrop-blur-sm">
+        <p className="font-mono text-[9px] leading-4 text-[var(--muted)]">
+          {maps?.attribution ?? "© OpenStreetMap contributors"}
+        </p>
+      </div>
+    </div>
+  );
 }
 
 export function SigintModule({ location }: SigintModuleProps) {
@@ -1377,7 +1541,7 @@ export function SigintModule({ location }: SigintModuleProps) {
             </div>
 
             <div className="flex min-h-0 flex-1 flex-col">
-              <div className="relative min-h-[340px] flex-1 border-b border-white/[0.07] bg-black/25">
+            <div className="relative isolate min-h-[340px] flex-1 border-b border-white/[0.07] bg-black/25">
                 {maps && replayPoints.length > 0 ? (
                   <RouteReplayMap
                     activeIndex={replayIndex}
