@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { ActivityCaptureActions, ConfirmDialog } from "@/components/module-ui";
 import {
+  buildActivityCaptureMeta,
   buildRadioRetuneUrl,
   buildRadioStreamUrl,
   CLS_BTN_PRIMARY,
@@ -58,12 +59,27 @@ function buildPmrUrl(
   ch: PmrChannel,
   controls: AudioControls,
   mode: "manual" | "scan",
+  location: ResolvedAppLocation | null,
+  squelch: number,
 ): string {
   return buildRadioStreamUrl(
     "/api/pmr-stream",
     { ...ch, label: `${ch.bandId.toUpperCase()} ${ch.label}` },
     controls,
-    { module: "pmr", mode },
+    buildActivityCaptureMeta(
+      {
+        module: "pmr",
+        mode,
+        bandId: ch.bandId,
+        channelId: ch.id,
+        channelNumber: ch.number,
+      },
+      {
+        location,
+        squelch,
+        channelNotes: ch.notes ?? null,
+      },
+    ),
   );
 }
 
@@ -71,11 +87,30 @@ function buildPmrUrl(
 function buildRetuneUrl(
   ch: PmrChannel,
   mode: "manual" | "scan",
+  location: ResolvedAppLocation | null,
+  squelch: number,
 ): string {
-  return buildRadioRetuneUrl("/api/pmr-stream", {
-    ...ch,
-    label: `${ch.bandId.toUpperCase()} ${ch.label}`,
-  }, { module: "pmr", mode });
+  return buildRadioRetuneUrl(
+    "/api/pmr-stream",
+    {
+      ...ch,
+      label: `${ch.bandId.toUpperCase()} ${ch.label}`,
+    },
+    buildActivityCaptureMeta(
+      {
+        module: "pmr",
+        mode,
+        bandId: ch.bandId,
+        channelId: ch.id,
+        channelNumber: ch.number,
+      },
+      {
+        location,
+        squelch,
+        channelNotes: ch.notes ?? null,
+      },
+    ),
+  );
 }
 
 export function PmrModule({
@@ -211,7 +246,7 @@ export function PmrModule({
     // without restarting — no process teardown, no reconnect, no re-buffering.
     if (hardwareRef.current?.activeStream?.demodMode === "nfm") {
       try {
-        const resp = await fetch(buildRetuneUrl(ch, mode), { method: "PATCH" });
+        const resp = await fetch(buildRetuneUrl(ch, mode, locationRef.current, squelchRef.current), { method: "PATCH" });
         if (resp.ok) {
           setPlayingChannelId(ch.id);
           setSelectedChannelId(ch.id);
@@ -227,7 +262,7 @@ export function PmrModule({
 
     // Full start: stop current audio, set new src, wait for browser to buffer & play
     audio.pause();
-    audio.src = buildPmrUrl(ch, controls, mode);
+    audio.src = buildPmrUrl(ch, controls, mode, locationRef.current, squelchRef.current);
     try {
       await audio.play();
       setPlayingChannelId(ch.id);

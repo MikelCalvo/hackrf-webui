@@ -72,6 +72,8 @@ export const captureSessions = sqliteTable(
     freqHz: integer("freq_hz"),
     centerFreqHz: integer("center_freq_hz"),
     demodMode: text("demod_mode"),
+    deviceLabel: text("device_label"),
+    deviceSerial: text("device_serial"),
     locationJson: text("location_json"),
     metadataJson: text("metadata_json"),
     createdAtMs: integer("created_at_ms").notNull(),
@@ -80,6 +82,7 @@ export const captureSessions = sqliteTable(
   (table) => ({
     startedIdx: index("capture_sessions_started_idx").on(table.startedAtMs),
     moduleStartedIdx: index("capture_sessions_module_started_idx").on(table.module, table.startedAtMs),
+    activityStartedIdx: index("capture_sessions_activity_started_idx").on(table.activityEventId, table.startedAtMs),
   }),
 );
 
@@ -141,6 +144,61 @@ export const analysisFindings = sqliteTable(
   },
   (table) => ({
     jobKindIdx: index("analysis_findings_job_kind_idx").on(table.analysisJobId, table.kind),
+  }),
+);
+
+export const captureReviews = sqliteTable(
+  "capture_reviews",
+  {
+    captureSessionId: text("capture_session_id")
+      .primaryKey()
+      .references(() => captureSessions.id, { onDelete: "cascade" }),
+    status: text("status").notNull(),
+    priority: text("priority").notNull(),
+    notes: text("notes"),
+    reviewedAtMs: integer("reviewed_at_ms"),
+    createdAtMs: integer("created_at_ms").notNull(),
+    updatedAtMs: integer("updated_at_ms").notNull(),
+  },
+  (table) => ({
+    statusUpdatedIdx: index("capture_reviews_status_updated_idx").on(table.status, table.updatedAtMs),
+    priorityUpdatedIdx: index("capture_reviews_priority_updated_idx").on(table.priority, table.updatedAtMs),
+  }),
+);
+
+export const captureTags = sqliteTable(
+  "capture_tags",
+  {
+    id: text("id").primaryKey(),
+    captureSessionId: text("capture_session_id")
+      .notNull()
+      .references(() => captureSessions.id, { onDelete: "cascade" }),
+    tag: text("tag").notNull(),
+    source: text("source").notNull(),
+    score: real("score"),
+    createdAtMs: integer("created_at_ms").notNull(),
+  },
+  (table) => ({
+    captureSourceIdx: index("capture_tags_capture_source_idx").on(table.captureSessionId, table.source),
+    tagIdx: index("capture_tags_tag_idx").on(table.tag),
+  }),
+);
+
+export const captureTranscripts = sqliteTable(
+  "capture_transcripts",
+  {
+    id: text("id").primaryKey(),
+    captureSessionId: text("capture_session_id")
+      .notNull()
+      .references(() => captureSessions.id, { onDelete: "cascade" }),
+    engine: text("engine").notNull(),
+    language: text("language"),
+    text: text("text").notNull(),
+    segmentsJson: text("segments_json"),
+    createdAtMs: integer("created_at_ms").notNull(),
+  },
+  (table) => ({
+    captureEngineIdx: index("capture_transcripts_capture_engine_idx").on(table.captureSessionId, table.engine),
   }),
 );
 

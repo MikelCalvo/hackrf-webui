@@ -164,6 +164,21 @@ export type ActivityCaptureRequestMeta = {
   bandId?: string | null;
   channelId?: string | null;
   channelNumber?: number | null;
+  channelNotes?: string | null;
+  squelch?: number | null;
+  sourceMode?: AppLocationSourceMode | null;
+  gpsdFallbackMode?: AppLocationGpsdFallbackMode | null;
+  sourceStatus?: ResolvedAppLocation["sourceStatus"] | null;
+  sourceDetail?: string | null;
+  regionId?: string | null;
+  regionName?: string | null;
+  countryId?: string | null;
+  countryCode?: string | null;
+  countryName?: string | null;
+  cityId?: string | null;
+  cityName?: string | null;
+  resolvedLatitude?: number | null;
+  resolvedLongitude?: number | null;
 };
 
 export type StreamSessionPhase = "starting" | "running" | "retuning";

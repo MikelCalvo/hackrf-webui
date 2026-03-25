@@ -5,6 +5,7 @@ import { useEffect, useEffectEvent, useMemo, useRef, useState } from "react";
 import { ActivityCaptureActions, ConfirmDialog } from "@/components/module-ui";
 import { CLS_INPUT } from "@/components/module-ui";
 import {
+  buildActivityCaptureMeta,
   buildRadioRetuneUrl,
   buildRadioStreamUrl,
   CLS_BTN_GHOST,
@@ -150,15 +151,54 @@ function buildAirbandUrl(
   channel: AirbandChannel,
   controls: AudioControls,
   mode: "manual" | "scan",
+  location: ResolvedAppLocation | null,
+  squelch: number,
 ): string {
-  return buildRadioStreamUrl("/api/airband-stream", channel, controls, { module: "airband", mode });
+  return buildRadioStreamUrl(
+    "/api/airband-stream",
+    channel,
+    controls,
+    buildActivityCaptureMeta(
+      {
+        module: "airband",
+        mode,
+        bandId: channel.bandId,
+        channelId: channel.id,
+        channelNumber: channel.number,
+      },
+      {
+        location,
+        squelch,
+        channelNotes: channel.notes ?? null,
+      },
+    ),
+  );
 }
 
 function buildAirbandRetuneUrl(
   channel: AirbandChannel,
   mode: "manual" | "scan",
+  location: ResolvedAppLocation | null,
+  squelch: number,
 ): string {
-  return buildRadioRetuneUrl("/api/airband-stream", channel, { module: "airband", mode });
+  return buildRadioRetuneUrl(
+    "/api/airband-stream",
+    channel,
+    buildActivityCaptureMeta(
+      {
+        module: "airband",
+        mode,
+        bandId: channel.bandId,
+        channelId: channel.id,
+        channelNumber: channel.number,
+      },
+      {
+        location,
+        squelch,
+        channelNotes: channel.notes ?? null,
+      },
+    ),
+  );
 }
 
 function StepButton({
@@ -590,7 +630,10 @@ export function AirbandModule({
 
     if (allowRetune && hardwareRef.current?.activeStream?.demodMode === "am") {
       try {
-        const response = await fetch(buildAirbandRetuneUrl(channel, mode), { method: "PATCH" });
+        const response = await fetch(
+          buildAirbandRetuneUrl(channel, mode, locationRef.current, squelchRef.current),
+          { method: "PATCH" },
+        );
         if (response.ok) {
           setPlayingChannelId(channel.id);
           setStartingChannelId(null);
@@ -603,7 +646,7 @@ export function AirbandModule({
     }
 
     audio.pause();
-    audio.src = buildAirbandUrl(channel, controls, mode);
+    audio.src = buildAirbandUrl(channel, controls, mode, locationRef.current, squelchRef.current);
 
     try {
       await audio.play();

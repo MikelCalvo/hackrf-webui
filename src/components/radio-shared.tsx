@@ -2,9 +2,42 @@
 
 import { CLS_BTN_GHOST, CLS_BTN_PRIMARY, Spinner, cx } from "@/components/module-ui";
 import type { AudioControls, RadioChannel } from "@/lib/radio";
-import type { ActivityCaptureRequestMeta } from "@/lib/types";
+import type { ActivityCaptureRequestMeta, ResolvedAppLocation } from "@/lib/types";
+import { buildCatalogScopeLabel } from "@/lib/location";
 
 export { CLS_BTN_GHOST, CLS_BTN_PRIMARY, Spinner, cx };
+
+export function buildActivityCaptureMeta(
+  base: Pick<ActivityCaptureRequestMeta, "module" | "mode"> & Partial<ActivityCaptureRequestMeta>,
+  options: {
+    location: ResolvedAppLocation | null;
+    squelch?: number | null;
+    channelNotes?: string | null;
+  },
+): ActivityCaptureRequestMeta {
+  const location = options.location;
+  return {
+    ...base,
+    channelNotes: options.channelNotes ?? base.channelNotes ?? null,
+    squelch: options.squelch ?? base.squelch ?? null,
+    sourceMode: location?.sourceMode ?? null,
+    gpsdFallbackMode: location?.gpsdFallbackMode ?? null,
+    sourceStatus: location?.sourceStatus ?? null,
+    sourceDetail:
+      location?.sourceMode === "catalog"
+        ? buildCatalogScopeLabel(location.catalogScope)
+        : location?.sourceDetail ?? null,
+    regionId: location?.catalogScope.regionId ?? null,
+    regionName: location?.catalogScope.regionName ?? null,
+    countryId: location?.catalogScope.countryId ?? null,
+    countryCode: location?.catalogScope.countryCode ?? null,
+    countryName: location?.catalogScope.countryName ?? null,
+    cityId: location?.catalogScope.cityId ?? null,
+    cityName: location?.catalogScope.cityName ?? null,
+    resolvedLatitude: location?.resolvedPosition?.latitude ?? null,
+    resolvedLongitude: location?.resolvedPosition?.longitude ?? null,
+  };
+}
 
 export function buildRadioStreamUrl(
   pathname: string,
@@ -41,6 +74,51 @@ export function buildRadioStreamUrl(
   if (Number.isFinite(channelNumber)) {
     params.set("channelNumber", String(channelNumber));
   }
+  if (activityCapture?.channelNotes) {
+    params.set("channelNotes", activityCapture.channelNotes);
+  }
+  if (Number.isFinite(activityCapture?.squelch)) {
+    params.set("squelch", String(activityCapture?.squelch));
+  }
+  if (activityCapture?.sourceMode) {
+    params.set("sourceMode", activityCapture.sourceMode);
+  }
+  if (activityCapture?.gpsdFallbackMode) {
+    params.set("gpsdFallbackMode", activityCapture.gpsdFallbackMode);
+  }
+  if (activityCapture?.sourceStatus) {
+    params.set("sourceStatus", activityCapture.sourceStatus);
+  }
+  if (activityCapture?.sourceDetail) {
+    params.set("sourceDetail", activityCapture.sourceDetail);
+  }
+  if (activityCapture?.regionId) {
+    params.set("regionId", activityCapture.regionId);
+  }
+  if (activityCapture?.regionName) {
+    params.set("regionName", activityCapture.regionName);
+  }
+  if (activityCapture?.countryId) {
+    params.set("countryId", activityCapture.countryId);
+  }
+  if (activityCapture?.countryCode) {
+    params.set("countryCode", activityCapture.countryCode);
+  }
+  if (activityCapture?.countryName) {
+    params.set("countryName", activityCapture.countryName);
+  }
+  if (activityCapture?.cityId) {
+    params.set("cityId", activityCapture.cityId);
+  }
+  if (activityCapture?.cityName) {
+    params.set("cityName", activityCapture.cityName);
+  }
+  if (Number.isFinite(activityCapture?.resolvedLatitude)) {
+    params.set("resolvedLatitude", String(activityCapture?.resolvedLatitude));
+  }
+  if (Number.isFinite(activityCapture?.resolvedLongitude)) {
+    params.set("resolvedLongitude", String(activityCapture?.resolvedLongitude));
+  }
 
   return `${pathname}?${params.toString()}`;
 }
@@ -74,6 +152,51 @@ export function buildRadioRetuneUrl(
   }
   if (Number.isFinite(channelNumber)) {
     params.set("channelNumber", String(channelNumber));
+  }
+  if (activityCapture?.channelNotes) {
+    params.set("channelNotes", activityCapture.channelNotes);
+  }
+  if (Number.isFinite(activityCapture?.squelch)) {
+    params.set("squelch", String(activityCapture?.squelch));
+  }
+  if (activityCapture?.sourceMode) {
+    params.set("sourceMode", activityCapture.sourceMode);
+  }
+  if (activityCapture?.gpsdFallbackMode) {
+    params.set("gpsdFallbackMode", activityCapture.gpsdFallbackMode);
+  }
+  if (activityCapture?.sourceStatus) {
+    params.set("sourceStatus", activityCapture.sourceStatus);
+  }
+  if (activityCapture?.sourceDetail) {
+    params.set("sourceDetail", activityCapture.sourceDetail);
+  }
+  if (activityCapture?.regionId) {
+    params.set("regionId", activityCapture.regionId);
+  }
+  if (activityCapture?.regionName) {
+    params.set("regionName", activityCapture.regionName);
+  }
+  if (activityCapture?.countryId) {
+    params.set("countryId", activityCapture.countryId);
+  }
+  if (activityCapture?.countryCode) {
+    params.set("countryCode", activityCapture.countryCode);
+  }
+  if (activityCapture?.countryName) {
+    params.set("countryName", activityCapture.countryName);
+  }
+  if (activityCapture?.cityId) {
+    params.set("cityId", activityCapture.cityId);
+  }
+  if (activityCapture?.cityName) {
+    params.set("cityName", activityCapture.cityName);
+  }
+  if (Number.isFinite(activityCapture?.resolvedLatitude)) {
+    params.set("resolvedLatitude", String(activityCapture?.resolvedLatitude));
+  }
+  if (Number.isFinite(activityCapture?.resolvedLongitude)) {
+    params.set("resolvedLongitude", String(activityCapture?.resolvedLongitude));
   }
 
   return `${pathname}?${params.toString()}`;

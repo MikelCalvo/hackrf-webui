@@ -16,6 +16,11 @@ function inPmrRange(freq: number): boolean {
   return PMR_RANGES.some(([lo, hi]) => freq >= lo && freq <= hi);
 }
 
+function parseOptionalFloat(value: string | null): number | null {
+  const parsed = Number.parseFloat(value ?? "");
+  return Number.isFinite(parsed) ? parsed : null;
+}
+
 function badRequest(message: string, status = 400): Response {
   return Response.json({ error: message }, { status, headers: { "Cache-Control": "no-store" } });
 }
@@ -34,6 +39,21 @@ function parseActivityCapture(searchParams: URLSearchParams): ActivityCaptureReq
     bandId: searchParams.get("bandId"),
     channelId: searchParams.get("channelId"),
     channelNumber: Number.isFinite(rawChannelNumber) ? rawChannelNumber : null,
+    channelNotes: searchParams.get("channelNotes"),
+    squelch: parseOptionalFloat(searchParams.get("squelch")),
+    sourceMode: searchParams.get("sourceMode") as ActivityCaptureRequestMeta["sourceMode"] ?? null,
+    gpsdFallbackMode: searchParams.get("gpsdFallbackMode") as ActivityCaptureRequestMeta["gpsdFallbackMode"] ?? null,
+    sourceStatus: searchParams.get("sourceStatus") as ActivityCaptureRequestMeta["sourceStatus"] ?? null,
+    sourceDetail: searchParams.get("sourceDetail"),
+    regionId: searchParams.get("regionId"),
+    regionName: searchParams.get("regionName"),
+    countryId: searchParams.get("countryId"),
+    countryCode: searchParams.get("countryCode"),
+    countryName: searchParams.get("countryName"),
+    cityId: searchParams.get("cityId"),
+    cityName: searchParams.get("cityName"),
+    resolvedLatitude: parseOptionalFloat(searchParams.get("resolvedLatitude")),
+    resolvedLongitude: parseOptionalFloat(searchParams.get("resolvedLongitude")),
   };
 }
 

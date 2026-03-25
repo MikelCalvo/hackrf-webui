@@ -5,6 +5,7 @@ import { useEffect, useEffectEvent, useMemo, useRef, useState } from "react";
 import { ActivityCaptureActions, ConfirmDialog } from "@/components/module-ui";
 import { CLS_INPUT } from "@/components/module-ui";
 import {
+  buildActivityCaptureMeta,
   buildRadioRetuneUrl,
   buildRadioStreamUrl,
   CLS_BTN_GHOST,
@@ -160,15 +161,54 @@ function buildMaritimeUrl(
   channel: MaritimeChannel,
   controls: AudioControls,
   mode: "manual" | "scan",
+  location: ResolvedAppLocation | null,
+  squelch: number,
 ): string {
-  return buildRadioStreamUrl("/api/maritime-stream", channel, controls, { module: "maritime", mode });
+  return buildRadioStreamUrl(
+    "/api/maritime-stream",
+    channel,
+    controls,
+    buildActivityCaptureMeta(
+      {
+        module: "maritime",
+        mode,
+        bandId: channel.bandId,
+        channelId: channel.id,
+        channelNumber: channel.number,
+      },
+      {
+        location,
+        squelch,
+        channelNotes: channel.notes ?? null,
+      },
+    ),
+  );
 }
 
 function buildMaritimeRetuneUrl(
   channel: MaritimeChannel,
   mode: "manual" | "scan",
+  location: ResolvedAppLocation | null,
+  squelch: number,
 ): string {
-  return buildRadioRetuneUrl("/api/maritime-stream", channel, { module: "maritime", mode });
+  return buildRadioRetuneUrl(
+    "/api/maritime-stream",
+    channel,
+    buildActivityCaptureMeta(
+      {
+        module: "maritime",
+        mode,
+        bandId: channel.bandId,
+        channelId: channel.id,
+        channelNumber: channel.number,
+      },
+      {
+        location,
+        squelch,
+        channelNotes: channel.notes ?? null,
+      },
+    ),
+  );
 }
 
 function StepButton({
@@ -310,6 +350,7 @@ export function MaritimeModule({
   const dwellTimeRef = useRef(config.dwellTime);
   const playingIdRef = useRef<string | null>(null);
   const hardwareRef = useRef<HardwareStatus | null>(null);
+  const locationRef = useRef<ResolvedAppLocation | null>(location);
   const refreshHardwareRef = useRef(onRefreshHardware);
   const pollInFlightRef = useRef(false);
 
@@ -330,6 +371,10 @@ export function MaritimeModule({
   useEffect(() => {
     hardwareRef.current = hardware;
   }, [hardware]);
+
+  useEffect(() => {
+    locationRef.current = location;
+  }, [location]);
 
   useEffect(() => {
     refreshHardwareRef.current = onRefreshHardware;
@@ -694,7 +739,10 @@ export function MaritimeModule({
 
     if (allowRetune && hardwareRef.current?.activeStream?.demodMode === "nfm") {
       try {
-        const response = await fetch(buildMaritimeRetuneUrl(channel, mode), { method: "PATCH" });
+        const response = await fetch(
+          buildMaritimeRetuneUrl(channel, mode, locationRef.current, squelchRef.current),
+          { method: "PATCH" },
+        );
         if (response.ok) {
           setPlayingChannelId(channel.id);
           setStartingChannelId(null);
@@ -707,7 +755,7 @@ export function MaritimeModule({
     }
 
     audio.pause();
-    audio.src = buildMaritimeUrl(channel, controls, mode);
+    audio.src = buildMaritimeUrl(channel, controls, mode, locationRef.current, squelchRef.current);
 
     try {
       await audio.play();

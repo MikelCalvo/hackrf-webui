@@ -2,6 +2,7 @@ export const LAST_MODULE_STORAGE_KEY = "hackrf-webui.active-module.v1";
 export const LAST_MODULE_COOKIE_KEY = "hackrf_webui_module";
 
 export const APP_MODULES = [
+  { id: "sigint", label: "SIGINT", band: "review", path: "/sigint", live: true, section: "intel" },
   { id: "fm", label: "FM", band: "87.5-108", path: "/fm", live: true },
   { id: "pmr", label: "PMR", band: "446 MHz", path: "/pmr", live: true },
   { id: "airband", label: "Airband", band: "118-137", path: "/airband", live: true },

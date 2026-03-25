@@ -29,29 +29,25 @@ function applyPendingMigrations(sqlite: Database.Database): void {
     return;
   }
 
-  const applied = new Set(
-    sqlite
-      .prepare("SELECT name FROM __app_migrations ORDER BY name ASC")
-      .all()
-      .map((row) => String((row as { name: unknown }).name)),
-  );
-
   const files = readdirSync(MIGRATIONS_DIR)
     .filter((fileName) => fileName.endsWith(".sql"))
     .sort((left, right) => left.localeCompare(right));
 
   for (const fileName of files) {
-    if (applied.has(fileName)) {
-      continue;
-    }
-
     const sql = readFileSync(path.join(MIGRATIONS_DIR, fileName), "utf8");
     const apply = sqlite.transaction(() => {
+      const alreadyApplied = sqlite
+        .prepare("SELECT 1 FROM __app_migrations WHERE name = ? LIMIT 1")
+        .get(fileName);
+      if (alreadyApplied) {
+        return;
+      }
+
       sqlite.exec(sql);
       sqlite
-        .prepare("INSERT INTO __app_migrations (name, applied_at_ms) VALUES (?, ?)")
+        .prepare("INSERT OR IGNORE INTO __app_migrations (name, applied_at_ms) VALUES (?, ?)")
         .run(fileName, Date.now());
-    });
+    }).immediate;
 
     apply();
   }

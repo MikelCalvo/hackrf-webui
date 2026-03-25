@@ -130,6 +130,14 @@ const MaritimeModule = dynamic(
   },
 );
 
+const SigintModule = dynamic(
+  () => import("@/components/sigint").then((mod) => mod.SigintModule),
+  {
+    ssr: false,
+    loading: () => <ModulePanelLoading label="SIGINT" />,
+  },
+);
+
 function formatCount(value: number): string {
   return numberFormatter.format(value);
 }
@@ -568,6 +576,18 @@ function VolumeControl({
 }
 
 function ModuleIcon({ id }: { id: string }) {
+  if (id === "sigint") {
+    return (
+      <svg aria-hidden="true" className="h-4 w-4" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.4" viewBox="0 0 16 16">
+        <circle cx="8" cy="8" r="5.5" />
+        <circle cx="8" cy="8" r="1.2" fill="currentColor" stroke="none" />
+        <path d="M8 1.5V4" />
+        <path d="M8 12V14.5" />
+        <path d="M1.5 8H4" />
+        <path d="M12 8H14.5" />
+      </svg>
+    );
+  }
   if (id === "fm") {
     // Classic radio receiver
     return (
@@ -1589,7 +1609,33 @@ export function Dashboard({
 
       <div className="flex flex-1 overflow-hidden">
         <nav className="flex w-[70px] shrink-0 flex-col border-r border-white/8 bg-black/20 py-2">
-          {APP_MODULES.map((module) => {
+          {APP_MODULES.filter((module) => module.id === "sigint").map((module) => {
+            const isActive = module.live && activeModule === module.id;
+
+            return (
+              <Link
+                key={module.id}
+                className={cx(
+                  "mx-1 mb-2 flex flex-col items-center gap-1 rounded-2xl border px-2 py-3 text-center transition-colors",
+                  isActive
+                    ? "border-cyan-300/28 bg-cyan-300/10 text-cyan-100"
+                    : "border-white/8 text-[var(--muted-strong)] hover:border-white/14 hover:bg-white/[0.03] hover:text-[var(--foreground)]",
+                )}
+                href={module.path}
+                title={`${module.label} · ${module.band}`}
+              >
+                <ModuleIcon id={module.id} />
+                <span className="font-mono text-[11px] font-bold uppercase tracking-[0.1em]">
+                  {module.label}
+                </span>
+                <span className="font-mono text-[8px] leading-none text-current opacity-70">
+                  {module.band}
+                </span>
+              </Link>
+            );
+          })}
+
+          {APP_MODULES.filter((module) => module.id !== "sigint").map((module) => {
             const isActive = module.live && activeModule === module.id;
 
             if (!module.live) {
@@ -1641,6 +1687,10 @@ export function Dashboard({
             );
           })}
         </nav>
+
+        {activeModule === "sigint" ? (
+          <SigintModule location={resolvedLocation} />
+        ) : null}
 
         {activeModule === "pmr" ? (
           <PmrModule

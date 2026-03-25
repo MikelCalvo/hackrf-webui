@@ -31,6 +31,21 @@ type CaptureDescriptor = {
   bandId: string | null;
   channelId: string | null;
   channelNumber: number | null;
+  channelNotes: string | null;
+  squelch: number | null;
+  sourceMode: ActivityCaptureRequestMeta["sourceMode"];
+  gpsdFallbackMode: ActivityCaptureRequestMeta["gpsdFallbackMode"];
+  sourceStatus: ActivityCaptureRequestMeta["sourceStatus"];
+  sourceDetail: string | null;
+  regionId: string | null;
+  regionName: string | null;
+  countryId: string | null;
+  countryCode: string | null;
+  countryName: string | null;
+  cityId: string | null;
+  cityName: string | null;
+  resolvedLatitude: number | null;
+  resolvedLongitude: number | null;
   label: string;
   freqHz: number;
   demodMode: AudioDemodMode;
@@ -49,6 +64,17 @@ type PendingActivityCapture = {
 type StreamCaptureContext = {
   capturePrefix: string;
   descriptor: CaptureDescriptor;
+  device: {
+    label: string | null;
+    serial: string | null;
+    firmware: string | null;
+    hardware: string | null;
+  };
+  rf: {
+    lna: number;
+    vga: number;
+    audioGain: number;
+  };
   pendingSegment: PendingActivityCapture | null;
 };
 
@@ -112,6 +138,35 @@ function parseHackrfInfoOutput(output: string): Record<string, string> {
   }
 
   return parsed;
+}
+
+function readHackrfIdentity(): {
+  label: string | null;
+  serial: string | null;
+  firmware: string | null;
+  hardware: string | null;
+} {
+  const info = spawnSync("hackrf_info", [], {
+    encoding: "utf8",
+    stdio: ["ignore", "pipe", "pipe"],
+  });
+  if (info.error) {
+    return {
+      label: "HackRF One",
+      serial: null,
+      firmware: null,
+      hardware: null,
+    };
+  }
+
+  const output = `${info.stdout || ""}${info.stderr || ""}`;
+  const parsed = parseHackrfInfoOutput(output);
+  return {
+    label: parsed.board || "HackRF One",
+    serial: shortenSerial(parsed.serial || "") || null,
+    firmware: parsed.firmware || null,
+    hardware: parsed.hardware || null,
+  };
 }
 
 class HackRFService {
@@ -281,6 +336,24 @@ class HackRFService {
           bandId: activityCapture?.bandId ?? this.activeStream.captureContext.descriptor.bandId,
           channelId: activityCapture?.channelId ?? this.activeStream.captureContext.descriptor.channelId,
           channelNumber: activityCapture?.channelNumber ?? this.activeStream.captureContext.descriptor.channelNumber,
+          channelNotes: activityCapture?.channelNotes ?? this.activeStream.captureContext.descriptor.channelNotes,
+          squelch: activityCapture?.squelch ?? this.activeStream.captureContext.descriptor.squelch,
+          sourceMode: activityCapture?.sourceMode ?? this.activeStream.captureContext.descriptor.sourceMode,
+          gpsdFallbackMode:
+            activityCapture?.gpsdFallbackMode ?? this.activeStream.captureContext.descriptor.gpsdFallbackMode,
+          sourceStatus: activityCapture?.sourceStatus ?? this.activeStream.captureContext.descriptor.sourceStatus,
+          sourceDetail: activityCapture?.sourceDetail ?? this.activeStream.captureContext.descriptor.sourceDetail,
+          regionId: activityCapture?.regionId ?? this.activeStream.captureContext.descriptor.regionId,
+          regionName: activityCapture?.regionName ?? this.activeStream.captureContext.descriptor.regionName,
+          countryId: activityCapture?.countryId ?? this.activeStream.captureContext.descriptor.countryId,
+          countryCode: activityCapture?.countryCode ?? this.activeStream.captureContext.descriptor.countryCode,
+          countryName: activityCapture?.countryName ?? this.activeStream.captureContext.descriptor.countryName,
+          cityId: activityCapture?.cityId ?? this.activeStream.captureContext.descriptor.cityId,
+          cityName: activityCapture?.cityName ?? this.activeStream.captureContext.descriptor.cityName,
+          resolvedLatitude:
+            activityCapture?.resolvedLatitude ?? this.activeStream.captureContext.descriptor.resolvedLatitude,
+          resolvedLongitude:
+            activityCapture?.resolvedLongitude ?? this.activeStream.captureContext.descriptor.resolvedLongitude,
           label,
           freqHz,
           demodMode: this.activeStream.session.demodMode,
@@ -436,6 +509,8 @@ class HackRFService {
       return null;
     }
 
+    const device = readHackrfIdentity();
+
     return {
       capturePrefix: capturePrefixForSession(request.activityCapture.module, sessionId),
       descriptor: {
@@ -444,9 +519,30 @@ class HackRFService {
         bandId: request.activityCapture.bandId ?? null,
         channelId: request.activityCapture.channelId ?? null,
         channelNumber: request.activityCapture.channelNumber ?? null,
+        channelNotes: request.activityCapture.channelNotes ?? null,
+        squelch: request.activityCapture.squelch ?? null,
+        sourceMode: request.activityCapture.sourceMode ?? null,
+        gpsdFallbackMode: request.activityCapture.gpsdFallbackMode ?? null,
+        sourceStatus: request.activityCapture.sourceStatus ?? null,
+        sourceDetail: request.activityCapture.sourceDetail ?? null,
+        regionId: request.activityCapture.regionId ?? null,
+        regionName: request.activityCapture.regionName ?? null,
+        countryId: request.activityCapture.countryId ?? null,
+        countryCode: request.activityCapture.countryCode ?? null,
+        countryName: request.activityCapture.countryName ?? null,
+        cityId: request.activityCapture.cityId ?? null,
+        cityName: request.activityCapture.cityName ?? null,
+        resolvedLatitude: request.activityCapture.resolvedLatitude ?? null,
+        resolvedLongitude: request.activityCapture.resolvedLongitude ?? null,
         label: request.label,
         freqHz: request.freqHz,
         demodMode: mode,
+      },
+      device,
+      rf: {
+        lna: request.lna,
+        vga: request.vga,
+        audioGain: request.audioGain,
       },
       pendingSegment: null,
     };
@@ -598,11 +694,54 @@ class HackRFService {
       startedAtMs: pending.startedAtMs,
       endedAtMs: Date.now(),
       rms: this.activeStream.telemetry?.rms ?? null,
+      squelch: pending.descriptor.squelch ?? null,
       audioAbsolutePath: pending.savedAudioPath ?? pending.audioPath,
       iqAbsolutePath: pending.savedIqPath ?? pending.iqPath,
+      deviceLabel: context.device.label,
+      deviceSerial: context.device.serial,
+      location: {
+        sourceMode: pending.descriptor.sourceMode ?? null,
+        gpsdFallbackMode: pending.descriptor.gpsdFallbackMode ?? null,
+        sourceStatus: pending.descriptor.sourceStatus ?? null,
+        sourceDetail: pending.descriptor.sourceDetail ?? null,
+        catalogScope: {
+          regionId: pending.descriptor.regionId ?? null,
+          regionName: pending.descriptor.regionName ?? null,
+          countryId: pending.descriptor.countryId ?? null,
+          countryCode: pending.descriptor.countryCode ?? null,
+          countryName: pending.descriptor.countryName ?? null,
+          cityId: pending.descriptor.cityId ?? null,
+          cityName: pending.descriptor.cityName ?? null,
+        },
+        resolvedPosition:
+          pending.descriptor.resolvedLatitude !== null && pending.descriptor.resolvedLongitude !== null
+            ? {
+              latitude: pending.descriptor.resolvedLatitude,
+              longitude: pending.descriptor.resolvedLongitude,
+            }
+            : null,
+      },
       metadata: {
         captureSource: "native-activity",
         sessionId,
+        channel: {
+          label: pending.descriptor.label,
+          bandId: pending.descriptor.bandId,
+          channelId: pending.descriptor.channelId,
+          channelNumber: pending.descriptor.channelNumber,
+          notes: pending.descriptor.channelNotes,
+        },
+        rf: {
+          ...context.rf,
+          squelch: pending.descriptor.squelch ?? null,
+        },
+        device: context.device,
+        sourceContext: {
+          sourceMode: pending.descriptor.sourceMode ?? null,
+          gpsdFallbackMode: pending.descriptor.gpsdFallbackMode ?? null,
+          sourceStatus: pending.descriptor.sourceStatus ?? null,
+          sourceDetail: pending.descriptor.sourceDetail ?? null,
+        },
       },
     });
   }

@@ -1,5 +1,5 @@
 import { randomUUID } from "node:crypto";
-import { rmSync } from "node:fs";
+import { rmSync, statSync } from "node:fs";
 
 import { and, desc, eq, gte, inArray, lte } from "drizzle-orm";
 
@@ -30,6 +30,9 @@ type CaptureFinalizeInput = {
   endedAtMs: number;
   rms?: number | null;
   squelch?: number | null;
+  deviceLabel?: string | null;
+  deviceSerial?: string | null;
+  location?: Record<string, unknown> | null;
   audioAbsolutePath?: string | null;
   iqAbsolutePath?: string | null;
   metadata?: Record<string, unknown> | null;
@@ -53,6 +56,30 @@ function safeJson(value: unknown): string | null {
   } catch {
     return null;
   }
+}
+
+function locationString(
+  input: CaptureFinalizeInput["location"],
+  key: "regionId" | "countryId" | "cityId",
+): string | null {
+  if (!input || typeof input.catalogScope !== "object" || !input.catalogScope) {
+    return null;
+  }
+
+  const value = (input.catalogScope as Record<string, unknown>)[key];
+  return typeof value === "string" && value.trim().length > 0 ? value.trim() : null;
+}
+
+function locationNumber(
+  input: CaptureFinalizeInput["location"],
+  key: "latitude" | "longitude",
+): number | null {
+  if (!input || typeof input.resolvedPosition !== "object" || !input.resolvedPosition) {
+    return null;
+  }
+
+  const value = (input.resolvedPosition as Record<string, unknown>)[key];
+  return typeof value === "number" && Number.isFinite(value) ? value : null;
 }
 
 function buildCaptureFileSummary(
@@ -163,12 +190,13 @@ function createFallbackActivityEvent(input: CaptureFinalizeInput): typeof activi
     rmsPeak: input.rms ?? null,
     rfPeak: null,
     squelch: input.squelch ?? null,
-    regionId: null,
-    countryId: null,
-    cityId: null,
-    locationSource: null,
-    locationLatitude: null,
-    locationLongitude: null,
+    regionId: locationString(input.location, "regionId"),
+    countryId: locationString(input.location, "countryId"),
+    cityId: locationString(input.location, "cityId"),
+    locationSource:
+      typeof input.location?.sourceMode === "string" ? input.location.sourceMode : null,
+    locationLatitude: locationNumber(input.location, "latitude"),
+    locationLongitude: locationNumber(input.location, "longitude"),
     metadataJson: safeJson(input.metadata ?? null),
     createdAtMs: nowMs,
   };
@@ -203,6 +231,12 @@ function updateActivityEventFromCapture(
       rmsPeak: nextRmsPeak,
       rmsAvg: nextRmsAvg,
       squelch: row.squelch ?? input.squelch ?? null,
+      regionId: row.regionId ?? locationString(input.location, "regionId"),
+      countryId: row.countryId ?? locationString(input.location, "countryId"),
+      cityId: row.cityId ?? locationString(input.location, "cityId"),
+      locationSource: row.locationSource ?? (typeof input.location?.sourceMode === "string" ? input.location.sourceMode : null),
+      locationLatitude: row.locationLatitude ?? locationNumber(input.location, "latitude"),
+      locationLongitude: row.locationLongitude ?? locationNumber(input.location, "longitude"),
       metadataJson: row.metadataJson ?? safeJson(input.metadata ?? null),
     })
     .where(eq(activityEvents.id, row.id))
@@ -220,6 +254,18 @@ function findPersistedCaptureByPath(relativePath: string | null): typeof capture
     .where(eq(captureFiles.relativePath, relativePath))
     .limit(1)
     .get() ?? null;
+}
+
+function fileByteSize(absolutePath: string | null | undefined): number | null {
+  if (!absolutePath) {
+    return null;
+  }
+
+  try {
+    return statSync(absolutePath).size;
+  } catch {
+    return null;
+  }
 }
 
 export function listActivityEvents(
@@ -363,7 +409,9 @@ export function persistCapturedActivity(input: CaptureFinalizeInput): void {
     freqHz: input.freqHz,
     centerFreqHz: null,
     demodMode: input.demodMode,
-    locationJson: null,
+    deviceLabel: input.deviceLabel ?? null,
+    deviceSerial: input.deviceSerial ?? null,
+    locationJson: safeJson(input.location ?? null),
     metadataJson: safeJson(input.metadata ?? null),
     createdAtMs: nowMs,
     updatedAtMs: nowMs,
@@ -378,9 +426,9 @@ export function persistCapturedActivity(input: CaptureFinalizeInput): void {
       kind: "audio",
       format: "wav",
       relativePath: audioRelativePath,
-      byteSize: null,
+      byteSize: fileByteSize(input.audioAbsolutePath),
       sha256: null,
-      sampleRate: null,
+      sampleRate: 50_000,
       createdAtMs: nowMs,
       metadataJson: null,
     });
@@ -393,9 +441,9 @@ export function persistCapturedActivity(input: CaptureFinalizeInput): void {
       kind: "raw_iq",
       format: "cs8",
       relativePath: iqRelativePath,
-      byteSize: null,
+      byteSize: fileByteSize(input.iqAbsolutePath),
       sha256: null,
-      sampleRate: null,
+      sampleRate: 2_000_000,
       createdAtMs: nowMs,
       metadataJson: null,
     });
