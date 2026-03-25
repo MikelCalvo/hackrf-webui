@@ -109,6 +109,24 @@ function runtimeLabel(state: AdsbRuntimeState | null): string {
   }
 }
 
+function runtimeDotColor(state: AdsbRuntimeState | null): string {
+  switch (state) {
+    case "running": return "bg-emerald-400";
+    case "starting": return "bg-amber-400";
+    case "error": return "bg-rose-400";
+    default: return "bg-white/25";
+  }
+}
+
+function runtimeTextColor(state: AdsbRuntimeState | null): string {
+  switch (state) {
+    case "running": return "text-emerald-300";
+    case "starting": return "text-amber-300";
+    case "error": return "text-rose-300";
+    default: return "text-[var(--muted-strong)]";
+  }
+}
+
 async function fetchAdsbFeed(): Promise<AdsbFeedSnapshot> {
   const response = await fetch("/api/adsb", { cache: "no-store" });
   if (!response.ok) {
@@ -395,201 +413,160 @@ export function AdsbModule({ hardware, onRefreshHardware }: AdsbModuleProps) {
 
   return (
     <div className="flex flex-1 overflow-hidden">
-      <aside className="flex w-72 shrink-0 flex-col overflow-y-auto border-r border-white/8 bg-black/10">
-        <div className="space-y-4 p-4">
-          <div>
-            <span className="font-mono text-[10px] uppercase tracking-[0.25em] text-[var(--muted)]">
-              ADS-B Feed
-            </span>
-            <h2 className="mt-2 text-xl font-semibold text-[var(--foreground)]">
-              Air picture
-            </h2>
-            <p className="mt-1.5 text-sm leading-6 text-[var(--muted)]">
-              Live ADS-B and Mode S traffic from the HackRF on 1090 MHz using a local dump1090-fa backend.
+      <aside className="flex w-72 shrink-0 flex-col overflow-hidden border-r border-white/8 bg-black/10">
+        {/* Title + live status */}
+        <div className="flex items-center justify-between border-b border-white/[0.07] px-4 py-3">
+          <div className="flex items-center gap-2.5">
+            <span className="font-mono text-[10px] uppercase tracking-[0.25em] text-[var(--foreground)]">ADS-B</span>
+            <span className="font-mono text-[10px] text-[var(--muted)]">1090 MHz</span>
+          </div>
+          <span className={cx("inline-flex items-center gap-1.5 font-mono text-[9px] uppercase tracking-[0.12em]", runtimeTextColor(runtimeState))}>
+            <span className={cx("h-1.5 w-1.5 rounded-full", runtimeDotColor(runtimeState))} />
+            {runtimeLabel(runtimeState)}
+          </span>
+        </div>
+
+        {/* Stats row */}
+        <div className="grid grid-cols-3 border-b border-white/[0.07]">
+          <div className="border-r border-white/[0.07] px-3.5 py-3">
+            <p className="font-mono text-[9px] uppercase tracking-[0.14em] text-[var(--muted)]">Aircraft</p>
+            <p className="mt-1.5 font-mono text-[22px] font-semibold tabular-nums leading-none text-[var(--foreground)]">
+              {snapshot?.aircraftCount ?? 0}
             </p>
           </div>
-
-          <div className="grid grid-cols-3 gap-3">
-            <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-3">
-              <p className="font-mono text-[9px] uppercase tracking-[0.18em] text-[var(--muted)]">
-                Aircraft
-              </p>
-              <p className="mt-1 text-2xl font-semibold text-[var(--foreground)]">
-                {snapshot?.aircraftCount ?? 0}
-              </p>
-            </div>
-            <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-3">
-              <p className="font-mono text-[9px] uppercase tracking-[0.18em] text-[var(--muted)]">
-                Positioned
-              </p>
-              <p className="mt-1 text-2xl font-semibold text-[var(--foreground)]">
-                {snapshot?.positionCount ?? 0}
-              </p>
-            </div>
-            <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-3">
-              <p className="font-mono text-[9px] uppercase tracking-[0.18em] text-[var(--muted)]">
-                Airborne
-              </p>
-              <p className="mt-1 text-2xl font-semibold text-[var(--foreground)]">
-                {snapshot?.airborneCount ?? 0}
-              </p>
-            </div>
+          <div className="border-r border-white/[0.07] px-3.5 py-3">
+            <p className="font-mono text-[9px] uppercase tracking-[0.14em] text-[var(--muted)]">Positioned</p>
+            <p className="mt-1.5 font-mono text-[22px] font-semibold tabular-nums leading-none text-[var(--foreground)]">
+              {snapshot?.positionCount ?? 0}
+            </p>
           </div>
+          <div className="px-3.5 py-3">
+            <p className="font-mono text-[9px] uppercase tracking-[0.14em] text-[var(--muted)]">Airborne</p>
+            <p className="mt-1.5 font-mono text-[22px] font-semibold tabular-nums leading-none text-[var(--foreground)]">
+              {snapshot?.airborneCount ?? 0}
+            </p>
+          </div>
+        </div>
 
-          <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-4">
-            <div className="flex items-center justify-between gap-3">
-              <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-[var(--muted)]">
-                Decoder
-              </p>
-              <span
-                className={cx(
-                  "rounded-full border px-2 py-0.5 font-mono text-[9px] uppercase tracking-[0.14em]",
-                  runtimeTone(runtimeState),
-                )}
-              >
-                {runtimeLabel(runtimeState)}
-              </span>
-            </div>
-            <p className="mt-2 text-sm leading-6 text-[var(--foreground)]">
+        <div className="flex-1 overflow-y-auto">
+          {/* Decoder */}
+          <div className="border-b border-white/[0.07] px-4 py-3">
+            <p className="mb-2 font-mono text-[10px] uppercase tracking-[0.18em] text-[var(--muted)]">Decoder</p>
+            <p className="text-xs leading-5 text-[var(--muted-strong)]">
               {snapshot?.runtime.message ?? "ADS-B decoder state not loaded yet."}
             </p>
-            <div className="mt-3 flex items-center gap-2">
-              <button
-                className={cx(
-                  "rounded-full border px-3 py-1.5 font-mono text-[10px] uppercase tracking-[0.14em] transition",
-                  runtimeRunning || runtimeStarting
-                    ? "border-rose-400/25 bg-rose-400/10 text-rose-200 hover:border-rose-400/40"
-                    : "border-emerald-400/25 bg-emerald-400/10 text-emerald-200 hover:border-emerald-400/40",
-                )}
-                disabled={runtimeBusy}
-                onClick={() => void controlRuntime(runtimeRunning || runtimeStarting ? "DELETE" : "POST")}
-                type="button"
-              >
-                {runtimeBusy
-                  ? "Working"
-                  : runtimeRunning || runtimeStarting
-                    ? "Stop Decoder"
-                    : "Start Decoder"}
-              </button>
-            </div>
-            <div className="mt-3 space-y-1 font-mono text-[10px] text-[var(--muted)]">
-              <p>Center {formatFrequencyMHz(snapshot?.runtime.centerFreqHz ?? 1_090_000_000)}</p>
-              <p>IQ rate {(snapshot?.runtime.sampleRate ?? 2_400_000).toLocaleString("en")} sps</p>
-              <p>Started {formatTimestamp(snapshot?.runtime.startedAt ?? null)}</p>
-              <p>Last JSON {formatTimestamp(snapshot?.runtime.lastJsonAt ?? null)}</p>
+            <button
+              className={cx(
+                "mt-3 inline-flex items-center gap-1.5 rounded border px-3 py-1 font-mono text-[10px] uppercase tracking-[0.12em] transition",
+                runtimeRunning || runtimeStarting
+                  ? "border-rose-400/25 bg-rose-400/[0.08] text-rose-300 hover:border-rose-400/45"
+                  : "border-emerald-400/25 bg-emerald-400/[0.08] text-emerald-300 hover:border-emerald-400/45",
+              )}
+              disabled={runtimeBusy}
+              onClick={() => void controlRuntime(runtimeRunning || runtimeStarting ? "DELETE" : "POST")}
+              type="button"
+            >
+              {runtimeBusy && (
+                <svg className="h-3 w-3 animate-spin opacity-70" fill="none" viewBox="0 0 24 24">
+                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="3" />
+                  <path className="opacity-75" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" fill="currentColor" />
+                </svg>
+              )}
+              {runtimeBusy
+                ? "Working\u2026"
+                : runtimeRunning || runtimeStarting
+                  ? "Stop Scanning"
+                  : "Start Scanning"}
+            </button>
+          </div>
+
+          {/* Signal parameters */}
+          <div className="border-b border-white/[0.07] px-4 py-3">
+            <p className="mb-2 font-mono text-[10px] uppercase tracking-[0.18em] text-[var(--muted)]">Signal</p>
+            <div className="grid grid-cols-[4.5rem_1fr] gap-y-1.5 font-mono text-[10px]">
+              <span className="text-[var(--muted)]">Center</span>
+              <span className="text-[var(--muted-strong)]">{formatFrequencyMHz(snapshot?.runtime.centerFreqHz ?? 1_090_000_000)}</span>
+              <span className="text-[var(--muted)]">IQ rate</span>
+              <span className="text-[var(--muted-strong)]">{(snapshot?.runtime.sampleRate ?? 2_400_000).toLocaleString("en")} sps</span>
+              <span className="text-[var(--muted)]">Started</span>
+              <span className="text-[var(--muted-strong)]">{formatTimestamp(snapshot?.runtime.startedAt ?? null)}</span>
+              <span className="text-[var(--muted)]">Last JSON</span>
+              <span className="text-[var(--muted-strong)]">{formatTimestamp(snapshot?.runtime.lastJsonAt ?? null)}</span>
             </div>
           </div>
 
-          <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-4">
-            <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-[var(--muted)]">
-              Receiver
-            </p>
-            <div className="mt-3 flex items-center gap-2">
-              <span
-                className={cx(
-                  "h-2 w-2 rounded-full",
-                  hardware?.state === "connected"
-                    ? "bg-emerald-400"
-                    : hardware?.state === "disconnected"
-                      ? "bg-amber-400"
-                      : "bg-rose-400",
-                )}
-              />
+          {/* Receiver */}
+          <div className="border-b border-white/[0.07] px-4 py-3">
+            <p className="mb-2 font-mono text-[10px] uppercase tracking-[0.18em] text-[var(--muted)]">Receiver</p>
+            <div className="flex items-center gap-2">
+              <span className={cx(
+                "h-1.5 w-1.5 shrink-0 rounded-full",
+                hardware?.state === "connected" ? "bg-emerald-400"
+                : hardware?.state === "disconnected" ? "bg-amber-400"
+                : "bg-rose-400",
+              )} />
               <span className="font-mono text-xs text-[var(--foreground)]">
                 {hardware?.product || "HackRF One"}
               </span>
             </div>
-            <p className="mt-2 text-xs leading-5 text-[var(--muted)]">
-              {hardware?.message || "Hardware status not loaded yet."}
-            </p>
+            {hardware?.message ? (
+              <p className="mt-1.5 text-xs leading-5 text-[var(--muted)]">{hardware.message}</p>
+            ) : null}
             {snapshot?.receiver ? (
-              <div className="mt-3 space-y-1 font-mono text-[10px] text-[var(--muted)]">
-                <p>dump1090 {snapshot.receiver.version || "\u2014"}</p>
-                <p>refresh {snapshot.receiver.refreshMs ?? "\u2014"} ms</p>
-                <p>coords {formatCoordinates(snapshot.receiver.latitude, snapshot.receiver.longitude)}</p>
+              <div className="mt-2.5 grid grid-cols-[4.5rem_1fr] gap-y-1.5 font-mono text-[10px]">
+                <span className="text-[var(--muted)]">dump1090</span>
+                <span className="text-[var(--muted-strong)]">{snapshot.receiver.version || "\u2014"}</span>
+                <span className="text-[var(--muted)]">Refresh</span>
+                <span className="text-[var(--muted-strong)]">{snapshot.receiver.refreshMs ?? "\u2014"} ms</span>
+                <span className="text-[var(--muted)]">Coords</span>
+                <span className="text-[var(--muted-strong)]">{formatCoordinates(snapshot.receiver.latitude, snapshot.receiver.longitude)}</span>
               </div>
             ) : null}
           </div>
 
-          <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-4">
-            <div className="flex items-center justify-between gap-3">
-              <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-[var(--muted)]">
-                Decoder Stats
-              </p>
-              <span className="rounded-full border border-white/10 bg-white/[0.04] px-2 py-0.5 font-mono text-[9px] uppercase tracking-[0.14em] text-[var(--muted-strong)]">
-                latest
-              </span>
-            </div>
-            {snapshot?.stats ? (
-              <div className="mt-3 grid grid-cols-2 gap-2 font-mono text-[10px] text-[var(--muted)]">
-                <p>{snapshot.stats.messages.toLocaleString("en")} msgs</p>
-                <p>{snapshot.stats.modes.toLocaleString("en")} preambles</p>
-                <p>{snapshot.stats.bad.toLocaleString("en")} bad</p>
-                <p>{snapshot.stats.strongSignals.toLocaleString("en")} strong</p>
-                <p>signal {snapshot.stats.signalDbfs?.toFixed(1) ?? "\u2014"} dBFS</p>
-                <p>noise {snapshot.stats.noiseDbfs?.toFixed(1) ?? "\u2014"} dBFS</p>
-                <p>peak {snapshot.stats.peakSignalDbfs?.toFixed(1) ?? "\u2014"} dBFS</p>
-                <p>gain {snapshot.stats.gainDb?.toFixed(1) ?? "\u2014"} dB</p>
+          {/* Decoder stats */}
+          {snapshot?.stats ? (
+            <div className="border-b border-white/[0.07] px-4 py-3">
+              <p className="mb-2 font-mono text-[10px] uppercase tracking-[0.18em] text-[var(--muted)]">Stats</p>
+              <div className="grid grid-cols-2 gap-x-3 gap-y-1.5 font-mono text-[10px]">
+                <div><span className="text-[var(--muted)]">Msgs </span><span className="text-[var(--muted-strong)]">{snapshot.stats.messages.toLocaleString("en")}</span></div>
+                <div><span className="text-[var(--muted)]">Strong </span><span className="text-[var(--muted-strong)]">{snapshot.stats.strongSignals.toLocaleString("en")}</span></div>
+                <div><span className="text-[var(--muted)]">Signal </span><span className="text-[var(--muted-strong)]">{snapshot.stats.signalDbfs?.toFixed(1) ?? "\u2014"} dBFS</span></div>
+                <div><span className="text-[var(--muted)]">Noise </span><span className="text-[var(--muted-strong)]">{snapshot.stats.noiseDbfs?.toFixed(1) ?? "\u2014"} dBFS</span></div>
+                <div><span className="text-[var(--muted)]">Peak </span><span className="text-[var(--muted-strong)]">{snapshot.stats.peakSignalDbfs?.toFixed(1) ?? "\u2014"} dBFS</span></div>
+                <div><span className="text-[var(--muted)]">Gain </span><span className="text-[var(--muted-strong)]">{snapshot.stats.gainDb?.toFixed(1) ?? "\u2014"} dB</span></div>
               </div>
-            ) : (
-              <p className="mt-2 text-xs leading-5 text-[var(--muted)]">
-                No decoder stats available yet.
-              </p>
-            )}
-          </div>
+            </div>
+          ) : null}
 
-          <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-4">
-            <div className="flex items-center justify-between gap-3">
-              <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-[var(--muted)]">
-                Map Tiles
-              </p>
-              <span
-                className={cx(
-                  "rounded-full border px-2 py-0.5 font-mono text-[9px] uppercase tracking-[0.14em]",
-                  snapshot?.maps.available
-                    ? "border-emerald-400/20 bg-emerald-400/10 text-emerald-200"
-                    : "border-amber-400/20 bg-amber-400/10 text-amber-200",
-                )}
-              >
+          {/* Map */}
+          <div className="border-b border-white/[0.07] px-4 py-3">
+            <div className="flex items-center justify-between">
+              <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-[var(--muted)]">Map</p>
+              <span className={cx(
+                "inline-flex items-center gap-1.5 font-mono text-[9px] uppercase tracking-[0.12em]",
+                snapshot?.maps.available ? "text-emerald-300" : "text-amber-300",
+              )}>
+                <span className={cx("h-1.5 w-1.5 rounded-full", snapshot?.maps.available ? "bg-emerald-400" : "bg-amber-400")} />
                 {snapshot?.maps.available ? "offline" : "live"}
               </span>
             </div>
-            <p className="mt-2 text-sm text-[var(--foreground)]">
-              {snapshot?.maps.name ?? "OpenStreetMap Live"}
-            </p>
-            <p className="mt-1 text-xs leading-5 text-[var(--muted)]">
-              {snapshot?.maps.available
-                ? snapshot.maps.kind === "pmtiles"
-                  ? snapshot.maps.countryLayerCount > 0
-                    ? `Local dark PMTiles layers ready up to z${snapshot.maps.maxZoom}, including ${snapshot.maps.countryLayerCount} country overlay${snapshot.maps.countryLayerCount === 1 ? "" : "s"}.`
-                    : `Local dark PMTiles basemap ready up to z${snapshot.maps.maxZoom}.`
-                  : `Local raster layer set ready up to z${snapshot.maps.maxZoom}.`
-                : "No local map layers installed yet. The module falls back to live OpenStreetMap tiles."}
-            </p>
-            {snapshot?.maps.installedAt ? (
-              <p className="mt-2 font-mono text-[10px] text-[var(--muted)]">
-                installed {formatTimestamp(snapshot.maps.installedAt)}
-              </p>
-            ) : null}
+            <p className="mt-1.5 text-xs text-[var(--muted-strong)]">{snapshot?.maps.name ?? "OpenStreetMap Live"}</p>
           </div>
 
+          {/* Warnings */}
           {snapshot?.warnings.length ? (
-            <div className="space-y-2 rounded-2xl border border-amber-400/20 bg-amber-400/8 p-4">
-              <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-amber-200">
-                Attention
-              </p>
+            <div className="border-b border-white/[0.07] px-4 py-3">
+              <p className="mb-1.5 font-mono text-[10px] uppercase tracking-[0.18em] text-amber-300">Attention</p>
               {snapshot.warnings.map((warning) => (
-                <p key={warning} className="text-xs leading-5 text-amber-100">
-                  {warning}
-                </p>
+                <p key={warning} className="text-xs leading-5 text-amber-100">{warning}</p>
               ))}
             </div>
           ) : null}
 
+          {/* Error */}
           {error ? (
-            <div className="rounded-2xl border border-rose-400/20 bg-rose-400/8 p-4 text-xs leading-5 text-rose-100">
-              {error}
-            </div>
+            <div className="px-4 py-3 text-xs leading-5 text-rose-300">{error}</div>
           ) : null}
         </div>
       </aside>
@@ -597,11 +574,9 @@ export function AdsbModule({ hardware, onRefreshHardware }: AdsbModuleProps) {
       <main className="flex flex-1 flex-col overflow-hidden">
         <div className="flex shrink-0 items-center justify-between border-b border-white/8 px-4 py-2.5">
           <div>
-            <span className="font-mono text-[10px] uppercase tracking-[0.22em] text-[var(--muted)]">
-              ADS-B Map
-            </span>
-            <p className="mt-1 font-mono text-[10px] text-[var(--muted)]">
-              latest aircraft {formatTimestamp(snapshot?.latestMessageAt ?? null)}
+            <span className="font-mono text-[10px] uppercase tracking-[0.22em] text-[var(--foreground)]">Air Picture</span>
+            <p className="mt-0.5 font-mono text-[10px] text-[var(--muted)]">
+              last contact {formatTimestamp(snapshot?.latestMessageAt ?? null)}
             </p>
           </div>
           <span className="font-mono text-[10px] text-[var(--muted)]">
@@ -627,7 +602,7 @@ export function AdsbModule({ hardware, onRefreshHardware }: AdsbModuleProps) {
           />
 
           {selected ? (
-            <div className="pointer-events-none absolute left-4 top-4 z-[1200] max-w-sm rounded-2xl border border-white/10 bg-[rgba(6,11,20,0.86)] px-4 py-3 shadow-[0_18px_60px_rgba(0,0,0,0.35)] backdrop-blur-sm">
+            <div className="pointer-events-none absolute left-4 top-4 z-[1200] max-w-sm rounded-lg border border-white/10 bg-[rgba(6,11,20,0.86)] px-4 py-3 shadow-[0_18px_60px_rgba(0,0,0,0.35)] backdrop-blur-sm">
               <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-[var(--accent)]">
                 Selected Aircraft
               </p>
@@ -640,38 +615,37 @@ export function AdsbModule({ hardware, onRefreshHardware }: AdsbModuleProps) {
             </div>
           ) : null}
 
-          <div className="pointer-events-none absolute bottom-4 left-4 z-[1200] max-w-sm rounded-2xl border border-white/10 bg-[rgba(6,11,20,0.78)] px-4 py-3 backdrop-blur-sm">
-            <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-[var(--muted)]">
-              Attribution
-            </p>
-            <p className="mt-1 text-xs leading-5 text-[var(--muted-strong)]">
+          <div className="pointer-events-none absolute bottom-3 left-3 z-[1200] max-w-xs rounded border border-white/[0.07] bg-[rgba(4,8,15,0.72)] px-2.5 py-1.5 backdrop-blur-sm">
+            <p className="font-mono text-[9px] leading-4 text-[var(--muted)]">
               {snapshot?.maps.attribution ?? "© OpenStreetMap contributors"}
             </p>
           </div>
 
           {loading && !snapshot ? (
             <div className="pointer-events-none absolute inset-0 z-[1200] flex items-center justify-center bg-black/25 backdrop-blur-[2px]">
-              <div className="rounded-2xl border border-white/10 bg-[rgba(6,11,20,0.88)] px-4 py-3 text-sm text-[var(--muted-strong)]">
+              <div className="rounded-lg border border-white/10 bg-[rgba(6,11,20,0.88)] px-4 py-3 text-sm text-[var(--muted-strong)]">
                 Starting ADS-B decoder...
               </div>
             </div>
           ) : null}
 
           {!loading && snapshot && positionedAircraft.length === 0 ? (
-            <div className="pointer-events-none absolute inset-0 z-[1200] flex items-center justify-center bg-black/20">
-              <div className="max-w-md rounded-2xl border border-white/10 bg-[rgba(6,11,20,0.88)] px-5 py-4 text-center">
-                <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-[var(--accent)]">
-                  No Aircraft
+            <div className="pointer-events-none absolute inset-0 z-[1200] flex items-end justify-center pb-20">
+              <div className="flex flex-col items-center gap-3 rounded border border-white/[0.07] bg-[rgba(4,8,15,0.72)] px-6 py-4 text-center backdrop-blur-sm">
+                <div className="h-px w-8 bg-[var(--accent)]/20" />
+                <p className="font-mono text-[9px] uppercase tracking-[0.32em] text-[var(--accent)]/60">
+                  No Positions
                 </p>
-                <p className="mt-2 text-sm leading-6 text-[var(--muted)]">
+                <p className="max-w-[22rem] text-[11px] leading-6 text-[var(--muted)]">
                   {runtimeState === "error"
                     ? snapshot.runtime.message
                     : runtimeRunning
-                      ? "The decoder is running, but no aircraft positions have been produced yet."
+                      ? "Decoder is live — no aircraft positions decoded yet."
                       : runtimeStarting
-                        ? "The decoder is still starting."
-                        : "Start the ADS-B decoder to populate the map with live HackRF data."}
+                        ? "Decoder starting\u2026"
+                        : "Start Scanning to populate the air picture with live HackRF data."}
                 </p>
+                <div className="h-px w-8 bg-[var(--accent)]/20" />
               </div>
             </div>
           ) : null}
@@ -679,142 +653,115 @@ export function AdsbModule({ hardware, onRefreshHardware }: AdsbModuleProps) {
       </main>
 
       <aside className="flex w-80 shrink-0 flex-col overflow-hidden border-l border-white/8 bg-black/15">
-        <div className="border-b border-white/8 p-5">
+        {/* Detail */}
+        <div className="border-b border-white/[0.07] px-5 py-4">
           {selected ? (
             <>
-              <p className="font-mono text-[10px] uppercase tracking-[0.22em] text-[var(--muted)]">
-                Aircraft Detail
-              </p>
-              <h3 className="mt-2 text-xl font-semibold leading-tight text-[var(--foreground)]">
-                {displayAircraftName(selected)}
-              </h3>
-              <p className="mt-1 font-mono text-[11px] text-[var(--muted)]">
-                HEX {selected.hex}
-              </p>
-
-              <div className="mt-4 grid grid-cols-3 gap-3">
-                <div className="rounded-xl border border-white/8 bg-white/[0.03] p-3">
-                  <p className="font-mono text-[9px] uppercase tracking-[0.16em] text-[var(--muted)]">
-                    Altitude
-                  </p>
-                  <p className="mt-1 text-sm text-[var(--foreground)]">
-                    {formatAltitude(selected.altitudeFeet)}
-                  </p>
+              <div className="flex items-start justify-between gap-2">
+                <div className="min-w-0">
+                  <p className="font-mono text-[10px] uppercase tracking-[0.22em] text-[var(--muted)]">Aircraft</p>
+                  <h3 className="mt-1 truncate text-base font-semibold leading-tight text-[var(--foreground)]">
+                    {displayAircraftName(selected)}
+                  </h3>
+                  <p className="mt-0.5 font-mono text-[10px] text-[var(--muted)]">HEX {selected.hex}</p>
                 </div>
-                <div className="rounded-xl border border-white/8 bg-white/[0.03] p-3">
-                  <p className="font-mono text-[9px] uppercase tracking-[0.16em] text-[var(--muted)]">
-                    Speed
-                  </p>
-                  <p className="mt-1 text-sm text-[var(--foreground)]">
-                    {formatSpeed(selected.groundSpeedKnots)}
-                  </p>
-                </div>
-                <div className="rounded-xl border border-white/8 bg-white/[0.03] p-3">
-                  <p className="font-mono text-[9px] uppercase tracking-[0.16em] text-[var(--muted)]">
-                    Track
-                  </p>
-                  <p className="mt-1 text-sm text-[var(--foreground)]">
-                    {formatTrack(selected.trackDeg)}
-                  </p>
-                </div>
+                <span className={cx(
+                  "mt-0.5 shrink-0 rounded-sm px-1.5 py-0.5 font-mono text-[9px] uppercase tracking-[0.1em]",
+                  selected.emergency
+                    ? "bg-rose-400/15 text-rose-300"
+                    : selected.onGround
+                      ? "bg-[var(--accent)]/10 text-[var(--accent)]"
+                      : "bg-[var(--highlight)]/10 text-[var(--highlight)]",
+                )}>
+                  {selected.emergency || (selected.onGround ? "Ground" : "Airborne")}
+                </span>
               </div>
 
-              <div className="mt-4 space-y-2 text-sm">
-                <p className="text-[var(--muted)]">
-                  <span className="text-[var(--muted-strong)]">Source:</span> {selected.sourceLabel || "\u2014"}
-                </p>
-                <p className="text-[var(--muted)]">
-                  <span className="text-[var(--muted-strong)]">Type:</span> {selected.type || "\u2014"}
-                </p>
-                <p className="text-[var(--muted)]">
-                  <span className="text-[var(--muted-strong)]">Category:</span> {selected.category || "\u2014"}
-                </p>
-                <p className="text-[var(--muted)]">
-                  <span className="text-[var(--muted-strong)]">Squawk:</span> {selected.squawk || "\u2014"}
-                </p>
-                <p className="text-[var(--muted)]">
-                  <span className="text-[var(--muted-strong)]">Emergency:</span> {selected.emergency || "\u2014"}
-                </p>
-                <p className="text-[var(--muted)]">
-                  <span className="text-[var(--muted-strong)]">Vertical rate:</span> {selected.verticalRateFpm === null ? "\u2014" : `${Math.round(selected.verticalRateFpm).toLocaleString("en")} fpm`}
-                </p>
-                <p className="text-[var(--muted)]">
-                  <span className="text-[var(--muted-strong)]">RSSI:</span> {selected.rssi === null ? "\u2014" : `${selected.rssi.toFixed(1)} dBFS`}
-                </p>
-                <p className="text-[var(--muted)]">
-                  <span className="text-[var(--muted-strong)]">Coords:</span> {formatCoordinates(selected.latitude, selected.longitude)}
-                </p>
-                <p className="text-[var(--muted)]">
-                  <span className="text-[var(--muted-strong)]">Last seen:</span> {formatTimestamp(selected.seenAt)}
-                </p>
-                <p className="text-[var(--muted)]">
-                  <span className="text-[var(--muted-strong)]">Last position:</span> {formatTimestamp(selected.seenPosAt)}
-                </p>
+              <div className="mt-3 grid grid-cols-3 gap-1.5">
+                {[
+                  { label: "ALT", value: formatAltitude(selected.altitudeFeet) },
+                  { label: "SPD", value: formatSpeed(selected.groundSpeedKnots) },
+                  { label: "TRK", value: formatTrack(selected.trackDeg) },
+                ].map((s) => (
+                  <div key={s.label} className="rounded-sm border border-white/8 bg-white/[0.025] px-2 py-1.5">
+                    <p className="font-mono text-[8px] uppercase tracking-[0.14em] text-[var(--muted)]">{s.label}</p>
+                    <p className="mt-0.5 font-mono text-[11px] font-medium tabular-nums text-[var(--foreground)]">{s.value}</p>
+                  </div>
+                ))}
+              </div>
+
+              <div className="mt-3 grid grid-cols-[4.5rem_1fr] gap-y-1.5 font-mono text-[10px]">
+                <span className="text-[var(--muted)]">Source</span>
+                <span className="text-[var(--muted-strong)]">{selected.sourceLabel || "\u2014"}</span>
+                <span className="text-[var(--muted)]">Type</span>
+                <span className="text-[var(--muted-strong)]">{selected.type || "\u2014"}</span>
+                <span className="text-[var(--muted)]">Category</span>
+                <span className="text-[var(--muted-strong)]">{selected.category || "\u2014"}</span>
+                <span className="text-[var(--muted)]">Squawk</span>
+                <span className="text-[var(--muted-strong)]">{selected.squawk || "\u2014"}</span>
+                <span className="text-[var(--muted)]">V/S</span>
+                <span className="text-[var(--muted-strong)]">{selected.verticalRateFpm === null ? "\u2014" : `${Math.round(selected.verticalRateFpm).toLocaleString("en")} fpm`}</span>
+                <span className="text-[var(--muted)]">RSSI</span>
+                <span className="text-[var(--muted-strong)]">{selected.rssi === null ? "\u2014" : `${selected.rssi.toFixed(1)} dBFS`}</span>
+                <span className="text-[var(--muted)]">Position</span>
+                <span className="text-[var(--muted-strong)]">{formatCoordinates(selected.latitude, selected.longitude)}</span>
+                <span className="text-[var(--muted)]">Last seen</span>
+                <span className="text-[var(--muted-strong)]">{formatTimestamp(selected.seenAt)}</span>
+                <span className="text-[var(--muted)]">Last pos</span>
+                <span className="text-[var(--muted-strong)]">{formatTimestamp(selected.seenPosAt)}</span>
               </div>
             </>
           ) : (
-            <>
-              <p className="text-sm leading-6 text-[var(--muted)]">
-                Pick an aircraft from the map or list to inspect it.
-              </p>
-            </>
+            <p className="text-xs leading-5 text-[var(--muted)]">Select an aircraft from the map or list to inspect it.</p>
           )}
         </div>
 
-        <div className="flex-1 overflow-y-auto p-4">
-          <div className="mb-3 flex items-center justify-between">
-            <p className="font-mono text-[10px] uppercase tracking-[0.22em] text-[var(--muted)]">
-              Contacts
-            </p>
-            <span className="font-mono text-[10px] text-[var(--muted)]">
-              {snapshot?.aircraftCount ?? 0}
-            </span>
-          </div>
+        <div className="flex items-center justify-between border-b border-white/[0.07] px-5 py-2.5">
+          <span className="font-mono text-[10px] uppercase tracking-[0.22em] text-[var(--muted)]">Contacts</span>
+          <span className="font-mono text-[10px] text-[var(--muted)]">{snapshot?.aircraftCount ?? 0}</span>
+        </div>
 
-          <div className="space-y-2">
-            {(snapshot?.aircraft ?? []).map((aircraft) => {
-              const active = aircraft.hex === selected?.hex;
-
-              return (
-                <button
-                  key={aircraft.hex}
-                  className={cx(
-                    "group w-full rounded-2xl border px-3 py-3 text-left transition",
-                    active
-                      ? "border-[var(--accent)]/40 bg-[var(--accent)]/10"
-                      : "border-white/8 bg-white/[0.02] hover:border-white/14 hover:bg-white/[0.04]",
-                  )}
-                  onClick={() => {
-                    setSelectedHex(aircraft.hex);
-                    focusAircraft(aircraft);
-                  }}
-                  type="button"
-                >
-                  <div className="flex items-start justify-between gap-3">
-                    <div className="min-w-0">
-                      <p className="truncate text-sm text-[var(--foreground)]">
-                        {displayAircraftName(aircraft)}
-                      </p>
-                      <p className="mt-1 font-mono text-[10px] text-[var(--muted)]">
-                        HEX {aircraft.hex}
-                      </p>
-                      <p className="mt-1 text-xs text-[var(--muted)]">
-                        {aircraft.emergency || aircraft.squawk || aircraft.sourceLabel}
-                      </p>
-                    </div>
-                    <div className="shrink-0 text-right">
-                      <p className="font-mono text-[10px] text-[var(--muted-strong)]">
-                        {formatAltitude(aircraft.altitudeFeet)}
-                      </p>
-                      <p className="mt-1 font-mono text-[10px] text-[var(--muted)]">
-                        {formatSpeed(aircraft.groundSpeedKnots)}
-                      </p>
-                    </div>
-                  </div>
-                </button>
-              );
-            })}
-          </div>
+        <div className="flex-1 overflow-y-auto">
+          {(snapshot?.aircraft ?? []).map((aircraft) => {
+            const active = aircraft.hex === selected?.hex;
+            return (
+              <button
+                key={aircraft.hex}
+                className={cx(
+                  "flex w-full items-start gap-3 border-b border-white/[0.05] px-5 py-3 text-left transition",
+                  active ? "bg-[var(--accent)]/8 border-l-accent" : "hover:bg-white/[0.025] border-l-clear",
+                )}
+                onClick={() => {
+                  setSelectedHex(aircraft.hex);
+                  focusAircraft(aircraft);
+                }}
+                type="button"
+              >
+                <span className={cx(
+                  "mt-1 h-1.5 w-1.5 shrink-0 rounded-full",
+                  aircraft.emergency ? "bg-rose-400"
+                  : aircraft.onGround ? "bg-[var(--accent)]"
+                  : "bg-[var(--highlight)]",
+                )} />
+                <span className="min-w-0 flex-1">
+                  <span className="block truncate font-mono text-xs font-medium text-[var(--foreground)]">
+                    {displayAircraftName(aircraft)}
+                  </span>
+                  <span className="mt-0.5 block font-mono text-[10px] text-[var(--muted)]">
+                    {aircraft.hex}{aircraft.squawk ? ` \u00b7 SQ\u00a0${aircraft.squawk}` : ""}
+                  </span>
+                </span>
+                <span className="shrink-0 text-right">
+                  <span className="block font-mono text-[10px] text-[var(--muted-strong)]">
+                    {formatAltitude(aircraft.altitudeFeet)}
+                  </span>
+                  <span className="mt-0.5 block font-mono text-[10px] text-[var(--muted)]">
+                    {formatSpeed(aircraft.groundSpeedKnots)}
+                  </span>
+                </span>
+              </button>
+            );
+          })}
         </div>
       </aside>
     </div>

@@ -100,6 +100,24 @@ function runtimeLabel(state: AisRuntimeState | null): string {
   }
 }
 
+function runtimeDotColor(state: AisRuntimeState | null): string {
+  switch (state) {
+    case "running": return "bg-emerald-400";
+    case "starting": return "bg-amber-400";
+    case "error": return "bg-rose-400";
+    default: return "bg-white/25";
+  }
+}
+
+function runtimeTextColor(state: AisRuntimeState | null): string {
+  switch (state) {
+    case "running": return "text-emerald-300";
+    case "starting": return "text-amber-300";
+    case "error": return "text-rose-300";
+    default: return "text-[var(--muted-strong)]";
+  }
+}
+
 async function fetchAisFeed(): Promise<AisFeedSnapshot> {
   const response = await fetch("/api/ais", { cache: "no-store" });
   if (!response.ok) {
@@ -366,186 +384,150 @@ export function AisModule({ hardware, onRefreshHardware }: AisModuleProps) {
 
   return (
     <div className="flex flex-1 overflow-hidden">
-      <aside className="flex w-72 shrink-0 flex-col overflow-y-auto border-r border-white/8 bg-black/10">
-        <div className="space-y-4 p-4">
-          <div>
-            <span className="font-mono text-[10px] uppercase tracking-[0.25em] text-[var(--muted)]">
-              AIS Feed
-            </span>
-            <h2 className="mt-2 text-xl font-semibold text-[var(--foreground)]">
-              Maritime picture
-            </h2>
-            <p className="mt-1.5 text-sm leading-6 text-[var(--muted)]">
-              Live AIS reception from the HackRF across channels A and B at 161.975 and 162.025 MHz.
+      <aside className="flex w-72 shrink-0 flex-col overflow-hidden border-r border-white/8 bg-black/10">
+        {/* Title + live status */}
+        <div className="flex items-center justify-between border-b border-white/[0.07] px-4 py-3">
+          <div className="flex items-center gap-2.5">
+            <span className="font-mono text-[10px] uppercase tracking-[0.25em] text-[var(--foreground)]">AIS</span>
+            <span className="font-mono text-[10px] text-[var(--muted)]">162 MHz</span>
+          </div>
+          <span className={cx("inline-flex items-center gap-1.5 font-mono text-[9px] uppercase tracking-[0.12em]", runtimeTextColor(runtimeState))}>
+            <span className={cx("h-1.5 w-1.5 rounded-full", runtimeDotColor(runtimeState))} />
+            {runtimeLabel(runtimeState)}
+          </span>
+        </div>
+
+        {/* Stats row */}
+        <div className="grid grid-cols-2 border-b border-white/[0.07]">
+          <div className="border-r border-white/[0.07] px-3.5 py-3">
+            <p className="font-mono text-[9px] uppercase tracking-[0.14em] text-[var(--muted)]">Vessels</p>
+            <p className="mt-1.5 font-mono text-[22px] font-semibold tabular-nums leading-none text-[var(--foreground)]">
+              {snapshot?.vesselCount ?? 0}
             </p>
           </div>
-
-          <div className="grid grid-cols-2 gap-3">
-            <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-3">
-              <p className="font-mono text-[9px] uppercase tracking-[0.18em] text-[var(--muted)]">
-                Vessels
-              </p>
-              <p className="mt-1 text-2xl font-semibold text-[var(--foreground)]">
-                {snapshot?.vesselCount ?? 0}
-              </p>
-            </div>
-            <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-3">
-              <p className="font-mono text-[9px] uppercase tracking-[0.18em] text-[var(--muted)]">
-                Moving
-              </p>
-              <p className="mt-1 text-2xl font-semibold text-[var(--foreground)]">
-                {snapshot?.movingCount ?? 0}
-              </p>
-            </div>
+          <div className="px-3.5 py-3">
+            <p className="font-mono text-[9px] uppercase tracking-[0.14em] text-[var(--muted)]">Moving</p>
+            <p className="mt-1.5 font-mono text-[22px] font-semibold tabular-nums leading-none text-[var(--foreground)]">
+              {snapshot?.movingCount ?? 0}
+            </p>
           </div>
+        </div>
 
-          <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-4">
-            <div className="flex items-center justify-between gap-3">
-              <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-[var(--muted)]">
-                Decoder
-              </p>
-              <span
-                className={cx(
-                  "rounded-full border px-2 py-0.5 font-mono text-[9px] uppercase tracking-[0.14em]",
-                  runtimeTone(runtimeState),
-                )}
-              >
-                {runtimeLabel(runtimeState)}
-              </span>
-            </div>
-            <p className="mt-2 text-sm leading-6 text-[var(--foreground)]">
+        <div className="flex-1 overflow-y-auto">
+          {/* Decoder */}
+          <div className="border-b border-white/[0.07] px-4 py-3">
+            <p className="mb-2 font-mono text-[10px] uppercase tracking-[0.18em] text-[var(--muted)]">Decoder</p>
+            <p className="text-xs leading-5 text-[var(--muted-strong)]">
               {snapshot?.runtime.message ?? "AIS decoder state not loaded yet."}
             </p>
-            <div className="mt-3 flex items-center gap-2">
-              <button
-                className={cx(
-                  "rounded-full border px-3 py-1.5 font-mono text-[10px] uppercase tracking-[0.14em] transition",
-                  runtimeRunning || runtimeStarting
-                    ? "border-rose-400/25 bg-rose-400/10 text-rose-200 hover:border-rose-400/40"
-                    : "border-emerald-400/25 bg-emerald-400/10 text-emerald-200 hover:border-emerald-400/40",
-                )}
-                disabled={runtimeBusy}
-                onClick={() => void controlRuntime(runtimeRunning || runtimeStarting ? "DELETE" : "POST")}
-                type="button"
-              >
-                {runtimeBusy
-                  ? "Working"
-                  : runtimeRunning || runtimeStarting
-                    ? "Stop Decoder"
-                    : "Start Decoder"}
-              </button>
-            </div>
-            <div className="mt-3 space-y-1 font-mono text-[10px] text-[var(--muted)]">
-              <p>Center {formatFrequencyMHz(snapshot?.runtime.centerFreqHz ?? 162_000_000)}</p>
-              <p>IQ rate {(snapshot?.runtime.sampleRate ?? 1_536_000).toLocaleString("en")} sps</p>
-              <p>Started {formatTimestamp(snapshot?.runtime.startedAt ?? null)}</p>
-              <p>Last frame {formatTimestamp(snapshot?.runtime.lastFrameAt ?? null)}</p>
+            <button
+              className={cx(
+                "mt-3 inline-flex items-center gap-1.5 rounded border px-3 py-1 font-mono text-[10px] uppercase tracking-[0.12em] transition",
+                runtimeRunning || runtimeStarting
+                  ? "border-rose-400/25 bg-rose-400/[0.08] text-rose-300 hover:border-rose-400/45"
+                  : "border-emerald-400/25 bg-emerald-400/[0.08] text-emerald-300 hover:border-emerald-400/45",
+              )}
+              disabled={runtimeBusy}
+              onClick={() => void controlRuntime(runtimeRunning || runtimeStarting ? "DELETE" : "POST")}
+              type="button"
+            >
+              {runtimeBusy && (
+                <svg className="h-3 w-3 animate-spin opacity-70" fill="none" viewBox="0 0 24 24">
+                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="3" />
+                  <path className="opacity-75" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" fill="currentColor" />
+                </svg>
+              )}
+              {runtimeBusy
+                ? "Working\u2026"
+                : runtimeRunning || runtimeStarting
+                  ? "Stop Scanning"
+                  : "Start Scanning"}
+            </button>
+          </div>
+
+          {/* Signal parameters */}
+          <div className="border-b border-white/[0.07] px-4 py-3">
+            <p className="mb-2 font-mono text-[10px] uppercase tracking-[0.18em] text-[var(--muted)]">Signal</p>
+            <div className="grid grid-cols-[4.5rem_1fr] gap-y-1.5 font-mono text-[10px]">
+              <span className="text-[var(--muted)]">Center</span>
+              <span className="text-[var(--muted-strong)]">{formatFrequencyMHz(snapshot?.runtime.centerFreqHz ?? 162_000_000)}</span>
+              <span className="text-[var(--muted)]">IQ rate</span>
+              <span className="text-[var(--muted-strong)]">{(snapshot?.runtime.sampleRate ?? 1_536_000).toLocaleString("en")} sps</span>
+              <span className="text-[var(--muted)]">Started</span>
+              <span className="text-[var(--muted-strong)]">{formatTimestamp(snapshot?.runtime.startedAt ?? null)}</span>
+              <span className="text-[var(--muted)]">Last frame</span>
+              <span className="text-[var(--muted-strong)]">{formatTimestamp(snapshot?.runtime.lastFrameAt ?? null)}</span>
             </div>
           </div>
 
-          <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-4">
-            <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-[var(--muted)]">
-              Receiver
-            </p>
-            <div className="mt-3 flex items-center gap-2">
-              <span
-                className={cx(
-                  "h-2 w-2 rounded-full",
-                  hardware?.state === "connected"
-                    ? "bg-emerald-400"
-                    : hardware?.state === "disconnected"
-                      ? "bg-amber-400"
-                      : "bg-rose-400",
-                )}
-              />
+          {/* Receiver */}
+          <div className="border-b border-white/[0.07] px-4 py-3">
+            <p className="mb-2 font-mono text-[10px] uppercase tracking-[0.18em] text-[var(--muted)]">Receiver</p>
+            <div className="flex items-center gap-2">
+              <span className={cx(
+                "h-1.5 w-1.5 shrink-0 rounded-full",
+                hardware?.state === "connected" ? "bg-emerald-400"
+                : hardware?.state === "disconnected" ? "bg-amber-400"
+                : "bg-rose-400",
+              )} />
               <span className="font-mono text-xs text-[var(--foreground)]">
                 {hardware?.product || "HackRF One"}
               </span>
             </div>
-            <p className="mt-2 text-xs leading-5 text-[var(--muted)]">
-              {hardware?.message || "Hardware status not loaded yet."}
-            </p>
-          </div>
-
-          <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-4">
-            <div className="flex items-center justify-between gap-3">
-              <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-[var(--muted)]">
-                Map Tiles
-              </p>
-              <span
-                className={cx(
-                  "rounded-full border px-2 py-0.5 font-mono text-[9px] uppercase tracking-[0.14em]",
-                  snapshot?.maps.available
-                    ? "border-emerald-400/20 bg-emerald-400/10 text-emerald-200"
-                    : "border-amber-400/20 bg-amber-400/10 text-amber-200",
-                )}
-              >
-                {snapshot?.maps.available ? "offline" : "live"}
-              </span>
-            </div>
-            <p className="mt-2 text-sm text-[var(--foreground)]">
-              {snapshot?.maps.name ?? "OpenStreetMap Live"}
-            </p>
-            <p className="mt-1 text-xs leading-5 text-[var(--muted)]">
-              {snapshot?.maps.available
-                ? snapshot.maps.kind === "pmtiles"
-                  ? snapshot.maps.countryLayerCount > 0
-                    ? `Local dark PMTiles layers ready up to z${snapshot.maps.maxZoom}, including ${snapshot.maps.countryLayerCount} country overlay${snapshot.maps.countryLayerCount === 1 ? "" : "s"}.`
-                    : `Local dark PMTiles basemap ready up to z${snapshot.maps.maxZoom}.`
-                  : `Local raster layer set ready up to z${snapshot.maps.maxZoom}.`
-                : "No local map layers installed yet. The module falls back to live OpenStreetMap tiles."}
-            </p>
-            {snapshot?.maps.installedAt ? (
-              <p className="mt-2 font-mono text-[10px] text-[var(--muted)]">
-                installed {formatTimestamp(snapshot.maps.installedAt)}
-              </p>
+            {hardware?.message ? (
+              <p className="mt-1.5 text-xs leading-5 text-[var(--muted)]">{hardware.message}</p>
             ) : null}
           </div>
 
-          <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-4">
-            <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-[var(--muted)]">
-              Channels
-            </p>
-            <div className="mt-3 space-y-2">
-              {(snapshot?.channels ?? []).map((channel) => (
-                <div
-                  key={channel.id}
-                  className="rounded-xl border border-white/8 bg-black/20 px-3 py-2.5"
-                >
-                  <div className="flex items-center justify-between gap-3">
-                    <span className="text-sm text-[var(--foreground)]">{channel.label}</span>
-                    <span className="font-mono text-[10px] text-[var(--muted)]">
-                      {formatFrequencyMHz(channel.freqHz)}
-                    </span>
+          {/* Channels */}
+          {(snapshot?.channels ?? []).length > 0 ? (
+            <div className="border-b border-white/[0.07] px-4 py-3">
+              <p className="mb-2 font-mono text-[10px] uppercase tracking-[0.18em] text-[var(--muted)]">Channels</p>
+              <div className="space-y-2">
+                {(snapshot?.channels ?? []).map((channel) => (
+                  <div key={channel.id} className="rounded-sm border border-white/8 bg-black/20 px-3 py-2">
+                    <div className="flex items-center justify-between gap-2">
+                      <span className="font-mono text-[10px] font-medium text-[var(--foreground)]">{channel.label}</span>
+                      <span className="font-mono text-[10px] text-[var(--muted)]">{formatFrequencyMHz(channel.freqHz)}</span>
+                    </div>
+                    <div className="mt-1.5 grid grid-cols-2 gap-x-2 gap-y-1 font-mono text-[10px] text-[var(--muted)]">
+                      <span>{channel.messageCount} msgs</span>
+                      <span>phase {channel.lastPhase ?? "\u2014"}</span>
+                    </div>
                   </div>
-                  <div className="mt-2 grid grid-cols-2 gap-2 font-mono text-[10px] text-[var(--muted)]">
-                    <p>{channel.messageCount} msgs</p>
-                    <p>phase {channel.lastPhase ?? "\u2014"}</p>
-                    <p>last {formatTimestamp(channel.lastSeenAt)}</p>
-                    <p>{channel.lastMessageType ?? "No frame yet"}</p>
-                  </div>
-                </div>
-              ))}
+                ))}
+              </div>
             </div>
+          ) : null}
+
+          {/* Map */}
+          <div className="border-b border-white/[0.07] px-4 py-3">
+            <div className="flex items-center justify-between">
+              <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-[var(--muted)]">Map</p>
+              <span className={cx(
+                "inline-flex items-center gap-1.5 font-mono text-[9px] uppercase tracking-[0.12em]",
+                snapshot?.maps.available ? "text-emerald-300" : "text-amber-300",
+              )}>
+                <span className={cx("h-1.5 w-1.5 rounded-full", snapshot?.maps.available ? "bg-emerald-400" : "bg-amber-400")} />
+                {snapshot?.maps.available ? "offline" : "live"}
+              </span>
+            </div>
+            <p className="mt-1.5 text-xs text-[var(--muted-strong)]">{snapshot?.maps.name ?? "OpenStreetMap Live"}</p>
           </div>
 
+          {/* Warnings */}
           {snapshot?.warnings.length ? (
-            <div className="space-y-2 rounded-2xl border border-amber-400/20 bg-amber-400/8 p-4">
-              <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-amber-200">
-                Attention
-              </p>
+            <div className="border-b border-white/[0.07] px-4 py-3">
+              <p className="mb-1.5 font-mono text-[10px] uppercase tracking-[0.18em] text-amber-300">Attention</p>
               {snapshot.warnings.map((warning) => (
-                <p key={warning} className="text-xs leading-5 text-amber-100">
-                  {warning}
-                </p>
+                <p key={warning} className="text-xs leading-5 text-amber-100">{warning}</p>
               ))}
             </div>
           ) : null}
 
+          {/* Error */}
           {error ? (
-            <div className="rounded-2xl border border-rose-400/20 bg-rose-400/8 p-4 text-xs leading-5 text-rose-100">
-              {error}
-            </div>
+            <div className="px-4 py-3 text-xs leading-5 text-rose-300">{error}</div>
           ) : null}
         </div>
       </aside>
@@ -553,10 +535,8 @@ export function AisModule({ hardware, onRefreshHardware }: AisModuleProps) {
       <main className="flex flex-1 flex-col overflow-hidden">
         <div className="flex shrink-0 items-center justify-between border-b border-white/8 px-4 py-2.5">
           <div>
-            <span className="font-mono text-[10px] uppercase tracking-[0.22em] text-[var(--muted)]">
-              AIS Map
-            </span>
-            <p className="mt-1 font-mono text-[10px] text-[var(--muted)]">
+            <span className="font-mono text-[10px] uppercase tracking-[0.22em] text-[var(--foreground)]">Maritime Picture</span>
+            <p className="mt-0.5 font-mono text-[10px] text-[var(--muted)]">
               latest contact {formatTimestamp(snapshot?.latestPositionAt ?? null)}
             </p>
           </div>
@@ -583,7 +563,7 @@ export function AisModule({ hardware, onRefreshHardware }: AisModuleProps) {
           />
 
           {selected ? (
-            <div className="pointer-events-none absolute left-4 top-4 z-[1200] max-w-sm rounded-2xl border border-white/10 bg-[rgba(6,11,20,0.86)] px-4 py-3 shadow-[0_18px_60px_rgba(0,0,0,0.35)] backdrop-blur-sm">
+            <div className="pointer-events-none absolute left-4 top-4 z-[1200] max-w-sm rounded-lg border border-white/10 bg-[rgba(6,11,20,0.86)] px-4 py-3 shadow-[0_18px_60px_rgba(0,0,0,0.35)] backdrop-blur-sm">
               <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-[var(--accent)]">
                 Selected Vessel
               </p>
@@ -596,38 +576,37 @@ export function AisModule({ hardware, onRefreshHardware }: AisModuleProps) {
             </div>
           ) : null}
 
-          <div className="pointer-events-none absolute bottom-4 left-4 z-[1200] max-w-sm rounded-2xl border border-white/10 bg-[rgba(6,11,20,0.78)] px-4 py-3 backdrop-blur-sm">
-            <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-[var(--muted)]">
-              Attribution
-            </p>
-            <p className="mt-1 text-xs leading-5 text-[var(--muted-strong)]">
+          <div className="pointer-events-none absolute bottom-3 left-3 z-[1200] max-w-xs rounded border border-white/[0.07] bg-[rgba(4,8,15,0.72)] px-2.5 py-1.5 backdrop-blur-sm">
+            <p className="font-mono text-[9px] leading-4 text-[var(--muted)]">
               {snapshot?.maps.attribution ?? "© OpenStreetMap contributors"}
             </p>
           </div>
 
           {loading && !snapshot ? (
             <div className="pointer-events-none absolute inset-0 z-[1200] flex items-center justify-center bg-black/25 backdrop-blur-[2px]">
-              <div className="rounded-2xl border border-white/10 bg-[rgba(6,11,20,0.88)] px-4 py-3 text-sm text-[var(--muted-strong)]">
+              <div className="rounded-lg border border-white/10 bg-[rgba(6,11,20,0.88)] px-4 py-3 text-sm text-[var(--muted-strong)]">
                 Starting AIS decoder...
               </div>
             </div>
           ) : null}
 
           {!loading && snapshot && snapshot.vesselCount === 0 ? (
-            <div className="pointer-events-none absolute inset-0 z-[1200] flex items-center justify-center bg-black/20">
-              <div className="max-w-md rounded-2xl border border-white/10 bg-[rgba(6,11,20,0.88)] px-5 py-4 text-center">
-                <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-[var(--accent)]">
+            <div className="pointer-events-none absolute inset-0 z-[1200] flex items-end justify-center pb-20">
+              <div className="flex flex-col items-center gap-3 rounded border border-white/[0.07] bg-[rgba(4,8,15,0.72)] px-6 py-4 text-center backdrop-blur-sm">
+                <div className="h-px w-8 bg-[var(--accent)]/20" />
+                <p className="font-mono text-[9px] uppercase tracking-[0.32em] text-[var(--accent)]/60">
                   No Contacts
                 </p>
-                <p className="mt-2 text-sm leading-6 text-[var(--muted)]">
+                <p className="max-w-[22rem] text-[11px] leading-6 text-[var(--muted)]">
                   {runtimeState === "error"
                     ? snapshot.runtime.message
                     : runtimeRunning
-                    ? "The decoder is running, but no valid AIS vessel positions have been decoded yet."
-                    : runtimeStarting
-                      ? "The decoder is still starting."
-                      : "Start the AIS decoder to populate the map with live HackRF data."}
+                      ? "Decoder is live — no valid AIS positions decoded yet."
+                      : runtimeStarting
+                        ? "Decoder starting\u2026"
+                        : "Start Scanning to populate the maritime picture with live HackRF data."}
                 </p>
+                <div className="h-px w-8 bg-[var(--accent)]/20" />
               </div>
             </div>
           ) : null}
@@ -635,95 +614,75 @@ export function AisModule({ hardware, onRefreshHardware }: AisModuleProps) {
       </main>
 
       <aside className="flex w-80 shrink-0 flex-col overflow-hidden border-l border-white/8 bg-black/15">
-        <div className="border-b border-white/8 p-5">
+        <div className="border-b border-white/[0.07] px-5 py-4">
           {selected ? (
             <>
-              <p className="font-mono text-[10px] uppercase tracking-[0.22em] text-[var(--muted)]">
-                Vessel Detail
-              </p>
-              <h3 className="mt-2 text-xl font-semibold leading-tight text-[var(--foreground)]">
-                {displayVesselName(selected)}
-              </h3>
-              <p className="mt-1 font-mono text-[11px] text-[var(--muted)]">
-                MMSI {selected.mmsi}
-              </p>
-
-              <div className="mt-4 grid grid-cols-2 gap-3">
-                <div className="rounded-xl border border-white/8 bg-white/[0.03] p-3">
-                  <p className="font-mono text-[9px] uppercase tracking-[0.16em] text-[var(--muted)]">
-                    Speed
-                  </p>
-                  <p className="mt-1 text-sm text-[var(--foreground)]">
-                    {formatSpeed(selected.speedKnots)}
-                  </p>
+              <div className="flex items-start justify-between gap-2">
+                <div className="min-w-0">
+                  <p className="font-mono text-[10px] uppercase tracking-[0.22em] text-[var(--muted)]">Vessel</p>
+                  <h3 className="mt-1 truncate text-base font-semibold leading-tight text-[var(--foreground)]">
+                    {displayVesselName(selected)}
+                  </h3>
+                  <p className="mt-0.5 font-mono text-[10px] text-[var(--muted)]">MMSI {selected.mmsi}</p>
                 </div>
-                <div className="rounded-xl border border-white/8 bg-white/[0.03] p-3">
-                  <p className="font-mono text-[9px] uppercase tracking-[0.16em] text-[var(--muted)]">
-                    Course
-                  </p>
-                  <p className="mt-1 text-sm text-[var(--foreground)]">
-                    {formatCourse(selected.courseDeg)}
-                  </p>
-                </div>
+                <span className={cx(
+                  "mt-0.5 shrink-0 rounded-sm px-1.5 py-0.5 font-mono text-[9px] uppercase tracking-[0.1em]",
+                  selected.isMoving
+                    ? "bg-[var(--highlight)]/10 text-[var(--highlight)]"
+                    : "bg-[var(--accent)]/10 text-[var(--accent)]",
+                )}>
+                  {selected.isMoving ? "Underway" : "At anchor"}
+                </span>
               </div>
 
-              <div className="mt-4 space-y-2 text-sm">
-                <p className="text-[var(--muted)]">
-                  <span className="text-[var(--muted-strong)]">Status:</span> {selected.navStatus || "\u2014"}
-                </p>
-                <p className="text-[var(--muted)]">
-                  <span className="text-[var(--muted-strong)]">Type:</span> {selected.shipType || "\u2014"}
-                </p>
-                <p className="text-[var(--muted)]">
-                  <span className="text-[var(--muted-strong)]">Callsign:</span> {selected.callsign || "\u2014"}
-                </p>
-                <p className="text-[var(--muted)]">
-                  <span className="text-[var(--muted-strong)]">IMO:</span> {selected.imo || "\u2014"}
-                </p>
-                <p className="text-[var(--muted)]">
-                  <span className="text-[var(--muted-strong)]">Destination:</span> {selected.destination || "\u2014"}
-                </p>
-                <p className="text-[var(--muted)]">
-                  <span className="text-[var(--muted-strong)]">Coords:</span> {formatCoordinates(selected)}
-                </p>
-                <p className="text-[var(--muted)]">
-                  <span className="text-[var(--muted-strong)]">Last seen:</span> {formatTimestamp(selected.lastSeenAt)}
-                </p>
+              <div className="mt-3 grid grid-cols-2 gap-1.5">
+                {[
+                  { label: "SPD", value: formatSpeed(selected.speedKnots) },
+                  { label: "COG", value: formatCourse(selected.courseDeg) },
+                ].map((s) => (
+                  <div key={s.label} className="rounded-sm border border-white/8 bg-white/[0.025] px-2 py-1.5">
+                    <p className="font-mono text-[8px] uppercase tracking-[0.14em] text-[var(--muted)]">{s.label}</p>
+                    <p className="mt-0.5 font-mono text-[11px] font-medium tabular-nums text-[var(--foreground)]">{s.value}</p>
+                  </div>
+                ))}
+              </div>
+
+              <div className="mt-3 grid grid-cols-[4.5rem_1fr] gap-y-1.5 font-mono text-[10px]">
+                <span className="text-[var(--muted)]">Status</span>
+                <span className="text-[var(--muted-strong)]">{selected.navStatus || "\u2014"}</span>
+                <span className="text-[var(--muted)]">Type</span>
+                <span className="text-[var(--muted-strong)]">{selected.shipType || "\u2014"}</span>
+                <span className="text-[var(--muted)]">Callsign</span>
+                <span className="text-[var(--muted-strong)]">{selected.callsign || "\u2014"}</span>
+                <span className="text-[var(--muted)]">IMO</span>
+                <span className="text-[var(--muted-strong)]">{selected.imo || "\u2014"}</span>
+                <span className="text-[var(--muted)]">Dest.</span>
+                <span className="text-[var(--muted-strong)]">{selected.destination || "\u2014"}</span>
+                <span className="text-[var(--muted)]">Position</span>
+                <span className="text-[var(--muted-strong)]">{formatCoordinates(selected)}</span>
+                <span className="text-[var(--muted)]">Last seen</span>
+                <span className="text-[var(--muted-strong)]">{formatTimestamp(selected.lastSeenAt)}</span>
               </div>
             </>
           ) : (
-            <div className="rounded-2xl border border-white/10 bg-white/[0.02] p-4">
-              <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-[var(--muted)]">
-                Vessel Detail
-              </p>
-              <p className="mt-3 text-sm leading-6 text-[var(--muted)]">
-                Pick a vessel from the map or list to inspect its live AIS data.
-              </p>
-            </div>
+            <p className="text-xs leading-5 text-[var(--muted)]">Select a vessel from the map or list to inspect it.</p>
           )}
         </div>
 
-        <div className="flex items-center justify-between border-b border-white/8 px-5 py-3">
-          <p className="font-mono text-[10px] uppercase tracking-[0.22em] text-[var(--muted)]">
-            Contacts
-          </p>
-          <span className="font-mono text-[10px] text-[var(--muted)]">
-            {snapshot?.vesselCount ?? 0}
-          </span>
+        <div className="flex items-center justify-between border-b border-white/[0.07] px-5 py-2.5">
+          <span className="font-mono text-[10px] uppercase tracking-[0.22em] text-[var(--muted)]">Contacts</span>
+          <span className="font-mono text-[10px] text-[var(--muted)]">{snapshot?.vesselCount ?? 0}</span>
         </div>
 
         <div className="flex-1 overflow-y-auto">
           {(snapshot?.vessels ?? []).map((vessel) => {
             const isSelected = vessel.mmsi === selected?.mmsi;
-
             return (
               <button
                 key={vessel.mmsi}
                 className={cx(
                   "flex w-full items-start gap-3 border-b border-white/[0.05] px-5 py-3 text-left transition",
-                  isSelected
-                    ? "bg-[var(--accent)]/8"
-                    : "hover:bg-white/[0.03]",
+                  isSelected ? "bg-[var(--accent)]/8 border-l-accent" : "hover:bg-white/[0.025] border-l-clear",
                 )}
                 onClick={() => {
                   setSelectedMmsi(vessel.mmsi);
@@ -731,20 +690,18 @@ export function AisModule({ hardware, onRefreshHardware }: AisModuleProps) {
                 }}
                 type="button"
               >
-                <span
-                  className={cx(
-                    "mt-1 h-2 w-2 shrink-0 rounded-full",
-                    vessel.isMoving ? "bg-[var(--highlight)]" : "bg-[var(--accent)]",
-                  )}
-                />
+                <span className={cx(
+                  "mt-1 h-1.5 w-1.5 shrink-0 rounded-full",
+                  vessel.isMoving ? "bg-[var(--highlight)]" : "bg-[var(--accent)]",
+                )} />
                 <span className="min-w-0 flex-1">
-                  <span className="block truncate text-sm font-medium text-[var(--foreground)]">
+                  <span className="block truncate font-mono text-xs font-medium text-[var(--foreground)]">
                     {displayVesselName(vessel)}
                   </span>
-                  <span className="mt-1 block font-mono text-[10px] text-[var(--muted)]">
+                  <span className="mt-0.5 block font-mono text-[10px] text-[var(--muted)]">
                     MMSI {vessel.mmsi}
                   </span>
-                  <span className="mt-1 block text-xs text-[var(--muted)]">
+                  <span className="mt-0.5 block text-[10px] text-[var(--muted)]">
                     {vessel.navStatus || vessel.shipType || "AIS contact"}
                   </span>
                 </span>
@@ -752,7 +709,7 @@ export function AisModule({ hardware, onRefreshHardware }: AisModuleProps) {
                   <span className="block font-mono text-[10px] text-[var(--muted-strong)]">
                     {formatSpeed(vessel.speedKnots)}
                   </span>
-                  <span className="mt-1 block font-mono text-[10px] text-[var(--muted)]">
+                  <span className="mt-0.5 block font-mono text-[10px] text-[var(--muted)]">
                     {vessel.sourceLabel}
                   </span>
                 </span>

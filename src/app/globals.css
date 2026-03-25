@@ -225,7 +225,7 @@ select option:hover {
 
 .ais-map .leaflet-control-zoom {
   border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 14px;
+  border-radius: 8px;
   overflow: hidden;
   box-shadow: 0 14px 32px rgba(0, 0, 0, 0.28);
 }
@@ -249,7 +249,7 @@ select option:hover {
 
 .ais-tooltip {
   border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 9999px;
+  border-radius: 6px;
   background: rgba(6, 11, 20, 0.94);
   color: var(--foreground);
   box-shadow: 0 12px 24px rgba(0, 0, 0, 0.22);

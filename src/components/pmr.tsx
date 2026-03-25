@@ -62,9 +62,9 @@ function buildRetuneUrl(ch: PmrChannel): string {
 }
 
 const CLS_BTN_PRIMARY =
-  "inline-flex items-center justify-center gap-2 rounded-full border border-[var(--accent)]/40 bg-[var(--accent)]/12 px-4 py-2 text-sm font-semibold transition hover:border-[var(--accent)]/70 hover:bg-[var(--accent)]/20 disabled:cursor-not-allowed disabled:opacity-40";
+  "inline-flex items-center justify-center gap-2 rounded border border-[var(--accent)]/40 bg-[var(--accent)]/12 px-4 py-2 text-sm font-semibold transition hover:border-[var(--accent)]/70 hover:bg-[var(--accent)]/20 disabled:cursor-not-allowed disabled:opacity-40";
 const CLS_BTN_GHOST =
-  "inline-flex items-center justify-center gap-2 rounded-full border border-white/10 bg-white/[0.04] px-4 py-2 text-sm font-semibold text-[var(--muted-strong)] transition hover:border-white/18 hover:bg-white/[0.07]";
+  "inline-flex items-center justify-center gap-2 rounded border border-white/10 bg-white/[0.04] px-4 py-2 text-sm font-semibold text-[var(--muted-strong)] transition hover:border-white/18 hover:bg-white/[0.07]";
 
 function Spinner() {
   return (
@@ -76,18 +76,19 @@ function Spinner() {
 }
 
 export function PmrModule({
-  audioRef,
   hardware,
   onRefreshHardware,
   controls,
   onControlsChange,
 }: {
-  audioRef: React.RefObject<HTMLAudioElement | null>;
   hardware: HardwareStatus | null;
   onRefreshHardware: () => Promise<void>;
   controls: Controls;
   onControlsChange: (c: Controls) => void;
 }) {
+  // PmrModule has its own audio element — no dependency on a shared ref from the dashboard
+  const audioRef = useRef<HTMLAudioElement>(null);
+
   // PmrModule only renders after user interaction — never during SSR — so localStorage is safe here
   const [selectedBandId, setSelectedBandId] = useState(() => loadConfig()?.selectedBandId ?? "pmr446");
   const [selectedChannelId, setSelectedChannelId] = useState<string | null>(null);
@@ -164,6 +165,8 @@ export function PmrModule({
   async function startChannel(ch: PmrChannel): Promise<void> {
     if (!audioRef.current) return;
     setStreamError("");
+    setPlayingChannelId(null);
+    setSelectedChannelId(ch.id);
     setStartingChannelId(ch.id);
 
     const audio = audioRef.current;
@@ -304,69 +307,78 @@ export function PmrModule({
 
   return (
     <div className="flex flex-1 overflow-hidden">
+      {/* Hidden audio element for PMR playback */}
+      <audio preload="none" ref={audioRef} />
 
       {/* ── Band selector sidebar ────────────────────────────── */}
-      <aside className="flex w-56 shrink-0 flex-col overflow-y-auto border-r border-white/8 bg-black/10">
-        <div className="p-4">
-          <span className="font-mono text-[10px] uppercase tracking-[0.25em] text-[var(--muted)]">
-            Band / Standard
-          </span>
-
-          <div className="mt-3 space-y-1">
-            {PMR_BANDS.map(b => (
-              <button
-                key={b.id}
-                className={cx(
-                  "w-full rounded-lg px-3 py-2.5 text-left transition",
-                  selectedBandId === b.id
-                    ? "bg-[var(--accent)]/10 text-[var(--foreground)] border-l-accent"
-                    : "text-[var(--muted-strong)] hover:bg-white/[0.03] hover:text-[var(--foreground)] border-l-clear",
-                )}
-                onClick={() => {
-                  setSelectedBandId(b.id);
-                  setScanIndex(0);
-                  if (scannerState !== "idle") stopScan();
-                }}
-                type="button"
-              >
-                <p className="font-mono text-sm font-bold">{b.name}</p>
-                <p className="mt-0.5 font-mono text-[9px] text-[var(--muted)] leading-tight">{b.region}</p>
-                <p className="mt-0.5 text-[10px] text-[var(--muted)] leading-tight">{b.description}</p>
-              </button>
-            ))}
+      <aside className="flex w-56 shrink-0 flex-col overflow-hidden border-r border-white/8 bg-black/10">
+        {/* Title */}
+        <div className="flex items-center justify-between border-b border-white/[0.07] px-4 py-3">
+          <div className="flex items-center gap-2.5">
+            <span className="font-mono text-[10px] uppercase tracking-[0.25em] text-[var(--foreground)]">PMR</span>
+            <span className="font-mono text-[10px] text-[var(--muted)]">Scanner</span>
           </div>
+          <span className="font-mono text-[9px] uppercase tracking-[0.12em] text-[var(--muted)]">{channels.length} ch</span>
+        </div>
+
+        {/* Band list */}
+        <div className="flex-1 overflow-y-auto">
+          {PMR_BANDS.map(b => (
+            <button
+              key={b.id}
+              className={cx(
+                "w-full border-b border-white/[0.05] px-4 py-3 text-left transition",
+                selectedBandId === b.id
+                  ? "bg-[var(--accent)]/8 text-[var(--foreground)] border-l-accent"
+                  : "text-[var(--muted-strong)] hover:bg-white/[0.03] hover:text-[var(--foreground)] border-l-clear",
+              )}
+              onClick={() => {
+                setSelectedBandId(b.id);
+                setScanIndex(0);
+                if (scannerState !== "idle") stopScan();
+              }}
+              type="button"
+            >
+              <p className="font-mono text-xs font-bold uppercase tracking-[0.08em]">{b.name}</p>
+              <p className="mt-0.5 font-mono text-[9px] text-[var(--muted)] leading-tight">{b.region}</p>
+              <p className="mt-0.5 text-[10px] text-[var(--muted)] leading-tight">{b.description}</p>
+            </button>
+          ))}
         </div>
 
         {/* RF Controls */}
-        <div className="mt-auto border-t border-white/8 p-4 space-y-4">
-          <p className="font-mono text-[10px] uppercase tracking-[0.22em] text-[var(--muted)]">RF Controls</p>
+        <div className="border-t border-white/[0.07]">
+          <div className="border-b border-white/[0.07] px-4 py-2.5">
+            <p className="font-mono text-[10px] uppercase tracking-[0.22em] text-[var(--muted)]">RF Controls</p>
+          </div>
+          <div className="space-y-4 px-4 py-3">
+            <label className="block space-y-1.5">
+              <div className="flex items-center justify-between">
+                <span className="font-mono text-[11px] uppercase tracking-[0.18em] text-[var(--muted-strong)]">LNA</span>
+                <span className="font-mono text-[11px] tabular-nums text-[var(--foreground)]">{controls.lna} dB</span>
+              </div>
+              <input className="rf-slider w-full" max={40} min={0} step={8} type="range" value={controls.lna}
+                onChange={e => onControlsChange({ ...controls, lna: Number.parseInt(e.target.value, 10) })} />
+            </label>
 
-          <label className="block space-y-1.5">
-            <div className="flex items-center justify-between">
-              <span className="font-mono text-[11px] uppercase tracking-[0.18em] text-[var(--muted-strong)]">LNA</span>
-              <span className="font-mono text-[11px] tabular-nums text-[var(--foreground)]">{controls.lna} dB</span>
-            </div>
-            <input className="rf-slider w-full" max={40} min={0} step={8} type="range" value={controls.lna}
-              onChange={e => onControlsChange({ ...controls, lna: Number.parseInt(e.target.value, 10) })} />
-          </label>
+            <label className="block space-y-1.5">
+              <div className="flex items-center justify-between">
+                <span className="font-mono text-[11px] uppercase tracking-[0.18em] text-[var(--muted-strong)]">VGA</span>
+                <span className="font-mono text-[11px] tabular-nums text-[var(--foreground)]">{controls.vga} dB</span>
+              </div>
+              <input className="rf-slider w-full" max={62} min={0} step={2} type="range" value={controls.vga}
+                onChange={e => onControlsChange({ ...controls, vga: Number.parseInt(e.target.value, 10) })} />
+            </label>
 
-          <label className="block space-y-1.5">
-            <div className="flex items-center justify-between">
-              <span className="font-mono text-[11px] uppercase tracking-[0.18em] text-[var(--muted-strong)]">VGA</span>
-              <span className="font-mono text-[11px] tabular-nums text-[var(--foreground)]">{controls.vga} dB</span>
-            </div>
-            <input className="rf-slider w-full" max={62} min={0} step={2} type="range" value={controls.vga}
-              onChange={e => onControlsChange({ ...controls, vga: Number.parseInt(e.target.value, 10) })} />
-          </label>
-
-          <label className="block space-y-1.5">
-            <div className="flex items-center justify-between">
-              <span className="font-mono text-[11px] uppercase tracking-[0.18em] text-[var(--muted-strong)]">Volume</span>
-              <span className="font-mono text-[11px] tabular-nums text-[var(--foreground)]">{controls.audioGain.toFixed(1)}×</span>
-            </div>
-            <input className="rf-slider w-full" max={8} min={0.2} step={0.1} type="range" value={controls.audioGain}
-              onChange={e => onControlsChange({ ...controls, audioGain: Number.parseFloat(e.target.value) })} />
-          </label>
+            <label className="block space-y-1.5">
+              <div className="flex items-center justify-between">
+                <span className="font-mono text-[11px] uppercase tracking-[0.18em] text-[var(--muted-strong)]">Volume</span>
+                <span className="font-mono text-[11px] tabular-nums text-[var(--foreground)]">{controls.audioGain.toFixed(1)}×</span>
+              </div>
+              <input className="rf-slider w-full" max={8} min={0.2} step={0.1} type="range" value={controls.audioGain}
+                onChange={e => onControlsChange({ ...controls, audioGain: Number.parseFloat(e.target.value) })} />
+            </label>
+          </div>
         </div>
       </aside>
 
@@ -535,7 +547,7 @@ export function PmrModule({
             <div className="flex gap-2">
               <button
                 className={cx(
-                  "flex-1 flex items-center justify-center rounded-full border py-1.5 transition",
+                  "flex-1 flex items-center justify-center rounded border py-1.5 transition",
                   scanMode === "sequential"
                     ? "border-[var(--accent)]/40 bg-[var(--accent)]/12 text-[var(--foreground)]"
                     : "border-white/10 bg-white/[0.03] text-[var(--muted)] hover:bg-white/[0.05]",
@@ -552,7 +564,7 @@ export function PmrModule({
               </button>
               <button
                 className={cx(
-                  "flex-1 flex items-center justify-center rounded-full border py-1.5 transition",
+                  "flex-1 flex items-center justify-center rounded border py-1.5 transition",
                   scanMode === "random"
                     ? "border-[var(--accent)]/40 bg-[var(--accent)]/12 text-[var(--foreground)]"
                     : "border-white/10 bg-white/[0.03] text-[var(--muted)] hover:bg-white/[0.05]",
@@ -613,56 +625,26 @@ export function PmrModule({
                   onClick={startScan}
                   type="button"
                 >
-                  {isStarting ? <><Spinner />Starting…</> : "▶ Start scan"}
-                </button>
-                <button
-                  className={CLS_BTN_GHOST}
-                  disabled={isStarting}
-                  title="Pick a random channel"
-                  onClick={() => {
-                    const ch = channels[Math.floor(Math.random() * channels.length)];
-                    if (ch) void startChannel(ch);
-                  }}
-                  type="button"
-                >
-                  <svg viewBox="0 0 20 20" fill="currentColor" className="h-3.5 w-3.5" aria-hidden="true">
-                    <rect x="1.5" y="1.5" width="17" height="17" rx="3" fill="none" stroke="currentColor" strokeWidth="1.5"/>
-                    <circle cx="6" cy="6" r="1.3"/>
-                    <circle cx="14" cy="6" r="1.3"/>
-                    <circle cx="10" cy="10" r="1.3"/>
-                    <circle cx="6" cy="14" r="1.3"/>
-                    <circle cx="14" cy="14" r="1.3"/>
-                  </svg>
+                  ▶ Start scan
                 </button>
               </>
             ) : (
-              <>
-                {scannerState === "locked" ? (
-                  <button
-                    className={cx("flex-1 justify-center", CLS_BTN_PRIMARY)}
-                    disabled={isStarting}
-                    onClick={() => {
-                      const chs = getChannelsForBand(selectedBandId);
-                      const idx = chs.findIndex(c => c.id === playingChannelId);
-                      const next = (idx >= 0 ? idx + 1 : 0) % chs.length;
-                      setScanIndex(next);
-                      setScannerState("scanning");
-                    }}
-                    type="button"
-                  >
-                    {isStarting ? <><Spinner />Starting…</> : "▶▶ Skip"}
-                  </button>
-                ) : (
-                  <button
-                    className={cx("flex-1 justify-center", CLS_BTN_GHOST)}
-                    disabled
-                    type="button"
-                  >
-                    <Spinner />Scanning…
-                  </button>
+              <button
+                className={cx(
+                  "flex-1 inline-flex items-center justify-center gap-1.5 rounded border px-4 py-2 text-sm font-semibold transition",
+                  "border-rose-400/25 bg-rose-400/[0.08] text-rose-300 hover:border-rose-400/45",
                 )}
-                <button className={CLS_BTN_GHOST} onClick={stopScan} type="button">■ Stop</button>
-              </>
+                onClick={stopScan}
+                type="button"
+              >
+                {scannerState === "scanning" && (
+                  <svg className="h-3 w-3 animate-spin opacity-70" fill="none" viewBox="0 0 24 24">
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="3" />
+                    <path className="opacity-75" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" fill="currentColor" />
+                  </svg>
+                )}
+                Stop Scanning
+              </button>
             )}
           </div>
         </div>
@@ -671,20 +653,30 @@ export function PmrModule({
         <div className="border-b border-white/8 px-5 py-4">
           <p className="mb-3 font-mono text-[10px] uppercase tracking-[0.22em] text-[var(--muted)]">Manual</p>
           {scannerState === "idle" && selectedChannelId ? (
-            <div className="flex gap-2">
-              <button
-                className={cx("flex-1 justify-center", CLS_BTN_PRIMARY)}
-                disabled={isStarting}
-                onClick={() => {
-                  const ch = channels.find(c => c.id === selectedChannelId);
-                  if (ch) void startChannel(ch);
-                }}
-                type="button"
-              >
-                {isStarting ? <><Spinner />Starting…</> : playingChannelId === selectedChannelId ? "▶ Retune" : "▶ Listen"}
-              </button>
-              <button className={CLS_BTN_GHOST} onClick={stopChannel} type="button">■</button>
-            </div>
+            <button
+              className={cx(
+                "w-full inline-flex items-center justify-center gap-1.5 rounded border px-4 py-2 text-sm font-semibold transition",
+                playingChannelId === selectedChannelId || startingChannelId === selectedChannelId
+                  ? "border-rose-400/25 bg-rose-400/[0.08] text-rose-300 hover:border-rose-400/45"
+                  : "border-[var(--accent)]/40 bg-[var(--accent)]/12 text-[var(--foreground)] hover:border-[var(--accent)]/70 hover:bg-[var(--accent)]/20 disabled:cursor-not-allowed disabled:opacity-40",
+              )}
+              disabled={isStarting && startingChannelId !== selectedChannelId}
+              onClick={() => {
+                if (playingChannelId === selectedChannelId) {
+                  stopChannel();
+                  return;
+                }
+                const ch = channels.find(c => c.id === selectedChannelId);
+                if (ch) void startChannel(ch);
+              }}
+              type="button"
+            >
+              {startingChannelId === selectedChannelId
+                ? <><Spinner />Starting…</>
+                : playingChannelId === selectedChannelId
+                  ? "Stop"
+                  : "▶ Listen"}
+            </button>
           ) : (
             <p className="text-xs text-[var(--muted)]">
               {scannerState !== "idle"
@@ -693,7 +685,7 @@ export function PmrModule({
             </p>
           )}
           {streamError ? (
-            <p className="mt-3 rounded-lg border border-rose-400/20 bg-rose-400/8 p-3 text-xs leading-5 text-rose-200">
+            <p className="mt-3 rounded border border-rose-400/20 bg-rose-400/8 p-3 text-xs leading-5 text-rose-200">
               {streamError}
             </p>
           ) : null}
@@ -719,9 +711,9 @@ export function PmrModule({
           {scanLog.length === 0 ? (
             <p className="mt-3 text-xs text-[var(--muted)]">No activity yet.</p>
           ) : (
-            <div className="mt-3 space-y-2">
+            <div className="mt-3">
               {scanLog.map((entry, i) => (
-                <div key={i} className="rounded-lg border border-white/8 bg-white/[0.02] px-3 py-2">
+                <div key={i} className="border-b border-white/[0.05] py-2.5">
                   <div className="flex items-center justify-between">
                     <span className="font-mono text-[11px] font-semibold text-[var(--highlight)]">
                       {entry.label}

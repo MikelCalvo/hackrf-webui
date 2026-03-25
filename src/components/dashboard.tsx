@@ -705,11 +705,11 @@ function WelcomeModal({
 const CLS_INPUT =
   "w-full rounded-lg border border-white/10 bg-white/[0.04] px-3 py-2 text-sm text-[var(--foreground)] outline-none transition placeholder:text-[var(--muted)] focus:border-[var(--accent)]/50 focus:bg-white/[0.06] disabled:cursor-not-allowed disabled:opacity-50";
 const CLS_BTN_PRIMARY =
-  "inline-flex items-center justify-center gap-2 rounded-full border border-[var(--accent)]/40 bg-[var(--accent)]/12 px-4 py-2 text-sm font-semibold transition hover:border-[var(--accent)]/70 hover:bg-[var(--accent)]/20 disabled:cursor-not-allowed disabled:opacity-40";
+  "inline-flex items-center justify-center gap-2 rounded border border-[var(--accent)]/40 bg-[var(--accent)]/12 px-4 py-2 text-sm font-semibold transition hover:border-[var(--accent)]/70 hover:bg-[var(--accent)]/20 disabled:cursor-not-allowed disabled:opacity-40";
 const CLS_BTN_GHOST =
-  "inline-flex items-center justify-center rounded-full border border-white/10 bg-white/[0.04] px-4 py-2 text-sm font-semibold text-[var(--muted-strong)] transition hover:border-white/18 hover:bg-white/[0.07]";
+  "inline-flex items-center justify-center rounded border border-white/10 bg-white/[0.04] px-4 py-2 text-sm font-semibold text-[var(--muted-strong)] transition hover:border-white/18 hover:bg-white/[0.07]";
 const CLS_BTN_TILE =
-  "inline-flex min-h-[4.25rem] flex-col items-start justify-center rounded-2xl px-4 py-3 text-left transition";
+  "inline-flex min-h-[4.25rem] flex-col items-start justify-center rounded px-4 py-3 text-left transition";
 
 function Spinner() {
   return (
@@ -730,6 +730,63 @@ function Spinner() {
       <path fill="currentColor" d="M12 2a10 10 0 0 1 10 10h-3a7 7 0 0 0-7-7V2z" />
     </svg>
   );
+}
+
+function ModuleIcon({ id }: { id: string }) {
+  if (id === "fm") {
+    // Classic radio receiver
+    return (
+      <svg aria-hidden="true" className="h-4 w-4" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.4" viewBox="0 0 16 16">
+        <rect height="8" rx="1" width="13" x="1.5" y="6" />
+        <line x1="5" x2="12" y1="3.5" y2="6" />
+        <circle cx="11.5" cy="10" r="1.8" />
+        <rect height="3.5" rx="0.5" width="4.5" x="2.5" y="7.5" />
+      </svg>
+    );
+  }
+  if (id === "pmr") {
+    // Walkie-talkie
+    return (
+      <svg aria-hidden="true" className="h-4 w-4" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.4" viewBox="0 0 16 16">
+        <rect height="10" rx="1" width="6" x="5" y="4" />
+        <line x1="8" x2="8" y1="1.5" y2="4" />
+        <line x1="6.5" x2="9.5" y1="8" y2="8" />
+        <circle cx="8" cy="11.5" fill="currentColor" r="1.1" stroke="none" />
+      </svg>
+    );
+  }
+  if (id === "adsb") {
+    // Airplane (top-down)
+    return (
+      <svg aria-hidden="true" className="h-4 w-4" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.4" viewBox="0 0 16 16">
+        <line x1="8" x2="8" y1="2.5" y2="13.5" />
+        <path d="M3.5 7.5L8 6l4.5 1.5" />
+        <path d="M5.5 11.5L8 10.5l2.5 1" />
+      </svg>
+    );
+  }
+  if (id === "ais") {
+    // Sailboat side view: mast, triangular sail, curved hull
+    return (
+      <svg aria-hidden="true" className="h-4 w-4" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.4" viewBox="0 0 16 16">
+        <line x1="7" x2="7" y1="2" y2="11" />
+        <path d="M7 2.5L13 11H7Z" />
+        <path d="M1.5 11L14 11L12.5 13.5Q8 16 3.5 13.5Z" />
+      </svg>
+    );
+  }
+  if (id === "airband") {
+    // ATC control tower
+    return (
+      <svg aria-hidden="true" className="h-4 w-4" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.4" viewBox="0 0 16 16">
+        <line x1="8" x2="8" y1="1" y2="5" />
+        <rect height="4" rx="1" width="7" x="4.5" y="5" />
+        <path d="M5.5 9l-2 5h9l-2-5" />
+        <line x1="4" x2="12" y1="11.5" y2="11.5" />
+      </svg>
+    );
+  }
+  return null;
 }
 
 export function Dashboard({
@@ -1238,6 +1295,8 @@ export function Dashboard({
     }
 
     setStreamError("");
+    setPlayingId(null);
+    setSelectedId(station.id);
     setStartingStationId(station.id);
 
     const audio = audioRef.current;
@@ -1499,6 +1558,7 @@ export function Dashboard({
                   title={`${module.label} · coming soon`}
                   type="button"
                 >
+                  <ModuleIcon id={module.id} />
                   <span className="font-mono text-[11px] font-bold uppercase tracking-[0.1em]">
                     {module.label}
                   </span>
@@ -1524,6 +1584,7 @@ export function Dashboard({
                 href={module.path}
                 title={`${module.label} · ${module.band}`}
               >
+                <ModuleIcon id={module.id} />
                 <span className="font-mono text-[11px] font-bold uppercase tracking-[0.1em]">
                   {module.label}
                 </span>
@@ -1537,7 +1598,6 @@ export function Dashboard({
 
         {activeModule === "pmr" ? (
           <PmrModule
-            audioRef={audioRef}
             controls={controls}
             hardware={hardware}
             onControlsChange={setControls}
@@ -1555,124 +1615,132 @@ export function Dashboard({
 
         {isFmModule ? (
         <div className="flex flex-1 overflow-hidden">
-          <aside className="flex w-56 shrink-0 flex-col overflow-y-auto border-r border-white/8 bg-black/10">
-            <div className="space-y-3 p-4">
-              <div className="flex items-center justify-between">
-                <span className="font-mono text-[10px] uppercase tracking-[0.25em] text-[var(--muted)]">
-                  Filters
-                </span>
-                {hasFilters ? (
-                  <button
-                    className="font-mono text-[10px] uppercase tracking-[0.15em] text-[var(--accent)] transition hover:opacity-70"
-                    onClick={resetFilters}
-                    type="button"
+          <aside className="flex w-56 shrink-0 flex-col overflow-hidden border-r border-white/8 bg-black/10">
+            {/* Title */}
+            <div className="flex items-center justify-between border-b border-white/[0.07] px-4 py-3">
+              <div className="flex items-center gap-2.5">
+                <span className="font-mono text-[10px] uppercase tracking-[0.25em] text-[var(--foreground)]">FM</span>
+                <span className="font-mono text-[10px] text-[var(--muted)]">Broadcast</span>
+              </div>
+              <span className="font-mono text-[10px] text-[var(--muted)]">{formatCount(visible.length)}</span>
+            </div>
+
+            <div className="flex-1 overflow-y-auto">
+              {/* Filters */}
+              <div className="border-b border-white/[0.07] px-4 py-3">
+                <div className="mb-2.5 flex items-center justify-between">
+                  <span className="font-mono text-[10px] uppercase tracking-[0.18em] text-[var(--muted)]">Filters</span>
+                  {hasFilters ? (
+                    <button
+                      className="font-mono text-[9px] uppercase tracking-[0.15em] text-[var(--accent)] transition hover:opacity-70"
+                      onClick={resetFilters}
+                      type="button"
+                    >
+                      Reset
+                    </button>
+                  ) : null}
+                </div>
+
+                <button
+                  className="mb-2.5 flex w-full items-center gap-1.5 border-b border-white/[0.05] pb-2.5 text-left transition hover:text-[var(--foreground)]"
+                  onClick={() => setShowWelcome(true)}
+                  title="Change location filter"
+                  type="button"
+                >
+                  <span className="min-w-0 flex-1 truncate font-mono text-[10px] text-[var(--muted-strong)]">
+                    {locationLabel}
+                  </span>
+                  <span className="shrink-0 font-mono text-[9px] text-[var(--accent)] opacity-70">edit</span>
+                </button>
+
+                <div className="space-y-2">
+                  <input
+                    className={CLS_INPUT}
+                    placeholder={
+                      activeCountry === "all" ? "Select a country first..." : "Search loaded stations..."
+                    }
+                    value={query}
+                    onChange={(event) => setQuery(event.target.value)}
+                  />
+
+                  <select
+                    className={CLS_INPUT}
+                    value={activeRegion}
+                    onChange={(event) => handleRegionChange(event.target.value)}
                   >
-                    Reset
-                  </button>
+                    <option value="all">All regions</option>
+                    {regionOptions.map((region) => (
+                      <option key={region.id} value={region.id}>
+                        {region.label} ({formatCount(region.count)})
+                      </option>
+                    ))}
+                  </select>
+
+                  <select
+                    className={CLS_INPUT}
+                    value={activeCountry}
+                    onChange={(event) => handleCountryChange(event.target.value)}
+                  >
+                    <option value="all">Choose a country</option>
+                    {countryOptions.map((country) => (
+                      <option key={country.id} value={country.id}>
+                        {country.label} ({formatCount(country.count)})
+                      </option>
+                    ))}
+                  </select>
+
+                  <select
+                    className={CLS_INPUT}
+                    disabled={activeCountry === "all"}
+                    value={activeCity}
+                    onChange={(event) => handleCityChange(event.target.value)}
+                  >
+                    <option value="all">
+                      {activeCountry === "all" ? "Load a country first" : "All cities"}
+                    </option>
+                    {cityOptions.map((city) => (
+                      <option key={city.id} value={city.id}>
+                        {city.label} ({formatCount(city.count)})
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                {activeCountrySummary ? (
+                  <p className="mt-2 font-mono text-[10px] text-[var(--muted)]">
+                    {formatCount(allStations.length)} loaded
+                  </p>
                 ) : null}
               </div>
 
-              <button
-                className="flex w-full items-center gap-1.5 rounded-lg border border-white/8 bg-white/[0.03] px-3 py-2 transition hover:bg-white/[0.05]"
-                onClick={() => setShowWelcome(true)}
-                title="Change location filter"
-                type="button"
-              >
-                <span className="text-[11px]">📍</span>
-                <span className="min-w-0 flex-1 truncate text-left font-mono text-[10px] text-[var(--muted-strong)]">
-                  {locationLabel}
-                </span>
-                <span className="shrink-0 font-mono text-[9px] text-[var(--muted)] opacity-60">
-                  edit
-                </span>
-              </button>
-
-              <input
-                className={CLS_INPUT}
-                placeholder={
-                  activeCountry === "all" ? "Select a country first..." : "Search loaded stations..."
-                }
-                value={query}
-                onChange={(event) => setQuery(event.target.value)}
-              />
-
-              <select
-                className={CLS_INPUT}
-                value={activeRegion}
-                onChange={(event) => handleRegionChange(event.target.value)}
-              >
-                <option value="all">All regions</option>
-                {regionOptions.map((region) => (
-                  <option key={region.id} value={region.id}>
-                    {region.label} ({formatCount(region.count)})
-                  </option>
-                ))}
-              </select>
-
-              <select
-                className={CLS_INPUT}
-                value={activeCountry}
-                onChange={(event) => handleCountryChange(event.target.value)}
-              >
-                <option value="all">Choose a country</option>
-                {countryOptions.map((country) => (
-                  <option key={country.id} value={country.id}>
-                    {country.label} ({formatCount(country.count)})
-                  </option>
-                ))}
-              </select>
-
-              <select
-                className={CLS_INPUT}
-                disabled={activeCountry === "all"}
-                value={activeCity}
-                onChange={(event) => handleCityChange(event.target.value)}
-              >
-                <option value="all">
-                  {activeCountry === "all" ? "Load a country first" : "All cities"}
-                </option>
-                {cityOptions.map((city) => (
-                  <option key={city.id} value={city.id}>
-                    {city.label} ({formatCount(city.count)})
-                  </option>
-                ))}
-              </select>
-
-              <p className="font-mono text-[10px] text-[var(--muted)]">
-                {formatCount(visible.length)} visible
-                {activeCountrySummary ? ` / ${formatCount(allStations.length)} loaded` : ""}
-              </p>
-            </div>
-
-            <div className="mt-auto border-t border-white/8 px-4 py-3">
-              <Link
-                className="flex w-full items-center justify-between rounded-xl border border-white/10 bg-white/[0.035] px-3 py-3 transition hover:bg-white/[0.06]"
-                href="/fm/coverage"
-              >
-                <span>
-                  <span className="block font-mono text-[9px] uppercase tracking-[0.18em] text-[var(--accent)]">
-                    Coverage
+              {/* Coverage link */}
+              <div className="border-b border-white/[0.07]">
+                <Link
+                  className="flex w-full items-center justify-between px-4 py-3 text-left transition hover:bg-white/[0.03]"
+                  href="/fm/coverage"
+                >
+                  <span>
+                    <span className="block font-mono text-[9px] uppercase tracking-[0.18em] text-[var(--accent)]">
+                      Coverage
+                    </span>
+                    <span className="mt-0.5 block font-mono text-[10px] text-[var(--muted-strong)]">
+                      FM global map
+                    </span>
                   </span>
-                  <span className="mt-1 block text-sm text-[var(--foreground)]">
-                    Open the global FM coverage view
-                  </span>
-                </span>
-                <span className="font-mono text-[10px] uppercase tracking-[0.18em] text-[var(--muted)]">
-                  view
-                </span>
-              </Link>
-            </div>
+                  <span className="font-mono text-[10px] text-[var(--muted)]">→</span>
+                </Link>
+              </div>
 
-            <div>
-              <button
-                className="flex w-full items-center justify-between px-4 py-3 text-left transition hover:bg-white/[0.025]"
-                onClick={() => setShowAdd((current) => !current)}
-                type="button"
-              >
-                <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-[var(--muted-strong)]">
-                  {showAdd ? "- Cancel" : "+ Add preset"}
-                </span>
-              </button>
+              <div>
+                <button
+                  className="flex w-full items-center justify-between px-4 py-3 text-left transition hover:bg-white/[0.025]"
+                  onClick={() => setShowAdd((current) => !current)}
+                  type="button"
+                >
+                  <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-[var(--muted-strong)]">
+                    {showAdd ? "− Cancel" : "+ Add preset"}
+                  </span>
+                </button>
 
               {showAdd ? (
                 <form className="space-y-2 px-4 pb-4" onSubmit={handleAddPreset}>
@@ -1739,6 +1807,7 @@ export function Dashboard({
                 </div>
               ) : null}
             </div>
+            </div>
           </aside>
 
           <main className="flex flex-1 flex-col overflow-hidden">
@@ -1789,7 +1858,7 @@ export function Dashboard({
               </div>
             ) : catalogError && !activeCountryData ? (
               <div className="flex flex-1 items-center justify-center p-8 text-center">
-                <p className="max-w-md rounded-xl border border-rose-400/20 bg-rose-400/8 p-4 text-sm leading-6 text-rose-200">
+                <p className="max-w-md rounded border border-rose-400/20 bg-rose-400/8 p-4 text-sm leading-6 text-rose-200">
                   {catalogError}
                 </p>
               </div>
@@ -1918,7 +1987,7 @@ export function Dashboard({
                         {selected.location.cityName}
                       </p>
                     </div>
-                    <div className="shrink-0 rounded-xl border border-white/10 bg-black/30 px-3 py-2 text-right">
+                    <div className="shrink-0 rounded border border-white/[0.07] bg-black/20 px-3 py-2 text-right">
                       <p className="font-mono text-2xl font-bold tabular-nums leading-none text-[var(--foreground)]">
                         {selected.freqMhz.toFixed(1)}
                       </p>
@@ -1935,7 +2004,7 @@ export function Dashboard({
                   <div className="mt-3 flex flex-wrap gap-1.5">
                     <span
                       className={cx(
-                        "rounded-full border px-2 py-0.5 font-mono text-[10px] uppercase tracking-[0.12em]",
+                        "rounded-sm border px-2 py-0.5 font-mono text-[10px] uppercase tracking-[0.12em]",
                         selected.curated
                           ? "border-[var(--accent)]/25 bg-[var(--accent)]/8 text-[var(--foreground)]"
                           : "border-[var(--highlight)]/25 bg-[var(--highlight)]/8 text-[var(--foreground)]",
@@ -1946,7 +2015,7 @@ export function Dashboard({
                     {selected.tags.map((tag) => (
                       <span
                         key={tag}
-                        className="rounded-full border border-white/8 bg-white/[0.03] px-2 py-0.5 font-mono text-[10px] text-[var(--muted)]"
+                        className="rounded-sm border border-white/8 bg-white/[0.03] px-2 py-0.5 font-mono text-[10px] text-[var(--muted)]"
                       >
                         {tag}
                       </span>
@@ -2036,40 +2105,31 @@ export function Dashboard({
                 </div>
 
                 <div className="space-y-3 p-5">
-                  <div className="flex gap-2">
-                    <button
-                      className={cx("flex-1 justify-center", CLS_BTN_PRIMARY)}
-                      disabled={startingStationId !== null && startingStationId !== selected.id}
-                      onClick={() => {
-                        if (playingId === selected.id) {
-                          stopListening();
-                          return;
-                        }
-
-                        void startListening(selected);
-                      }}
-                      type="button"
-                    >
-                      {startingStationId === selected.id ? (
-                        <>
-                          <Spinner />
-                          Starting...
-                        </>
-                      ) : playingId === selected.id ? (
-                        "■ Stop"
-                      ) : (
-                        "▶ Listen"
-                      )}
-                    </button>
-                    <button
-                      className={CLS_BTN_GHOST}
-                      disabled={!playingId && startingStationId === null}
-                      onClick={stopListening}
-                      type="button"
-                    >
-                      ■
-                    </button>
-                  </div>
+                  <button
+                    className={cx(
+                      "w-full inline-flex items-center justify-center gap-1.5 rounded border px-4 py-2 text-sm font-semibold transition",
+                      playingId === selected.id || startingStationId === selected.id
+                        ? "border-rose-400/25 bg-rose-400/[0.08] text-rose-300 hover:border-rose-400/45"
+                        : "border-[var(--accent)]/40 bg-[var(--accent)]/12 text-[var(--foreground)] hover:border-[var(--accent)]/70 hover:bg-[var(--accent)]/20 disabled:cursor-not-allowed disabled:opacity-40",
+                    )}
+                    disabled={startingStationId !== null && startingStationId !== selected.id}
+                    onClick={() => {
+                      if (playingId === selected.id || startingStationId === selected.id) {
+                        stopListening();
+                        return;
+                      }
+                      void startListening(selected);
+                    }}
+                    type="button"
+                  >
+                    {startingStationId === selected.id ? (
+                      <><Spinner />Starting…</>
+                    ) : playingId === selected.id ? (
+                      "Stop"
+                    ) : (
+                      "▶ Listen"
+                    )}
+                  </button>
 
                   <audio
                     className="w-full rounded-lg opacity-90"
@@ -2091,25 +2151,25 @@ export function Dashboard({
                   />
 
                   {streamError ? (
-                    <p className="rounded-lg border border-rose-400/20 bg-rose-400/8 p-3 text-xs leading-5 text-rose-200">
+                    <p className="rounded border border-rose-400/20 bg-rose-400/8 p-3 text-xs leading-5 text-rose-200">
                       {streamError}
                     </p>
                   ) : null}
 
                   {catalogError && activeCountryData ? (
-                    <p className="rounded-lg border border-amber-400/20 bg-amber-400/8 p-3 text-xs leading-5 text-amber-200">
+                    <p className="rounded border border-amber-400/20 bg-amber-400/8 p-3 text-xs leading-5 text-amber-200">
                       {catalogError}
                     </p>
                   ) : null}
 
                   {hardwareError ? (
-                    <p className="rounded-lg border border-amber-400/20 bg-amber-400/8 p-3 text-xs leading-5 text-amber-200">
+                    <p className="rounded border border-amber-400/20 bg-amber-400/8 p-3 text-xs leading-5 text-amber-200">
                       {hardwareError}
                     </p>
                   ) : null}
 
                   {telemetry ? (
-                    <div className="rounded-lg border border-white/8 bg-white/[0.02] p-3">
+                    <div className="border border-white/[0.07] p-3">
                       <p className="mb-2 font-mono text-[9px] uppercase tracking-[0.2em] text-[var(--muted)]">
                         Telemetry
                       </p>
