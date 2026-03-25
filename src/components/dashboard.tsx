@@ -1646,6 +1646,7 @@ export function Dashboard({
           <PmrModule
             controls={controls}
             hardware={hardware}
+            location={resolvedLocation}
             onControlsChange={setControls}
             onRefreshHardware={refreshHardware}
           />
@@ -1655,6 +1656,7 @@ export function Dashboard({
           <AirbandModule
             controls={controls}
             hardware={hardware}
+            location={resolvedLocation}
             onControlsChange={setControls}
             onRefreshHardware={refreshHardware}
           />

@@ -14,6 +14,7 @@ import { hackrfDeviceService } from "@/server/hackrf-device";
 import { pickHackrfRuntimeErrorMessage } from "@/server/hackrf-runtime-errors";
 import { parseAisFrameLine, type DecodedAisMessage } from "@/server/ais-protocol";
 import { buildOfflineMapSummary } from "@/server/maps";
+import { listRecentAisContacts, persistAisTrackPoint } from "@/server/track-store";
 
 type VesselAccumulator = {
   mmsi: string;
@@ -35,6 +36,7 @@ type VesselAccumulator = {
   lastStaticMs: number;
   messageType: string;
   sourceLabel: string;
+  lastPersistedObservationKey: string | null;
 };
 
 type ChannelInternalState = AisChannelStatus;
@@ -107,6 +109,7 @@ function createAccumulator(mmsi: string): VesselAccumulator {
     lastStaticMs: -1,
     messageType: "",
     sourceLabel: "",
+    lastPersistedObservationKey: null,
   };
 }
 
@@ -336,25 +339,7 @@ class AisRuntimeService {
           && Boolean(vessel.lastSeenAt)
           && Boolean(vessel.lastPositionAt),
       )
-      .map<AisVesselContact>((vessel) => ({
-        mmsi: vessel.mmsi,
-        name: vessel.name,
-        callsign: vessel.callsign,
-        imo: vessel.imo,
-        shipType: vessel.shipType,
-        destination: vessel.destination,
-        latitude: vessel.latitude,
-        longitude: vessel.longitude,
-        speedKnots: vessel.speedKnots,
-        courseDeg: vessel.courseDeg,
-        navStatus: vessel.navStatus,
-        lastSeenAt: vessel.lastSeenAt,
-        lastPositionAt: vessel.lastPositionAt,
-        lastStaticAt: vessel.lastStaticAt,
-        messageType: vessel.messageType,
-        sourceLabel: vessel.sourceLabel,
-        isMoving: (vessel.speedKnots ?? 0) > 0.5,
-      }))
+      .map<AisVesselContact>((vessel) => this.toVesselContact(vessel))
       .sort((left, right) => {
         const leftMs = Date.parse(left.lastSeenAt);
         const rightMs = Date.parse(right.lastSeenAt);
@@ -381,6 +366,7 @@ class AisRuntimeService {
       center: boundsCenter(bounds),
       bounds,
       vessels,
+      recentVessels: listRecentAisContacts(150),
       channels: this.channels.map((channel) => ({ ...channel })),
       warnings,
       maps,
@@ -473,7 +459,76 @@ class AisRuntimeService {
       }
     }
 
+    if (
+      vessel.latitude !== null
+      && vessel.longitude !== null
+      && vessel.lastSeenAt
+      && vessel.lastPositionAt
+    ) {
+      const positionedVessel = vessel as VesselAccumulator & {
+        latitude: number;
+        longitude: number;
+        lastSeenAt: string;
+        lastPositionAt: string;
+      };
+      const contact = this.toVesselContact(positionedVessel);
+      const observationKey = [
+        contact.mmsi,
+        Date.parse(contact.lastPositionAt),
+        contact.latitude.toFixed(5),
+        contact.longitude.toFixed(5),
+        contact.courseDeg ?? "",
+        contact.speedKnots ?? "",
+      ].join(":");
+
+      if (observationKey !== vessel.lastPersistedObservationKey) {
+        persistAisTrackPoint(contact, {
+          channelId: channel?.id ?? null,
+          headingDeg: message.headingDeg ?? null,
+          messageTypeCode: message.messageType,
+          phase: message.phase,
+          metadata: {
+            ...contact,
+            channel: message.channel,
+            phase: message.phase,
+            headingDeg: message.headingDeg ?? null,
+            messageTypeCode: message.messageType,
+          },
+        });
+        vessel.lastPersistedObservationKey = observationKey;
+      }
+    }
+
     this.vessels.set(message.mmsi, vessel);
+  }
+
+  private toVesselContact(
+    vessel: VesselAccumulator & {
+      latitude: number;
+      longitude: number;
+      lastSeenAt: string;
+      lastPositionAt: string;
+    },
+  ): AisVesselContact {
+    return {
+      mmsi: vessel.mmsi,
+      name: vessel.name,
+      callsign: vessel.callsign,
+      imo: vessel.imo,
+      shipType: vessel.shipType,
+      destination: vessel.destination,
+      latitude: vessel.latitude,
+      longitude: vessel.longitude,
+      speedKnots: vessel.speedKnots,
+      courseDeg: vessel.courseDeg,
+      navStatus: vessel.navStatus,
+      lastSeenAt: vessel.lastSeenAt,
+      lastPositionAt: vessel.lastPositionAt,
+      lastStaticAt: vessel.lastStaticAt,
+      messageType: vessel.messageType,
+      sourceLabel: vessel.sourceLabel,
+      isMoving: (vessel.speedKnots ?? 0) > 0.5,
+    };
   }
 }
 

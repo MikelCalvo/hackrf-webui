@@ -18,6 +18,7 @@ import {
 import { hackrfDeviceService } from "@/server/hackrf-device";
 import { pickHackrfRuntimeErrorMessage } from "@/server/hackrf-runtime-errors";
 import { buildOfflineMapSummary } from "@/server/maps";
+import { listRecentAdsbContacts, persistAdsbTrackPoints } from "@/server/track-store";
 
 const DEFAULT_CENTER_FREQ_HZ = 1_090_000_000;
 const DEFAULT_SAMPLE_RATE = 2_400_000;
@@ -110,6 +111,10 @@ class AdsbRuntimeService {
 
   private stderrLines: string[] = [];
 
+  private lastPersistedSnapshotKey: string | null = null;
+
+  private persistenceTimer: ReturnType<typeof setInterval> | null = null;
+
   private runtime: AdsbRuntimeStatus = this.buildBaseStatus("stopped", "ADS-B decoder is stopped.");
 
   private buildBaseStatus(
@@ -150,6 +155,7 @@ class AdsbRuntimeService {
     this.expectedExit = false;
     this.stderrBuffer = "";
     this.stderrLines = [];
+    this.lastPersistedSnapshotKey = null;
     this.runtime = {
       ...this.buildBaseStatus("starting", "Starting ADS-B decoder..."),
       startedAt: new Date().toISOString(),
@@ -200,12 +206,14 @@ class AdsbRuntimeService {
 
     proc.once("error", (error) => {
       this.process = null;
+      this.clearPersistenceTimer();
       hackrfDeviceService.release("adsb");
       this.runtime = this.buildBaseStatus("error", error.message || "Could not start the ADS-B decoder.");
     });
 
     proc.once("close", (code, signal) => {
       this.process = null;
+      this.clearPersistenceTimer();
       hackrfDeviceService.release("adsb");
       if (this.expectedExit) {
         this.runtime = this.buildBaseStatus("stopped", "ADS-B decoder is stopped.");
@@ -224,6 +232,7 @@ class AdsbRuntimeService {
     });
 
     this.process = proc;
+    this.ensurePersistenceLoop();
 
     await new Promise<void>((resolve, reject) => {
       const timer = setTimeout(() => {
@@ -255,6 +264,7 @@ class AdsbRuntimeService {
 
   async stop(): Promise<void> {
     if (!this.process) {
+      this.clearPersistenceTimer();
       hackrfDeviceService.release("adsb");
       this.runtime = this.buildBaseStatus("stopped", "ADS-B decoder is stopped.");
       return;
@@ -310,6 +320,7 @@ class AdsbRuntimeService {
     if (aircraftData?.generatedAt) {
       this.runtime.lastJsonAt = aircraftData.generatedAt;
     }
+    this.persistHistorySnapshot(receiver, aircraftData, latestMessageAt);
 
     if (this.runtime.state === "error") {
       warnings.push(this.runtime.message);
@@ -330,6 +341,7 @@ class AdsbRuntimeService {
       center: boundsCenter(bounds),
       bounds,
       aircraft,
+      recentAircraft: listRecentAdsbContacts(150),
       warnings,
       maps,
       runtime: this.getStatus(),
@@ -369,6 +381,54 @@ class AdsbRuntimeService {
         this.stderrLines.shift();
       }
     }
+  }
+
+  private persistHistorySnapshot(
+    receiver: AdsbReceiverInfo | null,
+    aircraftData: ReturnType<AdsbRuntimeService["readAircraft"]>,
+    latestMessageAt?: string | null,
+  ): void {
+    const persistKey = aircraftData?.generatedAt ?? latestMessageAt ?? null;
+    if (!persistKey || persistKey === this.lastPersistedSnapshotKey) {
+      return;
+    }
+
+    persistAdsbTrackPoints(aircraftData?.aircraft ?? [], receiver, aircraftData?.generatedAt ?? null);
+    this.lastPersistedSnapshotKey = persistKey;
+  }
+
+  private ensurePersistenceLoop(): void {
+    this.clearPersistenceTimer();
+    this.persistenceTimer = setInterval(() => {
+      if (!this.process || (this.runtime.state !== "running" && this.runtime.state !== "starting")) {
+        return;
+      }
+
+      const receiver = this.readReceiverInfo();
+      const aircraftData = this.readAircraft();
+      const latestMessageAt = aircraftData?.aircraft.reduce<string | null>((latest, entry) => {
+        if (!latest) {
+          return entry.seenAt;
+        }
+
+        return Date.parse(entry.seenAt) > Date.parse(latest) ? entry.seenAt : latest;
+      }, null) ?? null;
+
+      if (aircraftData?.generatedAt) {
+        this.runtime.lastJsonAt = aircraftData.generatedAt;
+      }
+
+      this.persistHistorySnapshot(receiver, aircraftData, latestMessageAt);
+    }, 1000);
+  }
+
+  private clearPersistenceTimer(): void {
+    if (this.persistenceTimer === null) {
+      return;
+    }
+
+    clearInterval(this.persistenceTimer);
+    this.persistenceTimer = null;
   }
 }
 

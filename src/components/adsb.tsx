@@ -39,6 +39,33 @@ function displayAircraftName(aircraft: AdsbAircraftContact): string {
   return aircraft.flight || aircraft.hex;
 }
 
+function buildAdsbContactList(snapshot: AdsbFeedSnapshot | null): AdsbAircraftContact[] {
+  if (!snapshot) {
+    return [];
+  }
+
+  const ordered: AdsbAircraftContact[] = [];
+  const seen = new Set<string>();
+
+  for (const aircraft of snapshot.aircraft) {
+    if (seen.has(aircraft.hex)) {
+      continue;
+    }
+    seen.add(aircraft.hex);
+    ordered.push(aircraft);
+  }
+
+  for (const aircraft of snapshot.recentAircraft ?? []) {
+    if (seen.has(aircraft.hex)) {
+      continue;
+    }
+    seen.add(aircraft.hex);
+    ordered.push(aircraft);
+  }
+
+  return ordered;
+}
+
 function formatSpeed(speedKnots: number | null): string {
   return speedKnots === null ? "\u2014" : `${speedKnots.toFixed(1)} kn`;
 }
@@ -216,6 +243,7 @@ export function AdsbModule({ hardware, location, onRefreshHardware }: AdsbModule
     (layer) => layer.role === "country" && layer.countryId === savedCountryId,
   ) ?? null;
   const selectedCountryBounds = selectedCountryLayer?.bounds ?? null;
+  const contactList = buildAdsbContactList(snapshot);
 
   function focusAircraft(aircraft: AdsbAircraftContact): void {
     if (aircraft.latitude === null || aircraft.longitude === null) {
@@ -230,15 +258,15 @@ export function AdsbModule({ hardware, location, onRefreshHardware }: AdsbModule
   }
 
   useEffect(() => {
-    if (!snapshot?.aircraft.length) {
+    if (contactList.length === 0) {
       setSelectedHex("");
       return;
     }
 
-    if (!snapshot.aircraft.some((aircraft) => aircraft.hex === selectedHex)) {
-      setSelectedHex(snapshot.aircraft[0].hex);
+    if (!contactList.some((aircraft) => aircraft.hex === selectedHex)) {
+      setSelectedHex(contactList[0].hex);
     }
-  }, [selectedHex, snapshot]);
+  }, [contactList, selectedHex]);
 
   useEffect(() => {
     let active = true;
@@ -362,9 +390,11 @@ export function AdsbModule({ hardware, location, onRefreshHardware }: AdsbModule
   ]);
 
   const selected =
-    snapshot?.aircraft.find((aircraft) => aircraft.hex === selectedHex) ??
-    snapshot?.aircraft[0] ??
+    contactList.find((aircraft) => aircraft.hex === selectedHex) ??
+    contactList[0] ??
     null;
+  const liveHexSet = new Set((snapshot?.aircraft ?? []).map((aircraft) => aircraft.hex));
+  const selectedIsLive = selected ? liveHexSet.has(selected.hex) : false;
 
   useEffect(() => {
     const leaflet = leafletRef.current;
@@ -635,7 +665,7 @@ export function AdsbModule({ hardware, location, onRefreshHardware }: AdsbModule
             ref={mapHostRef}
           />
 
-          {selected ? (
+          {selected && selectedIsLive ? (
             <div className="pointer-events-none absolute left-4 top-4 z-[1200] max-w-sm rounded-lg border border-white/10 bg-[rgba(6,11,20,0.86)] px-4 py-3 shadow-[0_18px_60px_rgba(0,0,0,0.35)] backdrop-blur-sm">
               <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-[var(--accent)]">
                 Selected Aircraft
@@ -677,7 +707,9 @@ export function AdsbModule({ hardware, location, onRefreshHardware }: AdsbModule
                       ? "Decoder is live — no aircraft positions decoded yet."
                       : runtimeStarting
                         ? "Decoder starting\u2026"
-                        : "Start Scanning to populate the air picture with live HackRF data."}
+                        : contactList.length > 0
+                          ? "No live positions right now. Historical contacts remain available in the sidebar."
+                          : "Start Scanning to populate the air picture with live HackRF data."}
                 </p>
                 <div className="h-px w-8 bg-[var(--accent)]/20" />
               </div>
@@ -701,13 +733,17 @@ export function AdsbModule({ hardware, location, onRefreshHardware }: AdsbModule
                 </div>
                 <span className={cx(
                   "mt-0.5 shrink-0 rounded-sm px-1.5 py-0.5 font-mono text-[9px] uppercase tracking-[0.1em]",
-                  selected.emergency
-                    ? "bg-rose-400/15 text-rose-300"
-                    : selected.onGround
-                      ? "bg-[var(--accent)]/10 text-[var(--accent)]"
-                      : "bg-[var(--highlight)]/10 text-[var(--highlight)]",
+                  !selectedIsLive
+                    ? "bg-white/[0.05] text-[var(--muted-strong)]"
+                    : selected.emergency
+                      ? "bg-rose-400/15 text-rose-300"
+                      : selected.onGround
+                        ? "bg-[var(--accent)]/10 text-[var(--accent)]"
+                        : "bg-[var(--highlight)]/10 text-[var(--highlight)]",
                 )}>
-                  {selected.emergency || (selected.onGround ? "Ground" : "Airborne")}
+                  {!selectedIsLive
+                    ? "History"
+                    : selected.emergency || (selected.onGround ? "Ground" : "Airborne")}
                 </span>
               </div>
 
@@ -752,12 +788,13 @@ export function AdsbModule({ hardware, location, onRefreshHardware }: AdsbModule
 
         <div className="flex items-center justify-between border-b border-white/[0.07] px-5 py-2.5">
           <span className="font-mono text-[10px] uppercase tracking-[0.22em] text-[var(--muted)]">Contacts</span>
-          <span className="font-mono text-[10px] text-[var(--muted)]">{snapshot?.aircraftCount ?? 0}</span>
+          <span className="font-mono text-[10px] text-[var(--muted)]">{contactList.length}</span>
         </div>
 
         <div className="flex-1 overflow-y-auto">
-          {(snapshot?.aircraft ?? []).map((aircraft) => {
+          {contactList.map((aircraft) => {
             const active = aircraft.hex === selected?.hex;
+            const isLive = liveHexSet.has(aircraft.hex);
             return (
               <button
                 key={aircraft.hex}
@@ -767,13 +804,16 @@ export function AdsbModule({ hardware, location, onRefreshHardware }: AdsbModule
                 )}
                 onClick={() => {
                   setSelectedHex(aircraft.hex);
-                  focusAircraft(aircraft);
+                  if (isLive) {
+                    focusAircraft(aircraft);
+                  }
                 }}
                 type="button"
               >
                 <span className={cx(
                   "mt-1 h-1.5 w-1.5 shrink-0 rounded-full",
-                  aircraft.emergency ? "bg-rose-400"
+                  !isLive ? "bg-white/25"
+                  : aircraft.emergency ? "bg-rose-400"
                   : aircraft.onGround ? "bg-[var(--accent)]"
                   : "bg-[var(--highlight)]",
                 )} />
@@ -783,6 +823,9 @@ export function AdsbModule({ hardware, location, onRefreshHardware }: AdsbModule
                   </span>
                   <span className="mt-0.5 block font-mono text-[10px] text-[var(--muted)]">
                     {aircraft.hex}{aircraft.squawk ? ` \u00b7 SQ\u00a0${aircraft.squawk}` : ""}
+                  </span>
+                  <span className="mt-0.5 block text-[10px] text-[var(--muted)]">
+                    {isLive ? "Live contact" : `History only · ${formatTimestamp(aircraft.seenAt)}`}
                   </span>
                 </span>
                 <span className="shrink-0 text-right">

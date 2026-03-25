@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { ConfirmDialog } from "@/components/module-ui";
 import {
   buildRadioRetuneUrl,
   buildRadioStreamUrl,
@@ -10,9 +11,17 @@ import {
   Spinner,
   cx,
 } from "@/components/radio-shared";
-import type { HardwareStatus } from "@/lib/types";
+import type { HardwareStatus, ResolvedAppLocation } from "@/lib/types";
 import type { AudioControls } from "@/lib/radio";
 import { PMR_BANDS, getChannelsForBand, type PmrChannel } from "@/data/pmr-channels";
+import {
+  ACTIVITY_EVENTS_DEFAULT_LIMIT,
+  clearActivityEvents as clearPersistedActivityEvents,
+  createActivityLogEntryFallback,
+  fetchActivityEvents,
+  persistActivityEvent,
+  type ActivityLogEntry,
+} from "@/lib/activity-events";
 import {
   ACTIVE_LISTEN_TELEMETRY_REFRESH_MS,
   createActivityWindowMetrics,
@@ -25,13 +34,6 @@ import {
 
 type ScannerState = "idle" | "scanning" | "locked";
 type ScanMode = "sequential" | "random";
-
-type ScanLogEntry = {
-  label: string;
-  freqMhz: number;
-  rms: number;
-  time: string;
-};
 
 const STORAGE_KEY = "hackrf-webui.pmr-config.v1";
 
@@ -69,11 +71,13 @@ function buildRetuneUrl(ch: PmrChannel): string {
 
 export function PmrModule({
   hardware,
+  location,
   onRefreshHardware,
   controls,
   onControlsChange,
 }: {
   hardware: HardwareStatus | null;
+  location: ResolvedAppLocation | null;
   onRefreshHardware: () => Promise<void>;
   controls: AudioControls;
   onControlsChange: (c: AudioControls) => void;
@@ -95,8 +99,10 @@ export function PmrModule({
   const [startingChannelId, setStartingChannelId] = useState<string | null>(null);
   const isStarting = startingChannelId !== null;
   const [streamError, setStreamError] = useState("");
-  const [scanLog, setScanLog] = useState<ScanLogEntry[]>([]);
+  const [scanLog, setScanLog] = useState<ActivityLogEntry[]>([]);
   const [manualActivityRms, setManualActivityRms] = useState<number | null>(null);
+  const [clearDialogOpen, setClearDialogOpen] = useState(false);
+  const [clearingActivity, setClearingActivity] = useState(false);
 
   // Refs to avoid stale closures in timer callbacks — initialised from state (which already has restored values)
   const scannerStateRef  = useRef<ScannerState>("idle");
@@ -106,6 +112,7 @@ export function PmrModule({
   const hardwareRef      = useRef<HardwareStatus | null>(null);
   const playingIdRef     = useRef<string | null>(null);
   const selectedBandRef  = useRef(selectedBandId);
+  const locationRef = useRef<ResolvedAppLocation | null>(location);
   const refreshHardwareRef = useRef(onRefreshHardware);
   const pollInFlightRef = useRef(false);
 
@@ -116,12 +123,28 @@ export function PmrModule({
   useEffect(() => { hardwareRef.current = hardware; }, [hardware]);
   useEffect(() => { playingIdRef.current = playingChannelId; }, [playingChannelId]);
   useEffect(() => { selectedBandRef.current = selectedBandId; }, [selectedBandId]);
+  useEffect(() => { locationRef.current = location; }, [location]);
   useEffect(() => { refreshHardwareRef.current = onRefreshHardware; }, [onRefreshHardware]);
 
   // Persist config on every change (initial values already come from localStorage via useState initializers)
   useEffect(() => {
     localStorage.setItem(STORAGE_KEY, JSON.stringify({ scanMode, squelch, dwellTime, selectedBandId }));
   }, [scanMode, squelch, dwellTime, selectedBandId]);
+
+  useEffect(() => {
+    let cancelled = false;
+    void fetchActivityEvents("pmr", ACTIVITY_EVENTS_DEFAULT_LIMIT)
+      .then((events) => {
+        if (!cancelled) {
+          setScanLog(events);
+        }
+      })
+      .catch(() => undefined);
+
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   // Attach audio event listeners to the shared audio element (owned by dashboard)
   useEffect(() => {
@@ -217,6 +240,50 @@ export function PmrModule({
     setPlayingChannelId(null);
   }
 
+  function queueActivityLog(channel: PmrChannel, mode: "manual" | "scan", rms: number): void {
+    const occurredAt = new Date().toISOString();
+    const band = PMR_BANDS.find((entry) => entry.id === channel.bandId) ?? null;
+    const payload = {
+      module: "pmr" as const,
+      mode,
+      label: channel.label,
+      freqMhz: channel.freqMhz,
+      rms,
+      occurredAt,
+      bandId: channel.bandId,
+      channelId: channel.id,
+      channelNumber: channel.number,
+      demodMode: "nfm" as const,
+      squelch: squelchRef.current,
+      location: locationRef.current,
+      metadata: {
+        bandName: band?.name ?? null,
+      },
+    };
+
+    void persistActivityEvent(payload)
+      .then((entry) => {
+        setScanLog((log) => [entry, ...log].slice(0, ACTIVITY_EVENTS_DEFAULT_LIMIT));
+      })
+      .catch(() => {
+        setScanLog((log) => [
+          createActivityLogEntryFallback(payload),
+          ...log,
+        ].slice(0, ACTIVITY_EVENTS_DEFAULT_LIMIT));
+      });
+  }
+
+  async function handleClearActivity(): Promise<void> {
+    setClearingActivity(true);
+    try {
+      await clearPersistedActivityEvents("pmr");
+      setScanLog([]);
+      setClearDialogOpen(false);
+    } finally {
+      setClearingActivity(false);
+    }
+  }
+
   function nextScanIndex(channelCount: number, currentIndex: number): number {
     if (channelCount <= 0) {
       return 0;
@@ -296,15 +363,7 @@ export function PmrModule({
         finished = true;
         clearInterval(timer);
         setScannerState("locked");
-        setScanLog(log => [
-          {
-            label: ch.label,
-            freqMhz: ch.freqMhz,
-            rms: peakWindow.rms,
-            time: new Date().toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit", second: "2-digit" }),
-          },
-          ...log.slice(0, 9),
-        ]);
+        queueActivityLog(ch, "scan", peakWindow.rms);
         return;
       }
 
@@ -403,15 +462,7 @@ export function PmrModule({
 
       burstOpen = false;
       setManualActivityRms(null);
-      setScanLog(log => [
-        {
-          label: manualChannel.label,
-          freqMhz: manualChannel.freqMhz,
-          rms: peakRms,
-          time: new Date().toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit", second: "2-digit" }),
-        },
-        ...log.slice(0, 9),
-      ]);
+      queueActivityLog(manualChannel, "manual", peakRms);
       peakRms = 0;
     }, TELEMETRY_REFRESH_MS);
 
@@ -813,16 +864,16 @@ export function PmrModule({
           ) : null}
         </div>
 
-        {/* Activity log */}
+        {/* Contacts */}
         <div className="flex-1 p-5">
           <div className="flex items-center justify-between">
             <p className="font-mono text-[10px] uppercase tracking-[0.22em] text-[var(--muted)]">
-              Activity log
+              Contacts
             </p>
             {scanLog.length > 0 ? (
               <button
                 className="font-mono text-[9px] uppercase tracking-[0.15em] text-[var(--muted)] transition hover:text-[var(--foreground)]"
-                onClick={() => setScanLog([])}
+                onClick={() => setClearDialogOpen(true)}
                 type="button"
               >
                 Clear
@@ -831,11 +882,11 @@ export function PmrModule({
           </div>
 
           {scanLog.length === 0 ? (
-            <p className="mt-3 text-xs text-[var(--muted)]">No activity yet.</p>
+            <p className="mt-3 text-xs text-[var(--muted)]">No contacts yet.</p>
           ) : (
             <div className="mt-3">
-              {scanLog.map((entry, i) => (
-                <div key={i} className="border-b border-white/[0.05] py-2.5">
+              {scanLog.map((entry) => (
+                <div key={entry.id} className="border-b border-white/[0.05] py-2.5">
                   <div className="flex items-center justify-between">
                     <span className="font-mono text-[11px] font-semibold text-[var(--highlight)]">
                       {entry.label}
@@ -856,6 +907,21 @@ export function PmrModule({
           )}
         </div>
       </aside>
+
+      <ConfirmDialog
+        busy={clearingActivity}
+        cancelLabel="Keep Log"
+        confirmLabel="Delete Activity"
+        description="This clears the PMR activity log from the current view and permanently deletes the stored entries from the local SQLite database."
+        onCancel={() => {
+          if (!clearingActivity) {
+            setClearDialogOpen(false);
+          }
+        }}
+        onConfirm={() => void handleClearActivity()}
+        open={clearDialogOpen}
+        title="Delete PMR activity log?"
+      />
     </div>
   );
 }

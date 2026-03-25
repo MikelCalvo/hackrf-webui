@@ -1,7 +1,8 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useEffectEvent, useMemo, useRef, useState } from "react";
 
+import { ConfirmDialog } from "@/components/module-ui";
 import { CLS_INPUT } from "@/components/module-ui";
 import {
   buildRadioRetuneUrl,
@@ -18,8 +19,16 @@ import {
   getAirbandChannelsForBand,
   type AirbandChannel,
 } from "@/data/airband-channels";
+import {
+  ACTIVITY_EVENTS_DEFAULT_LIMIT,
+  clearActivityEvents as clearPersistedActivityEvents,
+  createActivityLogEntryFallback,
+  fetchActivityEvents,
+  persistActivityEvent,
+  type ActivityLogEntry,
+} from "@/lib/activity-events";
 import type { AudioControls } from "@/lib/radio";
-import type { HardwareStatus } from "@/lib/types";
+import type { HardwareStatus, ResolvedAppLocation } from "@/lib/types";
 import {
   ACTIVE_LISTEN_TELEMETRY_REFRESH_MS,
   createActivityWindowMetrics,
@@ -56,13 +65,6 @@ type SavedAirbandPreset = {
   label: string;
   notes?: string;
   createdAt: string;
-};
-
-type ScanLogEntry = {
-  label: string;
-  freqMhz: number;
-  rms: number;
-  time: string;
 };
 
 const DEFAULT_CONFIG: PersistedConfig = {
@@ -231,11 +233,13 @@ const FREE_SCAN_CHANNELS = buildSweepChannels();
 
 export function AirbandModule({
   hardware,
+  location,
   onRefreshHardware,
   controls,
   onControlsChange,
 }: {
   hardware: HardwareStatus | null;
+  location: ResolvedAppLocation | null;
   onRefreshHardware: () => Promise<void>;
   controls: AudioControls;
   onControlsChange: (controls: AudioControls) => void;
@@ -255,8 +259,10 @@ export function AirbandModule({
   const [streamError, setStreamError] = useState("");
   const [scannerState, setScannerState] = useState<ScannerState>("idle");
   const [scanIndex, setScanIndex] = useState(0);
-  const [scanLog, setScanLog] = useState<ScanLogEntry[]>([]);
+  const [scanLog, setScanLog] = useState<ActivityLogEntry[]>([]);
   const [manualActivityRms, setManualActivityRms] = useState<number | null>(null);
+  const [clearDialogOpen, setClearDialogOpen] = useState(false);
+  const [clearingActivity, setClearingActivity] = useState(false);
 
   const scannerStateRef = useRef<ScannerState>("idle");
   const scanModeRef = useRef<ScanMode>(config.scanMode);
@@ -264,6 +270,7 @@ export function AirbandModule({
   const dwellTimeRef = useRef(config.dwellTime);
   const playingIdRef = useRef<string | null>(null);
   const hardwareRef = useRef<HardwareStatus | null>(null);
+  const locationRef = useRef<ResolvedAppLocation | null>(location);
   const refreshHardwareRef = useRef(onRefreshHardware);
   const pollInFlightRef = useRef(false);
 
@@ -286,6 +293,10 @@ export function AirbandModule({
   }, [hardware]);
 
   useEffect(() => {
+    locationRef.current = location;
+  }, [location]);
+
+  useEffect(() => {
     refreshHardwareRef.current = onRefreshHardware;
   }, [onRefreshHardware]);
 
@@ -296,6 +307,21 @@ export function AirbandModule({
   useEffect(() => {
     localStorage.setItem(AIRBAND_CONFIG_KEY, JSON.stringify(config));
   }, [config]);
+
+  useEffect(() => {
+    let cancelled = false;
+    void fetchActivityEvents("airband", ACTIVITY_EVENTS_DEFAULT_LIMIT)
+      .then((events) => {
+        if (!cancelled) {
+          setScanLog(events);
+        }
+      })
+      .catch(() => undefined);
+
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   useEffect(() => {
     const audio = audioRef.current;
@@ -402,6 +428,50 @@ export function AirbandModule({
     setStartingChannelId(null);
   }
 
+  const queueActivityLog = useEffectEvent((channel: AirbandChannel, mode: "manual" | "scan", rms: number): void => {
+    const occurredAt = new Date().toISOString();
+    const payload = {
+      module: "airband" as const,
+      mode,
+      label: channel.label,
+      freqMhz: channel.freqMhz,
+      rms,
+      occurredAt,
+      bandId: channel.bandId,
+      channelId: channel.id,
+      channelNumber: channel.number,
+      demodMode: "am" as const,
+      squelch: squelchRef.current,
+      location: locationRef.current,
+      metadata: {
+        notes: channel.notes ?? null,
+        freeScan: config.freeScan,
+      },
+    };
+
+    void persistActivityEvent(payload)
+      .then((entry) => {
+        setScanLog((entries) => [entry, ...entries].slice(0, ACTIVITY_EVENTS_DEFAULT_LIMIT));
+      })
+      .catch(() => {
+        setScanLog((entries) => [
+          createActivityLogEntryFallback(payload),
+          ...entries,
+        ].slice(0, ACTIVITY_EVENTS_DEFAULT_LIMIT));
+      });
+  });
+
+  async function handleClearActivity(): Promise<void> {
+    setClearingActivity(true);
+    try {
+      await clearPersistedActivityEvents("airband");
+      setScanLog([]);
+      setClearDialogOpen(false);
+    } finally {
+      setClearingActivity(false);
+    }
+  }
+
   useEffect(() => {
     if (scannerState !== "idle" || !monitoringChannel) {
       setManualActivityRms(null);
@@ -431,19 +501,7 @@ export function AirbandModule({
 
       burstOpen = false;
       setManualActivityRms(null);
-      setScanLog((entries) => [
-        {
-          label: monitoringChannel.label,
-          freqMhz: monitoringChannel.freqMhz,
-          rms: peakRms,
-          time: new Date().toLocaleTimeString("en-GB", {
-            hour: "2-digit",
-            minute: "2-digit",
-            second: "2-digit",
-          }),
-        },
-        ...entries.slice(0, 9),
-      ]);
+      queueActivityLog(monitoringChannel, "manual", peakRms);
       peakRms = 0;
     }, TELEMETRY_REFRESH_MS);
 
@@ -581,19 +639,7 @@ export function AirbandModule({
         finished = true;
         clearInterval(timer);
         setScannerState("locked");
-        setScanLog((entries) => [
-          {
-            label: channel.label,
-            freqMhz: channel.freqMhz,
-            rms: peakWindow.rms,
-            time: new Date().toLocaleTimeString("en-GB", {
-              hour: "2-digit",
-              minute: "2-digit",
-              second: "2-digit",
-            }),
-          },
-          ...entries.slice(0, 9),
-        ]);
+        queueActivityLog(channel, "scan", peakWindow.rms);
         return;
       }
 
@@ -1326,11 +1372,11 @@ export function AirbandModule({
 
         <div className="flex-1">
           <div className="flex items-center justify-between border-b border-white/[0.05] px-4 py-2.5">
-            <p className="font-mono text-[10px] uppercase tracking-[0.22em] text-[var(--muted)]">Activity Log</p>
+            <p className="font-mono text-[10px] uppercase tracking-[0.22em] text-[var(--muted)]">Contacts</p>
             {scanLog.length > 0 ? (
               <button
                 className="font-mono text-[9px] uppercase tracking-[0.15em] text-[var(--muted)] transition hover:text-[var(--foreground)]"
-                onClick={() => setScanLog([])}
+                onClick={() => setClearDialogOpen(true)}
                 type="button"
               >
                 Clear
@@ -1339,11 +1385,11 @@ export function AirbandModule({
           </div>
 
           {scanLog.length === 0 ? (
-            <p className="px-4 py-3 text-xs text-[var(--muted)]">No activity yet.</p>
+            <p className="px-4 py-3 text-xs text-[var(--muted)]">No contacts yet.</p>
           ) : (
             <div>
-              {scanLog.map((entry, index) => (
-                <div key={`${entry.label}-${entry.time}-${index}`} className="grid grid-cols-[1fr_auto] gap-x-3 border-b border-white/[0.05] px-4 py-2.5">
+              {scanLog.map((entry) => (
+                <div key={entry.id} className="grid grid-cols-[1fr_auto] gap-x-3 border-b border-white/[0.05] px-4 py-2.5">
                   <span className="font-mono text-[11px] font-semibold text-[var(--highlight)]">{entry.label}</span>
                   <span className="font-mono text-[9px] text-[var(--muted)]">{entry.time}</span>
                   <span className="font-mono text-[11px] text-[var(--foreground)]">
@@ -1366,6 +1412,21 @@ export function AirbandModule({
           </div>
         ) : null}
       </aside>
+
+      <ConfirmDialog
+        busy={clearingActivity}
+        cancelLabel="Keep Log"
+        confirmLabel="Delete Activity"
+        description="This clears the AIRBAND activity log from the current view and permanently deletes the stored entries from the local SQLite database."
+        onCancel={() => {
+          if (!clearingActivity) {
+            setClearDialogOpen(false);
+          }
+        }}
+        onConfirm={() => void handleClearActivity()}
+        open={clearDialogOpen}
+        title="Delete AIRBAND activity log?"
+      />
     </div>
   );
 }

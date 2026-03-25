@@ -20,6 +20,11 @@
 # production
 /build
 /bin
+/db/*.sqlite
+/db/*.sqlite-shm
+/db/*.sqlite-wal
+/data/captures/*
+!/data/captures/.gitkeep
 
 # misc
 .DS_Store

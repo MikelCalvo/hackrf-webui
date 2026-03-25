@@ -38,6 +38,33 @@ function displayVesselName(vessel: AisVesselContact): string {
   return vessel.name || vessel.callsign || vessel.mmsi;
 }
 
+function buildAisContactList(snapshot: AisFeedSnapshot | null): AisVesselContact[] {
+  if (!snapshot) {
+    return [];
+  }
+
+  const ordered: AisVesselContact[] = [];
+  const seen = new Set<string>();
+
+  for (const vessel of snapshot.vessels) {
+    if (seen.has(vessel.mmsi)) {
+      continue;
+    }
+    seen.add(vessel.mmsi);
+    ordered.push(vessel);
+  }
+
+  for (const vessel of snapshot.recentVessels ?? []) {
+    if (seen.has(vessel.mmsi)) {
+      continue;
+    }
+    seen.add(vessel.mmsi);
+    ordered.push(vessel);
+  }
+
+  return ordered;
+}
+
 function formatSpeed(speedKnots: number | null): string {
   return speedKnots === null ? "\u2014" : `${speedKnots.toFixed(1)} kn`;
 }
@@ -198,6 +225,7 @@ export function AisModule({ hardware, location, onRefreshHardware }: AisModulePr
     (layer) => layer.role === "country" && layer.countryId === savedCountryId,
   ) ?? null;
   const selectedCountryBounds = selectedCountryLayer?.bounds ?? null;
+  const contactList = buildAisContactList(snapshot);
 
   function focusVessel(vessel: AisVesselContact): void {
     const map = mapRef.current;
@@ -213,15 +241,15 @@ export function AisModule({ hardware, location, onRefreshHardware }: AisModulePr
   }
 
   useEffect(() => {
-    if (!snapshot?.vessels.length) {
+    if (contactList.length === 0) {
       setSelectedMmsi("");
       return;
     }
 
-    if (!snapshot.vessels.some((vessel) => vessel.mmsi === selectedMmsi)) {
-      setSelectedMmsi(snapshot.vessels[0].mmsi);
+    if (!contactList.some((vessel) => vessel.mmsi === selectedMmsi)) {
+      setSelectedMmsi(contactList[0].mmsi);
     }
-  }, [selectedMmsi, snapshot]);
+  }, [contactList, selectedMmsi]);
 
   useEffect(() => {
     let active = true;
@@ -345,9 +373,11 @@ export function AisModule({ hardware, location, onRefreshHardware }: AisModulePr
   ]);
 
   const selected =
-    snapshot?.vessels.find((vessel) => vessel.mmsi === selectedMmsi) ??
-    snapshot?.vessels[0] ??
+    contactList.find((vessel) => vessel.mmsi === selectedMmsi) ??
+    contactList[0] ??
     null;
+  const liveMmsiSet = new Set((snapshot?.vessels ?? []).map((vessel) => vessel.mmsi));
+  const selectedIsLive = selected ? liveMmsiSet.has(selected.mmsi) : false;
 
   useEffect(() => {
     const leaflet = leafletRef.current;
@@ -596,7 +626,7 @@ export function AisModule({ hardware, location, onRefreshHardware }: AisModulePr
             ref={mapHostRef}
           />
 
-          {selected ? (
+          {selected && selectedIsLive ? (
             <div className="pointer-events-none absolute left-4 top-4 z-[1200] max-w-sm rounded-lg border border-white/10 bg-[rgba(6,11,20,0.86)] px-4 py-3 shadow-[0_18px_60px_rgba(0,0,0,0.35)] backdrop-blur-sm">
               <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-[var(--accent)]">
                 Selected Vessel
@@ -638,7 +668,9 @@ export function AisModule({ hardware, location, onRefreshHardware }: AisModulePr
                       ? "Decoder is live — no valid AIS positions decoded yet."
                       : runtimeStarting
                         ? "Decoder starting\u2026"
-                        : "Start Scanning to populate the maritime picture with live HackRF data."}
+                        : contactList.length > 0
+                          ? "No live vessel positions right now. Historical contacts remain available in the sidebar."
+                          : "Start Scanning to populate the maritime picture with live HackRF data."}
                 </p>
                 <div className="h-px w-8 bg-[var(--accent)]/20" />
               </div>
@@ -661,11 +693,13 @@ export function AisModule({ hardware, location, onRefreshHardware }: AisModulePr
                 </div>
                 <span className={cx(
                   "mt-0.5 shrink-0 rounded-sm px-1.5 py-0.5 font-mono text-[9px] uppercase tracking-[0.1em]",
-                  selected.isMoving
-                    ? "bg-[var(--highlight)]/10 text-[var(--highlight)]"
-                    : "bg-[var(--accent)]/10 text-[var(--accent)]",
+                  !selectedIsLive
+                    ? "bg-white/[0.05] text-[var(--muted-strong)]"
+                    : selected.isMoving
+                      ? "bg-[var(--highlight)]/10 text-[var(--highlight)]"
+                      : "bg-[var(--accent)]/10 text-[var(--accent)]",
                 )}>
-                  {selected.isMoving ? "Underway" : "At anchor"}
+                  {!selectedIsLive ? "History" : selected.isMoving ? "Underway" : "At anchor"}
                 </span>
               </div>
 
@@ -705,12 +739,13 @@ export function AisModule({ hardware, location, onRefreshHardware }: AisModulePr
 
         <div className="flex items-center justify-between border-b border-white/[0.07] px-5 py-2.5">
           <span className="font-mono text-[10px] uppercase tracking-[0.22em] text-[var(--muted)]">Contacts</span>
-          <span className="font-mono text-[10px] text-[var(--muted)]">{snapshot?.vesselCount ?? 0}</span>
+          <span className="font-mono text-[10px] text-[var(--muted)]">{contactList.length}</span>
         </div>
 
         <div className="flex-1 overflow-y-auto">
-          {(snapshot?.vessels ?? []).map((vessel) => {
+          {contactList.map((vessel) => {
             const isSelected = vessel.mmsi === selected?.mmsi;
+            const isLive = liveMmsiSet.has(vessel.mmsi);
             return (
               <button
                 key={vessel.mmsi}
@@ -720,13 +755,15 @@ export function AisModule({ hardware, location, onRefreshHardware }: AisModulePr
                 )}
                 onClick={() => {
                   setSelectedMmsi(vessel.mmsi);
-                  focusVessel(vessel);
+                  if (isLive) {
+                    focusVessel(vessel);
+                  }
                 }}
                 type="button"
               >
                 <span className={cx(
                   "mt-1 h-1.5 w-1.5 shrink-0 rounded-full",
-                  vessel.isMoving ? "bg-[var(--highlight)]" : "bg-[var(--accent)]",
+                  !isLive ? "bg-white/25" : vessel.isMoving ? "bg-[var(--highlight)]" : "bg-[var(--accent)]",
                 )} />
                 <span className="min-w-0 flex-1">
                   <span className="block truncate font-mono text-xs font-medium text-[var(--foreground)]">
@@ -736,7 +773,9 @@ export function AisModule({ hardware, location, onRefreshHardware }: AisModulePr
                     MMSI {vessel.mmsi}
                   </span>
                   <span className="mt-0.5 block text-[10px] text-[var(--muted)]">
-                    {vessel.navStatus || vessel.shipType || "AIS contact"}
+                    {isLive
+                      ? vessel.navStatus || vessel.shipType || "Live contact"
+                      : `History only · ${formatTimestamp(vessel.lastSeenAt)}`}
                   </span>
                 </span>
                 <span className="shrink-0 text-right">

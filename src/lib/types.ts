@@ -376,10 +376,46 @@ export type AisFeedSnapshot = {
   center: AisPoint | null;
   bounds: AisBounds | null;
   vessels: AisVesselContact[];
+  recentVessels: AisVesselContact[];
   channels: AisChannelStatus[];
   warnings: string[];
   maps: OfflineMapSummary;
   runtime: AisRuntimeStatus;
+};
+
+export type AisTrackPoint = {
+  id: string;
+  observationKey: string;
+  mmsi: string;
+  name: string;
+  callsign: string;
+  imo: string;
+  shipType: string;
+  destination: string;
+  navStatus: string;
+  messageType: string;
+  messageTypeCode: number | null;
+  sourceLabel: string;
+  channelId: string | null;
+  phase: number | null;
+  latitude: number;
+  longitude: number;
+  speedKnots: number | null;
+  courseDeg: number | null;
+  headingDeg: number | null;
+  isMoving: boolean;
+  lastSeenAt: string;
+  lastPositionAt: string;
+  lastStaticAt: string | null;
+  metadata: Record<string, unknown> | null;
+};
+
+export type AisTrackHistoryResponse = {
+  mmsi: string;
+  pointCount: number;
+  firstPositionAt: string | null;
+  lastPositionAt: string | null;
+  points: AisTrackPoint[];
 };
 
 export type AdsbRuntimeState = "stopped" | "starting" | "running" | "error";
@@ -448,9 +484,45 @@ export type AdsbFeedSnapshot = {
   center: GeoPoint | null;
   bounds: GeoBounds | null;
   aircraft: AdsbAircraftContact[];
+  recentAircraft: AdsbAircraftContact[];
   warnings: string[];
   maps: OfflineMapSummary;
   runtime: AdsbRuntimeStatus;
   receiver: AdsbReceiverInfo | null;
   stats: AdsbDecoderStats | null;
+};
+
+export type AdsbTrackPoint = {
+  id: string;
+  observationKey: string;
+  hex: string;
+  flight: string;
+  type: string;
+  category: string;
+  squawk: string;
+  emergency: string;
+  sourceLabel: string;
+  latitude: number;
+  longitude: number;
+  altitudeFeet: number | null;
+  groundSpeedKnots: number | null;
+  trackDeg: number | null;
+  verticalRateFpm: number | null;
+  onGround: boolean;
+  messageCount: number;
+  rssi: number | null;
+  seenAt: string;
+  seenPosAt: string | null;
+  generatedAt: string | null;
+  receiverLatitude: number | null;
+  receiverLongitude: number | null;
+  metadata: Record<string, unknown> | null;
+};
+
+export type AdsbTrackHistoryResponse = {
+  hex: string;
+  pointCount: number;
+  firstSeenAt: string | null;
+  lastSeenAt: string | null;
+  points: AdsbTrackPoint[];
 };

@@ -7,6 +7,9 @@ DEFAULT_PORT=3000
 MIN_NODE_MAJOR=20
 GPSD_HOST="${HACKRF_WEBUI_GPSD_HOST:-127.0.0.1}"
 GPSD_PORT="${HACKRF_WEBUI_GPSD_PORT:-2947}"
+DB_DIR="${ROOT_DIR}/db"
+DB_PATH="${HACKRF_WEBUI_DB_PATH:-${DB_DIR}/app.sqlite}"
+CAPTURES_DIR="${ROOT_DIR}/data/captures"
 
 HOST_WAS_SET=0
 PORT_WAS_SET=0
@@ -84,6 +87,7 @@ Environment overrides:
   MAP_COUNTRY, MAP_COUNTRY_MAX_ZOOM,
   DUMP1090_FA_REF, DUMP1090_FA_REINSTALL, DRY_RUN,
   HACKRF_WEBUI_GPSD_HOST, HACKRF_WEBUI_GPSD_PORT
+  HACKRF_WEBUI_DB_PATH
 
 Default map behavior:
   start.sh ensures a managed offline map stack based on the latest Protomaps
@@ -211,6 +215,10 @@ adsb_decoder_ready() {
 
 prod_bundle_ready() {
   [[ -f "$ROOT_DIR/.next/BUILD_ID" ]]
+}
+
+db_ready() {
+  [[ -f "$DB_PATH" ]]
 }
 
 maps_manifest_path() {
@@ -682,6 +690,8 @@ print_status_report() {
   report_line "cc" "$(command_display cc)"
   report_line "pkg-config" "$(command_display pkg-config)"
   report_line "GPSD daemon" "$(gpsd_probe_status)"
+  report_line "SQLite DB" "$(db_ready && printf '%s' "$DB_PATH" || printf '%s' 'not initialized yet')"
+  report_line "Capture store" "$CAPTURES_DIR"
 
   if hackrf_pkgconfig_ok; then
     report_line "libhackrf" "ok"
@@ -786,6 +796,14 @@ install_node_modules() {
   fi
 }
 
+prepare_local_storage() {
+  cd "$ROOT_DIR"
+
+  log "Preparing local runtime storage."
+  run mkdir -p "$DB_DIR" "$CAPTURES_DIR"
+  run npm run db:migrate
+}
+
 install_maps() {
   cd "$ROOT_DIR"
 
@@ -875,6 +893,8 @@ print_start_summary() {
   report_line "Native binary" "$(native_binary_path)"
   report_line "ADS-B backend" "$(adsb_decoder_binary_path)"
   report_line "Prod bundle" ".next/BUILD_ID present"
+  report_line "SQLite DB" "$DB_PATH"
+  report_line "Capture store" "$CAPTURES_DIR"
   report_line "gpsd" "$(command_display gpsd)"
   report_line "GPSD daemon" "$(gpsd_probe_status)"
   if maps_ready; then
@@ -940,6 +960,7 @@ main() {
   verify_runtime
   resolve_port
   install_node_modules
+  prepare_local_storage
   install_maps
   install_adsb_runtime
   build_app

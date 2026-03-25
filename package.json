@@ -5,6 +5,7 @@
   "scripts": {
     "catalog:build": "node ./scripts/catalog/build.mjs",
     "clean": "node -e \"require('fs').rmSync('.next', { recursive: true, force: true })\"",
+    "db:migrate": "node ./scripts/db/migrate.mjs",
     "dev": "next dev --webpack",
     "dev:turbo": "next dev --turbopack",
     "build": "npm run build:native && next build",
@@ -14,6 +15,8 @@
   },
   "dependencies": {
     "@types/leaflet": "^1.9.21",
+    "better-sqlite3": "^12.8.0",
+    "drizzle-orm": "^0.45.1",
     "leaflet": "^1.9.4",
     "next": "16.2.1",
     "protomaps-leaflet": "^5.1.0",
@@ -22,11 +25,13 @@
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
+    "@types/better-sqlite3": "^7.6.13",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "adm-zip": "^0.5.16",
     "dbffile": "^1.12.0",
+    "drizzle-kit": "^0.31.10",
     "eslint": "^9",
     "eslint-config-next": "16.2.1",
     "tailwindcss": "^4",

@@ -48,6 +48,7 @@ The app also has a single global location model shared across modules:
   - dwell time
   - lock-on-activity behavior
   - activity log
+- local activity log persistence in `SQLite`, so hits survive reloads and restarts
 - in-place retune of the active PMR stream without restarting the browser audio pipeline
 
 ### AIRBAND
@@ -58,6 +59,7 @@ The app also has a single global location model shared across modules:
 - manual tuning with quick retune steps
 - starter channel packs for global common and guard frequencies
 - PMR-style scanning with dwell, squelch and lock-on-activity
+- local activity log persistence in `SQLite`
 - shared RF/audio controls with the other live audio modules
 
 ### MARITIME
@@ -68,6 +70,7 @@ The app also has a single global location model shared across modules:
 - manual tuning with quick retune steps
 - starter channel packs for distress, port ops, working voice, selected Spain port channels, UK MSI, U.S. coastal safety, U.S. VTS and NOAA weather watch
 - PMR-style scanning with dwell, squelch and lock-on-activity
+- local activity log persistence in `SQLite`
 - smart `All` scanning that can prefer global channels plus the shared city or country catalog scope
 - focused on analog voice traffic; digital AIS remains in the dedicated AIS module
 
@@ -77,6 +80,7 @@ The app also has a single global location model shared across modules:
 - native demodulation and message parsing inside `hackrf-webui`, without `SDRangel`
 - vessel map with offline-capable dark basemaps
 - managed PMTiles layers, plus a default worldwide Protomaps dark extract served from `public/tiles/osm`
+- persistent local position history in `SQLite`, so each vessel can accumulate a route log instead of only exposing the latest point
 
 ### ADS-B
 
@@ -84,6 +88,7 @@ The app also has a single global location model shared across modules:
 - managed `dump1090-fa` backend driven by `hackrf-webui`
 - aircraft map with the same offline-capable basemap system used by AIS
 - local start / stop control, receiver stats and aircraft detail inside the dashboard
+- persistent local position history in `SQLite` for route reconstruction and later analysis
 
 ## Quick Start
 
@@ -98,6 +103,7 @@ By default, `start.sh`:
 - installs missing system dependencies on common Linux distributions
 - installs `gpsd` packages when the distribution exposes them, so live GPS positioning is ready when you want it
 - installs Node dependencies
+- prepares the local `SQLite` runtime storage under `db/` and runs pending migrations automatically
 - ensures a managed offline map stack unless `--skip-maps` is used
 - installs a dark global basemap capped near `4 GB` by default
 - optionally adds one high-detail country overlay when `--map-country` is set
@@ -175,6 +181,25 @@ Managed map model:
 - country overlays start at the first zoom above the global layer and extend to the configured country zoom
 - maps are stored under `public/tiles/osm/global` and `public/tiles/osm/countries`
 
+## Local Runtime Storage
+
+`hackrf-webui` is local-first, so runtime evidence is stored on disk next to the project:
+
+- `db/app.sqlite`
+  - the local `SQLite` database
+  - stores module activity events, route history for `AIS` / `ADS-B`, and schema placeholders for future captures and analysis
+- `data/captures/`
+  - reserved for future audio, raw IQ, and derived artifacts
+  - capture metadata is intended to live in `SQLite`, while large binaries stay on disk
+
+What already persists today:
+
+- `PMR`, `AIRBAND`, `MARITIME` activity logs
+- `AIS` vessel position history
+- `ADS-B` aircraft position history
+
+The FM station catalog is intentionally not stored in the database. It remains a sharded static catalog under `public/catalog`.
+
 ## Supported Package Managers In `start.sh`
 
 - `apt` for Debian / Ubuntu
@@ -190,6 +215,7 @@ If you prefer to handle dependencies yourself:
 
 ```bash
 npm ci
+npm run db:migrate
 node ./scripts/install-dump1090-fa.mjs
 npm run build
 npm run start -- --hostname 127.0.0.1 --port 3000
