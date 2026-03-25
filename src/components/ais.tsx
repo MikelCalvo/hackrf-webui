@@ -14,7 +14,9 @@ import {
   buildBasemapSources,
   buildBoundsPairs,
   isPointBounds,
+  type MarkerSyncRecord,
   syncLeafletBasemap,
+  syncLeafletMarkers,
   useManagedRuntimeFeed,
 } from "@/components/live-map";
 
@@ -189,6 +191,7 @@ export function AisModule({ hardware, location, onRefreshHardware }: AisModulePr
   const leafletRef = useRef<typeof import("leaflet") | null>(null);
   const mapRef = useRef<LeafletMap | null>(null);
   const markerLayerRef = useRef<LayerGroup | null>(null);
+  const markerRecordsRef = useRef<Map<string, MarkerSyncRecord>>(new Map());
   const basemapLayerRef = useRef<Layer[]>([]);
   const didFitBoundsRef = useRef(false);
   const userViewportLockedRef = useRef(false);
@@ -253,6 +256,7 @@ export function AisModule({ hardware, location, onRefreshHardware }: AisModulePr
 
   useEffect(() => {
     let active = true;
+    const markerRecords = markerRecordsRef.current;
 
     const setup = async () => {
       if (!mapHostRef.current || mapRef.current) {
@@ -293,6 +297,7 @@ export function AisModule({ hardware, location, onRefreshHardware }: AisModulePr
       active = false;
       basemapLayerRef.current.forEach((layer) => layer.remove());
       markerLayerRef.current?.clearLayers();
+      markerRecords.clear();
       mapRef.current?.remove();
       basemapLayerRef.current = [];
       markerLayerRef.current = null;
@@ -387,29 +392,30 @@ export function AisModule({ hardware, location, onRefreshHardware }: AisModulePr
       return;
     }
 
-    markerLayer.clearLayers();
-
-    for (const vessel of snapshot.vessels) {
-      const marker = leaflet.marker([vessel.latitude, vessel.longitude], {
-        icon: buildMarkerIcon(leaflet, vessel, vessel.mmsi === selected?.mmsi),
-        keyboard: false,
-        riseOnHover: true,
-      });
-
-      marker.on("click", () => {
-        setSelectedMmsi(vessel.mmsi);
-      });
-      marker.bindTooltip(
-        `${displayVesselName(vessel)} \u00b7 ${formatSpeed(vessel.speedKnots)}`,
-        {
-          className: "ais-tooltip",
-          direction: "top",
-          offset: [0, -14],
-          opacity: 1,
-        },
-      );
-      markerLayer.addLayer(marker);
-    }
+    syncLeafletMarkers({
+      entries: snapshot.vessels,
+      getId: (vessel) => vessel.mmsi,
+      getLatitude: (vessel) => vessel.latitude,
+      getLongitude: (vessel) => vessel.longitude,
+      getIconSignature: (vessel) =>
+        [
+          vessel.mmsi === selected?.mmsi ? "selected" : "idle",
+          vessel.isMoving ? "moving" : "still",
+          vessel.courseDeg ?? "none",
+        ].join("|"),
+      getTooltipText: (vessel) => `${displayVesselName(vessel)} \u00b7 ${formatSpeed(vessel.speedKnots)}`,
+      buildIcon: (vessel) => buildMarkerIcon(leaflet, vessel, vessel.mmsi === selected?.mmsi),
+      leaflet,
+      layerGroup: markerLayer,
+      recordsRef: markerRecordsRef,
+      onSelect: (mmsi) => setSelectedMmsi(mmsi),
+      tooltipOptions: {
+        className: "ais-tooltip",
+        direction: "top",
+        offset: [0, -14],
+        opacity: 1,
+      },
+    });
 
     const boundsToFit = snapshot.bounds ?? (
       savedCityResolved && !savedCityView

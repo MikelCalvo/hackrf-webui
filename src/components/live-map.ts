@@ -1,6 +1,14 @@
 "use client";
 
-import type { Layer, Map as LeafletMap } from "leaflet";
+import type {
+  DivIcon,
+  Icon,
+  Layer,
+  LayerGroup,
+  Map as LeafletMap,
+  Marker,
+  TooltipOptions,
+} from "leaflet";
 import { useEffect, useRef, useState, type MutableRefObject } from "react";
 
 import type {
@@ -459,6 +467,10 @@ export async function syncLeafletBasemap({
         continue;
       }
 
+      const layerMaxZoom = source.role === "global"
+        ? Math.min(maxZoom, source.maxZoom + 1)
+        : maxZoom;
+
       if (source.kind === "pmtiles" && source.pmtilesUrl) {
         const flavor = basemapsModule?.namedFlavor(source.flavor ?? "dark");
         const layer = protomapsModule?.leafletLayer({
@@ -467,7 +479,7 @@ export async function syncLeafletBasemap({
           labelRules: flavor ? protomapsModule?.labelRules(flavor, source.lang ?? "en") : undefined,
           backgroundColor: source.role === "global" ? flavor?.background : undefined,
           minZoom: source.minZoom,
-          maxZoom,
+          maxZoom: layerMaxZoom,
           maxDataZoom: source.maxZoom,
           bounds: source.bounds ? buildBoundsPairs(source.bounds) : undefined,
           attribution: source.attribution,
@@ -487,7 +499,7 @@ export async function syncLeafletBasemap({
       nextLayers.push(
         leaflet.tileLayer(source.tileUrlTemplate, {
           minZoom: source.minZoom,
-          maxZoom,
+          maxZoom: layerMaxZoom,
           maxNativeZoom: source.maxZoom,
           errorTileUrl: emptyTileDataUrl,
           attribution: source.attribution,
@@ -525,4 +537,106 @@ export async function syncLeafletBasemap({
   }
 
   signatureRef.current = nextSignature;
+}
+
+export type MarkerSyncRecord = {
+  marker: Marker;
+  latitude: number;
+  longitude: number;
+  iconSignature: string;
+  tooltipText: string;
+};
+
+type MarkerSyncOptions<TEntry> = {
+  entries: TEntry[];
+  getId: (entry: TEntry) => string;
+  getLatitude: (entry: TEntry) => number;
+  getLongitude: (entry: TEntry) => number;
+  getIconSignature: (entry: TEntry) => string;
+  getTooltipText: (entry: TEntry) => string;
+  buildIcon: (entry: TEntry) => Icon | DivIcon;
+  leaflet: typeof import("leaflet");
+  layerGroup: LayerGroup;
+  recordsRef: MutableRefObject<Map<string, MarkerSyncRecord>>;
+  onSelect: (id: string) => void;
+  tooltipOptions: TooltipOptions;
+};
+
+export function syncLeafletMarkers<TEntry>({
+  entries,
+  getId,
+  getLatitude,
+  getLongitude,
+  getIconSignature,
+  getTooltipText,
+  buildIcon,
+  leaflet,
+  layerGroup,
+  recordsRef,
+  onSelect,
+  tooltipOptions,
+}: MarkerSyncOptions<TEntry>): void {
+  const nextIds = new Set<string>();
+
+  for (const entry of entries) {
+    const id = getId(entry);
+    const latitude = getLatitude(entry);
+    const longitude = getLongitude(entry);
+    const iconSignature = getIconSignature(entry);
+    const tooltipText = getTooltipText(entry);
+    nextIds.add(id);
+
+    const current = recordsRef.current.get(id);
+    if (!current) {
+      const marker = leaflet.marker([latitude, longitude], {
+        icon: buildIcon(entry),
+        keyboard: false,
+        riseOnHover: true,
+      });
+
+      marker.on("click", () => onSelect(id));
+      marker.bindTooltip(tooltipText, tooltipOptions);
+      layerGroup.addLayer(marker);
+      recordsRef.current.set(id, {
+        marker,
+        latitude,
+        longitude,
+        iconSignature,
+        tooltipText,
+      });
+      continue;
+    }
+
+    if (current.latitude !== latitude || current.longitude !== longitude) {
+      current.marker.setLatLng([latitude, longitude]);
+      current.latitude = latitude;
+      current.longitude = longitude;
+    }
+
+    if (current.iconSignature !== iconSignature) {
+      current.marker.setIcon(buildIcon(entry));
+      current.iconSignature = iconSignature;
+    }
+
+    if (current.tooltipText !== tooltipText) {
+      const tooltip = current.marker.getTooltip();
+      if (tooltip) {
+        current.marker.setTooltipContent(tooltipText);
+      } else {
+        current.marker.bindTooltip(tooltipText, tooltipOptions);
+      }
+      current.tooltipText = tooltipText;
+    }
+  }
+
+  for (const [id, record] of recordsRef.current) {
+    if (nextIds.has(id)) {
+      continue;
+    }
+
+    record.marker.off();
+    record.marker.unbindTooltip();
+    layerGroup.removeLayer(record.marker);
+    recordsRef.current.delete(id);
+  }
 }

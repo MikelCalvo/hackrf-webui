@@ -282,7 +282,7 @@ select option:hover {
   border-radius: 9999px;
   border: 1px solid rgba(87, 215, 255, 0.28);
   background: rgba(87, 215, 255, 0.08);
-  animation: ais-pulse 2.6s ease-out infinite;
+  opacity: 0.58;
 }
 
 .ais-vessel-icon__dot {
@@ -328,6 +328,7 @@ select option:hover {
 .ais-vessel-icon.is-selected .ais-vessel-icon__pulse {
   inset: 1px;
   border-width: 2px;
+  animation: ais-pulse 2.6s ease-out infinite;
 }
 
 .adsb-aircraft-icon-shell {
@@ -353,7 +354,7 @@ select option:hover {
   border-radius: 9999px;
   border: 1px solid var(--adsb-halo, rgba(87, 215, 255, 0.28));
   background: var(--adsb-halo, rgba(87, 215, 255, 0.12));
-  animation: adsb-pulse 2.4s ease-out infinite;
+  opacity: 0.52;
 }
 
 .adsb-aircraft-icon__body {
@@ -382,6 +383,7 @@ select option:hover {
 .adsb-aircraft-icon.is-selected .adsb-aircraft-icon__halo {
   inset: 1px;
   border-width: 2px;
+  animation: adsb-pulse 2.4s ease-out infinite;
 }
 
 @keyframes ais-pulse {

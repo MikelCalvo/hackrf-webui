@@ -15,7 +15,9 @@ import {
   buildBoundsPairs,
   buildPointBounds,
   isPointBounds,
+  type MarkerSyncRecord,
   syncLeafletBasemap,
+  syncLeafletMarkers,
   useManagedRuntimeFeed,
 } from "@/components/live-map";
 
@@ -207,6 +209,7 @@ export function AdsbModule({ hardware, location, onRefreshHardware }: AdsbModule
   const leafletRef = useRef<typeof import("leaflet") | null>(null);
   const mapRef = useRef<LeafletMap | null>(null);
   const markerLayerRef = useRef<LayerGroup | null>(null);
+  const markerRecordsRef = useRef<Map<string, MarkerSyncRecord>>(new Map());
   const basemapLayerRef = useRef<Layer[]>([]);
   const didFitBoundsRef = useRef(false);
   const userViewportLockedRef = useRef(false);
@@ -270,6 +273,7 @@ export function AdsbModule({ hardware, location, onRefreshHardware }: AdsbModule
 
   useEffect(() => {
     let active = true;
+    const markerRecords = markerRecordsRef.current;
 
     const setup = async () => {
       if (!mapHostRef.current || mapRef.current) {
@@ -310,6 +314,7 @@ export function AdsbModule({ hardware, location, onRefreshHardware }: AdsbModule
       active = false;
       basemapLayerRef.current.forEach((layer) => layer.remove());
       markerLayerRef.current?.clearLayers();
+      markerRecords.clear();
       mapRef.current?.remove();
       basemapLayerRef.current = [];
       markerLayerRef.current = null;
@@ -404,33 +409,33 @@ export function AdsbModule({ hardware, location, onRefreshHardware }: AdsbModule
       return;
     }
 
-    markerLayer.clearLayers();
-
-    for (const aircraft of snapshot.aircraft) {
-      if (aircraft.latitude === null || aircraft.longitude === null) {
-        continue;
-      }
-
-      const marker = leaflet.marker([aircraft.latitude, aircraft.longitude], {
-        icon: buildMarkerIcon(leaflet, aircraft, aircraft.hex === selected?.hex),
-        keyboard: false,
-        riseOnHover: true,
-      });
-
-      marker.on("click", () => {
-        setSelectedHex(aircraft.hex);
-      });
-      marker.bindTooltip(
-        `${displayAircraftName(aircraft)} \u00b7 ${formatAltitude(aircraft.altitudeFeet)}`,
-        {
-          className: "ais-tooltip",
-          direction: "top",
-          offset: [0, -14],
-          opacity: 1,
-        },
-      );
-      markerLayer.addLayer(marker);
-    }
+    syncLeafletMarkers({
+      entries: snapshot.aircraft.filter(
+        (aircraft) => aircraft.latitude !== null && aircraft.longitude !== null,
+      ),
+      getId: (aircraft) => aircraft.hex,
+      getLatitude: (aircraft) => aircraft.latitude!,
+      getLongitude: (aircraft) => aircraft.longitude!,
+      getIconSignature: (aircraft) =>
+        [
+          aircraft.hex === selected?.hex ? "selected" : "idle",
+          aircraft.emergency ? "emergency" : "normal",
+          aircraft.onGround ? "ground" : "airborne",
+          aircraft.trackDeg ?? "none",
+        ].join("|"),
+      getTooltipText: (aircraft) => `${displayAircraftName(aircraft)} \u00b7 ${formatAltitude(aircraft.altitudeFeet)}`,
+      buildIcon: (aircraft) => buildMarkerIcon(leaflet, aircraft, aircraft.hex === selected?.hex),
+      leaflet,
+      layerGroup: markerLayer,
+      recordsRef: markerRecordsRef,
+      onSelect: (hex) => setSelectedHex(hex),
+      tooltipOptions: {
+        className: "ais-tooltip",
+        direction: "top",
+        offset: [0, -14],
+        opacity: 1,
+      },
+    });
 
     const receiver = snapshot.receiver;
     const receiverBounds =
