@@ -5,6 +5,7 @@ export const APP_MODULES = [
   { id: "fm", label: "FM", band: "87.5-108", path: "/fm", live: true },
   { id: "pmr", label: "PMR", band: "446 MHz", path: "/pmr", live: true },
   { id: "airband", label: "Airband", band: "118-137", path: "/airband", live: true },
+  { id: "maritime", label: "Maritime", band: "156-162", path: "/maritime", live: true },
   { id: "adsb", label: "ADS-B", band: "1090 MHz", path: "/adsb", live: true },
   { id: "ais", label: "AIS", band: "162 MHz", path: "/ais", live: true },
 ] as const;

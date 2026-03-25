@@ -2,11 +2,12 @@
 
 `hackrf-webui` is a local-first web interface for `HackRF`.
 
-It runs on the user's own machine, works offline at runtime, exposes radio controls in a browser UI, and currently ships with four real modules:
+It runs on the user's own machine, works offline at runtime, exposes radio controls in a browser UI, and currently ships with six real modules:
 
 - `FM`: browser listening with a large country-sharded station catalog
 - `PMR`: narrowband channel presets with manual listen and automatic scanning
 - `AIRBAND`: AM airband listening with local presets, manual tuning and shared HackRF audio controls
+- `MARITIME`: marine VHF voice listening with starter channel packs, manual tuning and autoscan
 - `AIS`: native dual-channel HackRF decoding with a live vessel map and offline-capable basemaps
 - `ADS-B`: live aircraft tracking with a managed `dump1090-fa` backend, a local aircraft map and offline-capable basemaps
 
@@ -48,6 +49,17 @@ There is no cloud layer, no account system, and no remote device bridge.
 - starter channel packs for global common and guard frequencies
 - PMR-style scanning with dwell, squelch and lock-on-activity
 - shared RF/audio controls with the other live audio modules
+
+### MARITIME
+
+- `NFM` listening across common marine VHF voice channels
+- `All` deck that merges saved presets with built-in global and regional marine groups
+- local-first saved preset bank in the browser
+- manual tuning with quick retune steps
+- starter channel packs for distress, port ops, working voice, selected Spain port channels, UK MSI, U.S. coastal safety, U.S. VTS and NOAA weather watch
+- PMR-style scanning with dwell, squelch and lock-on-activity
+- smart `All` scanning that can prefer global channels plus the saved city or country scope from browser local storage
+- focused on analog voice traffic; digital AIS remains in the dedicated AIS module
 
 ### AIS
 
@@ -93,6 +105,7 @@ Module routes:
 - `/fm`
 - `/pmr`
 - `/airband`
+- `/maritime`
 - `/ais`
 - `/adsb`
 
@@ -392,6 +405,22 @@ The AIRBAND module uses static starter packs defined in [`airband-channels.ts`](
 - browser-local preset storage and manual notes
 - scan / lock / resume workflows on the active channel group
 
+## MARITIME Data
+
+The MARITIME module uses static starter packs defined in [`maritime-channels.ts`](src/data/maritime-channels.ts) plus browser-local saved presets. The runtime is designed around:
+
+- marine VHF narrowband FM voice audio
+- a global starter deck rather than a port-specific database
+- an `All` view that merges saved, distress, port ops, working, regional and weather groups
+- quick local tuning rather than a harbor directory
+- in-place retune of an active NFM stream when possible
+- shared HackRF audio ownership with FM, PMR and AIRBAND
+- browser-local preset storage and manual notes
+- scan / lock / resume workflows on the active channel group
+- keeping AIS / DSC digital traffic out of this voice-focused module
+- smart scan scoping for `All`, using the saved FM city / country when available
+- curated regional packs for Spanish ports, UK MSI and selected U.S. VTS / Coast Guard channels
+
 ## Documentation
 
 FM coverage planning and blocker notes live under [`docs/fm`](docs/fm).
@@ -410,5 +439,5 @@ At the moment, those docs are FM-specific. PMR does not need the same coverage-t
 - Runtime use is local and offline-friendly.
 - The app does not depend on remote frontend assets.
 - The current radio runtime is focused on `HackRF`.
-- FM, PMR, AIRBAND, AIS and ADS-B are the landed modules today.
+- FM, PMR, AIRBAND, MARITIME, AIS and ADS-B are the landed modules today.
 - The catalog and band modules are intended to keep growing through importer work and targeted PRs.

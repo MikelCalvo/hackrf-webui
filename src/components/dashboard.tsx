@@ -119,6 +119,14 @@ const AirbandModule = dynamic(
   },
 );
 
+const MaritimeModule = dynamic(
+  () => import("@/components/maritime").then((mod) => mod.MaritimeModule),
+  {
+    ssr: false,
+    loading: () => <ModulePanelLoading label="MARITIME" />,
+  },
+);
+
 function formatCount(value: number): string {
   return numberFormatter.format(value);
 }
@@ -865,6 +873,19 @@ function ModuleIcon({ id }: { id: string }) {
         <rect height="4" rx="1" width="7" x="4.5" y="5" />
         <path d="M5.5 9l-2 5h9l-2-5" />
         <line x1="4" x2="12" y1="11.5" y2="11.5" />
+      </svg>
+    );
+  }
+  if (id === "maritime") {
+    // Anchor
+    return (
+      <svg aria-hidden="true" className="h-4 w-4" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.4" viewBox="0 0 16 16">
+        <circle cx="8" cy="2.75" r="1.25" />
+        <line x1="8" x2="8" y1="4" y2="11.5" />
+        <path d="M4 7.5H12" />
+        <path d="M4 8C4 11 5.75 13.75 8 13.75C10.25 13.75 12 11 12 8" />
+        <path d="M6 11.75L3.5 9.5" />
+        <path d="M10 11.75L12.5 9.5" />
       </svg>
     );
   }
@@ -1765,6 +1786,15 @@ export function Dashboard({
 
         {activeModule === "airband" ? (
           <AirbandModule
+            controls={controls}
+            hardware={hardware}
+            onControlsChange={setControls}
+            onRefreshHardware={refreshHardware}
+          />
+        ) : null}
+
+        {activeModule === "maritime" ? (
+          <MaritimeModule
             controls={controls}
             hardware={hardware}
             onControlsChange={setControls}
