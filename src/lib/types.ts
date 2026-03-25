@@ -154,10 +154,13 @@ export type SignalLevelTelemetry = {
   updatedAt: string;
 };
 
+export type AudioDemodMode = "am" | "nfm" | "wfm";
+
 export type StreamSessionSnapshot = {
   id: string;
   label: string;
   freqHz: number;
+  demodMode: AudioDemodMode;
   startedAt: string;
   lna: number;
   vga: number;

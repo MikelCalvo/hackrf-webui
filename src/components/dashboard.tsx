@@ -20,6 +20,13 @@ import {
   sortStations,
 } from "@/lib/catalog";
 import {
+  CLS_BTN_GHOST,
+  CLS_BTN_PRIMARY,
+  CLS_INPUT,
+  Spinner,
+  cx,
+} from "@/components/module-ui";
+import {
   APP_MODULES,
   getCookieHeaderForModule,
   LAST_MODULE_STORAGE_KEY,
@@ -103,9 +110,13 @@ const AdsbModule = dynamic(
   },
 );
 
-function cx(...args: Array<string | false | null | undefined>): string {
-  return args.filter(Boolean).join(" ");
-}
+const AirbandModule = dynamic(
+  () => import("@/components/airband").then((mod) => mod.AirbandModule),
+  {
+    ssr: false,
+    loading: () => <ModulePanelLoading label="AIRBAND" />,
+  },
+);
 
 function formatCount(value: number): string {
   return numberFormatter.format(value);
@@ -702,35 +713,8 @@ function WelcomeModal({
   );
 }
 
-const CLS_INPUT =
-  "w-full rounded-lg border border-white/10 bg-white/[0.04] px-3 py-2 text-sm text-[var(--foreground)] outline-none transition placeholder:text-[var(--muted)] focus:border-[var(--accent)]/50 focus:bg-white/[0.06] disabled:cursor-not-allowed disabled:opacity-50";
-const CLS_BTN_PRIMARY =
-  "inline-flex items-center justify-center gap-2 rounded border border-[var(--accent)]/40 bg-[var(--accent)]/12 px-4 py-2 text-sm font-semibold transition hover:border-[var(--accent)]/70 hover:bg-[var(--accent)]/20 disabled:cursor-not-allowed disabled:opacity-40";
-const CLS_BTN_GHOST =
-  "inline-flex items-center justify-center rounded border border-white/10 bg-white/[0.04] px-4 py-2 text-sm font-semibold text-[var(--muted-strong)] transition hover:border-white/18 hover:bg-white/[0.07]";
 const CLS_BTN_TILE =
   "inline-flex min-h-[4.25rem] flex-col items-start justify-center rounded px-4 py-3 text-left transition";
-
-function Spinner() {
-  return (
-    <svg
-      aria-hidden="true"
-      className="h-3.5 w-3.5 animate-spin"
-      fill="none"
-      viewBox="0 0 24 24"
-    >
-      <circle
-        cx="12"
-        cy="12"
-        r="10"
-        stroke="currentColor"
-        strokeOpacity="0.25"
-        strokeWidth="3"
-      />
-      <path fill="currentColor" d="M12 2a10 10 0 0 1 10 10h-3a7 7 0 0 0-7-7V2z" />
-    </svg>
-  );
-}
 
 function ModuleIcon({ id }: { id: string }) {
   if (id === "fm") {
@@ -1598,6 +1582,15 @@ export function Dashboard({
 
         {activeModule === "pmr" ? (
           <PmrModule
+            controls={controls}
+            hardware={hardware}
+            onControlsChange={setControls}
+            onRefreshHardware={refreshHardware}
+          />
+        ) : null}
+
+        {activeModule === "airband" ? (
+          <AirbandModule
             controls={controls}
             hardware={hardware}
             onControlsChange={setControls}

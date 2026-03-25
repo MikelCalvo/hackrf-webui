@@ -6,6 +6,7 @@ It runs on the user's own machine, works offline at runtime, exposes radio contr
 
 - `FM`: browser listening with a large country-sharded station catalog
 - `PMR`: narrowband channel presets with manual listen and automatic scanning
+- `AIRBAND`: AM airband listening with local presets, manual tuning and shared HackRF audio controls
 - `AIS`: native dual-channel HackRF decoding with a live vessel map and offline-capable basemaps
 - `ADS-B`: live aircraft tracking with a managed `dump1090-fa` backend, a local aircraft map and offline-capable basemaps
 
@@ -38,6 +39,16 @@ There is no cloud layer, no account system, and no remote device bridge.
   - activity log
 - in-place retune of the active PMR stream without restarting the browser audio pipeline
 
+### AIRBAND
+
+- `AM` listening across the civil VHF airband
+- `All` deck that merges saved presets with the built-in common and guard channels
+- local-first saved preset bank in the browser
+- manual tuning with quick retune steps
+- starter channel packs for global common and guard frequencies
+- PMR-style scanning with dwell, squelch and lock-on-activity
+- shared RF/audio controls with the other live audio modules
+
 ### AIS
 
 - live AIS decoding from the HackRF across channels A and B at `161.975 MHz` / `162.025 MHz`
@@ -51,12 +62,6 @@ There is no cloud layer, no account system, and no remote device bridge.
 - managed `dump1090-fa` backend driven by `hackrf-webui`
 - aircraft map with the same offline-capable basemap system used by AIS
 - local start / stop control, receiver stats and aircraft detail inside the dashboard
-
-### Planned / Not Landed Yet
-
-- `Airband`
-
-That module already exists in the dashboard structure, but it is not implemented yet.
 
 ## Quick Start
 
@@ -87,6 +92,7 @@ Module routes:
 
 - `/fm`
 - `/pmr`
+- `/airband`
 - `/ais`
 - `/adsb`
 
@@ -371,9 +377,20 @@ The PMR module does not use the FM coverage catalog.
 Instead, it uses static channel packs defined in [`pmr-channels.ts`](src/data/pmr-channels.ts) for license-free or common short-range voice bands. The current PMR runtime is designed around:
 
 - narrowband FM audio
+
+## AIRBAND Data
+
+The AIRBAND module uses static starter packs defined in [`airband-channels.ts`](src/data/airband-channels.ts) plus browser-local saved presets. The runtime is designed around:
+
+- civil VHF airband AM audio
+- a global starter deck, not a country-specific airport database
+- an `All` view that merges saved, common and guard channels
+- quick local tuning rather than an airport database
+- in-place retune of an active AM stream when possible
+- shared HackRF audio ownership with FM and PMR
 - fast retune of an existing stream
-- scan / lock / resume workflows
-- per-user local scan preferences stored in the browser
+- browser-local preset storage and manual notes
+- scan / lock / resume workflows on the active channel group
 
 ## Documentation
 
@@ -393,5 +410,5 @@ At the moment, those docs are FM-specific. PMR does not need the same coverage-t
 - Runtime use is local and offline-friendly.
 - The app does not depend on remote frontend assets.
 - The current radio runtime is focused on `HackRF`.
-- FM, PMR, AIS and ADS-B are the landed modules today.
+- FM, PMR, AIRBAND, AIS and ADS-B are the landed modules today.
 - The catalog and band modules are intended to keep growing through importer work and targeted PRs.

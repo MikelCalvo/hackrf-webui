@@ -1,7 +1,17 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import {
+  buildRadioRetuneUrl,
+  buildRadioStreamUrl,
+  CLS_BTN_PRIMARY,
+  formatAdaptiveFrequency,
+  RfControlsPanel,
+  Spinner,
+  cx,
+} from "@/components/radio-shared";
 import type { HardwareStatus } from "@/lib/types";
+import type { AudioControls } from "@/lib/radio";
 import { PMR_BANDS, getChannelsForBand, type PmrChannel } from "@/data/pmr-channels";
 
 type ScannerState = "idle" | "scanning" | "locked";
@@ -13,8 +23,6 @@ type ScanLogEntry = {
   rms: number;
   time: string;
 };
-
-type Controls = { lna: number; vga: number; audioGain: number };
 
 // Time before checking RMS after a channel starts (HackRF init + buffer fill)
 const STARTUP_MS = 2800;
@@ -37,42 +45,20 @@ function loadConfig(): PersistedConfig | null {
   }
 }
 
-function cx(...args: Array<string | false | null | undefined>): string {
-  return args.filter(Boolean).join(" ");
-}
-
-function buildPmrUrl(ch: PmrChannel, controls: Controls): string {
-  const p = new URLSearchParams({
-    label: `${ch.bandId.toUpperCase()} ${ch.label}`,
-    freqMHz: String(ch.freqMhz),
-    lna: String(controls.lna),
-    vga: String(controls.vga),
-    audioGain: String(controls.audioGain),
-    t: String(Date.now()),
-  });
-  return `/api/pmr-stream?${p}`;
+function buildPmrUrl(ch: PmrChannel, controls: AudioControls): string {
+  return buildRadioStreamUrl(
+    "/api/pmr-stream",
+    { ...ch, label: `${ch.bandId.toUpperCase()} ${ch.label}` },
+    controls,
+  );
 }
 
 /** PATCH url to retune an existing stream — no reconnect, no buffering delay */
 function buildRetuneUrl(ch: PmrChannel): string {
-  return `/api/pmr-stream?${new URLSearchParams({
+  return buildRadioRetuneUrl("/api/pmr-stream", {
+    ...ch,
     label: `${ch.bandId.toUpperCase()} ${ch.label}`,
-    freqMHz: String(ch.freqMhz),
-  })}`;
-}
-
-const CLS_BTN_PRIMARY =
-  "inline-flex items-center justify-center gap-2 rounded border border-[var(--accent)]/40 bg-[var(--accent)]/12 px-4 py-2 text-sm font-semibold transition hover:border-[var(--accent)]/70 hover:bg-[var(--accent)]/20 disabled:cursor-not-allowed disabled:opacity-40";
-const CLS_BTN_GHOST =
-  "inline-flex items-center justify-center gap-2 rounded border border-white/10 bg-white/[0.04] px-4 py-2 text-sm font-semibold text-[var(--muted-strong)] transition hover:border-white/18 hover:bg-white/[0.07]";
-
-function Spinner() {
-  return (
-    <svg className="h-3.5 w-3.5 animate-spin" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-      <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="3" strokeOpacity="0.25" />
-      <path fill="currentColor" d="M12 2a10 10 0 0 1 10 10h-3a7 7 0 0 0-7-7V2z" />
-    </svg>
-  );
+  });
 }
 
 export function PmrModule({
@@ -83,8 +69,8 @@ export function PmrModule({
 }: {
   hardware: HardwareStatus | null;
   onRefreshHardware: () => Promise<void>;
-  controls: Controls;
-  onControlsChange: (c: Controls) => void;
+  controls: AudioControls;
+  onControlsChange: (c: AudioControls) => void;
 }) {
   // PmrModule has its own audio element — no dependency on a shared ref from the dashboard
   const audioRef = useRef<HTMLAudioElement>(null);
@@ -346,40 +332,7 @@ export function PmrModule({
           ))}
         </div>
 
-        {/* RF Controls */}
-        <div className="border-t border-white/[0.07]">
-          <div className="border-b border-white/[0.07] px-4 py-2.5">
-            <p className="font-mono text-[10px] uppercase tracking-[0.22em] text-[var(--muted)]">RF Controls</p>
-          </div>
-          <div className="space-y-4 px-4 py-3">
-            <label className="block space-y-1.5">
-              <div className="flex items-center justify-between">
-                <span className="font-mono text-[11px] uppercase tracking-[0.18em] text-[var(--muted-strong)]">LNA</span>
-                <span className="font-mono text-[11px] tabular-nums text-[var(--foreground)]">{controls.lna} dB</span>
-              </div>
-              <input className="rf-slider w-full" max={40} min={0} step={8} type="range" value={controls.lna}
-                onChange={e => onControlsChange({ ...controls, lna: Number.parseInt(e.target.value, 10) })} />
-            </label>
-
-            <label className="block space-y-1.5">
-              <div className="flex items-center justify-between">
-                <span className="font-mono text-[11px] uppercase tracking-[0.18em] text-[var(--muted-strong)]">VGA</span>
-                <span className="font-mono text-[11px] tabular-nums text-[var(--foreground)]">{controls.vga} dB</span>
-              </div>
-              <input className="rf-slider w-full" max={62} min={0} step={2} type="range" value={controls.vga}
-                onChange={e => onControlsChange({ ...controls, vga: Number.parseInt(e.target.value, 10) })} />
-            </label>
-
-            <label className="block space-y-1.5">
-              <div className="flex items-center justify-between">
-                <span className="font-mono text-[11px] uppercase tracking-[0.18em] text-[var(--muted-strong)]">Volume</span>
-                <span className="font-mono text-[11px] tabular-nums text-[var(--foreground)]">{controls.audioGain.toFixed(1)}×</span>
-              </div>
-              <input className="rf-slider w-full" max={8} min={0.2} step={0.1} type="range" value={controls.audioGain}
-                onChange={e => onControlsChange({ ...controls, audioGain: Number.parseFloat(e.target.value) })} />
-            </label>
-          </div>
-        </div>
+        <RfControlsPanel controls={controls} onControlsChange={onControlsChange} />
       </aside>
 
       {/* ── Channel list ─────────────────────────────────────── */}
@@ -417,7 +370,7 @@ export function PmrModule({
                   "w-[4.5rem] shrink-0 font-mono text-sm font-bold tabular-nums",
                   isPlay ? "text-[var(--accent)]" : isSel ? "text-[var(--foreground)]" : "text-[var(--muted-strong)]",
                 )}>
-                  {ch.freqMhz.toFixed(ch.freqMhz < 200 ? 3 : 5)}
+                  {formatAdaptiveFrequency(ch.freqMhz)}
                 </span>
 
                 {/* Notes */}
@@ -500,7 +453,7 @@ export function PmrModule({
                 {currentScanChannel ? (
                   <>
                     <p className="font-mono text-2xl font-bold tabular-nums text-[var(--foreground)] leading-none">
-                      {currentScanChannel.freqMhz.toFixed(currentScanChannel.freqMhz < 200 ? 3 : 5)}
+                      {formatAdaptiveFrequency(currentScanChannel.freqMhz)}
                       <span className="ml-1 text-sm font-normal text-[var(--muted)]">MHz</span>
                     </p>
                     <p className="font-mono text-xs text-[var(--muted)]">
@@ -519,7 +472,7 @@ export function PmrModule({
                 {currentScanChannel ? (
                   <>
                     <p className="font-mono text-2xl font-bold tabular-nums text-[var(--foreground)] leading-none">
-                      {currentScanChannel.freqMhz.toFixed(currentScanChannel.freqMhz < 200 ? 3 : 5)}
+                      {formatAdaptiveFrequency(currentScanChannel.freqMhz)}
                       <span className="ml-1 text-sm font-normal text-[var(--muted)]">MHz</span>
                     </p>
                     <p className="font-mono text-xs text-[var(--muted)]">
@@ -722,7 +675,7 @@ export function PmrModule({
                   </div>
                   <div className="flex items-center justify-between mt-0.5">
                     <span className="font-mono text-[11px] text-[var(--foreground)]">
-                      {entry.freqMhz.toFixed(entry.freqMhz < 200 ? 3 : 5)} MHz
+                      {formatAdaptiveFrequency(entry.freqMhz)} MHz
                     </span>
                     <span className="font-mono text-[10px] text-[var(--accent)]">
                       RMS {entry.rms.toFixed(4)}

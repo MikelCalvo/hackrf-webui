@@ -4,6 +4,7 @@ import { Readable } from "node:stream";
 import path from "node:path";
 
 import type {
+  AudioDemodMode,
   HardwareStatus,
   SignalLevelTelemetry,
   StreamRequest,
@@ -21,6 +22,16 @@ type ActiveStream = {
   hackrf: ReturnType<typeof spawn>;
   ffmpeg: ReturnType<typeof spawn>;
 };
+
+function audioRateForMode(mode: AudioDemodMode): string {
+  switch (mode) {
+    case "am":
+    case "nfm":
+    case "wfm":
+    default:
+      return "50000";
+  }
+}
 
 function nativeBinaryPath(): string {
   return (
@@ -142,7 +153,7 @@ class HackRFService {
         firmware: "",
         hardware: "",
         serial: "",
-        message: "Connect the HackRF over USB to listen to FM.",
+        message: "HackRF not found. Connect the device over USB and try again.",
         activeStream,
       };
     }
@@ -172,19 +183,26 @@ class HackRFService {
   }
 
   startWfmStream(request: StreamRequest, signal: AbortSignal): Promise<ReadableStream<Uint8Array>> {
-    return this.startStreamInternal(request, "wfm", "50000", signal);
+    return this.startStreamInternal(request, "wfm", signal);
   }
 
   startNfmStream(request: StreamRequest, signal: AbortSignal): Promise<ReadableStream<Uint8Array>> {
-    return this.startStreamInternal(request, "nfm", "50000", signal);
+    return this.startStreamInternal(request, "nfm", signal);
+  }
+
+  startAmStream(request: StreamRequest, signal: AbortSignal): Promise<ReadableStream<Uint8Array>> {
+    return this.startStreamInternal(request, "am", signal);
   }
 
   /**
-   * Retune the active NFM stream to a new frequency without restarting any process.
-   * Returns true if the command was sent, false if there is no active stream.
+   * Retune the active audio stream to a new frequency without restarting any process.
+   * Returns true if the command was sent, false if there is no compatible active stream.
    */
-  retune(freqHz: number, label: string): boolean {
+  retune(freqHz: number, label: string, mode?: AudioDemodMode): boolean {
     if (!this.activeStream) return false;
+    if (mode && this.activeStream.session.demodMode !== mode) {
+      return false;
+    }
     const { hackrf } = this.activeStream;
     if (!hackrf.stdin?.writable) return false;
     hackrf.stdin.write(`FREQ ${freqHz}\n`);
@@ -195,8 +213,7 @@ class HackRFService {
 
   private async startStreamInternal(
     request: StreamRequest,
-    mode: "wfm" | "nfm",
-    sampleRate: string,
+    mode: AudioDemodMode,
     signal: AbortSignal,
   ): Promise<ReadableStream<Uint8Array>> {
     await aisRuntime.stop();
@@ -220,6 +237,7 @@ class HackRFService {
       id: sessionId,
       label: request.label,
       freqHz: request.freqHz,
+      demodMode: mode,
       startedAt: new Date().toISOString(),
       lna: request.lna,
       vga: request.vga,
@@ -239,7 +257,7 @@ class HackRFService {
         "-hide_banner", "-loglevel", "error",
         // Disable input buffering so ffmpeg starts encoding immediately
         "-fflags", "nobuffer", "-probesize", "32", "-analyzeduration", "0",
-        "-f", "s16le", "-ar", sampleRate, "-ac", "1", "-i", "pipe:0",
+        "-f", "s16le", "-ar", audioRateForMode(mode), "-ac", "1", "-i", "pipe:0",
         "-f", "mp3", "-b:a", "128k",
         // Flush each MP3 frame to the pipe without waiting for an output buffer to fill
         "-flush_packets", "1",

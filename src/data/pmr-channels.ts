@@ -1,18 +1,7 @@
-export type PmrBand = {
-  id: string;
-  name: string;
-  region: string;
-  description: string;
-};
+import type { RadioBand, RadioChannel } from "@/lib/radio";
 
-export type PmrChannel = {
-  id: string;
-  bandId: string;
-  number: number;
-  freqMhz: number;
-  label: string;
-  notes?: string;
-};
+export type PmrBand = RadioBand;
+export type PmrChannel = RadioChannel;
 
 export const PMR_BANDS: PmrBand[] = [
   {
