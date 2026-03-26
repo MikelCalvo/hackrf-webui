@@ -1,7 +1,8 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { ActivityCaptureActions, ConfirmDialog } from "@/components/module-ui";
+import { SpectrumDock } from "@/components/spectrum-dock";
 import {
   buildActivityCaptureMeta,
   buildRadioRetuneUrl,
@@ -14,6 +15,7 @@ import {
 } from "@/components/radio-shared";
 import type { HardwareStatus, ResolvedAppLocation } from "@/lib/types";
 import type { AudioControls } from "@/lib/radio";
+import { buildChannelSpectrumRange } from "@/lib/spectrum";
 import { PMR_BANDS, getChannelsForBand, type PmrChannel } from "@/data/pmr-channels";
 import {
   ACTIVITY_EVENTS_DEFAULT_LIMIT,
@@ -111,6 +113,23 @@ function buildRetuneUrl(
       },
     ),
   );
+}
+
+function buildPmrSpectrumMarkers(
+  channels: PmrChannel[],
+  selectedChannelId: string | null,
+  playingChannelId: string | null,
+): Array<{ freqHz: number; label: string; tone?: "accent" | "muted" | "danger" }> {
+  return channels.map((channel) => ({
+    freqHz: Math.round(channel.freqMhz * 1_000_000),
+    label: channel.label,
+    tone:
+      channel.id === playingChannelId
+        ? "accent"
+        : channel.id === selectedChannelId
+          ? "accent"
+          : "muted",
+  }));
 }
 
 export function PmrModule({
@@ -225,7 +244,12 @@ export function PmrModule({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const channels = getChannelsForBand(selectedBandId);
+  const channels = useMemo(() => getChannelsForBand(selectedBandId), [selectedBandId]);
+  const spectrumViewRange = useMemo(() => buildChannelSpectrumRange(channels), [channels]);
+  const spectrumMarkers = useMemo(
+    () => buildPmrSpectrumMarkers(channels, selectedChannelId, playingChannelId),
+    [channels, playingChannelId, selectedChannelId],
+  );
   const currentScanChannel = scannerState !== "idle"
     ? (channels[scanIndex % channels.length] ?? null)
     : null;
@@ -658,6 +682,16 @@ export function PmrModule({
             );
           })}
         </div>
+
+        <SpectrumDock
+          expectedDemodMode="nfm"
+          expectedOwner="audio"
+          lockViewToRange={scannerState !== "idle"}
+          maxZoom={24}
+          markers={spectrumMarkers}
+          moduleId="pmr"
+          viewRangeHz={spectrumViewRange}
+        />
       </main>
 
       {/* ── Scanner panel ────────────────────────────────────── */}

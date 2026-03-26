@@ -8,6 +8,8 @@ import type {
   AudioDemodMode,
   HardwareStatus,
   SignalLevelTelemetry,
+  SpectrumFeedSnapshot,
+  SpectrumFrame,
   StreamRequest,
   StreamSessionSnapshot,
 } from "@/lib/types";
@@ -16,6 +18,7 @@ import { adsbRuntime } from "@/server/adsb-runtime";
 import { persistCapturedActivity } from "@/server/activity-events";
 import { hackrfDeviceService } from "@/server/hackrf-device";
 import { aisRuntime } from "@/server/ais-runtime";
+import { parseSpectrumFrameLine } from "@/server/spectrum-telemetry";
 import { capturePrefixForSession } from "@/server/storage";
 
 const LEVEL_RE = /LEVEL rms=([0-9.]+) peak=([0-9.]+) rf=([0-9.]+)/;
@@ -81,6 +84,7 @@ type StreamCaptureContext = {
 type ActiveStream = {
   session: StreamSessionSnapshot;
   telemetry: SignalLevelTelemetry | null;
+  spectrum: SpectrumFrame | null;
   hackrf: ReturnType<typeof spawn>;
   ffmpeg: ReturnType<typeof spawn>;
   retuneTimer: ReturnType<typeof setTimeout> | null;
@@ -454,6 +458,7 @@ class HackRFService {
     const activeStream: ActiveStream = {
       session,
       telemetry: null,
+      spectrum: null,
       hackrf,
       ffmpeg,
       retuneTimer: null,
@@ -497,6 +502,67 @@ class HackRFService {
     return {
       ...this.activeStream.session,
       telemetry: this.activeStream.telemetry,
+    };
+  }
+
+  getSpectrumFeed(): SpectrumFeedSnapshot {
+    if (this.activeStream) {
+      return {
+        frame: this.activeStream.spectrum,
+        message: this.activeStream.spectrum
+          ? "Live RF spectrum from the current HackRF audio stream."
+          : "The stream is running. Waiting for the first spectrum frame.",
+        owner: "audio",
+        state: this.activeStream.spectrum ? "ready" : "waiting",
+        stream: {
+          demodMode: this.activeStream.session.demodMode,
+          freqHz: this.activeStream.session.freqHz,
+          label: this.activeStream.session.label,
+          phase: this.activeStream.session.phase,
+        },
+      };
+    }
+
+    const owner = hackrfDeviceService.getOwner();
+    if (owner?.id === "ais") {
+      const runtime = aisRuntime.getStatus();
+      const frame = aisRuntime.getSpectrumFrame();
+      const state = frame ? "ready" : runtime.state === "running" || runtime.state === "starting" ? "waiting" : "blocked";
+
+      return {
+        frame,
+        message: frame
+          ? "Live RF spectrum from the current AIS decoder band."
+          : runtime.state === "starting"
+            ? "AIS decoder is starting. Waiting for the first spectrum frame."
+            : "AIS decoder is running. Waiting for the first spectrum frame.",
+        owner: "ais",
+        state,
+        stream: {
+          demodMode: null,
+          freqHz: frame?.centerFreqHz ?? runtime.centerFreqHz,
+          label: "AIS live decoder",
+          phase: runtime.state === "starting" ? "starting" : "running",
+        },
+      };
+    }
+
+    if (owner?.id === "adsb") {
+      return {
+        frame: null,
+        message: `${owner.label} is using the HackRF. Stop it to inspect the shared spectrum dock.`,
+        owner: "adsb",
+        state: "blocked",
+        stream: null,
+      };
+    }
+
+    return {
+      frame: null,
+      message: "Start an FM, PMR, AIRBAND, MARITIME, or AIS stream to populate the live spectrum dock.",
+      owner: owner?.id ?? null,
+      state: "idle",
+      stream: null,
     };
   }
 
@@ -565,6 +631,12 @@ class HackRFService {
             rf: Number.parseFloat(match[3]),
             updatedAt: new Date().toISOString(),
           };
+          continue;
+        }
+
+        const spectrum = parseSpectrumFrameLine(line);
+        if (spectrum && this.activeStream?.session.id === sessionId) {
+          this.activeStream.spectrum = spectrum;
           continue;
         }
 

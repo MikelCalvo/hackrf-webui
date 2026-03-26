@@ -4,6 +4,7 @@ import { useEffect, useEffectEvent, useMemo, useRef, useState } from "react";
 
 import { ActivityCaptureActions, ConfirmDialog } from "@/components/module-ui";
 import { CLS_INPUT } from "@/components/module-ui";
+import { SpectrumDock } from "@/components/spectrum-dock";
 import {
   buildActivityCaptureMeta,
   buildRadioRetuneUrl,
@@ -40,6 +41,7 @@ import {
   SCANNER_STARTUP_MS,
   TELEMETRY_REFRESH_MS,
 } from "@/lib/signal-activity";
+import { buildChannelSpectrumRange } from "@/lib/spectrum";
 
 const MARITIME_STORAGE_KEY = "hackrf-webui.maritime-presets.v1";
 const MARITIME_CONFIG_KEY = "hackrf-webui.maritime-config.v1";
@@ -274,6 +276,51 @@ function buildExpandedScanChannels(): MaritimeChannel[] {
 }
 
 const FREE_SCAN_CHANNELS = buildExpandedScanChannels();
+
+function shortenMaritimeMarkerLabel(channel: MaritimeChannel): string {
+  const base = channel.label.trim();
+  if (base.length <= 14) {
+    return base;
+  }
+  return `${base.slice(0, 13)}…`;
+}
+
+function buildMaritimeSpectrumMarkers(
+  channels: MaritimeChannel[],
+  selectedChannelId: string | null,
+  playingChannelId: string | null,
+): Array<{ freqHz: number; label: string; tone?: "accent" | "muted" | "danger" | "ops" | "weather" | "saved" }> {
+  const unique = new Map<number, { freqHz: number; label: string; tone?: "accent" | "muted" | "danger" | "ops" | "weather" | "saved" }>();
+
+  for (const channel of channels) {
+    const freqHz = Math.round(channel.freqMhz * 1_000_000);
+    if (unique.has(freqHz)) {
+      continue;
+    }
+    const baseTone =
+      channel.bandId === "distress"
+        ? "danger"
+        : channel.bandId === "portops" || channel.bandId === "usvts" || channel.bandId === "spainports"
+          ? "ops"
+          : channel.bandId === "weather" || channel.label.startsWith("WX")
+            ? "weather"
+            : channel.bandId === "saved" || channel.id.startsWith("manual-")
+              ? "saved"
+              : "accent";
+    unique.set(freqHz, {
+      freqHz,
+      label: shortenMaritimeMarkerLabel(channel),
+      tone:
+        channel.id === playingChannelId
+          ? "accent"
+          : channel.id === selectedChannelId
+            ? "accent"
+            : baseTone,
+    });
+  }
+
+  return Array.from(unique.values()).sort((left, right) => left.freqHz - right.freqHz);
+}
 
 function isGlobalMaritimeChannel(channel: MaritimeChannel): boolean {
   return !channel.countryIds?.length && !channel.cityIds?.length;
@@ -510,6 +557,14 @@ export function MaritimeModule({
       smartAllScanChannels,
       smartExpandedScanChannels,
     ],
+  );
+  const spectrumViewRange = useMemo(
+    () => buildChannelSpectrumRange(scannerState !== "idle" ? scanChannels : channels),
+    [channels, scanChannels, scannerState],
+  );
+  const spectrumMarkers = useMemo(
+    () => buildMaritimeSpectrumMarkers(channels, selectedChannelId, playingChannelId),
+    [channels, playingChannelId, selectedChannelId],
   );
 
   const smartLocalMatchCount = useMemo(() => {
@@ -1203,6 +1258,16 @@ export function MaritimeModule({
             })}
           </div>
         )}
+
+        <SpectrumDock
+          expectedDemodMode="nfm"
+          expectedOwner="audio"
+          lockViewToRange={scannerState !== "idle"}
+          maxZoom={24}
+          markers={spectrumMarkers}
+          moduleId="maritime"
+          viewRangeHz={spectrumViewRange}
+        />
       </main>
 
       <aside className="flex w-72 shrink-0 flex-col overflow-y-auto border-l border-white/[0.07] bg-black/15">

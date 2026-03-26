@@ -154,6 +154,33 @@ export type SignalLevelTelemetry = {
   updatedAt: string;
 };
 
+export type SpectrumFrame = {
+  bins: number[];
+  centerFreqHz: number;
+  spanHz: number;
+  peakIndex: number;
+  updatedAt: string;
+};
+
+export type SpectrumFeedState = "ready" | "waiting" | "idle" | "blocked";
+
+export type SpectrumOwner = "audio" | "ais" | "adsb" | null;
+
+export type SpectrumFeedSnapshot = {
+  frame: SpectrumFrame | null;
+  message: string;
+  owner: SpectrumOwner;
+  state: SpectrumFeedState;
+  stream:
+    | {
+      demodMode: AudioDemodMode | null;
+      freqHz: number;
+      label: string;
+      phase: StreamSessionPhase;
+    }
+    | null;
+};
+
 export type AudioDemodMode = "am" | "nfm" | "wfm";
 export type AudioCaptureModule = "pmr" | "airband" | "maritime";
 export type AudioCaptureMode = "manual" | "scan";

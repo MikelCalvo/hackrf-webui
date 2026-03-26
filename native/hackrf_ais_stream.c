@@ -27,6 +27,9 @@
 #define AIS_MAX_PAYLOAD_BITS 768
 #define AIS_MAX_FRAME_BYTES (AIS_MAX_RAW_BITS / 8)
 #define AIS_RECENT_FRAME_SLOTS 64
+#define SPECTRUM_WINDOW_SIZE 128
+#define SPECTRUM_FLOOR_DB 72.0
+#define SPECTRUM_REPORT_INTERVAL_MS 200ULL
 
 typedef struct {
     int length;
@@ -82,6 +85,13 @@ typedef struct {
     uint32_t lna_gain;
     uint32_t vga_gain;
     bool stop_requested;
+    complex_fir_decimator_t spectrum_decimator;
+    uint32_t spectrum_rate;
+    double spectrum_i[SPECTRUM_WINDOW_SIZE];
+    double spectrum_q[SPECTRUM_WINDOW_SIZE];
+    uint32_t spectrum_pos;
+    uint32_t spectrum_count;
+    uint64_t spectrum_last_emit_ms;
     ais_branch_t branches[AIS_BRANCH_COUNT];
 } ais_state_t;
 
@@ -285,6 +295,129 @@ static uint64_t hash_bytes(const uint8_t* bytes, int length)
     hash *= 1099511628211ULL;
 
     return hash;
+}
+
+static uint32_t select_spectrum_rate(uint32_t sample_rate)
+{
+    if (sample_rate % 384000U == 0U) {
+        return 384000U;
+    }
+    if (sample_rate % 192000U == 0U) {
+        return 192000U;
+    }
+    if (sample_rate % AIS_BRANCH_RATE == 0U) {
+        return AIS_BRANCH_RATE;
+    }
+
+    return sample_rate;
+}
+
+static void push_spectrum_sample(ais_state_t* state, double sample_i, double sample_q)
+{
+    state->spectrum_i[state->spectrum_pos] = sample_i;
+    state->spectrum_q[state->spectrum_pos] = sample_q;
+    state->spectrum_pos = (state->spectrum_pos + 1U) % SPECTRUM_WINDOW_SIZE;
+    if (state->spectrum_count < SPECTRUM_WINDOW_SIZE) {
+        state->spectrum_count++;
+    }
+}
+
+static bool emit_spectrum_frame(ais_state_t* state)
+{
+    double powers[SPECTRUM_WINDOW_SIZE];
+    double max_power = 0.0;
+    int peak_index = 0;
+    int out_index = 0;
+
+    if (state->spectrum_count < SPECTRUM_WINDOW_SIZE) {
+        return false;
+    }
+
+    for (out_index = 0; out_index < SPECTRUM_WINDOW_SIZE; out_index++) {
+        int k = (out_index + (SPECTRUM_WINDOW_SIZE / 2)) % SPECTRUM_WINDOW_SIZE;
+        double sum_re = 0.0;
+        double sum_im = 0.0;
+        int n = 0;
+
+        for (n = 0; n < SPECTRUM_WINDOW_SIZE; n++) {
+            int idx = (int) ((state->spectrum_pos + (uint32_t) n) % SPECTRUM_WINDOW_SIZE);
+            double angle = -2.0 * M_PI * (double) (k * n) / (double) SPECTRUM_WINDOW_SIZE;
+            double win = 0.54 - 0.46 * cos((2.0 * M_PI * (double) n) / (double) (SPECTRUM_WINDOW_SIZE - 1));
+            double sample_re = state->spectrum_i[idx] * win;
+            double sample_im = state->spectrum_q[idx] * win;
+            double cos_angle = cos(angle);
+            double sin_angle = sin(angle);
+
+            sum_re += sample_re * cos_angle + sample_im * sin_angle;
+            sum_im += sample_im * cos_angle - sample_re * sin_angle;
+        }
+
+        powers[out_index] = (sum_re * sum_re) + (sum_im * sum_im);
+        if (powers[out_index] > max_power) {
+            max_power = powers[out_index];
+            peak_index = out_index;
+        }
+    }
+
+    if (max_power < 1e-12) {
+        return false;
+    }
+
+    fprintf(
+        stderr,
+        "SPECTRUM center=%llu span=%u peak=%d bins=",
+        (unsigned long long) state->center_freq_hz,
+        state->spectrum_rate,
+        peak_index);
+
+    for (out_index = 0; out_index < SPECTRUM_WINDOW_SIZE; out_index++) {
+        double relative = powers[out_index] / max_power;
+        double db = 10.0 * log10(relative > 1e-12 ? relative : 1e-12);
+        double normalized = (db + SPECTRUM_FLOOR_DB) / SPECTRUM_FLOOR_DB;
+        if (normalized < 0.0) {
+            normalized = 0.0;
+        } else if (normalized > 1.0) {
+            normalized = 1.0;
+        }
+
+        fprintf(stderr, out_index == 0 ? "%.3f" : ",%.3f", normalized);
+    }
+
+    fputc('\n', stderr);
+    return true;
+}
+
+static void maybe_emit_spectrum_frame(ais_state_t* state)
+{
+    uint64_t now_ms = monotonic_time_ms();
+
+    if (now_ms == 0) {
+        return;
+    }
+    if (state->spectrum_last_emit_ms != 0
+        && now_ms - state->spectrum_last_emit_ms < SPECTRUM_REPORT_INTERVAL_MS) {
+        return;
+    }
+    if (emit_spectrum_frame(state)) {
+        state->spectrum_last_emit_ms = now_ms;
+    }
+}
+
+static void process_spectrum_sample(ais_state_t* state, int8_t raw_i, int8_t raw_q)
+{
+    double filtered_i = 0.0;
+    double filtered_q = 0.0;
+
+    if (!process_complex_fir_decimator(
+            &state->spectrum_decimator,
+            (double) raw_i,
+            (double) raw_q,
+            &filtered_i,
+            &filtered_q)) {
+        return;
+    }
+
+    push_spectrum_sample(state, filtered_i, filtered_q);
 }
 
 static bool is_recent_duplicate(ais_branch_t* branch, uint64_t hash, uint64_t now_ms)
@@ -603,6 +736,8 @@ static int rx_callback(hackrf_transfer* transfer)
     }
 
     for (index = 0; index + 1 < transfer->valid_length; index += 2) {
+        process_spectrum_sample(state, signed_buffer[index], signed_buffer[index + 1]);
+
         for (branch_index = 0; branch_index < AIS_BRANCH_COUNT; branch_index++) {
             process_branch_sample(&state->branches[branch_index], signed_buffer[index], signed_buffer[index + 1]);
         }
@@ -611,6 +746,8 @@ static int rx_callback(hackrf_transfer* transfer)
             return 1;
         }
     }
+
+    maybe_emit_spectrum_frame(state);
 
     return 0;
 }
@@ -657,6 +794,8 @@ static void free_branch(ais_branch_t* branch)
 
 static int configure_state(ais_state_t* state)
 {
+    double spectrum_cutoff = 0.0;
+
     if (state->sample_rate == 0) {
         state->sample_rate = 1536000U;
     }
@@ -676,11 +815,25 @@ static int configure_state(ais_state_t* state)
         return -1;
     }
 
+    state->spectrum_rate = select_spectrum_rate(state->sample_rate);
+    spectrum_cutoff = (0.42 * (double) state->spectrum_rate) / (double) state->sample_rate;
+    if (init_complex_fir_decimator(
+            &state->spectrum_decimator,
+            129,
+            (int) (state->sample_rate / state->spectrum_rate),
+            spectrum_cutoff)
+        != 0) {
+        fprintf(stderr, "Failed to initialize AIS shared spectrum decimator\n");
+        return -1;
+    }
+
     if (init_branch(state, &state->branches[0], 'A', -25000) != 0) {
+        free_complex_fir_decimator(&state->spectrum_decimator);
         return -1;
     }
     if (init_branch(state, &state->branches[1], 'B', 25000) != 0) {
         free_branch(&state->branches[0]);
+        free_complex_fir_decimator(&state->spectrum_decimator);
         return -1;
     }
 
@@ -691,6 +844,7 @@ static void cleanup_state(ais_state_t* state)
 {
     free_branch(&state->branches[0]);
     free_branch(&state->branches[1]);
+    free_complex_fir_decimator(&state->spectrum_decimator);
 }
 
 int main(int argc, char** argv)
@@ -699,6 +853,8 @@ int main(int argc, char** argv)
     uint32_t bandwidth = 0;
     int result = HACKRF_SUCCESS;
     int opt = 0;
+
+    setvbuf(stderr, NULL, _IOLBF, 0);
 
     memset(&state, 0, sizeof(state));
     state.center_freq_hz = 162000000ULL;
@@ -804,12 +960,13 @@ int main(int argc, char** argv)
 
     fprintf(
         stderr,
-        "AIS listening center=%.6f MHz channelA=%.6f MHz channelB=%.6f MHz sample_rate=%u branch_rate=%u lna=%u vga=%u\n",
+        "AIS listening center=%.6f MHz channelA=%.6f MHz channelB=%.6f MHz sample_rate=%u branch_rate=%u spectrum_rate=%u lna=%u vga=%u\n",
         state.center_freq_hz / 1e6,
         state.branches[0].channel_freq_hz / 1e6,
         state.branches[1].channel_freq_hz / 1e6,
         state.sample_rate,
         state.branch_rate,
+        state.spectrum_rate,
         state.lna_gain,
         state.vga_gain);
     fflush(stderr);

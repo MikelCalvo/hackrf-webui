@@ -4,6 +4,7 @@ import { useEffect, useEffectEvent, useMemo, useRef, useState } from "react";
 
 import { ActivityCaptureActions, ConfirmDialog } from "@/components/module-ui";
 import { CLS_INPUT } from "@/components/module-ui";
+import { SpectrumDock } from "@/components/spectrum-dock";
 import {
   buildActivityCaptureMeta,
   buildRadioRetuneUrl,
@@ -39,6 +40,7 @@ import {
   SCANNER_STARTUP_MS,
   TELEMETRY_REFRESH_MS,
 } from "@/lib/signal-activity";
+import { buildChannelSpectrumRange } from "@/lib/spectrum";
 
 const AIRBAND_STORAGE_KEY = "hackrf-webui.airband-presets.v1";
 const AIRBAND_CONFIG_KEY = "hackrf-webui.airband-config.v1";
@@ -279,6 +281,47 @@ function buildSweepChannels(): AirbandChannel[] {
 
 const FREE_SCAN_CHANNELS = buildSweepChannels();
 
+function shortenAirbandMarkerLabel(channel: AirbandChannel): string {
+  const base = channel.label.trim();
+  if (base.length <= 14) {
+    return base;
+  }
+  return `${base.slice(0, 13)}…`;
+}
+
+function buildAirbandSpectrumMarkers(
+  channels: AirbandChannel[],
+  selectedChannelId: string | null,
+  playingChannelId: string | null,
+): Array<{ freqHz: number; label: string; tone?: "accent" | "muted" | "danger" | "saved" }> {
+  const unique = new Map<number, { freqHz: number; label: string; tone?: "accent" | "muted" | "danger" | "saved" }>();
+
+  for (const channel of channels) {
+    const freqHz = Math.round(channel.freqMhz * 1_000_000);
+    if (unique.has(freqHz)) {
+      continue;
+    }
+    const baseTone =
+      channel.bandId === "guard"
+        ? "danger"
+        : channel.bandId === "saved" || channel.id.startsWith("manual-")
+          ? "saved"
+          : "accent";
+    unique.set(freqHz, {
+      freqHz,
+      label: shortenAirbandMarkerLabel(channel),
+      tone:
+        channel.id === playingChannelId
+          ? "accent"
+          : channel.id === selectedChannelId
+            ? "accent"
+            : baseTone,
+    });
+  }
+
+  return Array.from(unique.values()).sort((left, right) => left.freqHz - right.freqHz);
+}
+
 export function AirbandModule({
   hardware,
   location,
@@ -439,6 +482,14 @@ export function AirbandModule({
   const scanChannels = useMemo(
     () => (config.freeScan ? uniqueScanChannels([...channels, ...FREE_SCAN_CHANNELS]) : channels),
     [channels, config.freeScan],
+  );
+  const spectrumMarkers = useMemo(
+    () => buildAirbandSpectrumMarkers(channels, selectedChannelId, playingChannelId),
+    [channels, playingChannelId, selectedChannelId],
+  );
+  const spectrumViewRange = useMemo(
+    () => buildChannelSpectrumRange(scannerState !== "idle" ? scanChannels : channels),
+    [channels, scanChannels, scannerState],
   );
 
   const selectedChannel =
@@ -1094,6 +1145,16 @@ export function AirbandModule({
             })}
           </div>
         )}
+
+        <SpectrumDock
+          expectedDemodMode="am"
+          expectedOwner="audio"
+          lockViewToRange={scannerState !== "idle"}
+          maxZoom={24}
+          markers={spectrumMarkers}
+          moduleId="airband"
+          viewRangeHz={spectrumViewRange}
+        />
       </main>
 
       <aside className="flex w-72 shrink-0 flex-col overflow-y-auto border-l border-white/[0.07] bg-black/15">

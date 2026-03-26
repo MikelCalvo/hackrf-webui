@@ -9,11 +9,13 @@ import type {
   AisPoint,
   AisRuntimeStatus,
   AisVesselContact,
+  SpectrumFrame,
 } from "@/lib/types";
 import { hackrfDeviceService } from "@/server/hackrf-device";
 import { pickHackrfRuntimeErrorMessage } from "@/server/hackrf-runtime-errors";
 import { parseAisFrameLine, type DecodedAisMessage } from "@/server/ais-protocol";
 import { buildOfflineMapSummary } from "@/server/maps";
+import { parseSpectrumFrameLine } from "@/server/spectrum-telemetry";
 import { listRecentAisContacts, persistAisTrackPoint } from "@/server/track-store";
 
 type VesselAccumulator = {
@@ -161,6 +163,8 @@ class AisRuntimeService {
 
   private channels = createChannelState();
 
+  private spectrum: SpectrumFrame | null = null;
+
   private runtime: AisRuntimeStatus = this.buildBaseStatus("stopped", "AIS decoder is stopped.");
 
   private buildBaseStatus(
@@ -202,6 +206,7 @@ class AisRuntimeService {
     this.stderrLines = [];
     this.vessels.clear();
     this.channels = createChannelState();
+    this.spectrum = null;
     this.runtime = {
       ...this.buildBaseStatus("starting", "Starting AIS decoder..."),
       startedAt: new Date().toISOString(),
@@ -223,6 +228,7 @@ class AisRuntimeService {
     if (!proc.stdout || !proc.stderr) {
       proc.kill("SIGTERM");
       hackrfDeviceService.release("ais");
+      this.spectrum = null;
       this.runtime = this.buildBaseStatus("error", "Could not initialize the AIS runtime process.");
       throw new Error(this.runtime.message);
     }
@@ -236,12 +242,14 @@ class AisRuntimeService {
     proc.once("error", (error) => {
       this.process = null;
       hackrfDeviceService.release("ais");
+      this.spectrum = null;
       this.runtime = this.buildBaseStatus("error", error.message || "Could not start the AIS decoder.");
     });
 
     proc.once("close", (code, signal) => {
       this.process = null;
       hackrfDeviceService.release("ais");
+      this.spectrum = null;
       if (this.expectedExit) {
         this.runtime = this.buildBaseStatus("stopped", "AIS decoder is stopped.");
         return;
@@ -291,6 +299,7 @@ class AisRuntimeService {
   async stop(): Promise<void> {
     if (!this.process) {
       hackrfDeviceService.release("ais");
+      this.spectrum = null;
       this.runtime = this.buildBaseStatus("stopped", "AIS decoder is stopped.");
       return;
     }
@@ -316,6 +325,10 @@ class AisRuntimeService {
       binaryAvailable: existsSync(aisBinaryPath()),
       binaryPath: aisBinaryPath(),
     };
+  }
+
+  getSpectrumFrame(): SpectrumFrame | null {
+    return this.spectrum;
   }
 
   getSnapshot(): AisFeedSnapshot {
@@ -400,6 +413,12 @@ class AisRuntimeService {
     for (const line of lines) {
       const trimmed = line.trim();
       if (!trimmed) {
+        continue;
+      }
+
+      const spectrum = parseSpectrumFrameLine(trimmed);
+      if (spectrum) {
+        this.spectrum = spectrum;
         continue;
       }
 

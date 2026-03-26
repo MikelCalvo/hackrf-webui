@@ -20,6 +20,9 @@
 #define M_PI 3.14159265358979323846
 #endif
 
+#define SPECTRUM_WINDOW_SIZE 128
+#define SPECTRUM_FLOOR_DB 72.0
+
 typedef enum {
     DEMOD_AM = 0,
     DEMOD_NFM = 1,
@@ -59,6 +62,8 @@ typedef struct {
     uint64_t tune_offset_hz;
     uint32_t rf_cutoff_hz;
     uint32_t audio_cutoff_hz;
+    uint32_t spectrum_rate;
+    uint32_t spectrum_cutoff_hz;
     uint64_t duration_samples;
     double duration_seconds;
     bool finite_duration;
@@ -85,7 +90,12 @@ typedef struct {
     double report_peak;
     double report_rf_sum_sq;
     uint64_t report_rf_count;
+    double spectrum_i[SPECTRUM_WINDOW_SIZE];
+    double spectrum_q[SPECTRUM_WINDOW_SIZE];
+    uint32_t spectrum_pos;
+    uint32_t spectrum_count;
 
+    complex_fir_decimator_t spectrum_decimator;
     complex_fir_decimator_t rf_decimator;
     real_fir_decimator_t audio_decimator;
 
@@ -215,6 +225,80 @@ static int clamp_pcm16(double sample)
         return -32768;
     }
     return (int) lrint(sample);
+}
+
+static void push_spectrum_sample(stream_state_t* state, double sample_i, double sample_q)
+{
+    state->spectrum_i[state->spectrum_pos] = sample_i;
+    state->spectrum_q[state->spectrum_pos] = sample_q;
+    state->spectrum_pos = (state->spectrum_pos + 1U) % SPECTRUM_WINDOW_SIZE;
+    if (state->spectrum_count < SPECTRUM_WINDOW_SIZE) {
+        state->spectrum_count++;
+    }
+}
+
+static void emit_spectrum_frame(stream_state_t* state)
+{
+    double powers[SPECTRUM_WINDOW_SIZE];
+    double max_power = 0.0;
+    int peak_index = 0;
+    int out_index = 0;
+
+    if (state->spectrum_count < SPECTRUM_WINDOW_SIZE) {
+        return;
+    }
+
+    for (out_index = 0; out_index < SPECTRUM_WINDOW_SIZE; out_index++) {
+        int k = (out_index + (SPECTRUM_WINDOW_SIZE / 2)) % SPECTRUM_WINDOW_SIZE;
+        double sum_re = 0.0;
+        double sum_im = 0.0;
+        int n = 0;
+
+        for (n = 0; n < SPECTRUM_WINDOW_SIZE; n++) {
+            int idx = (int) ((state->spectrum_pos + (uint32_t) n) % SPECTRUM_WINDOW_SIZE);
+            double angle = -2.0 * M_PI * (double) (k * n) / (double) SPECTRUM_WINDOW_SIZE;
+            double win = 0.54 - 0.46 * cos((2.0 * M_PI * (double) n) / (double) (SPECTRUM_WINDOW_SIZE - 1));
+            double sample_re = state->spectrum_i[idx] * win;
+            double sample_im = state->spectrum_q[idx] * win;
+            double cos_angle = cos(angle);
+            double sin_angle = sin(angle);
+
+            sum_re += sample_re * cos_angle + sample_im * sin_angle;
+            sum_im += sample_im * cos_angle - sample_re * sin_angle;
+        }
+
+        powers[out_index] = (sum_re * sum_re) + (sum_im * sum_im);
+        if (powers[out_index] > max_power) {
+            max_power = powers[out_index];
+            peak_index = out_index;
+        }
+    }
+
+    if (max_power < 1e-12) {
+        return;
+    }
+
+    fprintf(
+        stderr,
+        "SPECTRUM center=%llu span=%u peak=%d bins=",
+        (unsigned long long) state->freq_hz,
+        state->spectrum_rate > 0 ? state->spectrum_rate : state->rf_rate,
+        peak_index);
+
+    for (out_index = 0; out_index < SPECTRUM_WINDOW_SIZE; out_index++) {
+        double relative = powers[out_index] / max_power;
+        double db = 10.0 * log10(relative > 1e-12 ? relative : 1e-12);
+        double normalized = (db + SPECTRUM_FLOOR_DB) / SPECTRUM_FLOOR_DB;
+        if (normalized < 0.0) {
+            normalized = 0.0;
+        } else if (normalized > 1.0) {
+            normalized = 1.0;
+        }
+
+        fprintf(stderr, out_index == 0 ? "%.3f" : ",%.3f", normalized);
+    }
+
+    fputc('\n', stderr);
 }
 
 static int write_u16le(FILE* fp, uint16_t value)
@@ -715,6 +799,7 @@ static int emit_audio_sample(stream_state_t* state, double sample)
                 ? sqrt(state->report_rf_sum_sq / (double) state->report_rf_count)
                 : 0.0;
             fprintf(stderr, "LEVEL rms=%.6f peak=%.6f rf=%.6f\n", rms, state->report_peak, rf_rms);
+            emit_spectrum_frame(state);
             fflush(stderr);
             state->report_count = 0;
             state->report_sum_sq = 0.0;
@@ -770,6 +855,8 @@ static void process_iq_sample(stream_state_t* state, int8_t raw_i, int8_t raw_q)
 {
     double mixed_i = 0.0;
     double mixed_q = 0.0;
+    double spectrum_i = 0.0;
+    double spectrum_q = 0.0;
     double filtered_i = 0.0;
     double filtered_q = 0.0;
     double demod = 0.0;
@@ -791,6 +878,14 @@ static void process_iq_sample(stream_state_t* state, int8_t raw_i, int8_t raw_q)
         state->osc_sin *= inv_mag;
     }
 
+    if (state->spectrum_rate > 0) {
+        if (state->spectrum_rate >= state->sample_rate) {
+            push_spectrum_sample(state, mixed_i, mixed_q);
+        } else if (process_complex_fir_decimator(&state->spectrum_decimator, mixed_i, mixed_q, &spectrum_i, &spectrum_q)) {
+            push_spectrum_sample(state, spectrum_i, spectrum_q);
+        }
+    }
+
     if (!process_complex_fir_decimator(&state->rf_decimator, mixed_i, mixed_q, &filtered_i, &filtered_q)) {
         return;
     }
@@ -798,6 +893,10 @@ static void process_iq_sample(stream_state_t* state, int8_t raw_i, int8_t raw_q)
     if (state->report_interval_samples > 0) {
         state->report_rf_sum_sq += filtered_i * filtered_i + filtered_q * filtered_q;
         state->report_rf_count++;
+    }
+
+    if (state->spectrum_rate == 0) {
+        push_spectrum_sample(state, filtered_i, filtered_q);
     }
 
     if (state->mode == DEMOD_AM) {
@@ -866,6 +965,7 @@ static void cleanup_state(stream_state_t* state)
     close_activity_recordings(state, true);
     free(state->record_activity_prefix);
     state->record_activity_prefix = NULL;
+    free_complex_fir_decimator(&state->spectrum_decimator);
     free_complex_fir_decimator(&state->rf_decimator);
     free_real_fir_decimator(&state->audio_decimator);
 }
@@ -874,7 +974,9 @@ static int configure_mode(stream_state_t* state)
 {
     double rf_cutoff = 0.0;
     double audio_cutoff = 0.0;
+    double spectrum_cutoff = 0.0;
     int rf_taps = 0;
+    int spectrum_taps = 0;
     int audio_taps = 63;
 
     if (state->sample_rate == 0) {
@@ -886,11 +988,14 @@ static int configure_mode(stream_state_t* state)
 
     switch (state->mode) {
     case DEMOD_WFM:
-        state->rf_rate = 250000;
+        state->rf_rate = 500000;
         state->tune_offset_hz = 250000;
-        state->rf_cutoff_hz = 100000;
+        state->rf_cutoff_hz = 180000;
         state->audio_cutoff_hz = 15000;
-        rf_taps = 65;
+        state->spectrum_rate = state->sample_rate;
+        state->spectrum_cutoff_hz = 0;
+        rf_taps = 97;
+        spectrum_taps = 0;
         {
             double tau = 75e-6;
             double dt = 1.0 / (double) state->audio_rate;
@@ -902,7 +1007,10 @@ static int configure_mode(stream_state_t* state)
         state->tune_offset_hz = 25000;
         state->rf_cutoff_hz = 12500;
         state->audio_cutoff_hz = 4500;
+        state->spectrum_rate = 250000;
+        state->spectrum_cutoff_hz = 110000;
         rf_taps = 129;
+        spectrum_taps = 97;
         break;
     case DEMOD_AM:
     default:
@@ -910,7 +1018,10 @@ static int configure_mode(stream_state_t* state)
         state->tune_offset_hz = 25000;
         state->rf_cutoff_hz = 8000;
         state->audio_cutoff_hz = 4500;
+        state->spectrum_rate = 250000;
+        state->spectrum_cutoff_hz = 110000;
         rf_taps = 129;
+        spectrum_taps = 97;
         break;
     }
 
@@ -920,6 +1031,10 @@ static int configure_mode(stream_state_t* state)
     }
     if (state->rf_rate % state->audio_rate != 0) {
         fprintf(stderr, "rf_rate=%u must be divisible by audio_rate=%u\n", state->rf_rate, state->audio_rate);
+        return -1;
+    }
+    if (state->spectrum_rate > 0 && state->sample_rate % state->spectrum_rate != 0) {
+        fprintf(stderr, "sample_rate=%u must be divisible by spectrum_rate=%u\n", state->sample_rate, state->spectrum_rate);
         return -1;
     }
     if ((state->sample_rate / 2U) <= state->tune_offset_hz) {
@@ -932,6 +1047,21 @@ static int configure_mode(stream_state_t* state)
     state->tuned_freq_hz = state->freq_hz + state->tune_offset_hz;
     rf_cutoff = (double) state->rf_cutoff_hz / (double) state->sample_rate;
     audio_cutoff = (double) state->audio_cutoff_hz / (double) state->rf_rate;
+    spectrum_cutoff = state->spectrum_rate > 0
+        ? (double) state->spectrum_cutoff_hz / (double) state->sample_rate
+        : 0.0;
+
+    if (state->spectrum_rate > 0 && state->spectrum_rate < state->sample_rate) {
+        if (init_complex_fir_decimator(
+                &state->spectrum_decimator,
+                spectrum_taps,
+                (int) (state->sample_rate / state->spectrum_rate),
+                spectrum_cutoff)
+            != 0) {
+            fprintf(stderr, "Failed to initialize spectrum decimator\n");
+            return -1;
+        }
+    }
 
     if (init_complex_fir_decimator(
             &state->rf_decimator,
@@ -940,6 +1070,7 @@ static int configure_mode(stream_state_t* state)
             rf_cutoff)
         != 0) {
         fprintf(stderr, "Failed to initialize RF decimator\n");
+        free_complex_fir_decimator(&state->spectrum_decimator);
         return -1;
     }
 
@@ -950,6 +1081,7 @@ static int configure_mode(stream_state_t* state)
             audio_cutoff)
         != 0) {
         fprintf(stderr, "Failed to initialize audio decimator\n");
+        free_complex_fir_decimator(&state->spectrum_decimator);
         free_complex_fir_decimator(&state->rf_decimator);
         return -1;
     }
@@ -989,6 +1121,8 @@ int main(int argc, char** argv)
     uint32_t bandwidth = 0;
     int opt = 0;
     double seconds = 0.0;
+
+    setvbuf(stderr, NULL, _IOLBF, 0);
 
     memset(&state, 0, sizeof(state));
     state.mode = DEMOD_AM;

@@ -21,6 +21,7 @@ import {
   sortStations,
 } from "@/lib/catalog";
 import { LocationModal } from "@/components/location-modal";
+import { SpectrumDock } from "@/components/spectrum-dock";
 import {
   CLS_BTN_GHOST,
   CLS_BTN_PRIMARY,
@@ -264,6 +265,42 @@ function resolveStationId(
     (station) => Math.abs(Math.round(station.freqMhz * 1_000_000) - freqHz) <= 5_000,
   );
   return frequencyMatch?.id ?? null;
+}
+
+function buildFmSpectrumMarkers(
+  stations: FmStation[],
+  centerFreqHz: number | null,
+  playingStationId: string | null,
+): Array<{ freqHz: number; label: string; tone?: "accent" | "muted" | "danger" }> {
+  if (centerFreqHz === null) {
+    return [];
+  }
+
+  const nearby = stations
+    .filter((station) => Math.abs(Math.round(station.freqMhz * 1_000_000) - centerFreqHz) <= 1_600_000)
+    .sort((left, right) => {
+      const leftDistance = Math.abs(Math.round(left.freqMhz * 1_000_000) - centerFreqHz);
+      const rightDistance = Math.abs(Math.round(right.freqMhz * 1_000_000) - centerFreqHz);
+      if (leftDistance !== rightDistance) {
+        return leftDistance - rightDistance;
+      }
+      return left.freqMhz - right.freqMhz;
+    });
+
+  const unique = new Map<number, { freqHz: number; label: string; tone?: "accent" | "muted" | "danger" }>();
+  for (const station of nearby) {
+    const freqHz = Math.round(station.freqMhz * 1_000_000);
+    if (unique.has(freqHz)) {
+      continue;
+    }
+    unique.set(freqHz, {
+      freqHz,
+      label: station.name,
+      tone: station.id === playingStationId ? "accent" : "muted",
+    });
+  }
+
+  return Array.from(unique.values()).sort((left, right) => left.freqHz - right.freqHz);
 }
 
 function downloadCustomStations(stations: FmStation[]): void {
@@ -1393,6 +1430,13 @@ export function Dashboard({
   const hasFilters =
     query.trim().length > 0 || activeRegion !== "all" || activeCountry !== "all" || activeCity !== "all";
   const telemetry = hardware?.activeStream?.telemetry ?? null;
+  const fmSpectrumMarkers = useMemo(() => {
+    const activeFreqHz =
+      isFmModule && hardware?.activeStream?.demodMode === "wfm"
+        ? hardware.activeStream.freqHz
+        : null;
+    return buildFmSpectrumMarkers(visible, activeFreqHz, actualPlayingId);
+  }, [actualPlayingId, hardware?.activeStream, isFmModule, visible]);
   const hardwareMeta = hwTone(hardware?.state ?? "unknown");
   const locationLabel = appLocation.configured
     ? buildCatalogScopeLabel(appLocation.catalogScope)
@@ -2091,6 +2135,14 @@ export function Dashboard({
                 <div style={{ height: bottomSpacerHeight }} />
               </div>
             )}
+
+            <SpectrumDock
+              expectedDemodMode="wfm"
+              expectedOwner="audio"
+              markers={fmSpectrumMarkers}
+              moduleId="fm"
+              profile="wfm"
+            />
           </main>
 
           <aside className="flex w-72 shrink-0 flex-col overflow-y-auto border-l border-white/8 bg-black/15">

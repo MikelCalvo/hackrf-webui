@@ -11,6 +11,7 @@ import type {
   ResolvedAppLocation,
 } from "@/lib/types";
 import { MapOverlayCard } from "@/components/map-overlay-card";
+import { SpectrumDock } from "@/components/spectrum-dock";
 import {
   buildBasemapSources,
   buildBoundsPairs,
@@ -26,6 +27,15 @@ const EMPTY_TILE_DATA_URL =
 const DEFAULT_CENTER: [number, number] = [0, 0];
 const DEFAULT_ZOOM = 2;
 const DEFAULT_CITY_ZOOM = 9;
+const AIS_SPECTRUM_RANGE = {
+  minFreqHz: 161_940_000,
+  maxFreqHz: 162_060_000,
+};
+const AIS_SPECTRUM_MARKERS = [
+  { freqHz: 161_975_000, label: "AIS A", tone: "accent" as const },
+  { freqHz: 162_000_000, label: "CTR", tone: "muted" as const },
+  { freqHz: 162_025_000, label: "AIS B", tone: "accent" as const },
+];
 
 type AisModuleProps = {
   hardware: HardwareStatus | null;
@@ -834,6 +844,15 @@ export function AisModule({ hardware, location, onRefreshHardware }: AisModulePr
             </div>
           ) : null}
         </div>
+
+        <SpectrumDock
+          expectedOwner="ais"
+          moduleId="ais"
+          viewRangeHz={AIS_SPECTRUM_RANGE}
+          maxZoom={24}
+          markers={AIS_SPECTRUM_MARKERS}
+          profile="ais"
+        />
       </main>
 
       <aside className="flex w-80 shrink-0 flex-col overflow-hidden border-l border-white/8 bg-black/15">
