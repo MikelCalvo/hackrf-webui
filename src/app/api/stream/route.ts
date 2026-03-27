@@ -26,7 +26,13 @@ export async function PATCH(request: Request) {
     return badRequest("freqMHz is out of range. Use a valid FM frequency.");
   }
 
-  const ok = hackrfService.retune(Math.round(freqMhz * 1_000_000), label, "wfm");
+  const ok = hackrfService.retune(
+    Math.round(freqMhz * 1_000_000),
+    label,
+    "wfm",
+    null,
+    searchParams.get("streamId"),
+  );
   if (!ok) {
     return badRequest("No active FM stream to retune.", 409);
   }

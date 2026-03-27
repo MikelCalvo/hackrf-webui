@@ -31,6 +31,7 @@ function parseActivityCapture(searchParams: URLSearchParams): ActivityCaptureReq
   return {
     module: moduleId,
     mode,
+    activityEventId: searchParams.get("activityEventId"),
     bandId: searchParams.get("bandId"),
     channelId: searchParams.get("channelId"),
     channelNumber: Number.isFinite(rawChannelNumber) ? rawChannelNumber : null,
@@ -66,6 +67,7 @@ export async function PATCH(request: Request): Promise<Response> {
     label,
     "nfm",
     parseActivityCapture(searchParams),
+    searchParams.get("streamId"),
   );
   if (!ok) {
     return badRequest("No active MARITIME stream to retune.", 409);

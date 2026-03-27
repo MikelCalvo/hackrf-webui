@@ -170,11 +170,15 @@ function buildStreamUrl(
   return `/api/stream?${params.toString()}`;
 }
 
-function buildRetuneUrl(station: FmStation): string {
-  return `/api/stream?${new URLSearchParams({
+function buildRetuneUrl(station: FmStation, streamSessionId: string | null = null): string {
+  const params = new URLSearchParams({
     label: station.name,
     freqMHz: String(station.freqMhz),
-  })}`;
+  });
+  if (streamSessionId) {
+    params.set("streamId", streamSessionId);
+  }
+  return `/api/stream?${params.toString()}`;
 }
 
 function normalizeStationLabel(value: string): string {
@@ -741,12 +745,16 @@ export function Dashboard({
   const [gpsdLoading, setGpsdLoading] = useState(false);
   const [gpsdError, setGpsdError] = useState("");
   const gpsdRequestInFlightRef = useRef<Promise<GpsdSnapshot | null> | null>(null);
+  const hardwareRequestInFlightRef = useRef<Promise<HardwareStatus | null> | null>(null);
+  const activeModuleRef = useRef(activeModule);
+  const fmRequestSeqRef = useRef(0);
   const [query, setQuery] = useState("");
   const deferredQuery = useDeferredValue(query.trim().toLowerCase());
   const [regionFilter, setRegionFilter] = useState("all");
   const [countryFilter, setCountryFilter] = useState("all");
   const [cityFilter, setCityFilter] = useState("all");
   const [selectedId, setSelectedId] = useState("");
+  const [transientStation, setTransientStation] = useState<FmStation | null>(null);
   const [pendingScrollId, setPendingScrollId] = useState<string | null>(null);
   const [hardware, setHardware] = useState<HardwareStatus | null>(null);
   const [hardwareError, setHardwareError] = useState("");
@@ -761,6 +769,10 @@ export function Dashboard({
   const [listHeight, setListHeight] = useState(0);
   const [scrollTop, setScrollTop] = useState(0);
   const isFmModule = activeModule === "fm";
+
+  useEffect(() => {
+    activeModuleRef.current = activeModule;
+  }, [activeModule]);
 
   const countriesById = useMemo(
     () => new Map(manifest.countries.map((country) => [country.id, country])),
@@ -880,14 +892,29 @@ export function Dashboard({
   }, [volume]);
 
   const refreshHardware = useCallback(async (): Promise<void> => {
-    try {
-      setHardware(await fetchHardwareStatus());
-      setHardwareError("");
-    } catch (error) {
-      setHardwareError(
-        error instanceof Error ? error.message : "Could not read HackRF status.",
-      );
+    if (hardwareRequestInFlightRef.current) {
+      await hardwareRequestInFlightRef.current;
+      return;
     }
+
+    const task = (async () => {
+      try {
+        const snapshot = await fetchHardwareStatus();
+        setHardware(snapshot);
+        setHardwareError("");
+        return snapshot;
+      } catch (error) {
+        setHardwareError(
+          error instanceof Error ? error.message : "Could not read HackRF status.",
+        );
+        return null;
+      } finally {
+        hardwareRequestInFlightRef.current = null;
+      }
+    })();
+
+    hardwareRequestInFlightRef.current = task;
+    await task;
   }, []);
 
   const refreshGpsd = useCallback(async (): Promise<void> => {
@@ -924,6 +951,7 @@ export function Dashboard({
       return;
     }
 
+    fmRequestSeqRef.current += 1;
     audio.pause();
     audio.removeAttribute("src");
     audio.load();
@@ -1015,37 +1043,48 @@ export function Dashboard({
 
   useEffect(() => {
     let dead = false;
+    let timer: number | null = null;
     const audio = audioRef.current;
+
+    const nextPollDelayMs = (): number => {
+      if (typeof document !== "undefined" && document.visibilityState === "hidden") {
+        return 30_000;
+      }
+
+      const moduleId = activeModuleRef.current;
+      if (moduleId === "fm") {
+        return 4_000;
+      }
+      if (moduleId === "pmr" || moduleId === "airband" || moduleId === "maritime") {
+        return 30_000;
+      }
+      return 10_000;
+    };
 
     const poll = async () => {
       try {
-        const data = await fetchHardwareStatus();
+        await refreshHardware();
+      } finally {
         if (!dead) {
-          setHardware(data);
-          setHardwareError("");
-        }
-      } catch (error) {
-        if (!dead) {
-          setHardwareError(
-            error instanceof Error ? error.message : "Could not read HackRF status.",
-          );
+          timer = window.setTimeout(() => void poll(), nextPollDelayMs());
         }
       }
     };
 
     void poll();
-    const timer = window.setInterval(() => void poll(), 4_000);
 
     return () => {
       dead = true;
-      clearInterval(timer);
+      if (timer !== null) {
+        window.clearTimeout(timer);
+      }
       if (audio) {
         audio.pause();
         audio.removeAttribute("src");
         audio.load();
       }
     };
-  }, []);
+  }, [refreshHardware]);
 
   useEffect(() => {
     if (!isFmModule) {
@@ -1080,8 +1119,8 @@ export function Dashboard({
   }, [isFmModule]);
 
   const regionOptions = useMemo(
-    () => buildRegionOptions(manifest, customStations),
-    [customStations, manifest],
+    () => (isFmModule ? buildRegionOptions(manifest, customStations) : []),
+    [customStations, isFmModule, manifest],
   );
   const activeRegion =
     regionFilter === "all" || regionOptions.some((region) => region.id === regionFilter)
@@ -1089,8 +1128,8 @@ export function Dashboard({
       : "all";
 
   const countryOptions = useMemo(
-    () => buildCountryOptions(manifest, activeRegion, customStations),
-    [activeRegion, customStations, manifest],
+    () => (isFmModule ? buildCountryOptions(manifest, activeRegion, customStations) : []),
+    [activeRegion, customStations, isFmModule, manifest],
   );
   const activeCountry =
     countryFilter === "all" || countryOptions.some((country) => country.id === countryFilter)
@@ -1102,8 +1141,8 @@ export function Dashboard({
   const activeCountryData =
     activeCountry === "all" ? null : loadedCountries[activeCountry] ?? null;
   const cityOptions = useMemo(
-    () => buildCityOptions(activeCountryData?.shard ?? null, activeCountry, customStations),
-    [activeCountry, activeCountryData, customStations],
+    () => (isFmModule ? buildCityOptions(activeCountryData?.shard ?? null, activeCountry, customStations) : []),
+    [activeCountry, activeCountryData, customStations, isFmModule],
   );
   const activeCity =
     cityFilter === "all" || cityOptions.some((city) => city.id === cityFilter)
@@ -1111,22 +1150,39 @@ export function Dashboard({
       : "all";
 
   const allStations = useMemo(() => {
+    if (!isFmModule) {
+      return [];
+    }
+
     const scopedCustomStations =
       activeCountry === "all"
         ? customStations
         : customStations.filter((station) => station.location.countryId === activeCountry);
     const loadedStations = activeCountryData?.catalog.stations ?? [];
+    const transientStations =
+      transientStation && (activeCountry === "all" || transientStation.location.countryId === activeCountry)
+        ? [transientStation]
+        : [];
 
-    return sortStations([...scopedCustomStations, ...loadedStations]);
-  }, [activeCountry, activeCountryData, customStations]);
+    return sortStations([...scopedCustomStations, ...loadedStations, ...transientStations]);
+  }, [activeCountry, activeCountryData, customStations, isFmModule, transientStation]);
 
   const knownStations = useMemo(() => {
+    if (!isFmModule) {
+      return [];
+    }
+
     return [
       ...customStations,
       ...Object.values(loadedCountries).flatMap((country) => country.catalog.stations),
+      ...(transientStation ? [transientStation] : []),
     ];
-  }, [customStations, loadedCountries]);
+  }, [customStations, isFmModule, loadedCountries, transientStation]);
   const visible = useMemo(() => {
+    if (!isFmModule) {
+      return [];
+    }
+
     return allStations.filter((station) => {
       if (activeRegion !== "all" && station.location.regionId !== activeRegion) {
         return false;
@@ -1140,36 +1196,48 @@ export function Dashboard({
 
       return matchesStationSearch(station, deferredQuery);
     });
-  }, [activeCity, activeCountry, activeRegion, allStations, deferredQuery]);
+  }, [activeCity, activeCountry, activeRegion, allStations, deferredQuery, isFmModule]);
 
   const actualPlayingId = useMemo(
     () =>
+      !isFmModule
+        ? null
+        :
       resolvePlayingStationId(visible, hardware?.activeStream ?? null)
       ?? resolvePlayingStationId(allStations, hardware?.activeStream ?? null)
       ?? resolvePlayingStationId(knownStations, hardware?.activeStream ?? null),
-    [allStations, hardware?.activeStream, knownStations, visible],
+    [allStations, hardware?.activeStream, isFmModule, knownStations, visible],
   );
   const pendingPlayingId = useMemo(
     () =>
+      !isFmModule
+        ? null
+        :
       resolvePendingStationId(visible, hardware?.activeStream ?? null)
       ?? resolvePendingStationId(allStations, hardware?.activeStream ?? null)
       ?? resolvePendingStationId(knownStations, hardware?.activeStream ?? null),
-    [allStations, hardware?.activeStream, knownStations, visible],
+    [allStations, hardware?.activeStream, isFmModule, knownStations, visible],
   );
 
-  const selected =
-    visible.find((station) => station.id === selectedId) ||
-    visible[0] ||
-    allStations.find((station) => station.id === selectedId) ||
-    allStations[0] ||
-    null;
+  const selected = !isFmModule
+    ? null
+    : visible.find((station) => station.id === selectedId) ||
+      visible[0] ||
+      allStations.find((station) => station.id === selectedId) ||
+      knownStations.find((station) => station.id === selectedId) ||
+      allStations[0] ||
+      null;
 
   useEffect(() => {
-    if (selectedId && allStations.some((station) => station.id === selectedId)) {
+    if (!isFmModule) {
       return;
     }
 
-    const fallback = visible[0] ?? allStations[0] ?? null;
+    if (selectedId && knownStations.some((station) => station.id === selectedId)) {
+      return;
+    }
+
+    const fallback = visible[0] ?? allStations[0] ?? knownStations[0] ?? null;
     if (fallback) {
       setSelectedId(fallback.id);
       return;
@@ -1178,9 +1246,13 @@ export function Dashboard({
     if (selectedId) {
       setSelectedId("");
     }
-  }, [allStations, selectedId, visible]);
+  }, [allStations, isFmModule, knownStations, selectedId, visible]);
 
   useEffect(() => {
+    if (!isFmModule) {
+      return;
+    }
+
     if (pendingScrollId) {
       return;
     }
@@ -1192,9 +1264,13 @@ export function Dashboard({
 
     listNode.scrollTo({ top: 0, behavior: "auto" });
     setScrollTop(0);
-  }, [activeCity, activeCountry, activeRegion, deferredQuery, pendingScrollId]);
+  }, [activeCity, activeCountry, activeRegion, deferredQuery, isFmModule, pendingScrollId]);
 
   useEffect(() => {
+    if (!isFmModule) {
+      return;
+    }
+
     if (!pendingScrollId) {
       return;
     }
@@ -1214,7 +1290,7 @@ export function Dashboard({
 
     setSelectedId(pendingScrollId);
     setPendingScrollId(null);
-  }, [pendingScrollId, visible]);
+  }, [isFmModule, pendingScrollId, visible]);
 
   const windowedRange = useMemo(() => {
     if (visible.length === 0) {
@@ -1246,6 +1322,7 @@ export function Dashboard({
 
     if (
       startingStationId
+      && actualPlayingId === startingStationId
       && hardware?.activeStream?.demodMode === "wfm"
       && hardware.activeStream.phase === "running"
       && hardware.activeStream.pendingFreqHz === null
@@ -1307,6 +1384,7 @@ export function Dashboard({
       return;
     }
 
+    const requestId = ++fmRequestSeqRef.current;
     setStreamError("");
     setSelectedId(station.id);
     setStartingStationId(station.id);
@@ -1316,6 +1394,8 @@ export function Dashboard({
     const canRetuneInPlace = Boolean(
       activeStream
       && activeStream.demodMode === "wfm"
+      && activeStream.phase === "running"
+      && activeStream.pendingFreqHz === null
       && activeStream.lna === controls.lna
       && activeStream.vga === controls.vga
       && Math.abs(activeStream.audioGain - controls.audioGain) < 0.001,
@@ -1323,8 +1403,11 @@ export function Dashboard({
 
     if (canRetuneInPlace) {
       try {
-        const response = await fetch(buildRetuneUrl(station), { method: "PATCH" });
+        const response = await fetch(buildRetuneUrl(station, activeStream?.id ?? null), { method: "PATCH" });
         if (response.ok) {
+          if (fmRequestSeqRef.current !== requestId) {
+            return;
+          }
           setSelectedId(station.id);
           void refreshHardware();
           return;
@@ -1339,9 +1422,19 @@ export function Dashboard({
 
     try {
       await audio.play();
+      if (fmRequestSeqRef.current !== requestId) {
+        audio.pause();
+        audio.removeAttribute("src");
+        audio.load();
+        return;
+      }
       void refreshHardware();
     } catch (error) {
       if (error instanceof DOMException && error.name === "AbortError") {
+        return;
+      }
+
+      if (fmRequestSeqRef.current !== requestId) {
         return;
       }
 
@@ -1353,7 +1446,9 @@ export function Dashboard({
           : "Browser could not start audio playback.",
       );
     } finally {
-      setStartingStationId(null);
+      if (fmRequestSeqRef.current === requestId) {
+        setStartingStationId(null);
+      }
     }
   }
 
@@ -1367,6 +1462,9 @@ export function Dashboard({
 
     const station = buildCustomStation(draft, lookupCatalog);
     setCustomStations((current) => sortStations([...current, station]));
+    if (transientStation?.id === station.id) {
+      setTransientStation(null);
+    }
     setDraft(DEFAULT_DRAFT);
     setSelectedId(station.id);
     setStreamError("");
@@ -1380,7 +1478,9 @@ export function Dashboard({
       return;
     }
 
-    await startListening(buildCustomStation(draft, lookupCatalog));
+    const station = buildCustomStation(draft, lookupCatalog);
+    setTransientStation(station);
+    await startListening(station);
   }
 
   function removeCustom(id: string): void {
@@ -1388,6 +1488,12 @@ export function Dashboard({
       stopListening();
     }
 
+    if (transientStation?.id === id) {
+      setTransientStation(null);
+    }
+    if (selectedId === id) {
+      setSelectedId("");
+    }
     setCustomStations((current) => current.filter((station) => station.id !== id));
   }
 

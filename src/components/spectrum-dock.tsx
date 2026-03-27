@@ -1,13 +1,13 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState } from "react";
+import { memo, useEffect, useMemo, useRef, useState } from "react";
 
 import { cx } from "@/components/module-ui";
 import type { AudioDemodMode, SpectrumFeedSnapshot, SpectrumFrame, SpectrumOwner } from "@/lib/types";
 
 const STORAGE_PREFIX = "hackrf-webui.spectrum-dock.v1";
-const CLOSED_POLL_MS = 1500;
-const OPEN_POLL_MS = 250;
+const CLOSED_POLL_MS = 4000;
+const OPEN_POLL_MS = 750;
 const LINE_HEIGHT = 56;
 const TIGHT_LINE_HEIGHT = 40;
 const DEFAULT_WATERFALL_HEIGHT = 160;
@@ -225,6 +225,42 @@ function sanitizeSnapshotForModule(
     frame: null,
     stream: null,
   };
+}
+
+function sameSpectrumFrame(left: SpectrumFrame | null, right: SpectrumFrame | null): boolean {
+  if (left === right) {
+    return true;
+  }
+  if (!left || !right) {
+    return false;
+  }
+  return (
+    left.updatedAt === right.updatedAt
+    && left.centerFreqHz === right.centerFreqHz
+    && left.spanHz === right.spanHz
+    && left.peakIndex === right.peakIndex
+    && left.bins.length === right.bins.length
+  );
+}
+
+function sameSpectrumSnapshot(left: SpectrumFeedSnapshot | null, right: SpectrumFeedSnapshot | null): boolean {
+  if (left === right) {
+    return true;
+  }
+  if (!left || !right) {
+    return false;
+  }
+
+  return (
+    left.state === right.state
+    && left.owner === right.owner
+    && left.message === right.message
+    && left.stream?.demodMode === right.stream?.demodMode
+    && left.stream?.freqHz === right.stream?.freqHz
+    && left.stream?.label === right.stream?.label
+    && left.stream?.phase === right.stream?.phase
+    && sameSpectrumFrame(left.frame, right.frame)
+  );
 }
 
 function formatFreqMHz(freqHz: number | null): string {
@@ -1067,7 +1103,7 @@ function drawWaterfall(
   }
 }
 
-export function SpectrumDock({
+export const SpectrumDock = memo(function SpectrumDock({
   moduleId,
   viewRangeHz = null,
   maxZoom = MAX_ZOOM,
@@ -1081,18 +1117,40 @@ export function SpectrumDock({
   const [ready, setReady] = useState(false);
   const [snapshot, setSnapshot] = useState<SpectrumFeedSnapshot | null>(null);
   const [error, setError] = useState("");
+  const [pageHidden, setPageHidden] = useState(false);
   const lineCanvasRef = useRef<HTMLCanvasElement>(null);
   const waterfallCanvasRef = useRef<HTMLCanvasElement>(null);
   const dragStateRef = useRef<{ pointerId: number; startY: number; startHeight: number } | null>(null);
   const waterfallRowsRef = useRef<Array<WaterfallRow | null>>([]);
   const scanActivityRef = useRef<ScanActivityState | null>(null);
   const frameHistoryRef = useRef<SpectrumFrame[]>([]);
+  const latestVisibleWindowRef = useRef<FrequencyWindow | null>(null);
+  const latestMarkersRef = useRef(markers);
+  const latestProfileRef = useRef(profile);
+  const latestLockViewToRangeRef = useRef(lockViewToRange);
 
   useEffect(() => {
     const nextPrefs = loadPrefs(moduleId);
     setPrefs(nextPrefs);
     setReady(true);
   }, [moduleId]);
+
+  useEffect(() => {
+    const syncVisibility = () => {
+      setPageHidden(typeof document !== "undefined" && document.visibilityState === "hidden");
+    };
+
+    syncVisibility();
+    document.addEventListener("visibilitychange", syncVisibility);
+    window.addEventListener("pagehide", syncVisibility);
+    window.addEventListener("pageshow", syncVisibility);
+
+    return () => {
+      document.removeEventListener("visibilitychange", syncVisibility);
+      window.removeEventListener("pagehide", syncVisibility);
+      window.removeEventListener("pageshow", syncVisibility);
+    };
+  }, []);
 
   useEffect(() => {
     if (!ready || prefs.open) {
@@ -1154,7 +1212,7 @@ export function SpectrumDock({
   }, [prefs.open]);
 
   useEffect(() => {
-    if (!ready) {
+    if (!ready || pageHidden || prefs.open) {
       return;
     }
 
@@ -1163,7 +1221,7 @@ export function SpectrumDock({
     void fetchSpectrumFeed()
       .then((next) => {
         if (!cancelled) {
-          setSnapshot(next);
+          setSnapshot((current) => (sameSpectrumSnapshot(current, next) ? current : next));
           setError("");
         }
       })
@@ -1176,10 +1234,10 @@ export function SpectrumDock({
     return () => {
       cancelled = true;
     };
-  }, [moduleId, prefs.open, ready]);
+  }, [moduleId, pageHidden, prefs.open, ready]);
 
   useEffect(() => {
-    if (!ready || !prefs.open) {
+    if (!ready || !prefs.open || pageHidden) {
       return;
     }
 
@@ -1192,7 +1250,7 @@ export function SpectrumDock({
         if (cancelled) {
           return;
         }
-        setSnapshot(next);
+        setSnapshot((current) => (sameSpectrumSnapshot(current, next) ? current : next));
         setError("");
       } catch (pollError) {
         if (cancelled) {
@@ -1214,7 +1272,7 @@ export function SpectrumDock({
         window.clearTimeout(timeoutId);
       }
     };
-  }, [prefs.open, ready]);
+  }, [pageHidden, prefs.open, ready]);
 
   const compatibleSnapshot = useMemo(
     () => sanitizeSnapshotForModule(snapshot, expectedOwner, expectedDemodMode),
@@ -1254,6 +1312,22 @@ export function SpectrumDock({
     return `${(visibleSpanHz / 1_000).toFixed(0)} kHz view${effectiveZoom > 1 ? ` · ${effectiveZoom.toFixed(1)}x` : ""}`;
   }, [effectiveZoom, visibleSpanHz]);
 
+  useEffect(() => {
+    latestVisibleWindowRef.current = visibleWindow;
+  }, [visibleWindow]);
+
+  useEffect(() => {
+    latestMarkersRef.current = markers;
+  }, [markers]);
+
+  useEffect(() => {
+    latestProfileRef.current = profile;
+  }, [profile]);
+
+  useEffect(() => {
+    latestLockViewToRangeRef.current = lockViewToRange;
+  }, [lockViewToRange]);
+
   const handleWheelZoom = (deltaY: number) => {
     if (!prefs.open || !compatibleSnapshot?.frame) {
       return;
@@ -1286,6 +1360,10 @@ export function SpectrumDock({
   }, [moduleId, viewRangeHz?.maxFreqHz, viewRangeHz?.minFreqHz]);
 
   useEffect(() => {
+    if (pageHidden) {
+      return;
+    }
+
     const lineCanvas = lineCanvasRef.current;
     const waterfallCanvas = waterfallCanvasRef.current;
     if (!lineCanvas || !waterfallCanvas) {
@@ -1393,18 +1471,29 @@ export function SpectrumDock({
         drawWaterfall(waterfallCanvas, waterfallRowsRef.current, visibleWindow, markers, profile);
       }
     }
-  }, [compatibleSnapshot, lockViewToRange, markers, prefs.hideCenterSpur, prefs.lineMode, prefs.open, profile, viewRangeHz, visibleWindow]);
+  }, [compatibleSnapshot, lockViewToRange, markers, pageHidden, prefs.hideCenterSpur, prefs.lineMode, prefs.open, profile, viewRangeHz, visibleWindow]);
 
   useEffect(() => {
-    if (!prefs.open || !waterfallCanvasRef.current) {
+    if (!prefs.open || pageHidden || !waterfallCanvasRef.current) {
       return;
     }
-    if (lockViewToRange) {
-      drawBandActivity(waterfallCanvasRef.current, scanActivityRef.current, visibleWindow, markers);
+    if (latestLockViewToRangeRef.current) {
+      drawBandActivity(
+        waterfallCanvasRef.current,
+        scanActivityRef.current,
+        latestVisibleWindowRef.current,
+        latestMarkersRef.current,
+      );
     } else {
-      drawWaterfall(waterfallCanvasRef.current, waterfallRowsRef.current, visibleWindow, markers, profile);
+      drawWaterfall(
+        waterfallCanvasRef.current,
+        waterfallRowsRef.current,
+        latestVisibleWindowRef.current,
+        latestMarkersRef.current,
+        latestProfileRef.current,
+      );
     }
-  }, [lockViewToRange, markers, prefs.open, profile, visibleWindow, waterfallHeight]);
+  }, [pageHidden, prefs.open, waterfallHeight]);
 
   return (
     <div className="border-t border-white/[0.07] bg-[linear-gradient(180deg,rgba(6,12,20,0.96),rgba(4,9,18,0.98))]">
@@ -1609,4 +1698,4 @@ export function SpectrumDock({
       </div>
     </div>
   );
-}
+});

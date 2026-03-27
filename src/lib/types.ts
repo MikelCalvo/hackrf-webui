@@ -188,6 +188,7 @@ export type AudioCaptureMode = "manual" | "scan";
 export type ActivityCaptureRequestMeta = {
   module: AudioCaptureModule;
   mode: AudioCaptureMode;
+  activityEventId?: string | null;
   bandId?: string | null;
   channelId?: string | null;
   channelNumber?: number | null;

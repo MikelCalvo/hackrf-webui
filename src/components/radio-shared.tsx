@@ -60,6 +60,9 @@ export function buildRadioStreamUrl(
   if (activityCapture?.mode) {
     params.set("activityMode", activityCapture.mode);
   }
+  if (activityCapture?.activityEventId) {
+    params.set("activityEventId", activityCapture.activityEventId);
+  }
 
   const bandId = activityCapture?.bandId ?? channel.bandId ?? null;
   const channelId = activityCapture?.channelId ?? channel.id ?? null;
@@ -127,17 +130,25 @@ export function buildRadioRetuneUrl(
   pathname: string,
   channel: Pick<RadioChannel, "label" | "freqMhz"> & Partial<Pick<RadioChannel, "id" | "bandId" | "number">>,
   activityCapture?: Partial<ActivityCaptureRequestMeta> | null,
+  expectedStreamId: string | null = null,
 ): string {
   const params = new URLSearchParams({
     label: channel.label,
     freqMHz: String(channel.freqMhz),
   });
 
+  if (expectedStreamId) {
+    params.set("streamId", expectedStreamId);
+  }
+
   if (activityCapture?.module) {
     params.set("module", activityCapture.module);
   }
   if (activityCapture?.mode) {
     params.set("activityMode", activityCapture.mode);
+  }
+  if (activityCapture?.activityEventId) {
+    params.set("activityEventId", activityCapture.activityEventId);
   }
 
   const bandId = activityCapture?.bandId ?? channel.bandId ?? null;

@@ -28,30 +28,52 @@ import {
 import {
   ACTIVE_LISTEN_TELEMETRY_REFRESH_MS,
   createActivityWindowMetrics,
+  getRunningStreamTelemetry,
   hasRmsActivity,
   mergeActivityWindowMetrics,
+  SCANNER_ACTIVITY_CONFIRMATION_POLLS,
   SCANNER_HOLD_GRACE_MS,
+  SCANNER_POST_HIT_HOLD_DEFAULT_SECONDS,
+  SCANNER_POST_HIT_HOLD_MAX_SECONDS,
   SCANNER_STARTUP_MS,
   TELEMETRY_REFRESH_MS,
+  normalizeScannerPostHitHoldSeconds,
+  shouldReleaseScannerLock,
 } from "@/lib/signal-activity";
+import { fetchHardwareStatusSnapshot, shouldPublishHardwareSnapshot } from "@/lib/hardware-status";
+import { openSilentScanTransport, type SilentScanTransport } from "@/lib/silent-scan-transport";
 
 type ScannerState = "idle" | "scanning" | "locked";
 type ScanMode = "sequential" | "random";
 
 const STORAGE_KEY = "hackrf-webui.pmr-config.v1";
-const CONTACT_REFRESH_MS = 4000;
+const CONTACT_REFRESH_MS = 10_000;
+const SCAN_HARDWARE_REFRESH_MS = 600;
+const SCAN_UI_HARDWARE_PUBLISH_INTERVAL_MS = 2_500;
 
 type PersistedConfig = {
   scanMode: ScanMode;
   squelch: number;
   dwellTime: number;
+  holdTime: number;
   selectedBandId: string;
 };
 
 function loadConfig(): PersistedConfig | null {
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
-    return raw ? (JSON.parse(raw) as PersistedConfig) : null;
+    if (!raw) {
+      return null;
+    }
+
+    const parsed = JSON.parse(raw) as Partial<PersistedConfig>;
+    return {
+      scanMode: parsed.scanMode === "random" ? "random" : "sequential",
+      squelch: Number.isFinite(parsed.squelch) ? parsed.squelch! : 0.004,
+      dwellTime: Number.isFinite(parsed.dwellTime) ? parsed.dwellTime! : 3,
+      holdTime: normalizeScannerPostHitHoldSeconds(parsed.holdTime ?? SCANNER_POST_HIT_HOLD_DEFAULT_SECONDS),
+      selectedBandId: typeof parsed.selectedBandId === "string" ? parsed.selectedBandId : "pmr446",
+    };
   } catch {
     return null;
   }
@@ -63,6 +85,7 @@ function buildPmrUrl(
   mode: "manual" | "scan",
   location: ResolvedAppLocation | null,
   squelch: number,
+  activityEventId: string | null = null,
 ): string {
   return buildRadioStreamUrl(
     "/api/pmr-stream",
@@ -72,6 +95,7 @@ function buildPmrUrl(
       {
         module: "pmr",
         mode,
+        activityEventId,
         bandId: ch.bandId,
         channelId: ch.id,
         channelNumber: ch.number,
@@ -91,6 +115,8 @@ function buildRetuneUrl(
   mode: "manual" | "scan",
   location: ResolvedAppLocation | null,
   squelch: number,
+  activityEventId: string | null = null,
+  streamSessionId: string | null = null,
 ): string {
   return buildRadioRetuneUrl(
     "/api/pmr-stream",
@@ -102,6 +128,7 @@ function buildRetuneUrl(
       {
         module: "pmr",
         mode,
+        activityEventId,
         bandId: ch.bandId,
         channelId: ch.id,
         channelNumber: ch.number,
@@ -112,6 +139,7 @@ function buildRetuneUrl(
         channelNotes: ch.notes ?? null,
       },
     ),
+    streamSessionId,
   );
 }
 
@@ -130,6 +158,22 @@ function buildPmrSpectrumMarkers(
           ? "accent"
           : "muted",
   }));
+}
+
+function resolveRunningPmrChannel(
+  channels: PmrChannel[],
+  activeStream: HardwareStatus["activeStream"],
+): PmrChannel | null {
+  if (
+    !activeStream
+    || activeStream.demodMode !== "nfm"
+    || activeStream.phase !== "running"
+    || activeStream.pendingFreqHz !== null
+  ) {
+    return null;
+  }
+
+  return channels.find((channel) => Math.round(channel.freqMhz * 1_000_000) === activeStream.freqHz) ?? null;
 }
 
 export function PmrModule({
@@ -158,6 +202,9 @@ export function PmrModule({
   const [scanIndex, setScanIndex] = useState(0);
   const [squelch, setSquelch] = useState(() => loadConfig()?.squelch ?? 0.004);
   const [dwellTime, setDwellTime] = useState(() => loadConfig()?.dwellTime ?? 3);
+  const [holdTime, setHoldTime] = useState(() =>
+    normalizeScannerPostHitHoldSeconds(loadConfig()?.holdTime ?? SCANNER_POST_HIT_HOLD_DEFAULT_SECONDS),
+  );
 
   const [startingChannelId, setStartingChannelId] = useState<string | null>(null);
   const isStarting = startingChannelId !== null;
@@ -166,33 +213,63 @@ export function PmrModule({
   const [manualActivityRms, setManualActivityRms] = useState<number | null>(null);
   const [clearDialogOpen, setClearDialogOpen] = useState(false);
   const [clearingActivity, setClearingActivity] = useState(false);
+  const [liveHardware, setLiveHardware] = useState<HardwareStatus | null>(hardware);
 
   // Refs to avoid stale closures in timer callbacks — initialised from state (which already has restored values)
   const scannerStateRef  = useRef<ScannerState>("idle");
   const scanModeRef      = useRef(scanMode);
   const squelchRef       = useRef(squelch);
   const dwellTimeRef     = useRef(dwellTime);
+  const holdTimeRef      = useRef(holdTime);
   const hardwareRef      = useRef<HardwareStatus | null>(null);
   const playingIdRef     = useRef<string | null>(null);
   const selectedBandRef  = useRef(selectedBandId);
+  const lockedAtRef      = useRef<number | null>(null);
   const locationRef = useRef<ResolvedAppLocation | null>(location);
-  const refreshHardwareRef = useRef(onRefreshHardware);
   const pollInFlightRef = useRef(false);
+  const lastHardwarePublishAtRef = useRef(0);
+  const silentScanTransportRef = useRef<SilentScanTransport | null>(null);
+  const pendingSilentOpenAbortRef = useRef<AbortController | null>(null);
+  const streamRequestSeqRef = useRef(0);
+  const activityEventIdRef = useRef<string | null>(null);
+  const scanSessionSeqRef = useRef(0);
 
   useEffect(() => { scannerStateRef.current = scannerState; }, [scannerState]);
   useEffect(() => { scanModeRef.current = scanMode; }, [scanMode]);
   useEffect(() => { squelchRef.current = squelch; }, [squelch]);
   useEffect(() => { dwellTimeRef.current = dwellTime; }, [dwellTime]);
-  useEffect(() => { hardwareRef.current = hardware; }, [hardware]);
+  useEffect(() => { holdTimeRef.current = holdTime; }, [holdTime]);
+  useEffect(() => {
+    hardwareRef.current = hardware;
+    if (!hardware) {
+      setLiveHardware(null);
+      return;
+    }
+
+    const now = Date.now();
+    setLiveHardware((current) => {
+      if (!shouldPublishHardwareSnapshot(
+        current,
+        hardware,
+        lastHardwarePublishAtRef.current,
+        now,
+        scannerStateRef.current !== "idle" ? SCAN_UI_HARDWARE_PUBLISH_INTERVAL_MS : undefined,
+      )) {
+        return current;
+      }
+
+      lastHardwarePublishAtRef.current = now;
+      return hardware;
+    });
+  }, [hardware]);
   useEffect(() => { playingIdRef.current = playingChannelId; }, [playingChannelId]);
   useEffect(() => { selectedBandRef.current = selectedBandId; }, [selectedBandId]);
   useEffect(() => { locationRef.current = location; }, [location]);
-  useEffect(() => { refreshHardwareRef.current = onRefreshHardware; }, [onRefreshHardware]);
 
   // Persist config on every change (initial values already come from localStorage via useState initializers)
   useEffect(() => {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify({ scanMode, squelch, dwellTime, selectedBandId }));
-  }, [scanMode, squelch, dwellTime, selectedBandId]);
+    localStorage.setItem(STORAGE_KEY, JSON.stringify({ scanMode, squelch, dwellTime, holdTime, selectedBandId }));
+  }, [dwellTime, holdTime, scanMode, selectedBandId, squelch]);
 
   useEffect(() => {
     let cancelled = false;
@@ -231,7 +308,9 @@ export function PmrModule({
       } else {
         setStreamError("Could not open stream. Check HackRF status and the native binary.");
       }
-      void onRefreshHardware();
+      if (scannerStateRef.current === "idle") {
+        void onRefreshHardware();
+      }
     }
 
     audio.addEventListener("ended", handleEnded);
@@ -242,6 +321,13 @@ export function PmrModule({
     };
     // audioRef.current is stable after mount; onRefreshHardware is stable
     // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useEffect(() => () => {
+    pendingSilentOpenAbortRef.current?.abort();
+    pendingSilentOpenAbortRef.current = null;
+    stopSilentScanTransport();
+    stopAudioElement();
   }, []);
 
   const channels = useMemo(() => getChannelsForBand(selectedBandId), [selectedBandId]);
@@ -256,25 +342,84 @@ export function PmrModule({
 
   // ── Stream control ────────────────────────────────────────────────────────
 
-  async function startChannel(ch: PmrChannel, mode: "manual" | "scan"): Promise<void> {
+  function stopAudioElement(): void {
+    const audio = audioRef.current;
+    if (!audio) {
+      return;
+    }
+
+    audio.pause();
+    audio.removeAttribute("src");
+    audio.load();
+  }
+
+  function stopSilentScanTransport(): void {
+    const transport = silentScanTransportRef.current;
+    silentScanTransportRef.current = null;
+    transport?.abort();
+  }
+
+  function cancelPendingSilentOpen(): void {
+    pendingSilentOpenAbortRef.current?.abort();
+    pendingSilentOpenAbortRef.current = null;
+  }
+
+  async function startChannel(
+    ch: PmrChannel,
+    mode: "manual" | "scan",
+    transport: "audio" | "silent" = mode === "scan" ? "silent" : "audio",
+    allowRetune = true,
+  ): Promise<void> {
     if (!audioRef.current) return;
+    const requestId = ++streamRequestSeqRef.current;
+    cancelPendingSilentOpen();
     setStreamError("");
     setPlayingChannelId(null);
     setSelectedChannelId(ch.id);
     setStartingChannelId(ch.id);
+    if (mode === "manual" || transport === "silent") {
+      activityEventIdRef.current = null;
+    }
 
-    const audio = audioRef.current;
+    const hadSilentTransport = silentScanTransportRef.current !== null;
+    if (transport === "audio") {
+      stopSilentScanTransport();
+    }
 
-    // Fast path: if a PMR stream is already live, retune in-place.
-    // The hackrf process receives a FREQ command via stdin and calls hackrf_set_freq()
-    // without restarting — no process teardown, no reconnect, no re-buffering.
-    if (hardwareRef.current?.activeStream?.demodMode === "nfm") {
+    const activeStream = hardwareRef.current?.activeStream ?? null;
+
+    const canRetuneInPlace =
+      allowRetune
+      && activeStream?.demodMode === "nfm"
+      && activeStream.phase === "running"
+      && activeStream.pendingFreqHz === null
+      && activeStream.lna === controls.lna
+      && activeStream.vga === controls.vga
+      && Math.abs(activeStream.audioGain - controls.audioGain) < 0.001
+      && ((transport === "audio" && !hadSilentTransport) || (transport === "silent" && hadSilentTransport));
+
+    if (canRetuneInPlace) {
       try {
-        const resp = await fetch(buildRetuneUrl(ch, mode, locationRef.current, squelchRef.current), { method: "PATCH" });
+        const resp = await fetch(
+          buildRetuneUrl(
+            ch,
+            mode,
+            locationRef.current,
+            squelchRef.current,
+            activityEventIdRef.current,
+            activeStream?.id ?? null,
+          ),
+          { method: "PATCH" },
+        );
         if (resp.ok) {
+          if (streamRequestSeqRef.current !== requestId) {
+            return;
+          }
           setPlayingChannelId(ch.id);
           setSelectedChannelId(ch.id);
-          void onRefreshHardware();
+          if (transport === "audio" && mode === "manual") {
+            void onRefreshHardware();
+          }
           setStartingChannelId(null);
           return;
         }
@@ -284,38 +429,103 @@ export function PmrModule({
       }
     }
 
-    // Full start: stop current audio, set new src, wait for browser to buffer & play
-    audio.pause();
-    audio.src = buildPmrUrl(ch, controls, mode, locationRef.current, squelchRef.current);
+    if (transport === "silent") {
+      stopAudioElement();
+      stopSilentScanTransport();
+      let controller: AbortController | null = null;
+
+      try {
+        controller = new AbortController();
+        pendingSilentOpenAbortRef.current = controller;
+        const nextTransport = await openSilentScanTransport(
+          buildPmrUrl(ch, controls, mode, locationRef.current, squelchRef.current, activityEventIdRef.current),
+          (error) => {
+            if (scannerStateRef.current !== "idle" && streamRequestSeqRef.current === requestId) {
+              setStreamError(error.message);
+            }
+          },
+          controller.signal,
+        );
+        if (pendingSilentOpenAbortRef.current === controller) {
+          pendingSilentOpenAbortRef.current = null;
+        }
+        if (streamRequestSeqRef.current !== requestId) {
+          nextTransport.abort();
+          return;
+        }
+        silentScanTransportRef.current = nextTransport;
+        void nextTransport.closed.finally(() => {
+          if (silentScanTransportRef.current === nextTransport) {
+            silentScanTransportRef.current = null;
+          }
+        });
+        setPlayingChannelId(ch.id);
+        setSelectedChannelId(ch.id);
+      } catch (error) {
+        if (controller && pendingSilentOpenAbortRef.current === controller) {
+          pendingSilentOpenAbortRef.current = null;
+        }
+        if (streamRequestSeqRef.current !== requestId) {
+          return;
+        }
+        setPlayingChannelId(null);
+        if (!(error instanceof DOMException && error.name === "AbortError")) {
+          setStreamError(error instanceof Error ? error.message : "Could not start PMR scan transport.");
+        }
+      } finally {
+        if (streamRequestSeqRef.current === requestId) {
+          setStartingChannelId(null);
+        }
+      }
+      return;
+    }
+
+    const audio = audioRef.current;
+    stopAudioElement();
+    audio.src = buildPmrUrl(ch, controls, mode, locationRef.current, squelchRef.current, activityEventIdRef.current);
     try {
       await audio.play();
+      if (streamRequestSeqRef.current !== requestId) {
+        stopAudioElement();
+        return;
+      }
       setPlayingChannelId(ch.id);
       setSelectedChannelId(ch.id);
-      void onRefreshHardware();
+      if (mode === "manual") {
+        void onRefreshHardware();
+      }
     } catch (err) {
       // AbortError = play() interrupted by a rapid pause()/src-change — safe to ignore
       if (err instanceof DOMException && err.name === "AbortError") return;
+      if (streamRequestSeqRef.current !== requestId) {
+        return;
+      }
       audio.removeAttribute("src");
       audio.load();
       setPlayingChannelId(null);
       setStreamError(err instanceof Error ? err.message : "Could not start PMR stream.");
     } finally {
-      setStartingChannelId(null);
+      if (streamRequestSeqRef.current === requestId) {
+        setStartingChannelId(null);
+      }
     }
   }
 
   function stopChannel(): void {
-    const audio = audioRef.current;
-    if (audio) {
-      audio.pause();
-      audio.removeAttribute("src");
-      audio.load();
-    }
+    streamRequestSeqRef.current += 1;
+    activityEventIdRef.current = null;
+    cancelPendingSilentOpen();
+    stopSilentScanTransport();
+    stopAudioElement();
     setStartingChannelId(null);
     setPlayingChannelId(null);
   }
 
-  function queueActivityLog(channel: PmrChannel, mode: "manual" | "scan", rms: number): void {
+  async function queueActivityLog(
+    channel: PmrChannel,
+    mode: "manual" | "scan",
+    rms: number,
+  ): Promise<ActivityLogEntry | null> {
     const occurredAt = new Date().toISOString();
     const band = PMR_BANDS.find((entry) => entry.id === channel.bandId) ?? null;
     const payload = {
@@ -336,16 +546,17 @@ export function PmrModule({
       },
     };
 
-    void persistActivityEvent(payload)
-      .then((entry) => {
-        setScanLog((log) => [entry, ...log].slice(0, ACTIVITY_EVENTS_DEFAULT_LIMIT));
-      })
-      .catch(() => {
-        setScanLog((log) => [
-          createActivityLogEntryFallback(payload),
-          ...log,
-        ].slice(0, ACTIVITY_EVENTS_DEFAULT_LIMIT));
-      });
+    try {
+      const entry = await persistActivityEvent(payload);
+      setScanLog((log) => [entry, ...log].slice(0, ACTIVITY_EVENTS_DEFAULT_LIMIT));
+      return entry;
+    } catch {
+      setScanLog((log) => [
+        createActivityLogEntryFallback(payload),
+        ...log,
+      ].slice(0, ACTIVITY_EVENTS_DEFAULT_LIMIT));
+      return null;
+    }
   }
 
   async function handleClearActivity(): Promise<void> {
@@ -378,7 +589,7 @@ export function PmrModule({
     }
 
     const refreshIntervalMs =
-      scannerState !== "idle" ? TELEMETRY_REFRESH_MS : ACTIVE_LISTEN_TELEMETRY_REFRESH_MS;
+      scannerState !== "idle" ? SCAN_HARDWARE_REFRESH_MS : ACTIVE_LISTEN_TELEMETRY_REFRESH_MS;
 
     let cancelled = false;
 
@@ -389,7 +600,27 @@ export function PmrModule({
 
       pollInFlightRef.current = true;
       try {
-        await refreshHardwareRef.current();
+        const snapshot = await fetchHardwareStatusSnapshot();
+        if (!cancelled) {
+          hardwareRef.current = snapshot;
+          const now = Date.now();
+          setLiveHardware((current) => {
+            if (!shouldPublishHardwareSnapshot(
+              current,
+              snapshot,
+              lastHardwarePublishAtRef.current,
+              now,
+              scannerStateRef.current !== "idle" ? SCAN_UI_HARDWARE_PUBLISH_INTERVAL_MS : undefined,
+            )) {
+              return current;
+            }
+
+            lastHardwarePublishAtRef.current = now;
+            return snapshot;
+          });
+        }
+      } catch {
+        // Ignore transient polling failures; hardwareRef keeps its last valid value.
       } finally {
         pollInFlightRef.current = false;
       }
@@ -409,16 +640,25 @@ export function PmrModule({
   useEffect(() => {
     if (scannerState !== "scanning") return;
 
+    lockedAtRef.current = null;
+    activityEventIdRef.current = null;
+    const scanSessionId = scanSessionSeqRef.current;
+
     const chs = getChannelsForBand(selectedBandRef.current);
     const ch = chs[scanIndex % chs.length];
-    if (!ch) return;
+    if (!ch) {
+      setScannerState("idle");
+      stopChannel();
+      return;
+    }
 
-    void startChannel(ch, "scan");
+    void startChannel(ch, "scan", "silent", true);
 
     const startedAt = Date.now();
     const activateAt = startedAt + SCANNER_STARTUP_MS;
     const deadlineAt = activateAt + dwellTimeRef.current * 1000;
     let peakWindow = createActivityWindowMetrics();
+    let confirmedActivePolls = 0;
     let finished = false;
 
     const timer = window.setInterval(() => {
@@ -427,7 +667,15 @@ export function PmrModule({
       }
 
       const now = Date.now();
-      const telemetry = hardwareRef.current?.activeStream?.telemetry ?? null;
+      const activeStream = hardwareRef.current?.activeStream ?? null;
+      const activeChannel = resolveRunningPmrChannel(chs, activeStream);
+      if (!activeChannel || activeChannel.id !== ch.id) {
+        peakWindow = createActivityWindowMetrics();
+        confirmedActivePolls = 0;
+        return;
+      }
+
+      const telemetry = getRunningStreamTelemetry(activeStream, now);
       peakWindow = mergeActivityWindowMetrics(peakWindow, telemetry, now);
 
       if (now < activateAt) {
@@ -435,10 +683,23 @@ export function PmrModule({
       }
 
       if (hasRmsActivity(telemetry, squelchRef.current, now)) {
+        confirmedActivePolls += 1;
+      } else {
+        confirmedActivePolls = 0;
+      }
+
+      if (confirmedActivePolls >= SCANNER_ACTIVITY_CONFIRMATION_POLLS) {
         finished = true;
         clearInterval(timer);
-        setScannerState("locked");
-        queueActivityLog(ch, "scan", peakWindow.rms);
+        void (async () => {
+          const entry = await queueActivityLog(activeChannel, "scan", peakWindow.rms);
+          if (finished && scannerStateRef.current === "scanning" && scanSessionSeqRef.current === scanSessionId) {
+            activityEventIdRef.current =
+              entry && !entry.id.startsWith("local-") ? entry.id : null;
+            lockedAtRef.current = now;
+            setScannerState("locked");
+          }
+        })();
         return;
       }
 
@@ -453,12 +714,22 @@ export function PmrModule({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [scannerState, scanIndex, selectedBandId]);
 
+  useEffect(() => {
+    if (scannerState !== "locked" || !currentScanChannel || !silentScanTransportRef.current) {
+      return;
+    }
+
+    void startChannel(currentScanChannel, "scan", "audio", false);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentScanChannel, scannerState]);
+
   // ── Scanner: monitor silence while locked ────────────────────────────────
 
   useEffect(() => {
     if (scannerState !== "locked") return;
 
-    let lastActivityAt = Date.now();
+    const lockedAt = lockedAtRef.current ?? Date.now();
+    let lastActivityAt = lockedAt;
     let released = false;
 
     const interval = window.setInterval(() => {
@@ -467,21 +738,28 @@ export function PmrModule({
       }
 
       const now = Date.now();
-      const telemetry = hardwareRef.current?.activeStream?.telemetry ?? null;
+      const chs = getChannelsForBand(selectedBandRef.current);
+      const activeStream = hardwareRef.current?.activeStream ?? null;
+      const activeChannel = resolveRunningPmrChannel(chs, activeStream);
+      if (!activeChannel || activeChannel.id !== (playingIdRef.current ?? null)) {
+        return;
+      }
+
+      const telemetry = getRunningStreamTelemetry(activeStream, now);
 
       if (hasRmsActivity(telemetry, squelchRef.current, now)) {
         lastActivityAt = now;
         return;
       }
 
-      if (now - lastActivityAt < SCANNER_HOLD_GRACE_MS) {
+      if (!shouldReleaseScannerLock(now, lastActivityAt, lockedAt, holdTimeRef.current)) {
         return;
       }
 
-      const chs = getChannelsForBand(selectedBandRef.current);
       const lockedIdx = chs.findIndex(c => c.id === playingIdRef.current);
       const base = lockedIdx >= 0 ? lockedIdx : 0;
       released = true;
+      lockedAtRef.current = null;
       clearInterval(interval);
       setScanIndex(nextScanIndex(chs.length, base));
       setScannerState("scanning");
@@ -491,11 +769,16 @@ export function PmrModule({
   }, [scannerState]);
 
   function startScan(): void {
+    scanSessionSeqRef.current += 1;
+    lockedAtRef.current = null;
+    activityEventIdRef.current = null;
     setScanIndex(0);
     setScannerState("scanning");
   }
 
   function stopScan(): void {
+    scanSessionSeqRef.current += 1;
+    lockedAtRef.current = null;
     setScannerState("idle");
     stopChannel();
   }
@@ -503,7 +786,7 @@ export function PmrModule({
   // ── Derived ───────────────────────────────────────────────────────────────
 
   const band = PMR_BANDS.find(b => b.id === selectedBandId);
-  const telemetry = hardware?.activeStream?.telemetry ?? null;
+  const telemetry = getRunningStreamTelemetry(liveHardware?.activeStream ?? null);
   const manualChannel = scannerState === "idle"
     ? (channels.find(ch => ch.id === playingChannelId) ?? null)
     : null;
@@ -517,13 +800,40 @@ export function PmrModule({
     let lastActivityAt = 0;
     let peakRms = 0;
     let burstOpen = false;
+    let burstChannel: PmrChannel | null = null;
 
     const interval = window.setInterval(() => {
       const now = Date.now();
-      const currentTelemetry = hardwareRef.current?.activeStream?.telemetry ?? null;
+      const activeStream = hardwareRef.current?.activeStream ?? null;
+      const activeChannel = resolveRunningPmrChannel(channels, activeStream);
+      if (!activeChannel || activeChannel.id !== manualChannel.id) {
+        return;
+      }
+
+      const currentTelemetry = getRunningStreamTelemetry(activeStream, now);
 
       if (hasRmsActivity(currentTelemetry, squelchRef.current, now)) {
         const currentRms = currentTelemetry?.rms ?? 0;
+        if (!burstOpen) {
+          activityEventIdRef.current = null;
+          burstChannel = activeChannel;
+          const activeStreamId = activeStream?.id ?? null;
+          if (activeStreamId) {
+            void fetch(
+              buildRetuneUrl(
+                activeChannel,
+                "manual",
+                locationRef.current,
+                squelchRef.current,
+                null,
+                activeStreamId,
+              ),
+              { method: "PATCH" },
+            ).catch(() => {});
+          }
+        } else if (!burstChannel || burstChannel.id !== activeChannel.id) {
+          burstChannel = activeChannel;
+        }
         lastActivityAt = now;
         peakRms = Math.max(peakRms, currentRms);
         burstOpen = true;
@@ -537,15 +847,54 @@ export function PmrModule({
 
       burstOpen = false;
       setManualActivityRms(null);
-      queueActivityLog(manualChannel, "manual", peakRms);
+      const burstPeakRms = peakRms;
       peakRms = 0;
+      const burstChannelToPersist = burstChannel ?? manualChannel;
+      burstChannel = null;
+      const requestSeqAtBurst = streamRequestSeqRef.current;
+      void (async () => {
+        const entry = await queueActivityLog(burstChannelToPersist, "manual", burstPeakRms);
+        const activityEventId = entry && !entry.id.startsWith("local-") ? entry.id : null;
+        if (!activityEventId) {
+          return;
+        }
+
+        if (
+          scannerStateRef.current !== "idle"
+          || playingIdRef.current !== burstChannelToPersist.id
+          || streamRequestSeqRef.current !== requestSeqAtBurst
+        ) {
+          return;
+        }
+
+        activityEventIdRef.current = activityEventId;
+        const activeStreamId = hardwareRef.current?.activeStream?.id ?? null;
+        if (!activeStreamId) {
+          return;
+        }
+        try {
+          await fetch(
+            buildRetuneUrl(
+              burstChannelToPersist,
+              "manual",
+              locationRef.current,
+              squelchRef.current,
+              activityEventId,
+              activeStreamId,
+            ),
+            { method: "PATCH" },
+          );
+        } catch {
+          // Best effort only: the next capture still falls back to heuristic matching.
+        }
+      })();
     }, TELEMETRY_REFRESH_MS);
 
     return () => {
       clearInterval(interval);
       setManualActivityRms(null);
     };
-  }, [manualChannel, scannerState]);
+  }, [channels, manualChannel, scannerState]);
 
   // ── Render ────────────────────────────────────────────────────────────────
 
@@ -579,7 +928,11 @@ export function PmrModule({
               onClick={() => {
                 setSelectedBandId(b.id);
                 setScanIndex(0);
-                if (scannerState !== "idle") stopScan();
+                if (scannerState !== "idle") {
+                  stopScan();
+                } else {
+                  stopChannel();
+                }
               }}
               type="button"
             >
@@ -867,6 +1220,25 @@ export function PmrModule({
               onChange={e => setDwellTime(Number.parseInt(e.target.value, 10))} />
             <p className="font-mono text-[9px] text-[var(--muted)]">
               Max listen time per channel · ~{(SCANNER_STARTUP_MS / 1000 + dwellTime).toFixed(1)}s total
+            </p>
+          </label>
+
+          <label className="block space-y-1.5">
+            <div className="flex items-center justify-between">
+              <span className="font-mono text-[11px] uppercase tracking-[0.18em] text-[var(--muted-strong)]">Hold</span>
+              <span className="font-mono text-[11px] tabular-nums text-[var(--foreground)]">{holdTime}s</span>
+            </div>
+            <input
+              className="rf-slider w-full"
+              max={SCANNER_POST_HIT_HOLD_MAX_SECONDS}
+              min={0}
+              step={1}
+              type="range"
+              value={holdTime}
+              onChange={e => setHoldTime(normalizeScannerPostHitHoldSeconds(Number.parseInt(e.target.value, 10)))}
+            />
+            <p className="font-mono text-[9px] text-[var(--muted)]">
+              Minimum extra lock after a hit · release still waits for {(SCANNER_HOLD_GRACE_MS / 1000).toFixed(1)}s silence
             </p>
           </label>
         </div>

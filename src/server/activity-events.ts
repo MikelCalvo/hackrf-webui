@@ -15,12 +15,13 @@ import { appDb } from "@/server/db/client";
 import { activityEvents, captureFiles, captureSessions } from "@/server/db/schema";
 import { captureAbsolutePath, capturePathExists, captureRelativePath } from "@/server/storage";
 
-const CAPTURE_MATCH_LOOKBACK_MS = 20_000;
-const CAPTURE_MATCH_LOOKAHEAD_MS = 5_000;
+const CAPTURE_MATCH_LOOKBACK_MS = 8_000;
+const CAPTURE_MATCH_LOOKAHEAD_MS = 2_000;
 
 type CaptureFinalizeInput = {
   module: ActivityEventModule;
   mode: ActivityLogEntry["mode"];
+  activityEventId?: string | null;
   label: string;
   freqHz: number;
   demodMode: AudioDemodMode;
@@ -29,7 +30,9 @@ type CaptureFinalizeInput = {
   channelNumber?: number | null;
   startedAtMs: number;
   endedAtMs: number;
-  rms?: number | null;
+  rmsAvg?: number | null;
+  rmsPeak?: number | null;
+  rfPeak?: number | null;
   squelch?: number | null;
   deviceLabel?: string | null;
   deviceSerial?: string | null;
@@ -125,12 +128,39 @@ function toActivityLogEntry(
 }
 
 function findCandidateActivityEvent(input: CaptureFinalizeInput): typeof activityEvents.$inferSelect | null {
+  if (input.activityEventId) {
+    const exact = appDb
+      .select()
+      .from(activityEvents)
+      .where(eq(activityEvents.id, input.activityEventId))
+      .limit(1)
+      .get() ?? null;
+
+    if (
+      exact
+      && exact.module === input.module
+      && exact.mode === input.mode
+      && exact.freqHz === input.freqHz
+      && (!input.channelId || exact.channelId === input.channelId)
+      && (
+        input.channelNumber === null
+        || input.channelNumber === undefined
+        || exact.channelNumber === input.channelNumber
+      )
+      && exact.startedAtMs >= input.startedAtMs - CAPTURE_MATCH_LOOKBACK_MS
+      && exact.startedAtMs <= input.endedAtMs + CAPTURE_MATCH_LOOKAHEAD_MS
+    ) {
+      return exact;
+    }
+  }
+
   const candidates = appDb
     .select()
     .from(activityEvents)
     .where(
       and(
         eq(activityEvents.module, input.module),
+        eq(activityEvents.mode, input.mode),
         eq(activityEvents.freqHz, input.freqHz),
         gte(activityEvents.startedAtMs, input.startedAtMs - CAPTURE_MATCH_LOOKBACK_MS),
         lte(activityEvents.startedAtMs, input.endedAtMs + CAPTURE_MATCH_LOOKAHEAD_MS),
@@ -148,9 +178,27 @@ function findCandidateActivityEvent(input: CaptureFinalizeInput): typeof activit
   let bestScore = -1;
 
   for (const candidate of candidates) {
+    if (input.channelId && candidate.channelId !== input.channelId) {
+      continue;
+    }
+    if (
+      input.channelNumber !== null
+      && input.channelNumber !== undefined
+      && candidate.channelNumber !== input.channelNumber
+    ) {
+      continue;
+    }
+
     let score = 0;
     if (input.channelId && candidate.channelId === input.channelId) {
       score += 40;
+    }
+    if (
+      input.channelNumber !== null
+      && input.channelNumber !== undefined
+      && candidate.channelNumber === input.channelNumber
+    ) {
+      score += 30;
     }
     if (candidate.label === input.label) {
       score += 20;
@@ -167,7 +215,7 @@ function findCandidateActivityEvent(input: CaptureFinalizeInput): typeof activit
     }
   }
 
-  return best;
+  return bestScore >= 20 ? best : null;
 }
 
 function createFallbackActivityEvent(input: CaptureFinalizeInput): typeof activityEvents.$inferSelect {
@@ -187,9 +235,9 @@ function createFallbackActivityEvent(input: CaptureFinalizeInput): typeof activi
     startedAtMs: input.startedAtMs,
     endedAtMs: input.endedAtMs,
     durationMs: Math.max(0, input.endedAtMs - input.startedAtMs),
-    rmsAvg: input.rms ?? null,
-    rmsPeak: input.rms ?? null,
-    rfPeak: null,
+    rmsAvg: input.rmsAvg ?? input.rmsPeak ?? null,
+    rmsPeak: input.rmsPeak ?? input.rmsAvg ?? null,
+    rfPeak: input.rfPeak ?? null,
     squelch: input.squelch ?? null,
     regionId: locationString(input.location, "regionId"),
     countryId: locationString(input.location, "countryId"),
@@ -216,13 +264,22 @@ function updateActivityEventFromCapture(
 ): void {
   const nextEndedAtMs = Math.max(row.endedAtMs, input.endedAtMs);
   const nextDurationMs = Math.max(row.durationMs ?? 0, nextEndedAtMs - row.startedAtMs);
-  const nextRmsPeak = Math.max(row.rmsPeak ?? 0, input.rms ?? 0);
+  const nextRmsPeak =
+    row.rmsPeak === null
+      ? (input.rmsPeak ?? input.rmsAvg ?? null)
+      : Math.max(row.rmsPeak, input.rmsPeak ?? input.rmsAvg ?? 0);
   const nextRmsAvg =
     row.rmsAvg === null
-      ? (input.rms ?? null)
-      : input.rms === null || input.rms === undefined
+      ? (input.rmsAvg ?? input.rmsPeak ?? null)
+      : input.rmsAvg === null || input.rmsAvg === undefined
         ? row.rmsAvg
-        : (row.rmsAvg + input.rms) / 2;
+        : (row.rmsAvg + input.rmsAvg) / 2;
+  const nextRfPeak =
+    row.rfPeak === null
+      ? (input.rfPeak ?? null)
+      : input.rfPeak === null || input.rfPeak === undefined
+        ? row.rfPeak
+        : Math.max(row.rfPeak, input.rfPeak);
 
   appDb
     .update(activityEvents)
@@ -231,6 +288,7 @@ function updateActivityEventFromCapture(
       durationMs: nextDurationMs,
       rmsPeak: nextRmsPeak,
       rmsAvg: nextRmsAvg,
+      rfPeak: nextRfPeak,
       squelch: row.squelch ?? input.squelch ?? null,
       regionId: row.regionId ?? locationString(input.location, "regionId"),
       countryId: row.countryId ?? locationString(input.location, "countryId"),
@@ -388,7 +446,7 @@ export function persistCapturedActivity(input: CaptureFinalizeInput): void {
 
   const persistedAudio = findPersistedCaptureByPath(audioRelativePath);
   const persistedIq = findPersistedCaptureByPath(iqRelativePath);
-  if (persistedAudio || persistedIq) {
+  if (persistedAudio && persistedIq) {
     return;
   }
 
@@ -396,31 +454,39 @@ export function persistCapturedActivity(input: CaptureFinalizeInput): void {
   updateActivityEventFromCapture(event, input);
 
   const nowMs = Date.now();
-  const sessionId = randomUUID();
+  const sessionId = persistedAudio?.captureSessionId ?? persistedIq?.captureSessionId ?? randomUUID();
 
-  appDb.insert(captureSessions).values({
-    id: sessionId,
-    scanRunId: null,
-    activityEventId: event.id,
-    module: input.module,
-    reason: input.mode === "scan" ? "scan-hit" : "manual",
-    status: "saved",
-    startedAtMs: input.startedAtMs,
-    endedAtMs: input.endedAtMs,
-    freqHz: input.freqHz,
-    centerFreqHz: null,
-    demodMode: input.demodMode,
-    deviceLabel: input.deviceLabel ?? null,
-    deviceSerial: input.deviceSerial ?? null,
-    locationJson: safeJson(input.location ?? null),
-    metadataJson: safeJson(input.metadata ?? null),
-    createdAtMs: nowMs,
-    updatedAtMs: nowMs,
-  }).run();
+  if (!persistedAudio && !persistedIq) {
+    appDb.insert(captureSessions).values({
+      id: sessionId,
+      scanRunId: null,
+      activityEventId: event.id,
+      module: input.module,
+      reason: input.mode === "scan" ? "scan-hit" : "manual",
+      status: "saved",
+      startedAtMs: input.startedAtMs,
+      endedAtMs: input.endedAtMs,
+      freqHz: input.freqHz,
+      centerFreqHz: null,
+      demodMode: input.demodMode,
+      deviceLabel: input.deviceLabel ?? null,
+      deviceSerial: input.deviceSerial ?? null,
+      locationJson: safeJson(input.location ?? null),
+      metadataJson: safeJson(input.metadata ?? null),
+      createdAtMs: nowMs,
+      updatedAtMs: nowMs,
+    }).run();
+  } else {
+    appDb.update(captureSessions).set({
+      activityEventId: event.id,
+      endedAtMs: input.endedAtMs,
+      updatedAtMs: nowMs,
+    }).where(eq(captureSessions.id, sessionId)).run();
+  }
 
   const filesToInsert: Array<typeof captureFiles.$inferInsert> = [];
 
-  if (audioRelativePath && capturePathExists(audioRelativePath)) {
+  if (audioRelativePath && !persistedAudio && capturePathExists(audioRelativePath)) {
     filesToInsert.push({
       id: randomUUID(),
       captureSessionId: sessionId,
@@ -435,7 +501,7 @@ export function persistCapturedActivity(input: CaptureFinalizeInput): void {
     });
   }
 
-  if (iqRelativePath && capturePathExists(iqRelativePath)) {
+  if (iqRelativePath && !persistedIq && capturePathExists(iqRelativePath)) {
     filesToInsert.push({
       id: randomUUID(),
       captureSessionId: sessionId,

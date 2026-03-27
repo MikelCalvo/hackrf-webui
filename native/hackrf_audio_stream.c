@@ -77,12 +77,16 @@ typedef struct {
     uint64_t recorded_iq_bytes;
     char* record_activity_prefix;
     double record_activity_threshold;
+    double record_activity_release_threshold;
     uint64_t record_activity_interval_samples;
     uint64_t record_activity_window_count;
     double record_activity_window_sum_sq;
     uint64_t record_activity_hold_samples;
     uint64_t record_activity_last_seen_sample;
-    uint32_t record_activity_warmup_windows;
+    uint64_t record_activity_settle_samples;
+    uint64_t record_activity_settle_until_sample;
+    uint32_t record_activity_open_required_windows;
+    uint32_t record_activity_above_threshold_windows;
     uint32_t report_interval_ms;
     uint64_t report_interval_samples;
     uint64_t report_count;
@@ -157,6 +161,23 @@ static double default_activity_threshold(demod_mode_t mode)
         return 0.020;
     }
     return 0.010;
+}
+
+static double default_activity_release_threshold(demod_mode_t mode)
+{
+    return default_activity_threshold(mode) * 0.70;
+}
+
+static uint32_t default_activity_open_windows(demod_mode_t mode)
+{
+    switch (mode) {
+    case DEMOD_WFM:
+        return 3U;
+    case DEMOD_AM:
+    case DEMOD_NFM:
+    default:
+        return 2U;
+    }
 }
 
 static int parse_mode(const char* text, demod_mode_t* out_mode)
@@ -531,6 +552,17 @@ static int open_activity_recordings(stream_state_t* state)
     return 0;
 }
 
+static void reset_activity_detector(stream_state_t* state, bool settle)
+{
+    state->record_activity_window_count = 0;
+    state->record_activity_window_sum_sq = 0.0;
+    state->record_activity_above_threshold_windows = 0U;
+    state->record_activity_last_seen_sample = state->emitted_audio_samples;
+    state->record_activity_settle_until_sample = settle
+        ? state->emitted_audio_samples + state->record_activity_settle_samples
+        : state->emitted_audio_samples;
+}
+
 static void close_activity_recordings(stream_state_t* state, bool log_saved)
 {
     char* wav_path = NULL;
@@ -565,6 +597,7 @@ static void close_activity_recordings(stream_state_t* state, bool log_saved)
     free(iq_path);
     state->recorded_audio_samples = 0;
     state->recorded_iq_bytes = 0;
+    reset_activity_detector(state, false);
 }
 
 static int design_lowpass(double* taps, int length, double cutoff)
@@ -727,6 +760,8 @@ static bool process_real_fir_decimator(
 static int update_record_activity(stream_state_t* state, double analysis_sample)
 {
     double rms = 0.0;
+    bool open_hit = false;
+    bool sustain_hit = false;
 
     if (!state->record_activity_prefix || !*state->record_activity_prefix) {
         return 0;
@@ -737,14 +772,27 @@ static int update_record_activity(stream_state_t* state, double analysis_sample)
 
     if (state->record_activity_window_count >= state->record_activity_interval_samples) {
         rms = sqrt(state->record_activity_window_sum_sq / (double) state->record_activity_window_count);
-        if (state->record_activity_warmup_windows > 0) {
-            state->record_activity_warmup_windows--;
-        } else if (rms >= state->record_activity_threshold) {
-            state->record_activity_last_seen_sample = state->emitted_audio_samples;
+        open_hit = rms >= state->record_activity_threshold;
+        sustain_hit = rms >= state->record_activity_release_threshold;
+
+        if (state->emitted_audio_samples < state->record_activity_settle_until_sample) {
+            state->record_activity_above_threshold_windows = 0U;
+        } else {
+            if (open_hit) {
+                state->record_activity_above_threshold_windows++;
+            } else {
+                state->record_activity_above_threshold_windows = 0U;
+            }
+
             if (!state->record_fp && !state->record_iq_fp) {
-                if (open_activity_recordings(state) != 0) {
-                    return -1;
+                if (state->record_activity_above_threshold_windows >= state->record_activity_open_required_windows) {
+                    state->record_activity_last_seen_sample = state->emitted_audio_samples;
+                    if (open_activity_recordings(state) != 0) {
+                        return -1;
+                    }
                 }
+            } else if (sustain_hit) {
+                state->record_activity_last_seen_sample = state->emitted_audio_samples;
             }
         }
         state->record_activity_window_count = 0;
@@ -1100,7 +1148,8 @@ static int configure_mode(stream_state_t* state)
 
     if (state->record_activity_prefix && *state->record_activity_prefix) {
         state->record_activity_threshold = default_activity_threshold(state->mode);
-        state->record_activity_interval_samples = (uint64_t) llround((double) state->audio_rate * 0.20);
+        state->record_activity_release_threshold = default_activity_release_threshold(state->mode);
+        state->record_activity_interval_samples = (uint64_t) llround((double) state->audio_rate * 0.10);
         if (state->record_activity_interval_samples == 0) {
             state->record_activity_interval_samples = 1;
         }
@@ -1108,7 +1157,9 @@ static int configure_mode(stream_state_t* state)
         if (state->record_activity_hold_samples == 0) {
             state->record_activity_hold_samples = state->record_activity_interval_samples;
         }
-        state->record_activity_warmup_windows = 1;
+        state->record_activity_settle_samples = (uint64_t) llround((double) state->audio_rate * 0.45);
+        state->record_activity_open_required_windows = default_activity_open_windows(state->mode);
+        reset_activity_detector(state, true);
     }
 
     return 0;
@@ -1340,9 +1391,12 @@ int main(int argc, char** argv)
     if (state.record_activity_prefix) {
         fprintf(
             stderr,
-            "Recording on activity: %s_*  threshold=%.4f  hold=%.1fs\n",
+            "Recording on activity: %s_*  threshold=%.4f  release=%.4f  confirm=%u  settle=%.2fs  hold=%.1fs\n",
             state.record_activity_prefix,
             state.record_activity_threshold,
+            state.record_activity_release_threshold,
+            state.record_activity_open_required_windows,
+            (double) state.record_activity_settle_samples / (double) state.audio_rate,
             (double) state.record_activity_hold_samples / (double) state.audio_rate);
         fflush(stderr);
     }
@@ -1366,11 +1420,22 @@ int main(int argc, char** argv)
                     cmd_len = 0;
                     unsigned long long new_freq_ull = 0;
                     if (sscanf(cmd_buf, "FREQ %llu", &new_freq_ull) == 1 && new_freq_ull > 0) {
-                        state.freq_hz        = (uint64_t) new_freq_ull;
-                        state.tuned_freq_hz  = state.freq_hz + state.tune_offset_hz;
-                        hackrf_set_freq(state.device, state.tuned_freq_hz);
-                        fprintf(stderr, "RETUNED target=%.6f MHz tuned=%.6f MHz\n",
-                                state.freq_hz / 1e6, state.tuned_freq_hz / 1e6);
+                        const uint64_t next_freq_hz = (uint64_t) new_freq_ull;
+                        const uint64_t next_tuned_freq_hz = next_freq_hz + state.tune_offset_hz;
+                        if (state.record_fp || state.record_iq_fp) {
+                            close_activity_recordings(&state, true);
+                        }
+                        reset_activity_detector(&state, true);
+                        result = hackrf_set_freq(state.device, next_tuned_freq_hz);
+                        if (result == HACKRF_SUCCESS) {
+                            state.freq_hz = next_freq_hz;
+                            state.tuned_freq_hz = next_tuned_freq_hz;
+                            fprintf(stderr, "RETUNED target=%.6f MHz tuned=%.6f MHz\n",
+                                    state.freq_hz / 1e6, state.tuned_freq_hz / 1e6);
+                        } else {
+                            fprintf(stderr, "RETUNE_FAILED target=%.6f MHz error=%s\n",
+                                    next_freq_hz / 1e6, hackrf_error_name(result));
+                        }
                         fflush(stderr);
                     }
                 } else {

@@ -183,6 +183,33 @@ function normalizeAudioClass(value: string): "speech" | "music" | "noise" | "unk
 
 function queueQueuedJob(captureSessionId: string): void {
   const nowMs = Date.now();
+  const existing = appDb
+    .select({
+      id: analysisJobs.id,
+      status: analysisJobs.status,
+    })
+    .from(analysisJobs)
+    .where(
+      and(
+        eq(analysisJobs.captureSessionId, captureSessionId),
+        eq(analysisJobs.engine, AUDIO_ANALYSIS_ENGINE),
+      ),
+    )
+    .limit(1)
+    .get();
+
+  if (existing) {
+    if (existing.status === "failed") {
+      appDb.update(analysisJobs).set({
+        status: "queued",
+        errorText: null,
+        startedAtMs: null,
+        endedAtMs: null,
+      }).where(eq(analysisJobs.id, existing.id)).run();
+    }
+    return;
+  }
+
   appDb
     .insert(analysisJobs)
     .values({
@@ -199,15 +226,15 @@ function queueQueuedJob(captureSessionId: string): void {
       endedAtMs: null,
       createdAtMs: nowMs,
     })
-    .onConflictDoNothing({
-      target: [analysisJobs.captureSessionId, analysisJobs.engine],
-    })
     .run();
 }
 
 function captureHasPreferredAnalysisJob(captureSessionId: string): boolean {
   const row = appDb
-    .select({ id: analysisJobs.id })
+    .select({
+      id: analysisJobs.id,
+      status: analysisJobs.status,
+    })
     .from(analysisJobs)
     .where(
       and(
@@ -218,7 +245,7 @@ function captureHasPreferredAnalysisJob(captureSessionId: string): boolean {
     .limit(1)
     .get();
 
-  return Boolean(row);
+  return Boolean(row && row.status !== "failed");
 }
 
 function backfillQueuedJobs(limit = 48): number {
@@ -234,7 +261,7 @@ function backfillQueuedJobs(limit = 48): number {
           ON aj.capture_session_id = cs.id
          AND aj.engine = ?
         WHERE cs.module IN ('pmr', 'airband', 'maritime')
-          AND aj.id IS NULL
+          AND (aj.id IS NULL OR aj.status = 'failed')
         ORDER BY cs.started_at_ms DESC
         LIMIT ?
       `,
@@ -532,8 +559,14 @@ async function processWorkerTick(): Promise<void> {
         writeFailedJob(job.id, payload.error || "analysis failed");
       }
     } catch (error) {
-      writeFailedJob(job.id, error instanceof Error ? error.message : "analysis failed");
+      try {
+        writeFailedJob(job.id, error instanceof Error ? error.message : "analysis failed");
+      } catch (writeErr) {
+        console.error("[analysis-worker] Failed to write failed job:", writeErr);
+      }
     }
+  } catch (err) {
+    console.error("[analysis-worker] Worker tick error:", err);
   } finally {
     workerState.processing = false;
     scheduleWorker();

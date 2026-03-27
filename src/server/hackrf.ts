@@ -26,11 +26,15 @@ const RECORDING_OPEN_WAV_RE = /^Recording activity WAV: (.+)$/;
 const RECORDING_OPEN_IQ_RE = /^Recording activity IQ: (.+)$/;
 const RECORDING_SAVED_WAV_RE = /^Recording saved WAV: (.+)$/;
 const RECORDING_SAVED_IQ_RE = /^Recording saved IQ: (.+)$/;
+const RETUNED_RE = /^RETUNED target=([0-9.]+) MHz tuned=([0-9.]+) MHz$/;
+const RETUNE_FAILED_RE = /^RETUNE_FAILED target=([0-9.]+) MHz error=(.+)$/;
 const RETUNE_SETTLE_MS = 450;
+const CAPTURE_FINALIZE_SETTLE_MS = 400;
 
 type CaptureDescriptor = {
   module: ActivityCaptureRequestMeta["module"];
   mode: ActivityCaptureRequestMeta["mode"];
+  activityEventId: string | null;
   bandId: string | null;
   channelId: string | null;
   channelNumber: number | null;
@@ -61,6 +65,11 @@ type PendingActivityCapture = {
   iqPath: string | null;
   savedAudioPath: string | null;
   savedIqPath: string | null;
+  rmsSum: number;
+  rmsCount: number;
+  rmsPeak: number | null;
+  peakPeak: number | null;
+  rfPeak: number | null;
   finalizeTimer: ReturnType<typeof setTimeout> | null;
 };
 
@@ -88,6 +97,8 @@ type ActiveStream = {
   hackrf: ReturnType<typeof spawn>;
   ffmpeg: ReturnType<typeof spawn>;
   retuneTimer: ReturnType<typeof setTimeout> | null;
+  retuneDescriptorRollback: CaptureDescriptor | null;
+  pendingRetuneDescriptor: CaptureDescriptor | null;
   captureContext: StreamCaptureContext | null;
 };
 
@@ -114,6 +125,56 @@ function commandAvailable(command: string, args: string[] = ["-version"]): boole
   });
 
   return !result.error;
+}
+
+// Cache results that never change at runtime so getStatus() doesn't block
+// the event loop on every hardware poll during scanning.
+let _binaryAvailableCache: boolean | null = null;
+let _ffmpegAvailableCache: boolean | null = null;
+
+function cachedBinaryAvailable(): boolean {
+  if (_binaryAvailableCache === null) {
+    _binaryAvailableCache = existsSync(nativeBinaryPath());
+  }
+  return _binaryAvailableCache;
+}
+
+function cachedFfmpegAvailable(): boolean {
+  if (_ffmpegAvailableCache === null) {
+    _ffmpegAvailableCache = commandAvailable("ffmpeg");
+  }
+  return _ffmpegAvailableCache;
+}
+
+// Cache hackrf_info output — re-probe at most once every 5 s and never
+// while a stream is active (the device is busy and we already know it works).
+const HACKRF_INFO_CACHE_MS = 5000;
+let _hackrfInfoCache: { output: string; error: boolean; at: number } | null = null;
+
+// Cache the device identity read during stream startup.  The serial number and
+// firmware version never change while the device is connected, so we can reuse
+// the result across stream restarts without re-running hackrf_info.
+let _hackrfIdentityCache: ReturnType<typeof readHackrfIdentity> | null = null;
+
+function invalidateHackrfIdentityCache(): void {
+  _hackrfIdentityCache = null;
+}
+
+function getCachedHackrfInfo(forceRefresh = false): { output: string; error: boolean } {
+  const now = Date.now();
+  if (!forceRefresh && _hackrfInfoCache && now - _hackrfInfoCache.at < HACKRF_INFO_CACHE_MS) {
+    return { output: _hackrfInfoCache.output, error: _hackrfInfoCache.error };
+  }
+  const info = spawnSync("hackrf_info", [], {
+    encoding: "utf8",
+    stdio: ["ignore", "pipe", "pipe"],
+  });
+  const result = {
+    output: `${(info.stdout as string) || ""}${(info.stderr as string) || ""}`,
+    error: !!info.error,
+  };
+  _hackrfInfoCache = { ...result, at: now };
+  return result;
 }
 
 function shortenSerial(serial: string): string {
@@ -173,21 +234,186 @@ function readHackrfIdentity(): {
   };
 }
 
+function cachedHackrfIdentity(): ReturnType<typeof readHackrfIdentity> {
+  if (_hackrfIdentityCache === null) {
+    _hackrfIdentityCache = readHackrfIdentity();
+  }
+  return _hackrfIdentityCache;
+}
+
+function createPendingSegment(descriptor: CaptureDescriptor): PendingActivityCapture {
+  return {
+    startedAtMs: Date.now(),
+    descriptor: { ...descriptor },
+    audioPath: null,
+    iqPath: null,
+    savedAudioPath: null,
+    savedIqPath: null,
+    rmsSum: 0,
+    rmsCount: 0,
+    rmsPeak: null,
+    peakPeak: null,
+    rfPeak: null,
+    finalizeTimer: null,
+  };
+}
+
 class HackRFService {
   private activeStream: ActiveStream | null = null;
 
+  private flushPendingCapture(sessionId: string): void {
+    if (this.activeStream?.session.id !== sessionId) {
+      return;
+    }
+
+    const pending = this.activeStream.captureContext?.pendingSegment ?? null;
+    if (!pending) {
+      return;
+    }
+
+    if (pending.finalizeTimer) {
+      clearTimeout(pending.finalizeTimer);
+      pending.finalizeTimer = null;
+    }
+
+    if (!pending.savedAudioPath && !pending.savedIqPath) {
+      return;
+    }
+
+    try {
+      this.persistPendingCapture(sessionId);
+    } catch (error) {
+      console.error("[hackrf] Failed to flush pending capture:", error);
+    }
+  }
+
+  private updateCaptureDescriptor(
+    activityCapture: ActivityCaptureRequestMeta | null | undefined,
+    label: string,
+    freqHz: number,
+    updatePendingSegment = false,
+  ): void {
+    const nextDescriptor = this.buildCaptureDescriptor(activityCapture, label, freqHz);
+    if (!nextDescriptor || !this.activeStream?.captureContext) {
+      return;
+    }
+
+    this.activeStream.captureContext.descriptor = nextDescriptor;
+    if (updatePendingSegment && this.activeStream.captureContext.pendingSegment) {
+      this.activeStream.captureContext.pendingSegment.descriptor = {
+        ...this.activeStream.captureContext.pendingSegment.descriptor,
+        ...nextDescriptor,
+      };
+    }
+  }
+
+  private buildCaptureDescriptor(
+    activityCapture: ActivityCaptureRequestMeta | null | undefined,
+    label: string,
+    freqHz: number,
+  ): CaptureDescriptor | null {
+    if (!this.activeStream?.captureContext) {
+      return null;
+    }
+
+    const previous = this.activeStream.captureContext.descriptor;
+    return activityCapture
+      ? {
+        module: activityCapture.module,
+        mode: activityCapture.mode,
+        activityEventId: activityCapture.activityEventId ?? null,
+        bandId: activityCapture.bandId ?? null,
+        channelId: activityCapture.channelId ?? null,
+        channelNumber: activityCapture.channelNumber ?? null,
+        channelNotes: activityCapture.channelNotes ?? null,
+        squelch: activityCapture.squelch ?? null,
+        sourceMode: activityCapture.sourceMode ?? null,
+        gpsdFallbackMode: activityCapture.gpsdFallbackMode ?? null,
+        sourceStatus: activityCapture.sourceStatus ?? null,
+        sourceDetail: activityCapture.sourceDetail ?? null,
+        regionId: activityCapture.regionId ?? null,
+        regionName: activityCapture.regionName ?? null,
+        countryId: activityCapture.countryId ?? null,
+        countryCode: activityCapture.countryCode ?? null,
+        countryName: activityCapture.countryName ?? null,
+        cityId: activityCapture.cityId ?? null,
+        cityName: activityCapture.cityName ?? null,
+        resolvedLatitude: activityCapture.resolvedLatitude ?? null,
+        resolvedLongitude: activityCapture.resolvedLongitude ?? null,
+        label,
+        freqHz,
+        demodMode: this.activeStream.session.demodMode,
+      }
+      : {
+        ...previous,
+        label,
+        freqHz,
+        demodMode: this.activeStream.session.demodMode,
+      };
+  }
+
+  private completeRetuneSuccess(sessionId: string, freqHz: number, label: string): void {
+    if (!this.activeStream || this.activeStream.session.id !== sessionId) {
+      return;
+    }
+
+    if (this.activeStream.retuneTimer) {
+      clearTimeout(this.activeStream.retuneTimer);
+      this.activeStream.retuneTimer = null;
+    }
+
+    if (this.activeStream.captureContext && this.activeStream.pendingRetuneDescriptor) {
+      this.activeStream.captureContext.descriptor = { ...this.activeStream.pendingRetuneDescriptor };
+    }
+
+    this.activeStream.session.freqHz = freqHz;
+    this.activeStream.session.label = label;
+    this.activeStream.session.phase = "running";
+    this.activeStream.session.phaseSince = new Date().toISOString();
+    this.activeStream.session.pendingFreqHz = null;
+    this.activeStream.session.pendingLabel = null;
+    this.activeStream.retuneDescriptorRollback = null;
+    this.activeStream.pendingRetuneDescriptor = null;
+  }
+
+  private completeRetuneFailure(sessionId: string): void {
+    if (!this.activeStream || this.activeStream.session.id !== sessionId) {
+      return;
+    }
+
+    if (this.activeStream.retuneTimer) {
+      clearTimeout(this.activeStream.retuneTimer);
+      this.activeStream.retuneTimer = null;
+    }
+
+    if (this.activeStream.captureContext && this.activeStream.retuneDescriptorRollback) {
+      this.activeStream.captureContext.descriptor = { ...this.activeStream.retuneDescriptorRollback };
+    }
+
+    this.activeStream.session.phase = "running";
+    this.activeStream.session.phaseSince = new Date().toISOString();
+    this.activeStream.session.pendingFreqHz = null;
+    this.activeStream.session.pendingLabel = null;
+    this.activeStream.retuneDescriptorRollback = null;
+    this.activeStream.pendingRetuneDescriptor = null;
+  }
+
   getStatus(): HardwareStatus {
     const binaryPath = nativeBinaryPath();
-    const binaryAvailable = existsSync(binaryPath);
-    const ffmpegAvailable = commandAvailable("ffmpeg");
+    const binaryAvailable = cachedBinaryAvailable();
+    const ffmpegAvailable = cachedFfmpegAvailable();
     const aisStatus = aisRuntime.getStatus();
     const aisActive = aisStatus.state === "running" || aisStatus.state === "starting";
     const adsbStatus = adsbRuntime.getStatus();
     const adsbActive = adsbStatus.state === "running" || adsbStatus.state === "starting";
-    const info = spawnSync("hackrf_info", [], {
-      encoding: "utf8",
-      stdio: ["ignore", "pipe", "pipe"],
-    });
+
+    // Skip hackrf_info entirely when a stream is active — the device is in use
+    // and we already know it is connected.  Use a cache otherwise to avoid
+    // blocking the event loop with a synchronous process spawn on every poll.
+    const skipProbe = !!this.activeStream;
+    const info = skipProbe
+      ? { output: _hackrfInfoCache?.output ?? "", error: false }
+      : getCachedHackrfInfo();
 
     const activeStream = this.activeSnapshot();
     if (!binaryAvailable) {
@@ -238,8 +464,9 @@ class HackRFService {
       };
     }
 
-    const output = `${info.stdout || ""}${info.stderr || ""}`;
-    if (output.includes("No HackRF boards found.")) {
+    const output = info.output;
+    if (!skipProbe && output.includes("No HackRF boards found.")) {
+      invalidateHackrfIdentityCache();
       return {
         state: "disconnected",
         cliAvailable: true,
@@ -300,13 +527,45 @@ class HackRFService {
     label: string,
     mode?: AudioDemodMode,
     activityCapture?: ActivityCaptureRequestMeta | null,
+    expectedSessionId?: string | null,
   ): boolean {
     if (!this.activeStream) return false;
+    if (expectedSessionId && this.activeStream.session.id !== expectedSessionId) {
+      return false;
+    }
     if (mode && this.activeStream.session.demodMode !== mode) {
       return false;
     }
+    if (
+      activityCapture?.module
+      && this.activeStream.captureContext?.descriptor.module !== activityCapture.module
+    ) {
+      return false;
+    }
+    if (this.activeStream.session.pendingFreqHz !== null) {
+      return false;
+    }
+
+    const previousDescriptor = this.activeStream.captureContext
+      ? { ...this.activeStream.captureContext.descriptor }
+      : null;
+    const sameTarget =
+      this.activeStream.session.freqHz === freqHz
+      && this.activeStream.session.label === label
+      && this.activeStream.session.pendingFreqHz === null
+      && this.activeStream.session.pendingLabel === null;
+
+    if (sameTarget) {
+      this.updateCaptureDescriptor(activityCapture, label, freqHz, true);
+      this.activeStream.retuneDescriptorRollback = null;
+      this.activeStream.pendingRetuneDescriptor = null;
+      return true;
+    }
+
     const { hackrf } = this.activeStream;
     if (!hackrf.stdin?.writable) return false;
+    this.activeStream.retuneDescriptorRollback = previousDescriptor;
+    this.activeStream.pendingRetuneDescriptor = this.buildCaptureDescriptor(activityCapture, label, freqHz);
     hackrf.stdin.write(`FREQ ${freqHz}\n`);
 
     if (this.activeStream.retuneTimer) {
@@ -318,51 +577,12 @@ class HackRFService {
     this.activeStream.session.phaseSince = new Date().toISOString();
     this.activeStream.session.pendingFreqHz = freqHz;
     this.activeStream.session.pendingLabel = label;
+    this.activeStream.telemetry = null;
+    this.activeStream.session.telemetry = null;
 
     const sessionId = this.activeStream.session.id;
     this.activeStream.retuneTimer = setTimeout(() => {
-      if (!this.activeStream || this.activeStream.session.id !== sessionId) {
-        return;
-      }
-
-      this.activeStream.session.freqHz = freqHz;
-      this.activeStream.session.label = label;
-      this.activeStream.session.phase = "running";
-      this.activeStream.session.phaseSince = new Date().toISOString();
-      this.activeStream.session.pendingFreqHz = null;
-      this.activeStream.session.pendingLabel = null;
-      this.activeStream.retuneTimer = null;
-
-      if (this.activeStream.captureContext) {
-        this.activeStream.captureContext.descriptor = {
-          module: activityCapture?.module ?? this.activeStream.captureContext.descriptor.module,
-          mode: activityCapture?.mode ?? this.activeStream.captureContext.descriptor.mode,
-          bandId: activityCapture?.bandId ?? this.activeStream.captureContext.descriptor.bandId,
-          channelId: activityCapture?.channelId ?? this.activeStream.captureContext.descriptor.channelId,
-          channelNumber: activityCapture?.channelNumber ?? this.activeStream.captureContext.descriptor.channelNumber,
-          channelNotes: activityCapture?.channelNotes ?? this.activeStream.captureContext.descriptor.channelNotes,
-          squelch: activityCapture?.squelch ?? this.activeStream.captureContext.descriptor.squelch,
-          sourceMode: activityCapture?.sourceMode ?? this.activeStream.captureContext.descriptor.sourceMode,
-          gpsdFallbackMode:
-            activityCapture?.gpsdFallbackMode ?? this.activeStream.captureContext.descriptor.gpsdFallbackMode,
-          sourceStatus: activityCapture?.sourceStatus ?? this.activeStream.captureContext.descriptor.sourceStatus,
-          sourceDetail: activityCapture?.sourceDetail ?? this.activeStream.captureContext.descriptor.sourceDetail,
-          regionId: activityCapture?.regionId ?? this.activeStream.captureContext.descriptor.regionId,
-          regionName: activityCapture?.regionName ?? this.activeStream.captureContext.descriptor.regionName,
-          countryId: activityCapture?.countryId ?? this.activeStream.captureContext.descriptor.countryId,
-          countryCode: activityCapture?.countryCode ?? this.activeStream.captureContext.descriptor.countryCode,
-          countryName: activityCapture?.countryName ?? this.activeStream.captureContext.descriptor.countryName,
-          cityId: activityCapture?.cityId ?? this.activeStream.captureContext.descriptor.cityId,
-          cityName: activityCapture?.cityName ?? this.activeStream.captureContext.descriptor.cityName,
-          resolvedLatitude:
-            activityCapture?.resolvedLatitude ?? this.activeStream.captureContext.descriptor.resolvedLatitude,
-          resolvedLongitude:
-            activityCapture?.resolvedLongitude ?? this.activeStream.captureContext.descriptor.resolvedLongitude,
-          label,
-          freqHz,
-          demodMode: this.activeStream.session.demodMode,
-        };
-      }
+      this.completeRetuneSuccess(sessionId, freqHz, label);
     }, RETUNE_SETTLE_MS);
 
     return true;
@@ -384,7 +604,7 @@ class HackRFService {
     if (!existsSync(binaryPath)) {
       throw new Error("The native binary is missing. Run npm run build:native.");
     }
-    if (!commandAvailable("ffmpeg")) {
+    if (!cachedFfmpegAvailable()) {
       throw new Error("ffmpeg is not available on this system.");
     }
     hackrfDeviceService.claim("audio", request.label);
@@ -462,31 +682,50 @@ class HackRFService {
       hackrf,
       ffmpeg,
       retuneTimer: null,
+      retuneDescriptorRollback: null,
+      pendingRetuneDescriptor: null,
       captureContext,
     };
     this.activeStream = activeStream;
 
-    const cleanup = () => {
+    const finalize = () => {
       if (this.activeStream?.session.id !== sessionId) return;
       if (activeStream.retuneTimer) {
         clearTimeout(activeStream.retuneTimer);
         activeStream.retuneTimer = null;
       }
-      if (activeStream.captureContext?.pendingSegment?.finalizeTimer) {
-        clearTimeout(activeStream.captureContext.pendingSegment.finalizeTimer);
-        activeStream.captureContext.pendingSegment.finalizeTimer = null;
-      }
+      this.flushPendingCapture(sessionId);
       hackrf.stdout?.unpipe(ffmpeg.stdin);
       try { ffmpeg.stdin?.end(); } catch { /* already gone */ }
       this.killProcess(hackrf);
       this.killProcess(ffmpeg);
       this.activeStream = null;
       hackrfDeviceService.release("audio");
+      invalidateHackrfIdentityCache();
+      // Mark the hackrf_info cache as stale so it re-probes on the next poll
+      // cycle (after the 5 s TTL).  We deliberately do NOT null it out here
+      // because that would trigger an immediate spawnSync on the very next
+      // hardware poll, blocking the event loop while the USB device recovers
+      // from the just-ended stream.
+      if (_hackrfInfoCache) {
+        _hackrfInfoCache.at = 0;
+      }
     };
 
-    signal.addEventListener("abort", cleanup, { once: true });
-    hackrf.once("close", cleanup);
-    ffmpeg.once("close", cleanup);
+    const requestStop = () => {
+      if (this.activeStream?.session.id !== sessionId) {
+        return;
+      }
+
+      hackrf.stdout?.unpipe(ffmpeg.stdin);
+      try { ffmpeg.stdin?.end(); } catch { /* already gone */ }
+      this.killProcess(ffmpeg);
+      this.killProcess(hackrf);
+    };
+
+    signal.addEventListener("abort", requestStop, { once: true });
+    hackrf.once("close", finalize);
+    ffmpeg.once("close", requestStop);
 
     activeStream.session.phase = "running";
     activeStream.session.phaseSince = new Date().toISOString();
@@ -575,13 +814,14 @@ class HackRFService {
       return null;
     }
 
-    const device = readHackrfIdentity();
+    const device = cachedHackrfIdentity();
 
     return {
       capturePrefix: capturePrefixForSession(request.activityCapture.module, sessionId),
       descriptor: {
         module: request.activityCapture.module,
         mode: request.activityCapture.mode,
+        activityEventId: request.activityCapture.activityEventId ?? null,
         bandId: request.activityCapture.bandId ?? null,
         channelId: request.activityCapture.channelId ?? null,
         channelNumber: request.activityCapture.channelNumber ?? null,
@@ -625,12 +865,14 @@ class HackRFService {
       for (const line of lines) {
         const match = LEVEL_RE.exec(line);
         if (match && this.activeStream?.session.id === sessionId) {
-          this.activeStream.telemetry = {
+          const telemetry = {
             rms: Number.parseFloat(match[1]),
             peak: Number.parseFloat(match[2]),
             rf: Number.parseFloat(match[3]),
             updatedAt: new Date().toISOString(),
           };
+          this.activeStream.telemetry = telemetry;
+          this.noteCaptureTelemetry(sessionId, telemetry);
           continue;
         }
 
@@ -661,6 +903,27 @@ class HackRFService {
         const recordingSavedIq = RECORDING_SAVED_IQ_RE.exec(line);
         if (recordingSavedIq) {
           this.noteSavedCapturePath(sessionId, "raw_iq", recordingSavedIq[1]);
+          continue;
+        }
+
+        const retuned = RETUNED_RE.exec(line);
+        if (retuned && this.activeStream?.session.id === sessionId) {
+          const targetFreqHz = Math.round(Number.parseFloat(retuned[1]) * 1_000_000);
+          if (this.activeStream.session.pendingFreqHz !== targetFreqHz) {
+            continue;
+          }
+          const pendingLabel = this.activeStream.session.pendingLabel ?? this.activeStream.session.label;
+          this.completeRetuneSuccess(sessionId, targetFreqHz, pendingLabel);
+          continue;
+        }
+
+        const retuneFailed = RETUNE_FAILED_RE.exec(line);
+        if (retuneFailed && this.activeStream?.session.id === sessionId) {
+          const targetFreqHz = Math.round(Number.parseFloat(retuneFailed[1]) * 1_000_000);
+          if (this.activeStream.session.pendingFreqHz !== targetFreqHz) {
+            continue;
+          }
+          this.completeRetuneFailure(sessionId);
         }
       }
     });
@@ -676,20 +939,21 @@ class HackRFService {
     }
 
     const context = this.activeStream.captureContext;
-    const pending = context.pendingSegment ?? {
-      startedAtMs: Date.now(),
-      descriptor: { ...context.descriptor },
-      audioPath: null,
-      iqPath: null,
-      savedAudioPath: null,
-      savedIqPath: null,
-      finalizeTimer: null,
-    };
+    const pending = context.pendingSegment ?? createPendingSegment(context.descriptor);
 
     if (kind === "audio") {
       pending.audioPath = absolutePath;
     } else {
       pending.iqPath = absolutePath;
+    }
+
+    const telemetry = this.activeStream.telemetry;
+    if (telemetry) {
+      pending.rmsSum += telemetry.rms;
+      pending.rmsCount += 1;
+      pending.rmsPeak = Math.max(pending.rmsPeak ?? 0, telemetry.rms);
+      pending.peakPeak = Math.max(pending.peakPeak ?? 0, telemetry.peak);
+      pending.rfPeak = Math.max(pending.rfPeak ?? 0, telemetry.rf);
     }
 
     context.pendingSegment = pending;
@@ -705,15 +969,7 @@ class HackRFService {
     }
 
     const context = this.activeStream.captureContext;
-    const pending = context.pendingSegment ?? {
-      startedAtMs: Date.now(),
-      descriptor: { ...context.descriptor },
-      audioPath: null,
-      iqPath: null,
-      savedAudioPath: null,
-      savedIqPath: null,
-      finalizeTimer: null,
-    };
+    const pending = context.pendingSegment ?? createPendingSegment(context.descriptor);
 
     if (kind === "audio") {
       pending.savedAudioPath = absolutePath;
@@ -728,10 +984,30 @@ class HackRFService {
     }
 
     pending.finalizeTimer = setTimeout(() => {
-      this.persistPendingCapture(sessionId);
-    }, 120);
+      try {
+        this.persistPendingCapture(sessionId);
+      } catch (err) {
+        console.error("[hackrf] Failed to persist captured activity:", err);
+      }
+    }, CAPTURE_FINALIZE_SETTLE_MS);
 
     context.pendingSegment = pending;
+  }
+
+  private noteCaptureTelemetry(
+    sessionId: string,
+    telemetry: SignalLevelTelemetry,
+  ): void {
+    if (this.activeStream?.session.id !== sessionId || !this.activeStream.captureContext?.pendingSegment) {
+      return;
+    }
+
+    const pending = this.activeStream.captureContext.pendingSegment;
+    pending.rmsSum += telemetry.rms;
+    pending.rmsCount += 1;
+    pending.rmsPeak = Math.max(pending.rmsPeak ?? 0, telemetry.rms);
+    pending.peakPeak = Math.max(pending.peakPeak ?? 0, telemetry.peak);
+    pending.rfPeak = Math.max(pending.rfPeak ?? 0, telemetry.rf);
   }
 
   private persistPendingCapture(sessionId: string): void {
@@ -757,6 +1033,7 @@ class HackRFService {
     persistCapturedActivity({
       module: pending.descriptor.module,
       mode: pending.descriptor.mode,
+      activityEventId: pending.descriptor.activityEventId,
       label: pending.descriptor.label,
       freqHz: pending.descriptor.freqHz,
       demodMode: pending.descriptor.demodMode,
@@ -765,7 +1042,9 @@ class HackRFService {
       channelNumber: pending.descriptor.channelNumber,
       startedAtMs: pending.startedAtMs,
       endedAtMs: Date.now(),
-      rms: this.activeStream.telemetry?.rms ?? null,
+      rmsAvg: pending.rmsCount > 0 ? pending.rmsSum / pending.rmsCount : null,
+      rmsPeak: pending.rmsPeak,
+      rfPeak: pending.rfPeak,
       squelch: pending.descriptor.squelch ?? null,
       audioAbsolutePath: pending.savedAudioPath ?? pending.audioPath,
       iqAbsolutePath: pending.savedIqPath ?? pending.iqPath,
@@ -807,6 +1086,13 @@ class HackRFService {
           ...context.rf,
           squelch: pending.descriptor.squelch ?? null,
         },
+        segmentMetrics: {
+          rmsAvg: pending.rmsCount > 0 ? pending.rmsSum / pending.rmsCount : null,
+          rmsPeak: pending.rmsPeak,
+          audioPeak: pending.peakPeak,
+          rfPeak: pending.rfPeak,
+          telemetrySamples: pending.rmsCount,
+        },
         device: context.device,
         sourceContext: {
           sourceMode: pending.descriptor.sourceMode ?? null,
@@ -822,22 +1108,32 @@ class HackRFService {
     if (!this.activeStream) return Promise.resolve();
 
     const { hackrf, ffmpeg, retuneTimer, captureContext } = this.activeStream;
-    this.activeStream = null;
-    hackrfDeviceService.release("audio");
+    const sessionId = this.activeStream.session.id;
 
     if (retuneTimer) {
       clearTimeout(retuneTimer);
-    }
-    if (captureContext?.pendingSegment?.finalizeTimer) {
-      clearTimeout(captureContext.pendingSegment.finalizeTimer);
     }
 
     // Register the wait listener before sending SIGTERM so we cannot miss the close event
     const released =
       hackrf.exitCode !== null || hackrf.killed
-        ? Promise.resolve()
+        ? Promise.resolve().then(() => {
+          if (this.activeStream?.session.id === sessionId) {
+            this.flushPendingCapture(sessionId);
+            this.activeStream = null;
+            hackrfDeviceService.release("audio");
+            invalidateHackrfIdentityCache();
+            if (_hackrfInfoCache) {
+              _hackrfInfoCache.at = 0;
+            }
+          }
+        })
         : new Promise<void>(resolve => hackrf.once("close", resolve));
 
+    if (captureContext?.pendingSegment?.finalizeTimer) {
+      clearTimeout(captureContext.pendingSegment.finalizeTimer);
+      captureContext.pendingSegment.finalizeTimer = null;
+    }
     this.killProcess(hackrf);
     this.killProcess(ffmpeg);
 
