@@ -16,6 +16,7 @@ import { AUDIO_ANALYSIS_ENGINE } from "@/server/analysis-worker";
 import { appDb, sqliteDb } from "@/server/db/client";
 import {
   activityEvents,
+  burstEvents,
   analysisFindings,
   analysisJobs,
   captureFiles,
@@ -241,6 +242,7 @@ function buildCaptureFileSummary(row: typeof captureFiles.$inferSelect | null) {
 function buildCaptureSummary(
   session: typeof captureSessions.$inferSelect,
   options: {
+    burst: typeof burstEvents.$inferSelect | null;
     event: typeof activityEvents.$inferSelect | null;
     review: typeof captureReviews.$inferSelect | null;
     audioFile: typeof captureFiles.$inferSelect | null;
@@ -252,7 +254,9 @@ function buildCaptureSummary(
   },
 ): SigintCaptureSummary {
   const sessionMetadata = parseJsonRecord(session.metadataJson);
-  const locationRecord = parseJsonRecord(session.locationJson);
+  const burstMetadata = options.burst ? parseJsonRecord(options.burst.metadataJson) : null;
+  const locationRecord = parseJsonRecord(session.locationJson)
+    ?? (options.burst ? parseJsonRecord(options.burst.locationJson) : null);
   const location = buildLocationSummary(locationRecord, options.event);
   const rf =
     sessionMetadata && typeof sessionMetadata.rf === "object" && sessionMetadata.rf
@@ -262,23 +266,35 @@ function buildCaptureSummary(
   return {
     id: session.id,
     activityEventId: session.activityEventId ?? null,
+    burstEventId: session.burstEventId ?? null,
     module: session.module as SigintCaptureSummary["module"],
     mode:
-      options.event?.mode === "scan" || options.event?.mode === "manual"
-        ? options.event.mode
+      options.burst?.mode === "scan" || options.burst?.mode === "manual"
+        ? options.burst.mode
+        : options.event?.mode === "scan" || options.event?.mode === "manual"
+          ? options.event.mode
         : session.reason === "scan-hit"
           ? "scan"
           : "manual",
     reason: session.reason,
-    label: options.event?.label ?? stringOrNull(sessionMetadata?.label) ?? `${session.module.toUpperCase()} capture`,
-    freqMhz: session.freqHz === null ? null : session.freqHz / 1_000_000,
-    demodMode: (session.demodMode as SigintCaptureSummary["demodMode"]) ?? null,
+    label:
+      options.burst?.label
+      ?? options.event?.label
+      ?? stringOrNull((burstMetadata?.channel as JsonRecord | undefined)?.label)
+      ?? stringOrNull(sessionMetadata?.label)
+      ?? `${session.module.toUpperCase()} capture`,
+    freqMhz:
+      (options.burst?.freqHz ?? session.freqHz) === null
+        ? null
+        : (options.burst?.freqHz ?? session.freqHz ?? 0) / 1_000_000,
+    demodMode:
+      ((options.burst?.demodMode ?? session.demodMode) as SigintCaptureSummary["demodMode"]) ?? null,
     startedAt: new Date(session.startedAtMs).toISOString(),
     endedAt: toIso(session.endedAtMs),
     durationMs:
       session.endedAtMs !== null
         ? Math.max(0, session.endedAtMs - session.startedAtMs)
-        : options.event?.durationMs ?? null,
+        : options.burst?.durationMs ?? options.event?.durationMs ?? null,
     reviewStatus: normalizeReviewStatus(options.review?.status),
     reviewPriority: normalizeReviewPriority(options.review?.priority),
     reviewNotes: options.review?.notes ?? "",
@@ -291,12 +307,20 @@ function buildCaptureSummary(
     countryCode: location.countryCode,
     resolvedLatitude: location.latitude,
     resolvedLongitude: location.longitude,
-    deviceLabel: session.deviceLabel ?? stringOrNull((sessionMetadata?.device as JsonRecord | undefined)?.label) ?? null,
-    deviceSerial: session.deviceSerial ?? stringOrNull((sessionMetadata?.device as JsonRecord | undefined)?.serial) ?? null,
-    rmsAvg: options.event?.rmsAvg ?? null,
-    rmsPeak: options.event?.rmsPeak ?? null,
-    rfPeak: options.event?.rfPeak ?? null,
-    squelch: numberOrNull(rf?.squelch) ?? options.event?.squelch ?? null,
+    deviceLabel:
+      session.deviceLabel
+      ?? options.burst?.deviceLabel
+      ?? stringOrNull((sessionMetadata?.device as JsonRecord | undefined)?.label)
+      ?? null,
+    deviceSerial:
+      session.deviceSerial
+      ?? options.burst?.deviceSerial
+      ?? stringOrNull((sessionMetadata?.device as JsonRecord | undefined)?.serial)
+      ?? null,
+    rmsAvg: options.burst?.rmsAvg ?? options.event?.rmsAvg ?? null,
+    rmsPeak: options.burst?.rmsPeak ?? options.event?.rmsPeak ?? null,
+    rfPeak: options.burst?.rfPeak ?? options.event?.rfPeak ?? null,
+    squelch: numberOrNull(rf?.squelch) ?? options.burst?.squelch ?? options.event?.squelch ?? null,
     lna: numberOrNull(rf?.lna),
     vga: numberOrNull(rf?.vga),
     audioGain: numberOrNull(rf?.audioGain),
@@ -365,6 +389,7 @@ function matchesCaptureFilters(item: SigintCaptureSummary, filters: SigintCaptur
 function loadCaptureContext(
   sessions: Array<typeof captureSessions.$inferSelect>,
 ): {
+  burstsById: Map<string, typeof burstEvents.$inferSelect>;
   eventsById: Map<string, typeof activityEvents.$inferSelect>;
   reviewBySessionId: Map<string, typeof captureReviews.$inferSelect>;
   audioBySessionId: Map<string, typeof captureFiles.$inferSelect>;
@@ -376,6 +401,7 @@ function loadCaptureContext(
 } {
   if (sessions.length === 0) {
     return {
+      burstsById: new Map(),
       eventsById: new Map(),
       reviewBySessionId: new Map(),
       audioBySessionId: new Map(),
@@ -388,10 +414,16 @@ function loadCaptureContext(
   }
 
   const sessionIds = sessions.map((session) => session.id);
+  const burstIds = sessions
+    .map((session) => session.burstEventId)
+    .filter((value): value is string => Boolean(value));
   const eventIds = sessions
     .map((session) => session.activityEventId)
     .filter((value): value is string => Boolean(value));
 
+  const bursts = burstIds.length > 0
+    ? appDb.select().from(burstEvents).where(inArray(burstEvents.id, burstIds)).all()
+    : [];
   const events = eventIds.length > 0
     ? appDb.select().from(activityEvents).where(inArray(activityEvents.id, eventIds)).all()
     : [];
@@ -428,6 +460,7 @@ function loadCaptureContext(
       .all()
     : [];
 
+  const burstsById = new Map(bursts.map((row) => [row.id, row]));
   const eventsById = new Map(events.map((row) => [row.id, row]));
   const reviewBySessionId = new Map(reviews.map((row) => [row.captureSessionId, row]));
   const audioBySessionId = new Map<string, typeof captureFiles.$inferSelect>();
@@ -479,6 +512,7 @@ function loadCaptureContext(
   }
 
   return {
+    burstsById,
     eventsById,
     reviewBySessionId,
     audioBySessionId,
@@ -504,6 +538,7 @@ export function listSigintCaptureSummaries(
   const items = sessions
     .map((session) =>
       buildCaptureSummary(session, {
+        burst: session.burstEventId ? (context.burstsById.get(session.burstEventId) ?? null) : null,
         event: session.activityEventId ? (context.eventsById.get(session.activityEventId) ?? null) : null,
         review: context.reviewBySessionId.get(session.id) ?? null,
         audioFile: context.audioBySessionId.get(session.id) ?? null,
@@ -546,6 +581,7 @@ export function getSigintCaptureDetail(captureSessionId: string): SigintCaptureD
   const context = loadCaptureContext([session]);
   const review = context.reviewBySessionId.get(session.id) ?? null;
   const detail = buildCaptureSummary(session, {
+    burst: session.burstEventId ? (context.burstsById.get(session.burstEventId) ?? null) : null,
     event: session.activityEventId ? (context.eventsById.get(session.activityEventId) ?? null) : null,
     review,
     audioFile: context.audioBySessionId.get(session.id) ?? null,
@@ -592,6 +628,7 @@ export function getSigintCaptureDetail(captureSessionId: string): SigintCaptureD
     .all()
     .map((row) => ({
       id: row.id,
+      burstEventId: row.burstEventId ?? null,
       engine: row.engine,
       status: row.status,
       errorText: row.errorText,

@@ -16,6 +16,7 @@ export type ActivityCaptureFileSummary = {
 
 export type ActivityLogEntry = {
   id: string;
+  burstEventId: string | null;
   module: ActivityEventModule;
   mode: ActivityEventMode;
   label: string;
@@ -67,6 +68,7 @@ export function createActivityLogEntryFallback(
 ): ActivityLogEntry {
   return {
     id: `local-${input.module}-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 8)}`,
+    burstEventId: null,
     module: input.module,
     mode: input.mode,
     label: input.label,

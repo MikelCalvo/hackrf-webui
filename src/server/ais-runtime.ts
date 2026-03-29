@@ -15,6 +15,7 @@ import { hackrfDeviceService } from "@/server/hackrf-device";
 import { pickHackrfRuntimeErrorMessage } from "@/server/hackrf-runtime-errors";
 import { parseAisFrameLine, type DecodedAisMessage } from "@/server/ais-protocol";
 import { buildOfflineMapSummary } from "@/server/maps";
+import { projectBinPath } from "@/server/project-paths";
 import { parseSpectrumFrameLine } from "@/server/spectrum-telemetry";
 import { listRecentAisContacts, persistAisTrackPoint } from "@/server/track-store";
 
@@ -60,10 +61,8 @@ function parseEnvInteger(name: string, fallback: number): number {
 }
 
 function aisBinaryPath(): string {
-  return (
-    process.env.HACKRF_WEBUI_AIS_BIN?.trim()
-    || path.join(/*turbopackIgnore: true*/ process.cwd(), "bin", "hackrf_ais_stream")
-  );
+  const customPath = process.env.HACKRF_WEBUI_AIS_BIN?.trim();
+  return customPath ? path.resolve(customPath) : projectBinPath("hackrf_ais_stream");
 }
 
 function createChannelState(): ChannelInternalState[] {

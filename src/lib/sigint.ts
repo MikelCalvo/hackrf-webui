@@ -57,6 +57,7 @@ export type SigintCaptureFile = {
 export type SigintCaptureSummary = {
   id: string;
   activityEventId: string | null;
+  burstEventId: string | null;
   module: AudioCaptureModule;
   mode: "manual" | "scan";
   reason: string;
@@ -114,6 +115,7 @@ export type SigintCaptureDetail = SigintCaptureSummary & {
   }>;
   analysisJobs: Array<{
     id: string;
+    burstEventId: string | null;
     engine: string;
     status: string;
     errorText: string | null;

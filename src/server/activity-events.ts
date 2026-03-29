@@ -12,7 +12,7 @@ import type {
 import type { AudioDemodMode } from "@/lib/types";
 import { queueCaptureAnalysisJob } from "@/server/analysis-worker";
 import { appDb } from "@/server/db/client";
-import { activityEvents, captureFiles, captureSessions } from "@/server/db/schema";
+import { activityEvents, burstEvents, captureFiles, captureSessions } from "@/server/db/schema";
 import { captureAbsolutePath, capturePathExists, captureRelativePath } from "@/server/storage";
 
 const CAPTURE_MATCH_LOOKBACK_MS = 8_000;
@@ -22,6 +22,7 @@ type CaptureFinalizeInput = {
   module: ActivityEventModule;
   mode: ActivityLogEntry["mode"];
   activityEventId?: string | null;
+  burstEventId?: string | null;
   label: string;
   freqHz: number;
   demodMode: AudioDemodMode;
@@ -60,6 +61,18 @@ function safeJson(value: unknown): string | null {
   } catch {
     return null;
   }
+}
+
+function jsonObject(value: unknown): Record<string, unknown> | null {
+  if (!value || typeof value !== "object" || Array.isArray(value)) {
+    return null;
+  }
+  return value as Record<string, unknown>;
+}
+
+function metadataStringValue(value: Record<string, unknown> | null, key: string): string | null {
+  const raw = value?.[key];
+  return typeof raw === "string" && raw.trim().length > 0 ? raw.trim() : null;
 }
 
 function locationString(
@@ -110,6 +123,7 @@ function toActivityLogEntry(
 ): ActivityLogEntry {
   return {
     id: row.id,
+    burstEventId: session?.burstEventId ?? null,
     module: row.module as ActivityEventModule,
     mode: row.mode as ActivityLogEntry["mode"],
     label: row.label,
@@ -128,6 +142,10 @@ function toActivityLogEntry(
 }
 
 function findCandidateActivityEvent(input: CaptureFinalizeInput): typeof activityEvents.$inferSelect | null {
+  const inputMetadata = jsonObject(input.metadata ?? null);
+  const inputStreamId = metadataStringValue(inputMetadata, "streamId");
+  const inputRadioSessionId = metadataStringValue(inputMetadata, "radioSessionId");
+
   if (input.activityEventId) {
     const exact = appDb
       .select()
@@ -150,7 +168,16 @@ function findCandidateActivityEvent(input: CaptureFinalizeInput): typeof activit
       && exact.startedAtMs >= input.startedAtMs - CAPTURE_MATCH_LOOKBACK_MS
       && exact.startedAtMs <= input.endedAtMs + CAPTURE_MATCH_LOOKAHEAD_MS
     ) {
-      return exact;
+      if (
+        (!inputStreamId || !exact.streamId || exact.streamId === inputStreamId)
+        && (
+          !inputRadioSessionId
+          || !exact.radioSessionId
+          || exact.radioSessionId === inputRadioSessionId
+        )
+      ) {
+        return exact;
+      }
     }
   }
 
@@ -188,8 +215,23 @@ function findCandidateActivityEvent(input: CaptureFinalizeInput): typeof activit
     ) {
       continue;
     }
+    const candidateStreamId = candidate.streamId;
+    const candidateRadioSessionId = candidate.radioSessionId;
+
+    if (inputStreamId && candidateStreamId && candidateStreamId !== inputStreamId) {
+      continue;
+    }
+    if (inputRadioSessionId && candidateRadioSessionId && candidateRadioSessionId !== inputRadioSessionId) {
+      continue;
+    }
 
     let score = 0;
+    if (inputStreamId && candidateStreamId === inputStreamId) {
+      score += 50;
+    }
+    if (inputRadioSessionId && candidateRadioSessionId === inputRadioSessionId) {
+      score += 50;
+    }
     if (input.channelId && candidate.channelId === input.channelId) {
       score += 40;
     }
@@ -246,6 +288,8 @@ function createFallbackActivityEvent(input: CaptureFinalizeInput): typeof activi
       typeof input.location?.sourceMode === "string" ? input.location.sourceMode : null,
     locationLatitude: locationNumber(input.location, "latitude"),
     locationLongitude: locationNumber(input.location, "longitude"),
+    radioSessionId: metadataStringValue(jsonObject(input.metadata ?? null), "radioSessionId"),
+    streamId: metadataStringValue(jsonObject(input.metadata ?? null), "streamId"),
     metadataJson: safeJson(input.metadata ?? null),
     createdAtMs: nowMs,
   };
@@ -296,9 +340,138 @@ function updateActivityEventFromCapture(
       locationSource: row.locationSource ?? (typeof input.location?.sourceMode === "string" ? input.location.sourceMode : null),
       locationLatitude: row.locationLatitude ?? locationNumber(input.location, "latitude"),
       locationLongitude: row.locationLongitude ?? locationNumber(input.location, "longitude"),
+      radioSessionId: row.radioSessionId ?? metadataStringValue(jsonObject(input.metadata ?? null), "radioSessionId"),
+      streamId: row.streamId ?? metadataStringValue(jsonObject(input.metadata ?? null), "streamId"),
       metadataJson: row.metadataJson ?? safeJson(input.metadata ?? null),
     })
     .where(eq(activityEvents.id, row.id))
+    .run();
+}
+
+function findExactBurstEvent(
+  input: CaptureFinalizeInput,
+  fallbackBurstEventId: string | null = null,
+): typeof burstEvents.$inferSelect | null {
+  const burstEventId = input.burstEventId ?? fallbackBurstEventId ?? null;
+  if (!burstEventId) {
+    return null;
+  }
+
+  const exact = appDb
+    .select()
+    .from(burstEvents)
+    .where(eq(burstEvents.id, burstEventId))
+    .limit(1)
+    .get() ?? null;
+
+  if (!exact) {
+    return null;
+  }
+
+  if (
+    exact.module !== input.module
+    || exact.mode !== input.mode
+    || exact.freqHz !== input.freqHz
+    || (input.channelId && exact.channelId !== input.channelId)
+    || (
+      input.channelNumber !== null
+      && input.channelNumber !== undefined
+      && exact.channelNumber !== input.channelNumber
+    )
+  ) {
+    return null;
+  }
+
+  return exact;
+}
+
+function createBurstEventFromCapture(
+  input: CaptureFinalizeInput,
+  activityEventId: string | null,
+): typeof burstEvents.$inferSelect {
+  const nowMs = Date.now();
+  const inputMetadata = jsonObject(input.metadata ?? null);
+  const row: typeof burstEvents.$inferInsert = {
+    id: input.burstEventId ?? randomUUID(),
+    scanRunId: null,
+    activityEventId,
+    module: input.module,
+    mode: input.mode,
+    label: input.label.trim() || "Unknown burst",
+    bandId: input.bandId ?? null,
+    channelId: input.channelId ?? null,
+    channelNumber: input.channelNumber ?? null,
+    demodMode: input.demodMode,
+    freqHz: input.freqHz,
+    centerFreqHz: null,
+    startedAtMs: input.startedAtMs,
+    endedAtMs: input.endedAtMs,
+    durationMs: Math.max(0, input.endedAtMs - input.startedAtMs),
+    rmsAvg: input.rmsAvg ?? input.rmsPeak ?? null,
+    rmsPeak: input.rmsPeak ?? input.rmsAvg ?? null,
+    rfPeak: input.rfPeak ?? null,
+    squelch: input.squelch ?? null,
+    deviceLabel: input.deviceLabel ?? null,
+    deviceSerial: input.deviceSerial ?? null,
+    locationJson: safeJson(input.location ?? null),
+    radioSessionId: metadataStringValue(inputMetadata, "radioSessionId"),
+    streamId: metadataStringValue(inputMetadata, "streamId"),
+    metadataJson: safeJson(input.metadata ?? null),
+    createdAtMs: nowMs,
+    updatedAtMs: nowMs,
+  };
+
+  appDb.insert(burstEvents).values(row).run();
+
+  return {
+    ...row,
+    scanRunId: null,
+  } as typeof burstEvents.$inferSelect;
+}
+
+function updateBurstEventFromCapture(
+  row: typeof burstEvents.$inferSelect,
+  input: CaptureFinalizeInput,
+  activityEventId: string | null,
+): void {
+  const nextEndedAtMs = Math.max(row.endedAtMs, input.endedAtMs);
+  const nextDurationMs = Math.max(row.durationMs ?? 0, nextEndedAtMs - row.startedAtMs);
+  const nextRmsPeak =
+    row.rmsPeak === null
+      ? (input.rmsPeak ?? input.rmsAvg ?? null)
+      : Math.max(row.rmsPeak, input.rmsPeak ?? input.rmsAvg ?? 0);
+  const nextRmsAvg =
+    row.rmsAvg === null
+      ? (input.rmsAvg ?? input.rmsPeak ?? null)
+      : input.rmsAvg === null || input.rmsAvg === undefined
+        ? row.rmsAvg
+        : (row.rmsAvg + input.rmsAvg) / 2;
+  const nextRfPeak =
+    row.rfPeak === null
+      ? (input.rfPeak ?? null)
+      : input.rfPeak === null || input.rfPeak === undefined
+        ? row.rfPeak
+        : Math.max(row.rfPeak, input.rfPeak);
+
+  appDb
+    .update(burstEvents)
+    .set({
+      activityEventId: row.activityEventId ?? activityEventId,
+      endedAtMs: nextEndedAtMs,
+      durationMs: nextDurationMs,
+      rmsPeak: nextRmsPeak,
+      rmsAvg: nextRmsAvg,
+      rfPeak: nextRfPeak,
+      squelch: row.squelch ?? input.squelch ?? null,
+      deviceLabel: row.deviceLabel ?? input.deviceLabel ?? null,
+      deviceSerial: row.deviceSerial ?? input.deviceSerial ?? null,
+      locationJson: row.locationJson ?? safeJson(input.location ?? null),
+      radioSessionId: row.radioSessionId ?? metadataStringValue(jsonObject(input.metadata ?? null), "radioSessionId"),
+      streamId: row.streamId ?? metadataStringValue(jsonObject(input.metadata ?? null), "streamId"),
+      metadataJson: row.metadataJson ?? safeJson(input.metadata ?? null),
+      updatedAtMs: Date.now(),
+    })
+    .where(eq(burstEvents.id, row.id))
     .run();
 }
 
@@ -394,6 +567,7 @@ export function createActivityEvent(input: CreateActivityEventInput): ActivityLo
     ? Date.parse(input.occurredAt)
     : Date.now();
   const nowMs = Date.now();
+  const inputMetadata = jsonObject(input.metadata ?? null);
 
   const row: typeof activityEvents.$inferInsert = {
     id: randomUUID(),
@@ -419,6 +593,8 @@ export function createActivityEvent(input: CreateActivityEventInput): ActivityLo
     locationSource: input.location?.sourceMode ?? null,
     locationLatitude: input.location?.resolvedPosition?.latitude ?? null,
     locationLongitude: input.location?.resolvedPosition?.longitude ?? null,
+    radioSessionId: metadataStringValue(inputMetadata, "radioSessionId"),
+    streamId: metadataStringValue(inputMetadata, "streamId"),
     metadataJson: safeJson(input.metadata ?? null),
     createdAtMs: nowMs,
   };
@@ -434,6 +610,45 @@ export function createActivityEvent(input: CreateActivityEventInput): ActivityLo
     null,
     null,
   );
+}
+
+export function createCaptureBoundActivityEvent(
+  input: CreateActivityEventInput,
+): ActivityLogEntry {
+  const entry = createActivityEvent(input);
+  const occurredAtMs = Number.isFinite(Date.parse(input.occurredAt))
+    ? Date.parse(input.occurredAt)
+    : Date.now();
+  const burst = createBurstEventFromCapture(
+    {
+      module: input.module,
+      mode: input.mode,
+      activityEventId: entry.id,
+      burstEventId: null,
+      label: input.label,
+      freqHz: Math.round(input.freqMhz * 1_000_000),
+      demodMode: input.demodMode ?? "nfm",
+      bandId: input.bandId ?? null,
+      channelId: input.channelId ?? null,
+      channelNumber: input.channelNumber ?? null,
+      startedAtMs: occurredAtMs,
+      endedAtMs: occurredAtMs,
+      rmsAvg: input.rms,
+      rmsPeak: input.rms,
+      rfPeak: null,
+      squelch: input.squelch ?? null,
+      deviceLabel: null,
+      deviceSerial: null,
+      location: input.location ?? null,
+      metadata: input.metadata ?? null,
+    },
+    entry.id,
+  );
+
+  return {
+    ...entry,
+    burstEventId: burst.id,
+  };
 }
 
 export function persistCapturedActivity(input: CaptureFinalizeInput): void {
@@ -455,12 +670,26 @@ export function persistCapturedActivity(input: CaptureFinalizeInput): void {
 
   const nowMs = Date.now();
   const sessionId = persistedAudio?.captureSessionId ?? persistedIq?.captureSessionId ?? randomUUID();
+  const existingSession = appDb
+    .select()
+    .from(captureSessions)
+    .where(eq(captureSessions.id, sessionId))
+    .limit(1)
+    .get() ?? null;
+  const inputMetadata = jsonObject(input.metadata ?? null);
+  const inputRadioSessionId = metadataStringValue(inputMetadata, "radioSessionId") ?? event.radioSessionId ?? null;
+  const inputStreamId = metadataStringValue(inputMetadata, "streamId") ?? event.streamId ?? null;
+  const burst =
+    findExactBurstEvent(input, existingSession?.burstEventId ?? null)
+    ?? createBurstEventFromCapture(input, event.id);
+  updateBurstEventFromCapture(burst, input, event.id);
 
   if (!persistedAudio && !persistedIq) {
     appDb.insert(captureSessions).values({
       id: sessionId,
       scanRunId: null,
       activityEventId: event.id,
+      burstEventId: burst.id,
       module: input.module,
       reason: input.mode === "scan" ? "scan-hit" : "manual",
       status: "saved",
@@ -472,6 +701,8 @@ export function persistCapturedActivity(input: CaptureFinalizeInput): void {
       deviceLabel: input.deviceLabel ?? null,
       deviceSerial: input.deviceSerial ?? null,
       locationJson: safeJson(input.location ?? null),
+      radioSessionId: inputRadioSessionId,
+      streamId: inputStreamId,
       metadataJson: safeJson(input.metadata ?? null),
       createdAtMs: nowMs,
       updatedAtMs: nowMs,
@@ -479,7 +710,10 @@ export function persistCapturedActivity(input: CaptureFinalizeInput): void {
   } else {
     appDb.update(captureSessions).set({
       activityEventId: event.id,
+      burstEventId: burst.id,
       endedAtMs: input.endedAtMs,
+      radioSessionId: inputRadioSessionId,
+      streamId: inputStreamId,
       updatedAtMs: nowMs,
     }).where(eq(captureSessions.id, sessionId)).run();
   }
@@ -521,7 +755,7 @@ export function persistCapturedActivity(input: CaptureFinalizeInput): void {
   }
 
   if (filesToInsert.some((file) => file.kind === "audio")) {
-    queueCaptureAnalysisJob(sessionId);
+    queueCaptureAnalysisJob(sessionId, burst.id);
   }
 }
 
@@ -545,6 +779,7 @@ export function clearActivityEvents(module: ActivityEventModule): void {
     appDb.delete(captureSessions).where(eq(captureSessions.module, module)).run();
   }
 
+  appDb.delete(burstEvents).where(eq(burstEvents.module, module)).run();
   appDb.delete(activityEvents).where(eq(activityEvents.module, module)).run();
 
   for (const file of files) {

@@ -58,8 +58,6 @@ import type {
 const STORAGE_KEY = "hackrf-webui.custom-stations.v1";
 const STATION_ROW_HEIGHT = 76;
 const STATION_LIST_OVERSCAN = 10;
-const FM_TUNE_SYNC_POLL_MS = 200;
-
 type LocationOption = { id: string; label: string; count: number };
 type CountryOption = LocationOption & { regionId: string };
 
@@ -159,6 +157,7 @@ function buildStreamUrl(
   controls: { lna: number; vga: number; audioGain: number },
 ): string {
   const params = new URLSearchParams({
+    stationId: station.id,
     label: station.name,
     freqMHz: String(station.freqMhz),
     lna: String(controls.lna),
@@ -170,14 +169,12 @@ function buildStreamUrl(
   return `/api/stream?${params.toString()}`;
 }
 
-function buildRetuneUrl(station: FmStation, streamSessionId: string | null = null): string {
+function buildRetuneUrl(station: FmStation): string {
   const params = new URLSearchParams({
+    stationId: station.id,
     label: station.name,
     freqMHz: String(station.freqMhz),
   });
-  if (streamSessionId) {
-    params.set("streamId", streamSessionId);
-  }
   return `/api/stream?${params.toString()}`;
 }
 
@@ -956,6 +953,11 @@ export function Dashboard({
     audio.removeAttribute("src");
     audio.load();
     setStartingStationId(null);
+    void fetch("/api/stream", {
+      method: "DELETE",
+      keepalive: true,
+      cache: "no-store",
+    }).finally(() => void refreshHardware());
   }
 
   function resetFilters(): void {
@@ -1332,15 +1334,6 @@ export function Dashboard({
     }
   }, [actualPlayingId, hardware?.activeStream, isFmModule, startingStationId]);
 
-  useEffect(() => {
-    if (!isFmModule || startingStationId === null) {
-      return;
-    }
-
-    const interval = window.setInterval(() => void refreshHardware(), FM_TUNE_SYNC_POLL_MS);
-    return () => clearInterval(interval);
-  }, [isFmModule, refreshHardware, startingStationId]);
-
   function focusPlayingStation(): void {
     if (!actualPlayingId) {
       return;
@@ -1403,7 +1396,7 @@ export function Dashboard({
 
     if (canRetuneInPlace) {
       try {
-        const response = await fetch(buildRetuneUrl(station, activeStream?.id ?? null), { method: "PATCH" });
+        const response = await fetch(buildRetuneUrl(station), { method: "PATCH" });
         if (response.ok) {
           if (fmRequestSeqRef.current !== requestId) {
             return;
@@ -1845,30 +1838,24 @@ export function Dashboard({
         {activeModule === "pmr" ? (
           <PmrModule
             controls={controls}
-            hardware={hardware}
             location={resolvedLocation}
             onControlsChange={setControls}
-            onRefreshHardware={refreshHardware}
           />
         ) : null}
 
         {activeModule === "airband" ? (
           <AirbandModule
             controls={controls}
-            hardware={hardware}
             location={resolvedLocation}
             onControlsChange={setControls}
-            onRefreshHardware={refreshHardware}
           />
         ) : null}
 
         {activeModule === "maritime" ? (
           <MaritimeModule
             controls={controls}
-            hardware={hardware}
             location={resolvedLocation}
             onControlsChange={setControls}
-            onRefreshHardware={refreshHardware}
           />
         ) : null}
 

@@ -1,14 +1,12 @@
 "use client";
 
-import { useEffect, useEffectEvent, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 
 import { ActivityCaptureActions, ConfirmDialog } from "@/components/module-ui";
 import { CLS_INPUT } from "@/components/module-ui";
 import { SpectrumDock } from "@/components/spectrum-dock";
+import { useRadioSession } from "@/components/use-radio-session";
 import {
-  buildActivityCaptureMeta,
-  buildRadioRetuneUrl,
-  buildRadioStreamUrl,
   CLS_BTN_GHOST,
   CLS_BTN_PRIMARY,
   formatFixedFrequency,
@@ -24,31 +22,26 @@ import {
 import {
   ACTIVITY_EVENTS_DEFAULT_LIMIT,
   clearActivityEvents as clearPersistedActivityEvents,
-  createActivityLogEntryFallback,
   fetchActivityEvents,
-  persistActivityEvent,
   type ActivityLogEntry,
 } from "@/lib/activity-events";
+import type {
+  CreateRadioSessionRequest,
+  NarrowbandScanMode,
+  RadioSessionChannel,
+  UpdateNarrowbandSessionRequest,
+} from "@/lib/radio-session";
+import { radioSessionChannelDeckSignature } from "@/lib/radio-session";
 import type { AudioControls } from "@/lib/radio";
-import type { HardwareStatus, ResolvedAppLocation } from "@/lib/types";
+import type { ResolvedAppLocation } from "@/lib/types";
 import {
-  ACTIVE_LISTEN_TELEMETRY_REFRESH_MS,
-  createActivityWindowMetrics,
-  getRunningStreamTelemetry,
-  hasRmsActivity,
-  mergeActivityWindowMetrics,
-  SCANNER_ACTIVITY_CONFIRMATION_POLLS,
   SCANNER_HOLD_GRACE_MS,
   SCANNER_POST_HIT_HOLD_DEFAULT_SECONDS,
   SCANNER_POST_HIT_HOLD_MAX_SECONDS,
   SCANNER_STARTUP_MS,
-  TELEMETRY_REFRESH_MS,
   normalizeScannerPostHitHoldSeconds,
-  shouldReleaseScannerLock,
 } from "@/lib/signal-activity";
 import { buildChannelSpectrumRange } from "@/lib/spectrum";
-import { fetchHardwareStatusSnapshot, shouldPublishHardwareSnapshot } from "@/lib/hardware-status";
-import { openSilentScanTransport, type SilentScanTransport } from "@/lib/silent-scan-transport";
 
 const AIRBAND_STORAGE_KEY = "hackrf-webui.airband-presets.v1";
 const AIRBAND_CONFIG_KEY = "hackrf-webui.airband-config.v1";
@@ -57,10 +50,8 @@ const AIRBAND_MAX_MHZ = 137.0;
 const AIRBAND_SWEEP_MAX_MHZ = 136.975;
 const AIRBAND_SWEEP_STEP_MHZ = 0.025;
 const CONTACT_REFRESH_MS = 10_000;
-const SCAN_HARDWARE_REFRESH_MS = 600;
-const SCAN_UI_HARDWARE_PUBLISH_INTERVAL_MS = 2_500;
 type ScannerState = "idle" | "scanning" | "locked";
-type ScanMode = "sequential" | "random";
+type ScanMode = NarrowbandScanMode;
 
 type PersistedConfig = {
   selectedBandId: string;
@@ -162,66 +153,6 @@ function createManualChannel(
   };
 }
 
-function buildAirbandUrl(
-  channel: AirbandChannel,
-  controls: AudioControls,
-  mode: "manual" | "scan",
-  location: ResolvedAppLocation | null,
-  squelch: number,
-  activityEventId: string | null = null,
-): string {
-  return buildRadioStreamUrl(
-    "/api/airband-stream",
-    channel,
-    controls,
-    buildActivityCaptureMeta(
-      {
-        module: "airband",
-        mode,
-        activityEventId,
-        bandId: channel.bandId,
-        channelId: channel.id,
-        channelNumber: channel.number,
-      },
-      {
-        location,
-        squelch,
-        channelNotes: channel.notes ?? null,
-      },
-    ),
-  );
-}
-
-function buildAirbandRetuneUrl(
-  channel: AirbandChannel,
-  mode: "manual" | "scan",
-  location: ResolvedAppLocation | null,
-  squelch: number,
-  activityEventId: string | null = null,
-  streamSessionId: string | null = null,
-): string {
-  return buildRadioRetuneUrl(
-    "/api/airband-stream",
-    channel,
-    buildActivityCaptureMeta(
-      {
-        module: "airband",
-        mode,
-        activityEventId,
-        bandId: channel.bandId,
-        channelId: channel.id,
-        channelNumber: channel.number,
-      },
-      {
-        location,
-        squelch,
-        channelNotes: channel.notes ?? null,
-      },
-    ),
-    streamSessionId,
-  );
-}
-
 function StepButton({
   children,
   disabled,
@@ -274,25 +205,6 @@ function uniqueScanChannels(channels: AirbandChannel[]): AirbandChannel[] {
   return [...byFrequency.values()].sort((left, right) => left.freqMhz - right.freqMhz);
 }
 
-function resolveRunningAirbandChannel(
-  channels: AirbandChannel[],
-  manualChannel: AirbandChannel | null,
-  activeStream: HardwareStatus["activeStream"],
-): AirbandChannel | null {
-  if (
-    !activeStream
-    || activeStream.demodMode !== "am"
-    || activeStream.phase !== "running"
-    || activeStream.pendingFreqHz !== null
-  ) {
-    return null;
-  }
-
-  const freqHz = activeStream.freqHz;
-  return channels.find((channel) => Math.round(channel.freqMhz * 1_000_000) === freqHz)
-    ?? (manualChannel && Math.round(manualChannel.freqMhz * 1_000_000) === freqHz ? manualChannel : null);
-}
-
 function buildSweepChannels(): AirbandChannel[] {
   const channels: AirbandChannel[] = [];
   let index = 0;
@@ -331,6 +243,7 @@ function buildAirbandSpectrumMarkers(
   channels: AirbandChannel[],
   selectedChannelId: string | null,
   playingChannelId: string | null,
+  scanChannelId: string | null,
 ): Array<{ freqHz: number; label: string; tone?: "accent" | "muted" | "danger" | "saved" }> {
   const unique = new Map<number, { freqHz: number; label: string; tone?: "accent" | "muted" | "danger" | "saved" }>();
 
@@ -351,6 +264,8 @@ function buildAirbandSpectrumMarkers(
       tone:
         channel.id === playingChannelId
           ? "accent"
+          : channel.id === scanChannelId
+            ? "accent"
           : channel.id === selectedChannelId
             ? "accent"
             : baseTone,
@@ -360,20 +275,43 @@ function buildAirbandSpectrumMarkers(
   return Array.from(unique.values()).sort((left, right) => left.freqHz - right.freqHz);
 }
 
+function deriveScannerState(
+  mode: "manual" | "scan" | null,
+  state: string | null,
+): ScannerState {
+  if (mode !== "scan" || !state || state === "error" || state === "stopped" || state === "stopping") {
+    return "idle";
+  }
+  return state === "locked" ? "locked" : "scanning";
+}
+
+function formatSessionAudioUrl(sessionId: string): string {
+  return `/api/radio/sessions/${encodeURIComponent(sessionId)}/audio`;
+}
+
+function toSessionChannels(channels: AirbandChannel[]): RadioSessionChannel[] {
+  return channels.map((channel) => ({
+    id: channel.id,
+    bandId: channel.bandId,
+    number: channel.number,
+    freqMhz: channel.freqMhz,
+    label: channel.label,
+    notes: channel.notes,
+  }));
+}
+
 export function AirbandModule({
-  hardware,
   location,
-  onRefreshHardware,
   controls,
   onControlsChange,
 }: {
-  hardware: HardwareStatus | null;
   location: ResolvedAppLocation | null;
-  onRefreshHardware: () => Promise<void>;
   controls: AudioControls;
   onControlsChange: (controls: AudioControls) => void;
 }) {
   const audioRef = useRef<HTMLAudioElement>(null);
+  const audioSessionIdRef = useRef<string | null>(null);
+  const lastSessionIdRef = useRef<string | null>(null);
 
   const [savedPresets, setSavedPresets] = useState<SavedAirbandPreset[]>(
     () => loadJson<SavedAirbandPreset[]>(AIRBAND_STORAGE_KEY, []),
@@ -382,77 +320,11 @@ export function AirbandModule({
     () => loadConfig(),
   );
   const [selectedChannelId, setSelectedChannelId] = useState<string | null>(null);
-  const [manualChannel, setManualChannel] = useState<AirbandChannel | null>(null);
-  const [playingChannelId, setPlayingChannelId] = useState<string | null>(null);
-  const [startingChannelId, setStartingChannelId] = useState<string | null>(null);
   const [streamError, setStreamError] = useState("");
-  const [scannerState, setScannerState] = useState<ScannerState>("idle");
-  const [scanIndex, setScanIndex] = useState(0);
   const [scanLog, setScanLog] = useState<ActivityLogEntry[]>([]);
-  const [manualActivityRms, setManualActivityRms] = useState<number | null>(null);
   const [clearDialogOpen, setClearDialogOpen] = useState(false);
   const [clearingActivity, setClearingActivity] = useState(false);
-  const [liveHardware, setLiveHardware] = useState<HardwareStatus | null>(hardware);
-
-  const scannerStateRef = useRef<ScannerState>("idle");
-  const scanModeRef = useRef<ScanMode>(config.scanMode);
-  const squelchRef = useRef(config.squelch);
-  const dwellTimeRef = useRef(config.dwellTime);
-  const holdTimeRef = useRef(config.holdTime);
-  const playingIdRef = useRef<string | null>(null);
-  const hardwareRef = useRef<HardwareStatus | null>(null);
-  const lockedAtRef = useRef<number | null>(null);
-  const locationRef = useRef<ResolvedAppLocation | null>(location);
-  const pollInFlightRef = useRef(false);
-  const lastHardwarePublishAtRef = useRef(0);
-  const silentScanTransportRef = useRef<SilentScanTransport | null>(null);
-  const pendingSilentOpenAbortRef = useRef<AbortController | null>(null);
-  const streamRequestSeqRef = useRef(0);
-  const activityEventIdRef = useRef<string | null>(null);
-  const scanSessionSeqRef = useRef(0);
-
-  useEffect(() => {
-    scannerStateRef.current = scannerState;
-  }, [scannerState]);
-
-  useEffect(() => {
-    scanModeRef.current = config.scanMode;
-    squelchRef.current = config.squelch;
-    dwellTimeRef.current = config.dwellTime;
-    holdTimeRef.current = config.holdTime;
-  }, [config]);
-
-  useEffect(() => {
-    playingIdRef.current = playingChannelId;
-  }, [playingChannelId]);
-
-  useEffect(() => {
-    hardwareRef.current = hardware;
-    if (!hardware) {
-      setLiveHardware(null);
-      return;
-    }
-
-    const now = Date.now();
-    setLiveHardware((current) => {
-      if (!shouldPublishHardwareSnapshot(
-        current,
-        hardware,
-        lastHardwarePublishAtRef.current,
-        now,
-        scannerStateRef.current !== "idle" ? SCAN_UI_HARDWARE_PUBLISH_INTERVAL_MS : undefined,
-      )) {
-        return current;
-      }
-
-      lastHardwarePublishAtRef.current = now;
-      return hardware;
-    });
-  }, [hardware]);
-
-  useEffect(() => {
-    locationRef.current = location;
-  }, [location]);
+  const [pendingAction, setPendingAction] = useState<null | { type: "scan" | "manual" | "stop"; channelId?: string }>(null);
 
   useEffect(() => {
     localStorage.setItem(AIRBAND_STORAGE_KEY, JSON.stringify(savedPresets));
@@ -482,46 +354,6 @@ export function AirbandModule({
       cancelled = true;
       clearInterval(interval);
     };
-  }, []);
-
-  useEffect(() => {
-    const audio = audioRef.current;
-    if (!audio) {
-      return;
-    }
-
-    function handleEnded() {
-      setPlayingChannelId(null);
-      setStartingChannelId(null);
-    }
-
-    function handleError() {
-      setPlayingChannelId(null);
-      setStartingChannelId(null);
-      setStreamError(
-        scannerStateRef.current === "scanning" || scannerStateRef.current === "locked"
-          ? "Audio error. The AIRBAND scanner will continue."
-          : "Could not open AIRBAND audio. Check HackRF status and the native binary.",
-      );
-      if (scannerStateRef.current === "idle") {
-        void onRefreshHardware();
-      }
-    }
-
-    audio.addEventListener("ended", handleEnded);
-    audio.addEventListener("error", handleError);
-
-    return () => {
-      audio.removeEventListener("ended", handleEnded);
-      audio.removeEventListener("error", handleError);
-    };
-  }, [onRefreshHardware]);
-
-  useEffect(() => () => {
-    pendingSilentOpenAbortRef.current?.abort();
-    pendingSilentOpenAbortRef.current = null;
-    stopSilentScanTransport();
-    stopAudioElement();
   }, []);
 
   const savedChannels = useMemo(
@@ -555,13 +387,42 @@ export function AirbandModule({
     () => (config.freeScan ? uniqueScanChannels([...channels, ...FREE_SCAN_CHANNELS]) : channels),
     [channels, config.freeScan],
   );
+
+  const { session, error: sessionError, createSession, stopSession, updateSession } = useRadioSession("airband", {
+    onActivity(event) {
+      setScanLog((entries) => [event.entry, ...entries.filter((entry) => entry.id !== event.entry.id)].slice(0, ACTIVITY_EVENTS_DEFAULT_LIMIT));
+    },
+  });
+
+  const scannerState = deriveScannerState(session?.mode ?? null, session?.state ?? null);
+  const currentScanChannel = session?.mode === "scan"
+    ? (session.pendingChannel ?? session.activeChannel)
+    : null;
+  const manualChannel = session?.mode === "manual"
+    ? (session.pendingChannel ?? session.activeChannel)
+    : null;
+  const manualActivityRms = session?.mode === "manual" && session.state === "active"
+    ? (session.telemetry?.rms ?? null)
+    : null;
+  const telemetry = session?.telemetry ?? null;
+  const monitoringChannel = manualChannel;
+  const playingChannelId = session?.mode === "manual"
+    ? (session.activeChannel?.id ?? session.pendingChannel?.id ?? null)
+    : scannerState === "locked"
+      ? (session?.activeChannel?.id ?? null)
+      : null;
+  const currentScanChannelId = currentScanChannel?.id ?? null;
   const spectrumMarkers = useMemo(
-    () => buildAirbandSpectrumMarkers(channels, selectedChannelId, playingChannelId),
-    [channels, playingChannelId, selectedChannelId],
+    () => buildAirbandSpectrumMarkers(channels, selectedChannelId, playingChannelId, currentScanChannelId),
+    [channels, currentScanChannelId, playingChannelId, selectedChannelId],
   );
   const spectrumViewRange = useMemo(
     () => buildChannelSpectrumRange(scannerState !== "idle" ? scanChannels : channels),
     [channels, scanChannels, scannerState],
+  );
+  const scanDeckSignature = useMemo(
+    () => radioSessionChannelDeckSignature(toSessionChannels(scanChannels)),
+    [scanChannels],
   );
 
   const selectedChannel =
@@ -569,18 +430,9 @@ export function AirbandModule({
     (manualChannel?.id === selectedChannelId ? manualChannel : null) ??
     null;
 
-  const currentScanChannel =
-    scannerState !== "idle" ? (scanChannels[scanIndex % Math.max(scanChannels.length, 1)] ?? null) : null;
-
-  const isStarting = startingChannelId !== null;
   const selectedChannelIsManual = Boolean(selectedChannel?.id.startsWith("manual-"));
-  const telemetry = getRunningStreamTelemetry(liveHardware?.activeStream ?? null);
-  const monitoringChannel = scannerState === "idle"
-    ? (
-      channels.find((channel) => channel.id === playingChannelId)
-      ?? (manualChannel?.id === playingChannelId ? manualChannel : null)
-    )
-    : null;
+  const isBusy = pendingAction !== null;
+  const startingChannelId = pendingAction?.type === "manual" ? pendingAction.channelId ?? null : null;
 
   useEffect(() => {
     if (!selectedChannelId) {
@@ -592,75 +444,41 @@ export function AirbandModule({
     }
   }, [selectedChannel, selectedChannelId]);
 
+  useEffect(() => {
+    const audio = audioRef.current;
+    if (!audio) {
+      return;
+    }
+
+    const handleEnded = () => {
+      audioSessionIdRef.current = null;
+    };
+
+    const handleError = () => {
+      audioSessionIdRef.current = null;
+      setStreamError("Could not open AIRBAND session audio.");
+    };
+
+    audio.addEventListener("ended", handleEnded);
+    audio.addEventListener("error", handleError);
+    return () => {
+      audio.removeEventListener("ended", handleEnded);
+      audio.removeEventListener("error", handleError);
+    };
+  }, []);
+
   function stopAudioElement(): void {
     const audio = audioRef.current;
     if (!audio) {
+      audioSessionIdRef.current = null;
       return;
     }
 
     audio.pause();
     audio.removeAttribute("src");
     audio.load();
+    audioSessionIdRef.current = null;
   }
-
-  function stopSilentScanTransport(): void {
-    const transport = silentScanTransportRef.current;
-    silentScanTransportRef.current = null;
-    transport?.abort();
-  }
-
-  function cancelPendingSilentOpen(): void {
-    pendingSilentOpenAbortRef.current?.abort();
-    pendingSilentOpenAbortRef.current = null;
-  }
-
-  function stopChannel(): void {
-    streamRequestSeqRef.current += 1;
-    activityEventIdRef.current = null;
-    cancelPendingSilentOpen();
-    stopSilentScanTransport();
-    stopAudioElement();
-    setPlayingChannelId(null);
-    setStartingChannelId(null);
-  }
-
-  const queueActivityLog = useEffectEvent(async (
-    channel: AirbandChannel,
-    mode: "manual" | "scan",
-    rms: number,
-  ): Promise<ActivityLogEntry | null> => {
-    const occurredAt = new Date().toISOString();
-    const payload = {
-      module: "airband" as const,
-      mode,
-      label: channel.label,
-      freqMhz: channel.freqMhz,
-      rms,
-      occurredAt,
-      bandId: channel.bandId,
-      channelId: channel.id,
-      channelNumber: channel.number,
-      demodMode: "am" as const,
-      squelch: squelchRef.current,
-      location: locationRef.current,
-      metadata: {
-        notes: channel.notes ?? null,
-        freeScan: config.freeScan,
-      },
-    };
-
-    try {
-      const entry = await persistActivityEvent(payload);
-      setScanLog((entries) => [entry, ...entries].slice(0, ACTIVITY_EVENTS_DEFAULT_LIMIT));
-      return entry;
-    } catch {
-      setScanLog((entries) => [
-        createActivityLogEntryFallback(payload),
-        ...entries,
-      ].slice(0, ACTIVITY_EVENTS_DEFAULT_LIMIT));
-      return null;
-    }
-  });
 
   async function handleClearActivity(): Promise<void> {
     setClearingActivity(true);
@@ -674,472 +492,181 @@ export function AirbandModule({
   }
 
   useEffect(() => {
-    if (scannerState !== "idle" || !monitoringChannel) {
-      setManualActivityRms(null);
-      return;
+    if (session?.bandId && session.bandId !== config.selectedBandId) {
+      setConfig((current) => ({ ...current, selectedBandId: session.bandId }));
     }
-
-    let lastActivityAt = 0;
-    let peakRms = 0;
-    let burstOpen = false;
-    let burstChannel: AirbandChannel | null = null;
-
-    const interval = window.setInterval(() => {
-      const now = Date.now();
-      const activeStream = hardwareRef.current?.activeStream ?? null;
-      const activeChannel = resolveRunningAirbandChannel(channels, manualChannel, activeStream);
-      if (!activeChannel || activeChannel.id !== monitoringChannel.id) {
-        return;
-      }
-
-      const currentTelemetry = getRunningStreamTelemetry(activeStream, now);
-
-      if (hasRmsActivity(currentTelemetry, squelchRef.current, now)) {
-        const currentRms = currentTelemetry?.rms ?? 0;
-        if (!burstOpen) {
-          activityEventIdRef.current = null;
-          burstChannel = activeChannel;
-          const activeStreamId = activeStream?.id ?? null;
-          if (activeStreamId) {
-            void fetch(
-              buildAirbandRetuneUrl(
-                activeChannel,
-                "manual",
-                locationRef.current,
-                squelchRef.current,
-                null,
-                activeStreamId,
-              ),
-              { method: "PATCH" },
-            ).catch(() => {});
-          }
-        } else if (!burstChannel || burstChannel.id !== activeChannel.id) {
-          burstChannel = activeChannel;
-        }
-        lastActivityAt = now;
-        peakRms = Math.max(peakRms, currentRms);
-        burstOpen = true;
-        setManualActivityRms(peakRms);
-        return;
-      }
-
-      if (!burstOpen || now - lastActivityAt < SCANNER_HOLD_GRACE_MS) {
-        return;
-      }
-
-      burstOpen = false;
-      setManualActivityRms(null);
-      const burstPeakRms = peakRms;
-      peakRms = 0;
-      const burstChannelToPersist = burstChannel ?? monitoringChannel;
-      burstChannel = null;
-      const requestSeqAtBurst = streamRequestSeqRef.current;
-      void (async () => {
-        const entry = await queueActivityLog(burstChannelToPersist, "manual", burstPeakRms);
-        const activityEventId = entry && !entry.id.startsWith("local-") ? entry.id : null;
-        if (!activityEventId) {
-          return;
-        }
-
-        if (
-          scannerStateRef.current !== "idle"
-          || playingIdRef.current !== burstChannelToPersist.id
-          || streamRequestSeqRef.current !== requestSeqAtBurst
-        ) {
-          return;
-        }
-
-        activityEventIdRef.current = activityEventId;
-        const activeStreamId = hardwareRef.current?.activeStream?.id ?? null;
-        if (!activeStreamId) {
-          return;
-        }
-        try {
-          await fetch(
-            buildAirbandRetuneUrl(
-              burstChannelToPersist,
-              "manual",
-              locationRef.current,
-              squelchRef.current,
-              activityEventId,
-              activeStreamId,
-            ),
-            { method: "PATCH" },
-          );
-        } catch {
-          // Best effort only.
-        }
-      })();
-    }, TELEMETRY_REFRESH_MS);
-
-    return () => {
-      clearInterval(interval);
-      setManualActivityRms(null);
-    };
-  }, [channels, manualChannel, monitoringChannel, scannerState]);
-
-  function nextScanIndex(channelCount: number, currentIndex: number): number {
-    if (channelCount <= 0) {
-      return 0;
-    }
-
-    return scanModeRef.current === "random"
-      ? Math.floor(Math.random() * channelCount)
-      : (currentIndex + 1) % channelCount;
-  }
+  }, [config.selectedBandId, session?.bandId]);
 
   useEffect(() => {
-    const shouldPollTelemetry =
-      scannerState !== "idle" || playingChannelId !== null || startingChannelId !== null;
-
-    if (!shouldPollTelemetry) {
+    if (!session) {
+      lastSessionIdRef.current = null;
       return;
     }
 
-    const refreshIntervalMs =
-      scannerState !== "idle" ? SCAN_HARDWARE_REFRESH_MS : ACTIVE_LISTEN_TELEMETRY_REFRESH_MS;
+    if (lastSessionIdRef.current !== session.id) {
+      lastSessionIdRef.current = session.id;
+      setSelectedChannelId(session.activeChannel?.id ?? session.pendingChannel?.id ?? null);
+    }
+  }, [session]);
 
-    let cancelled = false;
+  useEffect(() => {
+    if (!sessionError) {
+      return;
+    }
+    setStreamError(sessionError);
+  }, [sessionError]);
 
-    const pollHardware = async () => {
-      if (cancelled || pollInFlightRef.current) {
-        return;
-      }
-
-      pollInFlightRef.current = true;
-      try {
-        const snapshot = await fetchHardwareStatusSnapshot();
-        if (!cancelled) {
-          hardwareRef.current = snapshot;
-          const now = Date.now();
-          setLiveHardware((current) => {
-            if (!shouldPublishHardwareSnapshot(
-              current,
-              snapshot,
-              lastHardwarePublishAtRef.current,
-              now,
-              scannerStateRef.current !== "idle" ? SCAN_UI_HARDWARE_PUBLISH_INTERVAL_MS : undefined,
-            )) {
-              return current;
-            }
-
-            lastHardwarePublishAtRef.current = now;
-            return snapshot;
-          });
-        }
-      } finally {
-        pollInFlightRef.current = false;
-      }
-    };
-
-    void pollHardware();
-    const interval = window.setInterval(() => void pollHardware(), refreshIntervalMs);
-
-    return () => {
-      cancelled = true;
-      clearInterval(interval);
-    };
-  }, [playingChannelId, scannerState, startingChannelId]);
-
-  async function startChannel(
-    channel: AirbandChannel,
-    mode: "manual" | "scan",
-    transport: "audio" | "silent" = mode === "scan" ? "silent" : "audio",
-    allowRetune = true,
-  ): Promise<void> {
-    if (!audioRef.current) {
+  useEffect(() => {
+    if (!session) {
       return;
     }
 
-    const requestId = ++streamRequestSeqRef.current;
-    cancelPendingSilentOpen();
-    setStreamError("");
-    setSelectedChannelId(channel.id);
-    setManualChannel(channel.id.startsWith("manual-") ? channel : null);
-    setStartingChannelId(channel.id);
-    setPlayingChannelId(null);
-    if (mode === "manual" || transport === "silent") {
-      activityEventIdRef.current = null;
+    const patch: UpdateNarrowbandSessionRequest = {};
+    let hasChanges = false;
+
+    if (
+      session.controls.lna !== controls.lna
+      || session.controls.vga !== controls.vga
+      || Math.abs(session.controls.audioGain - controls.audioGain) > 0.001
+    ) {
+      patch.controls = controls;
+      hasChanges = true;
+    }
+    if (session.squelch !== config.squelch) {
+      patch.squelch = config.squelch;
+      hasChanges = true;
+    }
+    if (session.dwellTime !== config.dwellTime) {
+      patch.dwellTime = config.dwellTime;
+      hasChanges = true;
+    }
+    if (session.holdTime !== config.holdTime) {
+      patch.holdTime = config.holdTime;
+      hasChanges = true;
+    }
+    if (session.scanMode !== config.scanMode) {
+      patch.scanMode = config.scanMode;
+      hasChanges = true;
+    }
+    if (session.mode === "scan" && session.bandId !== config.selectedBandId) {
+      patch.bandId = config.selectedBandId;
+      hasChanges = true;
+    }
+    if (session.mode === "scan" && session.channelDeckSignature !== scanDeckSignature) {
+      patch.channels = toSessionChannels(scanChannels);
+      hasChanges = true;
     }
 
-    const hadSilentTransport = silentScanTransportRef.current !== null;
-    if (transport === "audio") {
-      stopSilentScanTransport();
-    }
-
-    const activeStream = hardwareRef.current?.activeStream ?? null;
-
-    const canRetuneInPlace =
-      allowRetune
-      && activeStream?.demodMode === "am"
-      && activeStream.phase === "running"
-      && activeStream.pendingFreqHz === null
-      && activeStream.lna === controls.lna
-      && activeStream.vga === controls.vga
-      && Math.abs(activeStream.audioGain - controls.audioGain) < 0.001
-      && ((transport === "audio" && !hadSilentTransport) || (transport === "silent" && hadSilentTransport));
-
-    if (canRetuneInPlace) {
-      try {
-        const response = await fetch(
-          buildAirbandRetuneUrl(
-            channel,
-            mode,
-            locationRef.current,
-            squelchRef.current,
-            activityEventIdRef.current,
-            activeStream?.id ?? null,
-          ),
-          { method: "PATCH" },
-        );
-        if (response.ok) {
-          if (streamRequestSeqRef.current !== requestId) {
-            return;
-          }
-          setPlayingChannelId(channel.id);
-          setStartingChannelId(null);
-          if (mode === "manual") {
-            void onRefreshHardware();
-          }
-          return;
-        }
-      } catch {
-        // Fall back to a full restart if in-place retune fails.
-      }
-    }
-
-    if (transport === "silent") {
-      stopAudioElement();
-      stopSilentScanTransport();
-      let controller: AbortController | null = null;
-
-      try {
-        controller = new AbortController();
-        pendingSilentOpenAbortRef.current = controller;
-        const nextTransport = await openSilentScanTransport(
-          buildAirbandUrl(channel, controls, mode, locationRef.current, squelchRef.current, activityEventIdRef.current),
-          (error) => {
-            if (scannerStateRef.current !== "idle" && streamRequestSeqRef.current === requestId) {
-              setStreamError(error.message);
-            }
-          },
-          controller.signal,
-        );
-        if (pendingSilentOpenAbortRef.current === controller) {
-          pendingSilentOpenAbortRef.current = null;
-        }
-        if (streamRequestSeqRef.current !== requestId) {
-          nextTransport.abort();
-          return;
-        }
-        silentScanTransportRef.current = nextTransport;
-        void nextTransport.closed.finally(() => {
-          if (silentScanTransportRef.current === nextTransport) {
-            silentScanTransportRef.current = null;
-          }
-        });
-        setPlayingChannelId(channel.id);
-      } catch (error) {
-        if (controller && pendingSilentOpenAbortRef.current === controller) {
-          pendingSilentOpenAbortRef.current = null;
-        }
-        if (streamRequestSeqRef.current !== requestId) {
-          return;
-        }
-        setPlayingChannelId(null);
-        if (!(error instanceof DOMException && error.name === "AbortError")) {
-          setStreamError(error instanceof Error ? error.message : "Could not start AIRBAND scan transport.");
-        }
-      } finally {
-        if (streamRequestSeqRef.current === requestId) {
-          setStartingChannelId(null);
-        }
-      }
+    if (!hasChanges) {
       return;
     }
 
+    void updateSession(patch).catch((error) => {
+      setStreamError(error instanceof Error ? error.message : "Could not update AIRBAND session.");
+    });
+  }, [config.dwellTime, config.holdTime, config.scanMode, config.selectedBandId, config.squelch, controls, scanChannels, scanDeckSignature, session, updateSession]);
+
+  const shouldPlaySessionAudio = !!session
+    && session.audioAvailable
+    && (session.mode === "manual" || session.state === "locked" || session.state === "active");
+
+  useEffect(() => {
     const audio = audioRef.current;
-    stopAudioElement();
-    audio.src = buildAirbandUrl(channel, controls, mode, locationRef.current, squelchRef.current, activityEventIdRef.current);
+    if (!audio) {
+      return;
+    }
 
-    try {
-      await audio.play();
-      if (streamRequestSeqRef.current !== requestId) {
-        stopAudioElement();
-        return;
-      }
-      setPlayingChannelId(channel.id);
-      if (mode === "manual") {
-        void onRefreshHardware();
-      }
-    } catch (error) {
+    if (!shouldPlaySessionAudio || !session) {
+      stopAudioElement();
+      return;
+    }
+
+    if (audioSessionIdRef.current !== session.id) {
+      audio.pause();
+      audio.src = formatSessionAudioUrl(session.id);
+      audio.load();
+      audioSessionIdRef.current = session.id;
+    }
+
+    void audio.play().catch((error) => {
       if (error instanceof DOMException && error.name === "AbortError") {
         return;
       }
-      if (streamRequestSeqRef.current !== requestId) {
-        return;
-      }
+      setStreamError(error instanceof Error ? error.message : "Could not start AIRBAND session audio.");
+    });
+  }, [session, shouldPlaySessionAudio]);
 
-      audio.removeAttribute("src");
-      audio.load();
-      setPlayingChannelId(null);
-      setStreamError(error instanceof Error ? error.message : "Could not start AIRBAND stream.");
-    } finally {
-      if (streamRequestSeqRef.current === requestId) {
-        setStartingChannelId(null);
-      }
+  useEffect(() => {
+    if (pendingAction && session && session.state !== "starting" && session.state !== "tuning") {
+      setPendingAction(null);
+    }
+  }, [pendingAction, session]);
+
+  function buildSessionChannels(mode: "manual" | "scan", manual: AirbandChannel | null): AirbandChannel[] {
+    if (mode === "scan") {
+      return scanChannels;
+    }
+    return manual ? [...channels, manual] : channels;
+  }
+
+  function buildSessionRequest(
+    mode: "manual" | "scan",
+    manual: AirbandChannel | null = null,
+  ): CreateRadioSessionRequest {
+    const sessionChannels = buildSessionChannels(mode, manual);
+    return {
+      kind: "narrowband",
+      module: "airband",
+      mode,
+      controls,
+      bandId: config.selectedBandId,
+      channels: toSessionChannels(sessionChannels),
+      scanMode: config.scanMode,
+      manualChannelId: manual?.id ?? null,
+      squelch: config.squelch,
+      dwellTime: config.dwellTime,
+      holdTime: config.holdTime,
+      location,
+    };
+  }
+
+  async function startManualChannel(channel: AirbandChannel): Promise<void> {
+    setPendingAction({ type: "manual", channelId: channel.id });
+    setStreamError("");
+    setSelectedChannelId(channel.id);
+    try {
+      await createSession(buildSessionRequest("manual", channel.id.startsWith("manual-") ? channel : null));
+    } catch (error) {
+      setStreamError(error instanceof Error ? error.message : "Could not start AIRBAND manual session.");
+      setPendingAction(null);
     }
   }
 
-  useEffect(() => {
-    if (scannerState !== "scanning") {
-      return;
-    }
-
-    lockedAtRef.current = null;
-    activityEventIdRef.current = null;
-    const scanSessionId = scanSessionSeqRef.current;
-
-    const channel = scanChannels[scanIndex % scanChannels.length];
-    if (!channel) {
-      setScannerState("idle");
-      stopChannel();
-      return;
-    }
-
-    void startChannel(channel, "scan", "silent", true);
-
-    const startedAt = Date.now();
-    const activateAt = startedAt + SCANNER_STARTUP_MS;
-    const deadlineAt = activateAt + dwellTimeRef.current * 1000;
-    let peakWindow = createActivityWindowMetrics();
-    let confirmedActivePolls = 0;
-    let finished = false;
-
-    const timer = window.setInterval(() => {
-      if (finished || scannerStateRef.current !== "scanning") {
-        return;
-      }
-
-      const now = Date.now();
-      const activeStream = hardwareRef.current?.activeStream ?? null;
-      const activeChannel = resolveRunningAirbandChannel(scanChannels, null, activeStream);
-      if (!activeChannel || activeChannel.id !== channel.id) {
-        peakWindow = createActivityWindowMetrics();
-        confirmedActivePolls = 0;
-        return;
-      }
-
-      const telemetry = getRunningStreamTelemetry(activeStream, now);
-      peakWindow = mergeActivityWindowMetrics(peakWindow, telemetry, now);
-
-      if (now < activateAt) {
-        return;
-      }
-
-      if (hasRmsActivity(telemetry, squelchRef.current, now)) {
-        confirmedActivePolls += 1;
-      } else {
-        confirmedActivePolls = 0;
-      }
-
-      if (confirmedActivePolls >= SCANNER_ACTIVITY_CONFIRMATION_POLLS) {
-        finished = true;
-        clearInterval(timer);
-        void (async () => {
-          const entry = await queueActivityLog(activeChannel, "scan", peakWindow.rms);
-          if (finished && scannerStateRef.current === "scanning" && scanSessionSeqRef.current === scanSessionId) {
-            activityEventIdRef.current =
-              entry && !entry.id.startsWith("local-") ? entry.id : null;
-            lockedAtRef.current = now;
-            setScannerState("locked");
-          }
-        })();
-        return;
-      }
-
-      if (now >= deadlineAt) {
-        finished = true;
-        clearInterval(timer);
-        setScanIndex(nextScanIndex(scanChannels.length, scanIndex));
-      }
-    }, TELEMETRY_REFRESH_MS);
-
-    return () => clearInterval(timer);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [scanChannels, scanIndex, scannerState, config.selectedBandId, config.freeScan]);
-
-  useEffect(() => {
-    if (scannerState !== "locked" || !currentScanChannel || !silentScanTransportRef.current) {
-      return;
-    }
-
-    void startChannel(currentScanChannel, "scan", "audio", false);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [currentScanChannel, scannerState]);
-
-  useEffect(() => {
-    if (scannerState !== "locked") {
-      return;
-    }
-
-    const lockedAt = lockedAtRef.current ?? Date.now();
-    let lastActivityAt = lockedAt;
-    let released = false;
-
-    const interval = window.setInterval(() => {
-      if (released) {
-        return;
-      }
-
-      const now = Date.now();
-      const activeStream = hardwareRef.current?.activeStream ?? null;
-      const activeChannel = resolveRunningAirbandChannel(scanChannels, null, activeStream);
-      if (!activeChannel || activeChannel.id !== (playingIdRef.current ?? null)) {
-        return;
-      }
-
-      const telemetry = getRunningStreamTelemetry(activeStream, now);
-
-      if (hasRmsActivity(telemetry, squelchRef.current, now)) {
-        lastActivityAt = now;
-        return;
-      }
-
-      if (!shouldReleaseScannerLock(now, lastActivityAt, lockedAt, holdTimeRef.current)) {
-        return;
-      }
-
-      const lockedIndex = scanChannels.findIndex((channel) => channel.id === playingIdRef.current);
-      const base = lockedIndex >= 0 ? lockedIndex : 0;
-      released = true;
-      lockedAtRef.current = null;
-      clearInterval(interval);
-      setScanIndex(nextScanIndex(scanChannels.length, base));
-      setScannerState("scanning");
-    }, TELEMETRY_REFRESH_MS);
-
-    return () => clearInterval(interval);
-  }, [scanChannels, scannerState]);
-
-  function startScan(): void {
+  async function startScan(): Promise<void> {
     if (scanChannels.length === 0) {
       return;
     }
-
-    scanSessionSeqRef.current += 1;
-    lockedAtRef.current = null;
-    activityEventIdRef.current = null;
-    setManualChannel(null);
-    setScanIndex(0);
-    setScannerState("scanning");
+    setPendingAction({ type: "scan" });
+    setStreamError("");
+    try {
+      await createSession(buildSessionRequest("scan"));
+    } catch (error) {
+      setStreamError(error instanceof Error ? error.message : "Could not start AIRBAND scan session.");
+      setPendingAction(null);
+    }
   }
 
-  function stopScan(): void {
-    scanSessionSeqRef.current += 1;
-    lockedAtRef.current = null;
-    setScannerState("idle");
-    stopChannel();
+  async function stopManagedSession(): Promise<void> {
+    setPendingAction({ type: "stop" });
+    setStreamError("");
+    try {
+      await stopSession();
+      stopAudioElement();
+    } catch (error) {
+      setStreamError(error instanceof Error ? error.message : "Could not stop AIRBAND session.");
+    } finally {
+      setPendingAction(null);
+    }
   }
 
   function saveManualPreset(): void {
@@ -1158,7 +685,6 @@ export function AirbandModule({
     };
 
     setSavedPresets((current) => [nextPreset, ...current]);
-    setManualChannel(null);
     setConfig((current) => ({ ...current, selectedBandId: "saved" }));
     setSelectedChannelId(nextPreset.id);
   }
@@ -1168,27 +694,20 @@ export function AirbandModule({
       return;
     }
 
-    if (scannerState !== "idle") {
-      stopScan();
+    if (session && (scannerState !== "idle" || playingChannelId === channel.id)) {
+      void stopManagedSession();
     }
     setSavedPresets((current) => current.filter((preset) => preset.id !== channel.id));
     if (selectedChannelId === channel.id) {
       setSelectedChannelId(null);
     }
-    if (playingChannelId === channel.id) {
-      stopChannel();
-    }
   }
 
-  function tuneManual(): void {
+  async function tuneManual(): Promise<void> {
     const parsedFreq = Number.parseFloat(config.manualFreqMhz);
     if (!inAirbandRange(parsedFreq)) {
       setStreamError("Use a frequency between 118.000 and 137.000 MHz.");
       return;
-    }
-
-    if (scannerState !== "idle") {
-      stopScan();
     }
 
     const nextManualChannel = createManualChannel(
@@ -1197,18 +716,21 @@ export function AirbandModule({
       config.manualNotes,
       config.selectedBandId,
     );
-    setManualChannel(nextManualChannel);
-    void startChannel(nextManualChannel, "manual", "audio", false);
+    setSelectedChannelId(nextManualChannel.id);
+    setPendingAction({ type: "manual", channelId: nextManualChannel.id });
+    setStreamError("");
+    try {
+      await createSession(buildSessionRequest("manual", nextManualChannel));
+    } catch (error) {
+      setStreamError(error instanceof Error ? error.message : "Could not start AIRBAND manual session.");
+      setPendingAction(null);
+    }
   }
 
-  function stepTune(deltaMhz: number): void {
+  async function stepTune(deltaMhz: number): Promise<void> {
     const baseFreq = selectedChannel?.freqMhz ?? Number.parseFloat(config.manualFreqMhz);
     if (!Number.isFinite(baseFreq)) {
       return;
-    }
-
-    if (scannerState !== "idle") {
-      stopScan();
     }
 
     const nextFreq = normalizeAirbandFrequency(baseFreq + deltaMhz);
@@ -1225,8 +747,15 @@ export function AirbandModule({
       selectedChannel?.notes ?? config.manualNotes,
       config.selectedBandId,
     );
-    setManualChannel(nextManualChannel);
-    void startChannel(nextManualChannel, "manual", "audio", true);
+    setSelectedChannelId(nextManualChannel.id);
+    setPendingAction({ type: "manual", channelId: nextManualChannel.id });
+    setStreamError("");
+    try {
+      await createSession(buildSessionRequest("manual", nextManualChannel));
+    } catch (error) {
+      setStreamError(error instanceof Error ? error.message : "Could not start AIRBAND manual session.");
+      setPendingAction(null);
+    }
   }
 
   function saveSelectedPreset(): void {
@@ -1238,7 +767,6 @@ export function AirbandModule({
       (preset) => preset.freqMhz === selectedChannel.freqMhz && preset.label === selectedChannel.label,
     );
     if (existing) {
-      setManualChannel(null);
       setConfig((current) => ({ ...current, selectedBandId: "saved" }));
       setSelectedChannelId(existing.id);
       return;
@@ -1253,7 +781,6 @@ export function AirbandModule({
     };
 
     setSavedPresets((current) => [nextPreset, ...current]);
-    setManualChannel(null);
     setConfig((current) => ({ ...current, selectedBandId: "saved" }));
     setSelectedChannelId(nextPreset.id);
   }
@@ -1292,14 +819,12 @@ export function AirbandModule({
                     : "border-l-clear text-[var(--muted-strong)] hover:bg-white/[0.03] hover:text-[var(--foreground)]",
                 )}
                 onClick={() => {
-                  if (scannerState !== "idle") {
-                    stopScan();
+                  if (session) {
+                    void stopManagedSession();
                   } else {
-                    stopChannel();
+                    stopAudioElement();
                   }
-                  setManualChannel(null);
                   setSelectedChannelId(null);
-                  setScanIndex(0);
                   setConfig((current) => ({ ...current, selectedBandId: band.id }));
                 }}
                 type="button"
@@ -1376,7 +901,7 @@ export function AirbandModule({
               const isSelected = selectedChannel?.id === channel.id;
               const isPlaying = playingChannelId === channel.id;
               const isStartingChannel = startingChannelId === channel.id;
-              const isScanningChannel = currentScanChannel?.id === channel.id;
+              const isScanningChannel = currentScanChannelId === channel.id;
 
               return (
                 <div
@@ -1442,26 +967,23 @@ export function AirbandModule({
                     )}
                     onClick={(event) => {
                       event.stopPropagation();
-                      if (isPlaying || isStartingChannel) {
-                        stopChannel();
+                      if (session?.mode === "manual" && isPlaying) {
+                        void stopManagedSession();
                         return;
                       }
-                      if (scannerState !== "idle") {
-                        stopScan();
-                      }
-                      void startChannel(channel, "manual", "audio", false);
+                      void startManualChannel(channel);
                     }}
                     type="button"
                   >
-                    {isStartingChannel ? <Spinner /> : isPlaying ? "■" : "▶"}
+                    {isStartingChannel ? <Spinner /> : isPlaying && session?.mode === "manual" ? "■" : "▶"}
                   </button>
 
                   {channel.removable ? (
                     <button
                       className="shrink-0 rounded-full border border-rose-400/20 px-2 py-1 font-mono text-[9px] text-rose-300 opacity-0 transition hover:bg-rose-400/10 group-hover:opacity-100"
-                      onClick={(event) => {
-                        event.stopPropagation();
-                        deleteSavedPreset(channel);
+                    onClick={(event) => {
+                      event.stopPropagation();
+                      deleteSavedPreset(channel);
                       }}
                       type="button"
                     >
@@ -1622,14 +1144,14 @@ export function AirbandModule({
                   disabled={startingChannelId !== null && startingChannelId !== selectedChannel.id}
                   onClick={() => {
                     if (scannerState !== "idle") {
-                      stopScan();
+                      void stopManagedSession();
                       return;
                     }
-                    if (playingChannelId === selectedChannel.id) {
-                      stopChannel();
+                    if (session?.mode === "manual" && playingChannelId === selectedChannel.id) {
+                      void stopManagedSession();
                       return;
                     }
-                    void startChannel(selectedChannel, "manual", "audio", false);
+                    void startManualChannel(selectedChannel);
                   }}
                   type="button"
                 >
@@ -1637,12 +1159,12 @@ export function AirbandModule({
                     ? "Stop Scanning"
                     : startingChannelId === selectedChannel.id
                       ? <><Spinner />Starting…</>
-                      : playingChannelId === selectedChannel.id
+                      : session?.mode === "manual" && playingChannelId === selectedChannel.id
                         ? "Stop"
                         : "▶ Listen"}
                 </button>
 
-                {selectedChannel.removable ? (
+                {channels.find((channel) => channel.id === selectedChannel.id)?.removable ? (
                   <button className={CLS_BTN_GHOST} onClick={() => deleteSavedPreset(selectedChannel)} type="button">
                     Delete
                   </button>
@@ -1727,10 +1249,6 @@ export function AirbandModule({
               type="checkbox"
               onChange={(event) => {
                 const checked = event.target.checked;
-                if (scannerState !== "idle") {
-                  stopScan();
-                }
-                setScanIndex(0);
                 setConfig((current) => ({ ...current, freeScan: checked }));
               }}
             />
@@ -1818,8 +1336,8 @@ export function AirbandModule({
             {scannerState === "idle" ? (
               <button
                 className={cx("w-full justify-center", CLS_BTN_PRIMARY)}
-                disabled={isStarting || scanChannels.length === 0}
-                onClick={startScan}
+                disabled={isBusy || scanChannels.length === 0}
+                onClick={() => void startScan()}
                 type="button"
               >
                 ▶ Start Scanning
@@ -1827,10 +1345,11 @@ export function AirbandModule({
             ) : (
               <button
                 className="inline-flex w-full items-center justify-center gap-1.5 rounded border border-rose-400/25 bg-rose-400/[0.08] px-4 py-2 text-sm font-semibold text-rose-300 transition hover:border-rose-400/45"
-                onClick={stopScan}
+                disabled={isBusy}
+                onClick={() => void stopManagedSession()}
                 type="button"
               >
-                {scannerState === "scanning" && <Spinner />}
+                {(pendingAction?.type === "stop" || scannerState === "scanning") && <Spinner />}
                 Stop Scanning
               </button>
             )}

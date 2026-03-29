@@ -18,6 +18,7 @@ import {
 import { hackrfDeviceService } from "@/server/hackrf-device";
 import { pickHackrfRuntimeErrorMessage } from "@/server/hackrf-runtime-errors";
 import { buildOfflineMapSummary } from "@/server/maps";
+import { projectBinPath, projectPath } from "@/server/project-paths";
 import { listRecentAdsbContacts, persistAdsbTrackPoints } from "@/server/track-store";
 
 const DEFAULT_CENTER_FREQ_HZ = 1_090_000_000;
@@ -25,12 +26,7 @@ const DEFAULT_SAMPLE_RATE = 2_400_000;
 const DEFAULT_LNA_GAIN = 32;
 const DEFAULT_VGA_GAIN = 50;
 const DEFAULT_PPM = 0;
-const ADSB_JSON_DIR = path.join(
-  /*turbopackIgnore: true*/ process.cwd(),
-  ".cache",
-  "adsb-runtime",
-  "json",
-);
+const ADSB_JSON_DIR = projectPath(".cache", "adsb-runtime", "json");
 
 function parseEnvInteger(name: string, fallback: number): number {
   const raw = process.env[name]?.trim();
@@ -53,10 +49,8 @@ function parseEnvFloat(name: string): number | null {
 }
 
 function adsbBinaryPath(): string {
-  return (
-    process.env.HACKRF_WEBUI_ADSB_BIN?.trim()
-    || path.join(/*turbopackIgnore: true*/ process.cwd(), "bin", "dump1090-fa")
-  );
+  const customPath = process.env.HACKRF_WEBUI_ADSB_BIN?.trim();
+  return customPath ? path.resolve(customPath) : projectBinPath("dump1090-fa");
 }
 
 function aircraftBounds(aircraft: AdsbAircraftContact[]): GeoBounds | null {

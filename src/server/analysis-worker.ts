@@ -9,7 +9,8 @@ import { promisify } from "node:util";
 import { and, eq, inArray } from "drizzle-orm";
 
 import { appDb, sqliteDb } from "@/server/db/client";
-import { analysisFindings, analysisJobs, captureTags, captureTranscripts } from "@/server/db/schema";
+import { analysisFindings, analysisJobs, captureSessions, captureTags, captureTranscripts } from "@/server/db/schema";
+import { projectAssetPath, projectRuntimePath, projectScriptPath } from "@/server/project-paths";
 import { captureAbsolutePath } from "@/server/storage";
 
 const execFileAsync = promisify(execFile);
@@ -17,13 +18,10 @@ const execFileAsync = promisify(execFile);
 export const AUDIO_ANALYSIS_ENGINE = "yamnet-vad";
 const AUDIO_ANALYSIS_ENGINE_FAMILY = ["yamnet-litert", "yamnet-vad"] as const;
 
-const ROOT_DIR = /*turbopackIgnore: true*/ process.cwd();
-const RUNTIME_DIR = path.join(ROOT_DIR, "runtime");
-const AI_VENV_DIR = path.join(RUNTIME_DIR, "ai-venv");
-const AI_PYTHON_PATH = path.join(AI_VENV_DIR, "bin", "python");
-const AI_SCRIPT_PATH = path.join(ROOT_DIR, "scripts", "ai", "audio_tagger.py");
-const AI_MODEL_PATH = path.join(ROOT_DIR, "assets", "ai", "yamnet.tflite");
-const AI_LABELS_PATH = path.join(ROOT_DIR, "assets", "ai", "yamnet_class_map.csv");
+const AI_PYTHON_PATH = projectRuntimePath("ai-venv", "bin", "python");
+const AI_SCRIPT_PATH = projectScriptPath("ai", "audio_tagger.py");
+const AI_MODEL_PATH = projectAssetPath("ai", "yamnet.tflite");
+const AI_LABELS_PATH = projectAssetPath("ai", "yamnet_class_map.csv");
 
 const WORKER_IDLE_MS = 2_500;
 const BACKFILL_INTERVAL_MS = 30_000;
@@ -181,12 +179,27 @@ function normalizeAudioClass(value: string): "speech" | "music" | "noise" | "unk
   return "unknown";
 }
 
-function queueQueuedJob(captureSessionId: string): void {
+function lookupBurstEventId(captureSessionId: string): string | null {
+  const row = appDb
+    .select({
+      burstEventId: captureSessions.burstEventId,
+    })
+    .from(captureSessions)
+    .where(eq(captureSessions.id, captureSessionId))
+    .limit(1)
+    .get();
+
+  return row?.burstEventId ?? null;
+}
+
+function queueQueuedJob(captureSessionId: string, burstEventIdHint: string | null = null): void {
   const nowMs = Date.now();
+  const burstEventId = burstEventIdHint ?? lookupBurstEventId(captureSessionId);
   const existing = appDb
     .select({
       id: analysisJobs.id,
       status: analysisJobs.status,
+      burstEventId: analysisJobs.burstEventId,
     })
     .from(analysisJobs)
     .where(
@@ -202,9 +215,14 @@ function queueQueuedJob(captureSessionId: string): void {
     if (existing.status === "failed") {
       appDb.update(analysisJobs).set({
         status: "queued",
+        burstEventId,
         errorText: null,
         startedAtMs: null,
         endedAtMs: null,
+      }).where(eq(analysisJobs.id, existing.id)).run();
+    } else if (existing.burstEventId !== burstEventId) {
+      appDb.update(analysisJobs).set({
+        burstEventId,
       }).where(eq(analysisJobs.id, existing.id)).run();
     }
     return;
@@ -215,6 +233,7 @@ function queueQueuedJob(captureSessionId: string): void {
     .values({
       id: randomUUID(),
       captureSessionId,
+      burstEventId,
       engine: AUDIO_ANALYSIS_ENGINE,
       status: "queued",
       paramsJson: JSON.stringify({
@@ -583,8 +602,8 @@ export function ensureAnalysisWorkerStarted(): void {
   scheduleWorker(500);
 }
 
-export function queueCaptureAnalysisJob(captureSessionId: string): void {
-  queueQueuedJob(captureSessionId);
+export function queueCaptureAnalysisJob(captureSessionId: string, burstEventId: string | null = null): void {
+  queueQueuedJob(captureSessionId, burstEventId);
   ensureAnalysisWorkerStarted();
 }
 

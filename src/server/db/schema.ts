@@ -49,12 +49,54 @@ export const activityEvents = sqliteTable(
     locationSource: text("location_source"),
     locationLatitude: real("location_latitude"),
     locationLongitude: real("location_longitude"),
+    radioSessionId: text("radio_session_id"),
+    streamId: text("stream_id"),
     metadataJson: text("metadata_json"),
     createdAtMs: integer("created_at_ms").notNull(),
   },
   (table) => ({
     moduleStartedIdx: index("activity_events_module_started_idx").on(table.module, table.startedAtMs),
     freqStartedIdx: index("activity_events_freq_started_idx").on(table.freqHz, table.startedAtMs),
+    streamStartedIdx: index("activity_events_stream_started_idx").on(table.streamId, table.startedAtMs),
+  }),
+);
+
+export const burstEvents = sqliteTable(
+  "burst_events",
+  {
+    id: text("id").primaryKey(),
+    scanRunId: text("scan_run_id").references(() => scanRuns.id, { onDelete: "set null" }),
+    activityEventId: text("activity_event_id").references(() => activityEvents.id, { onDelete: "set null" }),
+    module: text("module").notNull(),
+    mode: text("mode").notNull(),
+    label: text("label").notNull(),
+    bandId: text("band_id"),
+    channelId: text("channel_id"),
+    channelNumber: integer("channel_number"),
+    demodMode: text("demod_mode"),
+    freqHz: integer("freq_hz").notNull(),
+    centerFreqHz: integer("center_freq_hz"),
+    startedAtMs: integer("started_at_ms").notNull(),
+    endedAtMs: integer("ended_at_ms").notNull(),
+    durationMs: integer("duration_ms"),
+    rmsAvg: real("rms_avg"),
+    rmsPeak: real("rms_peak"),
+    rfPeak: real("rf_peak"),
+    squelch: real("squelch"),
+    deviceLabel: text("device_label"),
+    deviceSerial: text("device_serial"),
+    locationJson: text("location_json"),
+    radioSessionId: text("radio_session_id"),
+    streamId: text("stream_id"),
+    metadataJson: text("metadata_json"),
+    createdAtMs: integer("created_at_ms").notNull(),
+    updatedAtMs: integer("updated_at_ms").notNull(),
+  },
+  (table) => ({
+    moduleStartedIdx: index("burst_events_module_started_idx").on(table.module, table.startedAtMs),
+    freqStartedIdx: index("burst_events_freq_started_idx").on(table.freqHz, table.startedAtMs),
+    activityStartedIdx: index("burst_events_activity_started_idx").on(table.activityEventId, table.startedAtMs),
+    streamStartedIdx: index("burst_events_stream_started_idx").on(table.streamId, table.startedAtMs),
   }),
 );
 
@@ -64,6 +106,7 @@ export const captureSessions = sqliteTable(
     id: text("id").primaryKey(),
     scanRunId: text("scan_run_id").references(() => scanRuns.id, { onDelete: "set null" }),
     activityEventId: text("activity_event_id").references(() => activityEvents.id, { onDelete: "set null" }),
+    burstEventId: text("burst_event_id").references(() => burstEvents.id, { onDelete: "set null" }),
     module: text("module").notNull(),
     reason: text("reason").notNull(),
     status: text("status").notNull(),
@@ -75,6 +118,8 @@ export const captureSessions = sqliteTable(
     deviceLabel: text("device_label"),
     deviceSerial: text("device_serial"),
     locationJson: text("location_json"),
+    radioSessionId: text("radio_session_id"),
+    streamId: text("stream_id"),
     metadataJson: text("metadata_json"),
     createdAtMs: integer("created_at_ms").notNull(),
     updatedAtMs: integer("updated_at_ms").notNull(),
@@ -83,6 +128,8 @@ export const captureSessions = sqliteTable(
     startedIdx: index("capture_sessions_started_idx").on(table.startedAtMs),
     moduleStartedIdx: index("capture_sessions_module_started_idx").on(table.module, table.startedAtMs),
     activityStartedIdx: index("capture_sessions_activity_started_idx").on(table.activityEventId, table.startedAtMs),
+    burstStartedIdx: index("capture_sessions_burst_started_idx").on(table.burstEventId, table.startedAtMs),
+    streamStartedIdx: index("capture_sessions_stream_started_idx").on(table.streamId, table.startedAtMs),
   }),
 );
 
@@ -115,6 +162,7 @@ export const analysisJobs = sqliteTable(
     captureSessionId: text("capture_session_id")
       .notNull()
       .references(() => captureSessions.id, { onDelete: "cascade" }),
+    burstEventId: text("burst_event_id").references(() => burstEvents.id, { onDelete: "set null" }),
     engine: text("engine").notNull(),
     status: text("status").notNull(),
     paramsJson: text("params_json"),
@@ -126,6 +174,7 @@ export const analysisJobs = sqliteTable(
   (table) => ({
     captureStatusIdx: index("analysis_jobs_capture_status_idx").on(table.captureSessionId, table.status),
     captureEngineIdx: uniqueIndex("analysis_jobs_capture_engine_idx").on(table.captureSessionId, table.engine),
+    burstStatusIdx: index("analysis_jobs_burst_status_idx").on(table.burstEventId, table.status),
   }),
 );
 
@@ -292,3 +341,4 @@ export const aisTrackPoints = sqliteTable(
 );
 
 export type ActivityEventRow = typeof activityEvents.$inferSelect;
+export type BurstEventRow = typeof burstEvents.$inferSelect;

@@ -18,6 +18,7 @@ import { adsbRuntime } from "@/server/adsb-runtime";
 import { persistCapturedActivity } from "@/server/activity-events";
 import { hackrfDeviceService } from "@/server/hackrf-device";
 import { aisRuntime } from "@/server/ais-runtime";
+import { projectBinPath } from "@/server/project-paths";
 import { parseSpectrumFrameLine } from "@/server/spectrum-telemetry";
 import { capturePrefixForSession } from "@/server/storage";
 
@@ -35,6 +36,7 @@ type CaptureDescriptor = {
   module: ActivityCaptureRequestMeta["module"];
   mode: ActivityCaptureRequestMeta["mode"];
   activityEventId: string | null;
+  burstEventId: string | null;
   bandId: string | null;
   channelId: string | null;
   channelNumber: number | null;
@@ -113,10 +115,8 @@ function audioRateForMode(mode: AudioDemodMode): string {
 }
 
 function nativeBinaryPath(): string {
-  return (
-    process.env.HACKRF_WEBUI_NATIVE_BIN?.trim() ||
-    path.join(/*turbopackIgnore: true*/ process.cwd(), "bin", "hackrf_audio_stream")
-  );
+  const customPath = process.env.HACKRF_WEBUI_NATIVE_BIN?.trim();
+  return customPath ? path.resolve(customPath) : projectBinPath("hackrf_audio_stream");
 }
 
 function commandAvailable(command: string, args: string[] = ["-version"]): boolean {
@@ -322,6 +322,7 @@ class HackRFService {
         module: activityCapture.module,
         mode: activityCapture.mode,
         activityEventId: activityCapture.activityEventId ?? null,
+        burstEventId: activityCapture.burstEventId ?? null,
         bandId: activityCapture.bandId ?? null,
         channelId: activityCapture.channelId ?? null,
         channelNumber: activityCapture.channelNumber ?? null,
@@ -556,7 +557,20 @@ class HackRFService {
       && this.activeStream.session.pendingLabel === null;
 
     if (sameTarget) {
-      this.updateCaptureDescriptor(activityCapture, label, freqHz, true);
+      const shouldUpdatePendingSegment = Boolean(
+        activityCapture
+        && (
+          (
+            activityCapture.activityEventId !== null
+            && activityCapture.activityEventId !== undefined
+          )
+          || (
+            activityCapture.burstEventId !== null
+            && activityCapture.burstEventId !== undefined
+          )
+        ),
+      );
+      this.updateCaptureDescriptor(activityCapture, label, freqHz, shouldUpdatePendingSegment);
       this.activeStream.retuneDescriptorRollback = null;
       this.activeStream.pendingRetuneDescriptor = null;
       return true;
@@ -822,6 +836,7 @@ class HackRFService {
         module: request.activityCapture.module,
         mode: request.activityCapture.mode,
         activityEventId: request.activityCapture.activityEventId ?? null,
+        burstEventId: request.activityCapture.burstEventId ?? null,
         bandId: request.activityCapture.bandId ?? null,
         channelId: request.activityCapture.channelId ?? null,
         channelNumber: request.activityCapture.channelNumber ?? null,
@@ -1034,6 +1049,7 @@ class HackRFService {
       module: pending.descriptor.module,
       mode: pending.descriptor.mode,
       activityEventId: pending.descriptor.activityEventId,
+      burstEventId: pending.descriptor.burstEventId,
       label: pending.descriptor.label,
       freqHz: pending.descriptor.freqHz,
       demodMode: pending.descriptor.demodMode,
@@ -1075,6 +1091,8 @@ class HackRFService {
       metadata: {
         captureSource: "native-activity",
         sessionId,
+        streamId: sessionId,
+        burstEventId: pending.descriptor.burstEventId,
         channel: {
           label: pending.descriptor.label,
           bandId: pending.descriptor.bandId,

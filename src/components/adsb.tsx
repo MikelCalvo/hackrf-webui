@@ -11,6 +11,7 @@ import type {
   ResolvedAppLocation,
 } from "@/lib/types";
 import { MapOverlayCard } from "@/components/map-overlay-card";
+import { useRadioSession } from "@/components/use-radio-session";
 import {
   buildBasemapSources,
   buildBoundsPairs,
@@ -156,26 +157,6 @@ async function fetchAdsbFeed(): Promise<AdsbFeedSnapshot> {
   return (await response.json()) as AdsbFeedSnapshot;
 }
 
-async function requestAdsbRuntime(method: "POST" | "DELETE"): Promise<void> {
-  const response = await fetch("/api/adsb-runtime", {
-    method,
-    cache: "no-store",
-    keepalive: method === "DELETE",
-  });
-
-  if (response.ok) {
-    return;
-  }
-
-  const contentType = response.headers.get("content-type") ?? "";
-  if (contentType.includes("application/json")) {
-    const payload = (await response.json()) as { message?: string };
-    throw new Error(payload.message || `HTTP ${response.status}`);
-  }
-
-  throw new Error(`HTTP ${response.status}`);
-}
-
 function buildMarkerIcon(
   leaflet: typeof import("leaflet"),
   aircraft: AdsbAircraftContact,
@@ -225,6 +206,12 @@ export function AdsbModule({ hardware, location, onRefreshHardware }: AdsbModule
   const [selectedHex, setSelectedHex] = useState("");
   const [followSelected, setFollowSelected] = useState(false);
   const basemapSignatureRef = useRef("");
+  const { session: runtimeSession, error: sessionError, createSession, stopSession, refresh: refreshRuntimeSession } = useRadioSession("adsb");
+  const runtimeSessionRef = useRef(runtimeSession);
+
+  useEffect(() => {
+    runtimeSessionRef.current = runtimeSession;
+  }, [runtimeSession]);
 
   const savedCountryId = location?.catalogScope.countryId ?? null;
   const savedCityView = location?.resolvedPosition ?? null;
@@ -244,9 +231,30 @@ export function AdsbModule({ hardware, location, onRefreshHardware }: AdsbModule
       stop: "Could not stop the ADS-B decoder.",
     },
     onRefreshHardware,
-    startRuntime: () => requestAdsbRuntime("POST"),
-    stopRuntime: () => requestAdsbRuntime("DELETE"),
+    startRuntime: async () => {
+      await refreshRuntimeSession();
+      if (runtimeSessionRef.current?.kind === "adsb" && runtimeSessionRef.current.state !== "stopped") {
+        return;
+      }
+      await createSession({
+        kind: "adsb",
+        module: "adsb",
+      });
+    },
+    stopRuntime: async () => {
+      await refreshRuntimeSession();
+      if (!runtimeSessionRef.current) {
+        return;
+      }
+      await stopSession();
+    },
   });
+
+  useEffect(() => {
+    if (sessionError) {
+      setError(sessionError);
+    }
+  }, [sessionError, setError]);
   const mapsMinZoom = snapshot?.maps.minZoom ?? null;
   const mapsMaxZoom = snapshot?.maps.maxZoom ?? null;
   const selectedCountryLayer = snapshot?.maps.layers.find(
