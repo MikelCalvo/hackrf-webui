@@ -33,6 +33,8 @@ type SessionState = NarrowbandSessionSnapshot["state"];
 type ActivityWindow = ReturnType<typeof createActivityWindowMetrics>;
 
 const MAX_ACTIVITY_LOG = 25;
+const AUTO_RESTART_BACKOFF_MS = [1000, 2500, 5000, 10000] as const;
+const STREAM_LOSS_GRACE_MS = TELEMETRY_REFRESH_MS * 3;
 
 const MODULE_CONFIG: Record<CreateNarrowbandSessionRequest["module"], NarrowbandModuleConfig> = {
   pmr: {
@@ -128,6 +130,8 @@ export class NarrowbandSession {
 
   private tickTimer: ReturnType<typeof setInterval> | null = null;
 
+  private restartTimer: ReturnType<typeof setTimeout> | null = null;
+
   private abortController: AbortController | null = null;
 
   private readerSeq = 0;
@@ -135,6 +139,10 @@ export class NarrowbandSession {
   private stopped = false;
 
   private lastError: string | null = null;
+
+  private restartAttempts = 0;
+
+  private streamUnavailableSinceMs: number | null = null;
 
   private confirmedActivePolls = 0;
 
@@ -285,6 +293,105 @@ export class NarrowbandSession {
     });
   }
 
+  private clearRestartTimer(): void {
+    if (this.restartTimer) {
+      clearTimeout(this.restartTimer);
+      this.restartTimer = null;
+    }
+  }
+
+  private resetRuntimeState(): void {
+    this.readerSeq += 1;
+    if (this.abortController) {
+      this.abortController.abort();
+      this.abortController = null;
+    }
+
+    this.streamId = null;
+    this.telemetry = null;
+    this.spectrum = null;
+    this.pendingChannel = null;
+    this.currentActivityEventId = null;
+    this.currentBurstEventId = null;
+    this.confirmedActivePolls = 0;
+    this.peakWindow = createActivityWindowMetrics();
+    this.manualBurstOpen = false;
+    this.manualBurstPeakRms = 0;
+    this.manualBurstStartedAtMs = null;
+    this.lastActivityAtMs = null;
+    this.lockedAtMs = null;
+    this.settleUntilMs = null;
+    this.dwellDeadlineAtMs = null;
+    this.streamUnavailableSinceMs = null;
+  }
+
+  private resolveRestartChannel(): RadioSessionChannel | null {
+    if (this.request.mode === "manual") {
+      return this.manualChannel;
+    }
+
+    const currentChannelId = this.activeChannel?.id ?? this.pendingChannel?.id ?? null;
+    if (currentChannelId) {
+      const matchedIndex = this.scanChannels.findIndex((channel) => channel.id === currentChannelId);
+      if (matchedIndex >= 0) {
+        this.scanIndex = matchedIndex;
+        return this.scanChannels[matchedIndex] ?? null;
+      }
+    }
+
+    if (this.scanChannels.length === 0) {
+      return null;
+    }
+
+    this.scanIndex = Math.min(this.scanIndex, this.scanChannels.length - 1);
+    return this.scanChannels[this.scanIndex] ?? this.scanChannels[0] ?? null;
+  }
+
+  private scheduleAutoRestart(message: string): void {
+    if (this.stopped || this.request.mode !== "scan") {
+      this.publishError(message);
+      return;
+    }
+
+    if (this.restartTimer) {
+      return;
+    }
+
+    const nextChannel = this.resolveRestartChannel();
+    if (!nextChannel) {
+      this.publishError(`No ${this.config.label} channels are available for automatic recovery.`);
+      return;
+    }
+
+    this.restartAttempts += 1;
+    const delayMs = AUTO_RESTART_BACKOFF_MS[Math.min(this.restartAttempts - 1, AUTO_RESTART_BACKOFF_MS.length - 1)] ?? 10000;
+
+    this.lastError = message;
+    this.state = "starting";
+    this.activeChannel = nextChannel;
+    this.resetRuntimeState();
+    this.publishSnapshot(`${message} Restarting ${this.config.label} scan in ${(delayMs / 1000).toFixed(delayMs >= 10000 ? 0 : 1)} s.`, true);
+
+    this.restartTimer = setTimeout(() => {
+      this.restartTimer = null;
+      if (this.stopped) {
+        return;
+      }
+
+      const channel = this.resolveRestartChannel();
+      if (!channel) {
+        this.publishError(`No ${this.config.label} channels are available for automatic recovery.`);
+        return;
+      }
+
+      void this.startChannel(channel, true);
+    }, delayMs);
+  }
+
+  private handleUnexpectedFailure(message: string): void {
+    this.scheduleAutoRestart(message);
+  }
+
   getSnapshot(): NarrowbandSessionSnapshot {
     const snapshot = this.store.get(this.id);
     if (snapshot?.kind === "narrowband") {
@@ -321,6 +428,8 @@ export class NarrowbandSession {
       clearInterval(this.tickTimer);
       this.tickTimer = null;
     }
+
+    this.clearRestartTimer();
 
     this.readerSeq += 1;
     if (this.abortController) {
@@ -448,6 +557,9 @@ export class NarrowbandSession {
     this.pendingChannel = channel;
     this.activeChannel = forceRestart ? channel : this.activeChannel;
     this.state = forceRestart ? "starting" : "tuning";
+    this.lastError = null;
+    this.streamUnavailableSinceMs = null;
+    this.clearRestartTimer();
     this.confirmedActivePolls = 0;
     this.peakWindow = createActivityWindowMetrics();
     this.manualBurstOpen = false;
@@ -497,6 +609,7 @@ export class NarrowbandSession {
 
     try {
       const stream = await this.startNativeStream(channel, abortController.signal);
+      this.restartAttempts = 0;
       const hardware = hackrfService.getStatus();
       this.streamId = hardware.activeStream?.id ?? null;
       this.pendingChannel = null;
@@ -508,7 +621,9 @@ export class NarrowbandSession {
       this.publishSnapshot(`${streamLabel(channel)} is settling.`, true);
       this.drainAudioStream(stream, this.readerSeq);
     } catch (error) {
-      this.publishError(error instanceof Error ? error.message : `Could not start ${this.config.label} server-side stream.`);
+      this.handleUnexpectedFailure(
+        error instanceof Error ? error.message : `Could not start ${this.config.label} server-side stream.`,
+      );
     }
   }
 
@@ -518,6 +633,9 @@ export class NarrowbandSession {
       while (!this.stopped && readerToken === this.readerSeq) {
         const { done, value } = await reader.read();
         if (done) {
+          if (!this.stopped && readerToken === this.readerSeq) {
+            this.handleUnexpectedFailure(`${this.config.label} scan stream ended unexpectedly.`);
+          }
           break;
         }
         if (value && value.byteLength > 0) {
@@ -526,7 +644,7 @@ export class NarrowbandSession {
       }
     } catch (error) {
       if (!this.stopped && readerToken === this.readerSeq) {
-        this.publishError(error instanceof Error ? error.message : `${this.config.label} audio source failed.`);
+        this.handleUnexpectedFailure(error instanceof Error ? error.message : `${this.config.label} audio source failed.`);
       }
     } finally {
       try {
@@ -642,6 +760,7 @@ export class NarrowbandSession {
       return;
     }
 
+    const nowMs = Date.now();
     const hardware = hackrfService.getStatus();
     const activeStream = hardware.activeStream;
     this.telemetry = getRunningStreamTelemetry(activeStream);
@@ -649,8 +768,23 @@ export class NarrowbandSession {
     this.spectrum = spectrumFeed.owner === "audio" ? spectrumFeed.frame : null;
 
     if (!activeStream || (this.streamId && activeStream.id !== this.streamId)) {
+      if (
+        this.request.mode === "scan"
+        && this.streamId
+        && !this.restartTimer
+        && this.state !== "starting"
+        && this.state !== "stopping"
+      ) {
+        if (this.streamUnavailableSinceMs === null) {
+          this.streamUnavailableSinceMs = nowMs;
+        } else if (nowMs - this.streamUnavailableSinceMs >= STREAM_LOSS_GRACE_MS) {
+          this.handleUnexpectedFailure(`${this.config.label} scan lost its active stream.`);
+        }
+      }
       return;
     }
+
+    this.streamUnavailableSinceMs = null;
 
     if (!this.streamId) {
       this.streamId = activeStream.id;
@@ -669,7 +803,6 @@ export class NarrowbandSession {
       return;
     }
 
-    const nowMs = Date.now();
     const activeChannel = this.request.mode === "scan"
       ? resolveRunningChannel(this.scanChannels, activeStream, this.config.demodMode)
       : resolveRunningChannel(this.manualChannel ? [this.manualChannel] : [], activeStream, this.config.demodMode);
