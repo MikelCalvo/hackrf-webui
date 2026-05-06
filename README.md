@@ -1,115 +1,54 @@
 # hackrf-webui
 
-`hackrf-webui` is a local-first web interface for `HackRF`.
+`hackrf-webui` is a local-first web dashboard for `HackRF`: radio control, live audio, maps, capture review and offline-friendly runtime in one browser UI.
 
-It runs on the user's own machine, works offline at runtime, exposes radio controls in a browser UI, and currently ships with seven real modules:
+It runs on your machine. There is no cloud account, no hosted backend and no remote device bridge.
 
-- `SIGINT`: local capture review, AI triage and persisted ADS-B / AIS route replay
-- `FM`: browser listening with a large country-sharded station catalog
-- `PMR`: narrowband channel presets with manual listen and automatic scanning
-- `AIRBAND`: AM airband listening with local presets, manual tuning and shared HackRF audio controls
-- `MARITIME`: marine VHF voice listening with starter channel packs, manual tuning and autoscan
-- `AIS`: native dual-channel HackRF decoding with a live vessel map and offline-capable basemaps
-- `ADS-B`: live aircraft tracking with a managed `dump1090-fa` backend, a local aircraft map and offline-capable basemaps
+## Preview
 
-There is no cloud layer, no account system, and no remote device bridge.
+| AIS maritime tracking | ADS-B air picture |
+| --- | --- |
+| ![AIS live vessel map with receiver telemetry and contact list](docs/screenshots/ais_tracking.png) | ![ADS-B aircraft map with dump1090-fa telemetry and aircraft detail](docs/screenshots/adsb.png) |
+| Dual-channel AIS decoding with vessel trails, receiver status and a live RF spectrum dock. | Managed `dump1090-fa` runtime with HackRF controls, aircraft detail, receiver stats and map follow mode. |
 
-The app also has a single global location model shared across modules:
+| Offline-capable AIS map | Shared global location |
+| --- | --- |
+| ![Full AIS dashboard with offline-capable basemap and spectrum waterfall](docs/screenshots/ais_full.png) | ![Global location dialog with catalog, map pin and GPSD live positioning modes](docs/screenshots/gps.png) |
+| Dark local basemaps, persisted vessel history and dense maritime telemetry for offline operation. | One location model shared across modules: catalog scope, exact map pin and optional live `GPSD` fixes. |
 
-- a `catalog scope` for country / city-aware features such as FM filters and regional scan decks
-- an `exact position` for map-centric modules such as `AIS` and `ADS-B`
-- three exact-position modes:
-  - `Catalog centroid`
-  - `Map pin`
-  - `GPSD live`
+## Highlights
 
-## Current Scope
+- Local-first HackRF dashboard built for real radio work, not a hosted demo.
+- Browser audio for `FM`, `PMR`, `AIRBAND` and marine VHF voice.
+- Live `AIS` and `ADS-B` maps with local history and offline-capable basemaps.
+- `SIGINT` workspace for reviewing captures, prioritizing evidence and replaying movement history.
+- Shared location model: catalog scope for regional data, exact position for maps and receivers.
+- Local `SQLite` storage for activity, captures, review state and decoded routes.
+- Setup script that can prepare system dependencies, native receivers, maps, AI assets and the ADS-B backend.
 
-### FM
+## SIGINT workspace
 
-- `WFM` listening through the browser
-- region / country / city / text filtering
-- on-demand country shard loading to keep the UI responsive
-- global coverage metadata with a dedicated coverage page
-- custom presets stored locally in the browser
-- filters can be initialized from the shared global location, but browsing FM does not require changing the exact operating position
+`/sigint` is the analysis layer above the live radio modules. It is designed to let you leave a scanner running, come back later and review what actually happened.
 
-### PMR
+It currently has three main areas:
 
-- `NFM` listening through the browser
-- built-in channel packs for:
-  - `PMR446`
-  - `FRS`
-  - `UHF CB`
-  - `MURS`
-- manual channel tuning
-- automatic scanning with:
-  - sequential or random scan mode
-  - squelch threshold
-  - dwell time
-  - lock-on-activity behavior
-  - activity log
-- local activity log persistence in `SQLite`, so hits survive reloads and restarts
-- automatic activity capture while listening or scanning:
-  - demodulated `WAV`
-  - raw `IQ .cs8`
-  - files are linked back to each contact entry
-- in-place retune of the active PMR stream without restarting the browser audio pipeline
+- `Captures`: a queue of activity-triggered captures from `PMR`, `AIRBAND` and `MARITIME`, with search, module filters, review-state filters, AI-state filters, `WAV only` and `IQ only` views.
+- `Evidence detail`: the selected capture, audio playback, raw `IQ` download, signal metadata, coordinates, receiver settings, local AI summary, acoustic labels, analyst notes and keep / flag / discard review state.
+- `ADS-B` / `AIS` replay: persisted aircraft and vessel tracks from local history, with archive lists, offline-capable map playback, timeline scrubber, play/pause and jump-to-latest controls.
 
-### AIRBAND
+The local AI pass classifies saved audio as speech, noise, music or unknown, adds voice-activity evidence and keeps its analysis jobs visible next to the capture review.
 
-- `AM` listening across the civil VHF airband
-- `All` deck that merges saved presets with the built-in common and guard channels
-- local-first saved preset bank in the browser
-- manual tuning with quick retune steps
-- starter channel packs for global common and guard frequencies
-- PMR-style scanning with dwell, squelch and lock-on-activity
-- local activity log persistence in `SQLite`
-- automatic activity capture while listening or scanning, with linked `WAV` + raw `IQ .cs8` files per contact
-- shared RF/audio controls with the other live audio modules
+## Modules
 
-### MARITIME
-
-- `NFM` listening across common marine VHF voice channels
-- `All` deck that merges saved presets with built-in global and regional marine groups
-- local-first saved preset bank in the browser
-- manual tuning with quick retune steps
-- starter channel packs for distress, port ops, working voice, selected Spain port channels, UK MSI, U.S. coastal safety, U.S. VTS and NOAA weather watch
-- PMR-style scanning with dwell, squelch and lock-on-activity
-- local activity log persistence in `SQLite`
-- automatic activity capture while listening or scanning, with linked `WAV` + raw `IQ .cs8` files per contact
-- smart `All` scanning that can prefer global channels plus the shared city or country catalog scope
-- focused on analog voice traffic; digital AIS remains in the dedicated AIS module
-
-### SIGINT
-
-- a dedicated intelligence workspace above the radio modules
-- capture review queue backed by local `SQLite`
-- shared evidence detail for `PMR`, `AIRBAND` and `MARITIME`
-- local AI audio triage for linked `WAV` captures:
-  - background queue with backfill for old captures
-  - hybrid `YAMNet + WebRTC VAD` scoring for low-resource local voice triage
-  - broad classification into `speech`, `noise`, `music` or `unknown`
-  - separate `voice detected` and `ambient scene` summaries retained alongside each capture
-  - top-label evidence retained alongside each capture
-- persisted `ADS-B` and `AIS` route replay from local track history
-- analyst review state, notes and priority per capture
-
-### AIS
-
-- live AIS decoding from the HackRF across channels A and B at `161.975 MHz` / `162.025 MHz`
-- native demodulation and message parsing inside `hackrf-webui`, without `SDRangel`
-- vessel map with offline-capable dark basemaps
-- managed PMTiles layers, plus a default worldwide Protomaps dark extract served from `public/tiles/osm`
-- persistent local position history in `SQLite`, so each vessel can accumulate a route log instead of only exposing the latest point
-
-### ADS-B
-
-- live ADS-B / Mode S decoding at `1090 MHz`
-- managed `dump1090-fa` backend driven by `hackrf-webui`
-- aircraft map with the same offline-capable basemap system used by AIS
-- local start / stop control, receiver stats and aircraft detail inside the dashboard
-- persistent local position history in `SQLite` for route reconstruction and later analysis
+| Module | What it does |
+| --- | --- |
+| `SIGINT` | Capture queue, evidence detail, local AI triage, analyst review and AIS / ADS-B route replay. |
+| `FM` | Wide FM listening with a sharded country/city station catalog and coverage metadata. |
+| `PMR` | Narrowband presets, manual listen, automatic scanning and activity capture. |
+| `AIRBAND` | Civil VHF airband AM listening with common/guard channels and local presets. |
+| `MARITIME` | Marine VHF voice listening with global/regional starter packs and smart local scanning. |
+| `AIS` | Native dual-channel HackRF decoding, vessel map, trails and persisted local history. |
+| `ADS-B` | Managed `dump1090-fa` backend, aircraft map, receiver telemetry and persisted local history. |
 
 ## Quick Start
 
@@ -119,320 +58,63 @@ cd hackrf-webui
 ./start.sh
 ```
 
-By default, `start.sh`:
-
-- installs missing system dependencies on common Linux distributions
-- installs `gpsd` packages when the distribution exposes them, so live GPS positioning is ready when you want it
-- installs Node dependencies
-- prepares the local `SQLite` runtime storage under `db/` and runs pending migrations automatically
-- downloads the local AI model assets into `assets/ai/` if they are missing
-- installs a local AI runtime under `runtime/` using `uv`, a managed `Python 3.13`, `ai-edge-litert` and `webrtcvad-wheels`
-- ensures a managed offline map stack unless `--skip-maps` is used
-- installs a dark global basemap capped near `4 GB` by default
-- optionally adds one high-detail country overlay when `--map-country` is set
-- prompts for a country overlay in interactive terminals if none is configured yet
-- installs or updates the local `dump1090-fa` ADS-B backend unless `--skip-adsb-runtime` is used
-- builds the native `HackRF` receiver binaries
-- builds the Next.js app
-- starts the web UI in production mode
-
 Default address:
 
-- `http://127.0.0.1:3000`
+```text
+http://127.0.0.1:3000
+```
 
-Module routes:
+The root route opens the last module used in the browser, or falls back to `/fm`.
 
-- `/sigint`
-- `/fm`
-- `/pmr`
-- `/airband`
-- `/maritime`
-- `/ais`
-- `/adsb`
-
-The root route `/` redirects to the last module used in the browser when available, and otherwise falls back to `/fm`.
-
-Useful options:
+### Useful commands
 
 ```bash
 ./start.sh --check
 ./start.sh --host 0.0.0.0 --port 4000
-./start.sh --skip-system-deps
-./start.sh --skip-npm --skip-build
-./start.sh --skip-ai
-./start.sh --map-global-budget 4G
-./start.sh --map-global-zoom 10
 ./start.sh --map-country ES
-./start.sh --map-country ES --map-country-zoom 14
-./start.sh --skip-adsb-runtime
-./start.sh --reinstall-adsb-runtime
+./start.sh --skip-ai
+./start.sh --skip-maps
 ./start.sh --rebuild
-HACKRF_WEBUI_GPSD_HOST=127.0.0.1 HACKRF_WEBUI_GPSD_PORT=2947 ./start.sh
+./clean.sh
 ```
 
-What they do:
-
-- `--check` validates the local setup and prints a status report without changing the machine
-- `--host` and `--port` override the bind address
-- `--skip-system-deps` avoids package-manager changes
-- `--skip-npm` and `--skip-build` reuse existing local artifacts
-- `--skip-ai` leaves the local SIGINT AI runtime untouched or absent
-- `--map-global-budget` controls the target size of the shared global basemap layer
-- `--map-global-zoom` forces the shared global basemap max zoom
-- `--map-country` installs or refreshes one high-detail country overlay on top of the shared world layer
-- `--map-country-zoom` controls the overlay max zoom for that country
-- `--skip-maps` keeps AIS and ADS-B in live-tile mode
-- `--skip-adsb-runtime` keeps the existing ADS-B backend untouched or skips it entirely
-- `--reinstall-adsb-runtime` rebuilds the pinned local `dump1090-fa` backend
-- `--reinstall-ai` rebuilds the local SIGINT AI runtime and Python packages
-- `--rebuild` forces a fresh `npm ci` and production rebuild
-- `HACKRF_WEBUI_GPSD_HOST` and `HACKRF_WEBUI_GPSD_PORT` point the app at a non-default GPSD listener when needed
-
-Environment overrides also work:
+Environment overrides work too:
 
 ```bash
 HOST=0.0.0.0 PORT=4000 ./start.sh
-MAP_GLOBAL_BUDGET=4G ./start.sh
-MAP_GLOBAL_MAX_ZOOM=10 ./start.sh
-MAP_COUNTRY=ES MAP_COUNTRY_MAX_ZOOM=14 ./start.sh
-DUMP1090_FA_REINSTALL=1 ./start.sh
-AI_REINSTALL=1 ./start.sh
-HACKRF_WEBUI_AI_PYTHON=3.13 ./start.sh
-HACKRF_WEBUI_GPSD_PORT=2947 ./start.sh
+MAP_COUNTRY=ES ./start.sh
+HACKRF_WEBUI_GPSD_HOST=127.0.0.1 HACKRF_WEBUI_GPSD_PORT=2947 ./start.sh
 ```
 
-If the default port is busy and you did not explicitly force a port, the script automatically falls forward to the next free one it can find.
+For the full runtime guide, see [`docs/runtime.md`](docs/runtime.md).
 
-Managed map model:
+## Requirements
 
-- the global layer is chosen from a size budget, not a hardcoded profile
-- the default `4 GB` budget currently lands on a world extract up to `z10`
-- country overlays start at the first zoom above the global layer and extend to the configured country zoom
-- maps are stored under `public/tiles/osm/global` and `public/tiles/osm/countries`
-
-## Local Runtime Storage
-
-`hackrf-webui` is local-first, so runtime evidence is stored on disk next to the project:
-
-- `db/app.sqlite`
-  - the local `SQLite` database
-  - stores module activity events, route history for `AIS` / `ADS-B`, capture metadata for linked audio / IQ evidence, and `SIGINT` review / AI state
-- `data/captures/`
-  - stores activity-triggered `WAV` audio and raw `IQ .cs8` captures for `PMR`, `AIRBAND` and `MARITIME`
-  - is organized per day and per stream session under the project tree
-  - keeps large binaries on disk while `SQLite` stores the linkage and metadata
-- `runtime/`
-  - stores the local AI toolchain
-  - includes the managed `uv` bootstrap, the pinned `Python 3.13` install, the AI virtualenv and its cache
-
-What already persists today:
-
-- `PMR`, `AIRBAND`, `MARITIME` activity logs
-- `PMR`, `AIRBAND`, `MARITIME` activity-linked `WAV` and raw `IQ` captures
-- local AI queue state, classifications and tags for `PMR`, `AIRBAND` and `MARITIME` captures
-- `AIS` vessel position history
-- `ADS-B` aircraft position history
-
-The FM station catalog is intentionally not stored in the database. It remains a sharded static catalog under `public/catalog`.
-
-## Supported Package Managers In `start.sh`
-
-- `apt` for Debian / Ubuntu
-- `dnf` for Fedora / RHEL-like systems
-- `pacman` for Arch-based systems
-- `zypper` for openSUSE
-
-If your distribution does not expose one of the required packages in its enabled repositories, the script stops with a clear error so you can install that package manually and rerun it.
-
-## Manual Production Start
-
-If you prefer to handle dependencies yourself:
-
-```bash
-npm ci
-npm run db:migrate
-node ./scripts/install-dump1090-fa.mjs
-npm run build
-npm run start -- --hostname 127.0.0.1 --port 3000
-```
-
-If you also want the local SIGINT AI runtime without using `start.sh`, install it under the project tree:
-
-```bash
-export UV_UNMANAGED_INSTALL="$PWD/runtime/tools/uv"
-curl -fsSL https://astral.sh/uv/install.sh | sh
-runtime/tools/uv/uv python install --install-dir runtime/python 3.13
-runtime/tools/uv/uv venv --python 3.13 runtime/ai-venv
-runtime/tools/uv/uv pip install --python runtime/ai-venv/bin/python -r scripts/ai/requirements.txt
-mkdir -p assets/ai
-curl -fsSL https://storage.googleapis.com/mediapipe-models/audio_classifier/yamnet/float32/latest/yamnet.tflite -o assets/ai/yamnet.tflite
-curl -fsSL https://raw.githubusercontent.com/tensorflow/models/master/research/audioset/yamnet/yamnet_class_map.csv -o assets/ai/yamnet_class_map.csv
-runtime/ai-venv/bin/python scripts/ai/audio_tagger.py --check --model assets/ai/yamnet.tflite --labels assets/ai/yamnet_class_map.csv
-```
-
-Optional offline maps can also be prepared manually:
-
-```bash
-./manage_maps.sh ensure
-./manage_maps.sh add-country ES
-./manage_maps.sh status
-```
-
-You can also validate the environment without starting the server:
-
-```bash
-./start.sh --check
-```
-
-## Runtime Requirements
-
-For normal usage, the app needs:
+For normal usage you need a Linux machine with:
 
 - `HackRF` userspace tools, including `hackrf_info`
-- `libhackrf` development headers so the bundled native binary can be built
-- `ffmpeg`
-- `cc`
-- `pkg-config`
-- `ncurses` development headers
-- `Node.js` `20+`
-- `npm`
-- `curl`
+- `libhackrf` development headers
+- `Node.js` `20.19+`, `22.13+` or a supported `24+` runtime
+- `npm` `10+`
+- `ffmpeg`, `curl`, `cc`, `pkg-config` and `ncurses` development headers
 
-Optional but supported:
+Optional:
 
-- `gpsd`
-- a compatible GPS receiver, such as a USB `u-blox`, if you want live physical positioning
+- `gpsd` and a compatible GPS receiver for live physical positioning
+- local PMTiles map packs for offline AIS / ADS-B maps
 
-`start.sh` tries to install `gpsd` on the supported Linux package managers, but the app still runs without it if you only want fixed manual positions.
+`start.sh` can install common system dependencies on Debian/Ubuntu, Fedora/RHEL-like systems, Arch-based systems and openSUSE.
 
-## Global Location
+## Local data model
 
-The top bar exposes a shared location button on every module. That dialog controls two separate things:
+Runtime data stays next to the project:
 
-- `Catalog scope`
-  - country and optional city
-  - used by FM defaults and regional scan logic such as Maritime Smart Local
-- `Exact position`
-  - used by map-centric views and any feature that needs true operating coordinates
-  - can come from:
-    - the selected city centroid
-    - an exact map pin you place manually
-    - a live fix from local `gpsd`
+- `db/app.sqlite` stores activity, review state and route history.
+- `data/captures/` stores generated `WAV` and raw `IQ .cs8` evidence.
+- `assets/ai/` and `runtime/` store the local SIGINT AI assets and Python runtime.
+- `public/tiles/osm/` stores optional offline map layers.
 
-This split matters:
-
-- you can keep `Bilbao` as the catalog scope for FM and Maritime
-- while using a more exact rooftop antenna pin for map centering
-- or while letting `gpsd` drive the exact coordinates when operating mobile
-
-The exact position picker uses the same offline-capable basemap stack as `AIS` and `ADS-B`, so it stays usable without internet once the local map pack is installed.
-
-The bundled native receivers are built from:
-
-- [`native/hackrf_audio_stream.c`](native/hackrf_audio_stream.c)
-- [`native/hackrf_ais_stream.c`](native/hackrf_ais_stream.c)
-
-The managed ADS-B backend is built separately into:
-
-- [`bin/dump1090-fa`](bin/dump1090-fa)
-
-## AIS Runtime Notes
-
-The AIS module tunes the HackRF directly, demodulates AIS in the native binary, validates frames, parses AIS messages in the backend and renders decoded vessels on the map in real time.
-
-Offline basemaps are served from `public/tiles/osm`. By default, `./start.sh` ensures a managed PMTiles stack made of:
-
-- one shared dark world layer sized by `--map-global-budget` or `--map-global-zoom`
-- zero or more country overlays managed by `./manage_maps.sh`
-
-The AIS map behavior is:
-
-- if a global exact position is configured, AIS starts from that point
-- otherwise it falls back to decoded AIS bounds when traffic exists
-- if there is still no traffic, it falls back to the selected country overlay or the installed basemap bounds
-
-## ADS-B Runtime Notes
-
-The ADS-B module uses the same local-first dashboard model as AIS, but the decoder backend is `dump1090-fa` compiled locally and managed by `hackrf-webui`.
-
-The runtime:
-
-- claims the `HackRF` exclusively while ADS-B is active
-- starts `dump1090-fa` with `HackRF` input at `1090 MHz`
-- reads `receiver.json`, `aircraft.json` and `stats.json` from `.cache/adsb-runtime/json`
-- normalizes those files into the app's own ADS-B snapshot and UI state
-- reuses the same offline basemap pipeline as AIS
-
-The ADS-B map behavior is:
-
-- if a global exact position is configured, ADS-B starts from that point
-- otherwise it falls back to live aircraft bounds when traffic exists
-- if there is still no aircraft position, it falls back to receiver coordinates if configured
-- if there is still no location hint, it falls back to the selected country overlay or the installed basemap bounds
-
-## Offline Map Management
-
-The map stack is managed by [`manage_maps.sh`](manage_maps.sh), which wraps [`scripts/manage-maps.mjs`](scripts/manage-maps.mjs).
-
-Useful commands:
-
-```bash
-./manage_maps.sh status
-./manage_maps.sh ensure
-./manage_maps.sh ensure --global-budget 4G
-./manage_maps.sh add-country ES
-./manage_maps.sh add-country ES --country-max-zoom 14
-./manage_maps.sh remove-country ES
-./manage_maps.sh list-countries
-./manage_maps.sh clean
-```
-
-Upgrade examples:
-
-```bash
-./manage_maps.sh install-global --global-max-zoom 11 --reinstall
-./manage_maps.sh add-country ES --country-max-zoom 14 --reinstall
-./manage_maps.sh ensure --global-max-zoom 11 --country ES --country-max-zoom 14 --reinstall
-```
-
-Behavior:
-
-- if a layer already exists at the same or higher zoom, the manager keeps it
-- use `--reinstall` when you want to force a rebuild or move to a higher target zoom
-- with the current Protomaps `v4.pmtiles` source, the practical hard limit is `z15`
-
-The managed manifest lives at `public/tiles/osm/manifest.json` and uses a single clean layered schema:
-
-- `version: 1`
-- one global PMTiles layer
-- zero or more country PMTiles overlays
-
-There is no legacy compatibility layer for earlier map manifest formats in the current tree.
-
-Useful environment overrides for the ADS-B backend:
-
-```bash
-ADSB_SAMPLE_RATE=2400000 ./start.sh
-ADSB_LNA_GAIN=32 ADSB_VGA_GAIN=50 ./start.sh
-ADSB_ENABLE_AMP=1 ./start.sh
-ADSB_ENABLE_ANTENNA_POWER=1 ./start.sh
-ADSB_RECEIVER_LAT=40.4168 ADSB_RECEIVER_LON=-3.7038 ./start.sh
-```
-
-If you prefer to build only the ADS-B backend manually:
-
-```bash
-node ./scripts/install-dump1090-fa.mjs
-```
-
-To remove local generated artifacts and leave the repo close to a fresh clone:
-
-```bash
-./clean.sh
-./clean.sh --dry-run
-```
-
-`./clean.sh` asks for confirmation by default. Use `./clean.sh --yes` in non-interactive environments.
+The FM catalog is static and sharded under `public/catalog`; it is not stored in the database.
 
 ## Development
 
@@ -443,120 +125,23 @@ npm run dev
 
 Open `http://localhost:3000`.
 
-`npm run dev` uses `webpack` by default because it has been more stable than `Turbopack` in synchronized folders. If you want to test `Turbopack`, use:
+Production-style local verification:
 
 ```bash
-npm run dev:turbo
+npm ci
+npm run lint
+npm run build
 ```
 
-If you only want to clear the Next.js build output:
-
-```bash
-npm run clean
-```
-
-## FM Catalog
-
-The FM runtime catalog is split into:
-
-- [`src/data/catalog/manifest.json`](src/data/catalog/manifest.json)
-- [`public/catalog/manifest.json`](public/catalog/manifest.json)
-- `public/catalog/countries/*.json`
-
-This keeps first load small and only fetches the active country shard.
-
-Manual fallback data lives in:
-
-- [`src/data/catalog/manual/countries.json`](src/data/catalog/manual/countries.json)
-- [`src/data/catalog/manual/cities.json`](src/data/catalog/manual/cities.json)
-- [`src/data/catalog/manual/fm-stations.json`](src/data/catalog/manual/fm-stations.json)
-
-That manual layer is intentionally small now and only covers true fallback cases that still lack a clean importer.
-
-### Rebuilding The FM Catalog
-
-The FM catalog builder is for contributors, not for normal runtime use.
-
-```bash
-npm run catalog:build
-```
-
-Optional extra tools for some catalog importers:
-
-- `pdftotext`
-- `pdftohtml`
-
-The builder currently combines:
-
-- `GeoNames` for geographic normalization
-- a large set of official regulator / public-sector FM sources
-- a small manual fallback layer where no reproducible official importer is available yet
-- cached shard fallback when a previously landed source is temporarily unavailable
-
-Country coverage metadata is embedded in the manifest, including:
-
-- `coverageStatus`
-- `coverageTier`
-- `coverageScope`
-- `sourceQuality`
-- `sourceCount`
-- `notesPath`
-
-## PMR Data
-
-The PMR module does not use the FM coverage catalog.
-
-Instead, it uses static channel packs defined in [`pmr-channels.ts`](src/data/pmr-channels.ts) for license-free or common short-range voice bands. The current PMR runtime is designed around:
-
-- narrowband FM audio
-
-## AIRBAND Data
-
-The AIRBAND module uses static starter packs defined in [`airband-channels.ts`](src/data/airband-channels.ts) plus browser-local saved presets. The runtime is designed around:
-
-- civil VHF airband AM audio
-- a global starter deck, not a country-specific airport database
-- an `All` view that merges saved, common and guard channels
-- quick local tuning rather than an airport database
-- in-place retune of an active AM stream when possible
-- shared HackRF audio ownership with FM and PMR
-- fast retune of an existing stream
-- browser-local preset storage and manual notes
-- scan / lock / resume workflows on the active channel group
-
-## MARITIME Data
-
-The MARITIME module uses static starter packs defined in [`maritime-channels.ts`](src/data/maritime-channels.ts) plus browser-local saved presets. The runtime is designed around:
-
-- marine VHF narrowband FM voice audio
-- a global starter deck rather than a port-specific database
-- an `All` view that merges saved, distress, port ops, working, regional and weather groups
-- quick local tuning rather than a harbor directory
-- in-place retune of an active NFM stream when possible
-- shared HackRF audio ownership with FM, PMR and AIRBAND
-- browser-local preset storage and manual notes
-- scan / lock / resume workflows on the active channel group
-- keeping AIS / DSC digital traffic out of this voice-focused module
-- smart scan scoping for `All`, using the saved FM city / country when available
-- curated regional packs for Spanish ports, UK MSI and selected U.S. VTS / Coast Guard channels
+Developer notes, catalog rebuilds and data-source details live in [`docs/development.md`](docs/development.md).
 
 ## Documentation
 
-FM coverage planning and blocker notes live under [`docs/fm`](docs/fm).
+- [`docs/runtime.md`](docs/runtime.md): install flow, runtime options, maps, storage and receiver notes.
+- [`docs/development.md`](docs/development.md): development commands, native binaries and catalog tooling.
+- [`docs/fm`](docs/fm): FM coverage planning and source notes.
+- [`docs/screenshots`](docs/screenshots): screenshots used by this README.
 
-Useful entry points:
+## License
 
-- [`docs/fm/global-fm-coverage-plan.md`](docs/fm/global-fm-coverage-plan.md)
-- [`docs/fm/europe-coverage-status.md`](docs/fm/europe-coverage-status.md)
-- [`docs/fm/uk-source-notes.md`](docs/fm/uk-source-notes.md)
-- [`docs/fm/spain-source-notes.md`](docs/fm/spain-source-notes.md)
-
-At the moment, those docs are FM-specific. PMR does not need the same coverage-tracking model because it is channel-pack based rather than station-registry based.
-
-## Notes
-
-- Runtime use is local and offline-friendly.
-- The app does not depend on remote frontend assets.
-- The current radio runtime is focused on `HackRF`.
-- SIGINT, FM, PMR, AIRBAND, MARITIME, AIS and ADS-B are the landed modules today.
-- The catalog and band modules are intended to keep growing through importer work and targeted PRs.
+Licensed under the [ISC License](LICENSE.md).

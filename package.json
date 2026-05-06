@@ -1,9 +1,14 @@
 {
   "name": "hackrf-webui",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "private": true,
+  "license": "ISC",
+  "engines": {
+    "node": "^20.19.0 || ^22.13.0 || >=24",
+    "npm": ">=10"
+  },
   "scripts": {
-    "catalog:build": "node ./scripts/catalog/build.mjs",
+    "catalog:build": "npm --prefix ./scripts/catalog run build",
     "clean": "node -e \"require('fs').rmSync('.next', { recursive: true, force: true })\"",
     "db:migrate": "node ./scripts/db/migrate.mjs",
     "dev": "next dev --webpack",
@@ -13,29 +18,33 @@
     "start": "next start",
     "lint": "eslint"
   },
+  "overrides": {
+    "brace-expansion": "^1.1.13",
+    "postcss": "^8.5.10",
+    "protocol-buffers-schema": "^3.6.1",
+    "minimatch@10": {
+      "brace-expansion": "^5.0.5"
+    }
+  },
   "dependencies": {
-    "@types/leaflet": "^1.9.21",
-    "better-sqlite3": "^12.8.0",
-    "drizzle-orm": "^0.45.1",
+    "better-sqlite3": "^12.9.0",
+    "drizzle-orm": "^0.45.2",
     "leaflet": "^1.9.4",
-    "next": "16.2.1",
+    "next": "16.2.4",
     "protomaps-leaflet": "^5.1.0",
-    "react": "19.2.4",
-    "react-dom": "19.2.4"
+    "react": "19.2.5",
+    "react-dom": "19.2.5"
   },
   "devDependencies": {
-    "@tailwindcss/postcss": "^4",
+    "@tailwindcss/postcss": "^4.2.4",
     "@types/better-sqlite3": "^7.6.13",
-    "@types/node": "^20",
-    "@types/react": "^19",
-    "@types/react-dom": "^19",
-    "adm-zip": "^0.5.16",
-    "dbffile": "^1.12.0",
-    "drizzle-kit": "^0.31.10",
-    "eslint": "^9",
-    "eslint-config-next": "16.2.1",
-    "tailwindcss": "^4",
-    "typescript": "^5",
-    "xlsx": "^0.18.5"
+    "@types/leaflet": "^1.9.21",
+    "@types/node": "^20.19.39",
+    "@types/react": "^19.2.14",
+    "@types/react-dom": "^19.2.3",
+    "eslint": "^9.39.4",
+    "eslint-config-next": "16.2.4",
+    "tailwindcss": "^4.2.4",
+    "typescript": "^6.0.3"
   }
 }

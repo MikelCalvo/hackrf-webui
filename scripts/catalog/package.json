@@ -1,0 +1,19 @@
+{
+  "name": "hackrf-webui-catalog-tools",
+  "version": "1.0.0",
+  "private": true,
+  "license": "ISC",
+  "type": "module",
+  "engines": {
+    "node": "^20.19.0 || ^22.13.0 || >=24",
+    "npm": ">=10"
+  },
+  "scripts": {
+    "build": "node ./build.mjs"
+  },
+  "dependencies": {
+    "adm-zip": "^0.5.17",
+    "dbffile": "^1.12.0",
+    "xlsx": "npm:@e965/xlsx@^0.20.3"
+  }
+}
