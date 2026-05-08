@@ -1,24 +1,46 @@
 import type { NextRequest } from "next/server";
 
-import type { UpdateRadioSessionRequest } from "@/lib/radio-session";
 import { radioSupervisor } from "@/server/radio/supervisor";
+import { authorizeApiRequest } from "@/server/api/auth";
+import {
+  MAX_RADIO_SESSION_PAYLOAD_BYTES,
+  validateUpdateRadioSessionRequest,
+} from "@/server/radio/validation";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
-function notFound(message = "Radio session not found."): Response {
+function jsonMessage(message: string, status = 400): Response {
   return Response.json({ message }, {
-    status: 404,
+    status,
     headers: {
       "Cache-Control": "no-store",
     },
   });
 }
 
+function notFound(message = "Radio session not found."): Response {
+  return jsonMessage(message, 404);
+}
+
+function payloadTooLarge(request: NextRequest): boolean {
+  const rawLength = request.headers.get("content-length");
+  if (!rawLength) {
+    return false;
+  }
+  const length = Number.parseInt(rawLength, 10);
+  return Number.isFinite(length) && length > MAX_RADIO_SESSION_PAYLOAD_BYTES;
+}
+
 export async function GET(
-  _request: NextRequest,
+  request: NextRequest,
   context: { params: Promise<{ sessionId: string }> },
 ): Promise<Response> {
+  const authFailure = authorizeApiRequest(request, { sensitive: true });
+  if (authFailure) {
+    return authFailure;
+  }
+
   const { sessionId } = await context.params;
   const snapshot = radioSupervisor.getSession(sessionId);
   if (!snapshot) {
@@ -33,9 +55,14 @@ export async function GET(
 }
 
 export async function DELETE(
-  _request: NextRequest,
+  request: NextRequest,
   context: { params: Promise<{ sessionId: string }> },
 ): Promise<Response> {
+  const authFailure = authorizeApiRequest(request, { sensitive: true });
+  if (authFailure) {
+    return authFailure;
+  }
+
   const { sessionId } = await context.params;
   const stopped = await radioSupervisor.stopSession(sessionId);
   if (!stopped) {
@@ -54,22 +81,42 @@ export async function PATCH(
   request: NextRequest,
   context: { params: Promise<{ sessionId: string }> },
 ): Promise<Response> {
-  const { sessionId } = await context.params;
-  let payload: UpdateRadioSessionRequest;
+  const authFailure = authorizeApiRequest(request, { sensitive: true });
+  if (authFailure) {
+    return authFailure;
+  }
 
+  if (payloadTooLarge(request)) {
+    return jsonMessage(`Payload is limited to ${MAX_RADIO_SESSION_PAYLOAD_BYTES} bytes.`, 413);
+  }
+
+  const { sessionId } = await context.params;
+  const existing = radioSupervisor.getSession(sessionId);
+  if (!existing) {
+    return notFound();
+  }
+
+  let rawPayload: unknown;
   try {
-    payload = (await request.json()) as UpdateRadioSessionRequest;
+    rawPayload = await request.json();
   } catch {
-    return Response.json({ message: "Invalid JSON payload." }, {
-      status: 400,
-      headers: {
-        "Cache-Control": "no-store",
-      },
-    });
+    return jsonMessage("Invalid JSON payload.");
+  }
+
+  const sessionModule = existing.module;
+  if (sessionModule !== "fm" && sessionModule !== "pmr" && sessionModule !== "airband" && sessionModule !== "maritime") {
+    return jsonMessage("Radio session does not support updates.", 409);
+  }
+
+  const payload = validateUpdateRadioSessionRequest(rawPayload, {
+    module: sessionModule,
+  });
+  if (!payload.ok) {
+    return jsonMessage(payload.message, payload.status ?? 400);
   }
 
   try {
-    const snapshot = await radioSupervisor.updateSession(sessionId, payload);
+    const snapshot = await radioSupervisor.updateSession(sessionId, payload.value);
     if (!snapshot) {
       return notFound();
     }
@@ -80,16 +127,9 @@ export async function PATCH(
       },
     });
   } catch (error) {
-    return Response.json(
-      {
-        message: error instanceof Error ? error.message : "Could not update radio session.",
-      },
-      {
-        status: 409,
-        headers: {
-          "Cache-Control": "no-store",
-        },
-      },
+    return jsonMessage(
+      error instanceof Error ? error.message : "Could not update radio session.",
+      409,
     );
   }
 }

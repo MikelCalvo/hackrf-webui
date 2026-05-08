@@ -1,3 +1,4 @@
+import { apiFetch } from "@/lib/api-client";
 import type { AudioDemodMode, ResolvedAppLocation } from "@/lib/types";
 
 export type ActivityEventModule = "pmr" | "airband" | "maritime";
@@ -107,7 +108,7 @@ export async function fetchActivityEvents(
   module: ActivityEventModule,
   limit = ACTIVITY_EVENTS_DEFAULT_LIMIT,
 ): Promise<ActivityLogEntry[]> {
-  const response = await fetch(
+  const response = await apiFetch(
     `/api/activity-events?module=${encodeURIComponent(module)}&limit=${encodeURIComponent(String(limit))}`,
     { cache: "no-store" },
   );
@@ -118,7 +119,7 @@ export async function fetchActivityEvents(
 export async function persistActivityEvent(
   input: CreateActivityEventInput,
 ): Promise<ActivityLogEntry> {
-  const response = await fetch("/api/activity-events", {
+  const response = await apiFetch("/api/activity-events", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -130,7 +131,7 @@ export async function persistActivityEvent(
 }
 
 export async function clearActivityEvents(module: ActivityEventModule): Promise<void> {
-  const response = await fetch(`/api/activity-events?module=${encodeURIComponent(module)}`, {
+  const response = await apiFetch(`/api/activity-events?module=${encodeURIComponent(module)}`, {
     method: "DELETE",
   });
   await ensureOk(response);

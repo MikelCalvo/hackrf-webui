@@ -2,6 +2,7 @@ import type { NextRequest } from "next/server";
 
 import type { SigintReviewPriority, SigintReviewStatus, SigintReviewUpdateInput } from "@/lib/sigint";
 import { ensureCaptureAnalysisUpToDate, warmAnalysisBackfill } from "@/server/analysis-worker";
+import { authorizeApiRequest } from "@/server/api/auth";
 import { getSigintCaptureDetail, updateSigintCaptureReview } from "@/server/sigint-store";
 
 export const runtime = "nodejs";
@@ -40,6 +41,11 @@ export async function PATCH(
   request: NextRequest,
   context: { params: Promise<{ captureSessionId: string }> },
 ): Promise<Response> {
+  const authFailure = authorizeApiRequest(request);
+  if (authFailure) {
+    return authFailure;
+  }
+
   let payload: SigintReviewUpdateInput;
 
   try {

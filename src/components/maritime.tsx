@@ -33,6 +33,7 @@ import type {
   UpdateNarrowbandSessionRequest,
 } from "@/lib/radio-session";
 import { radioSessionChannelDeckSignature } from "@/lib/radio-session";
+import { appendApiToken } from "@/lib/api-client";
 import type { AudioControls } from "@/lib/radio";
 import type { ResolvedAppLocation } from "@/lib/types";
 import {
@@ -322,7 +323,7 @@ function deriveScannerState(
 }
 
 function formatSessionAudioUrl(sessionId: string): string {
-  return `/api/radio/sessions/${encodeURIComponent(sessionId)}/audio`;
+  return appendApiToken(`/api/radio/sessions/${encodeURIComponent(sessionId)}/audio`);
 }
 
 function toSessionChannels(channels: MaritimeChannel[]): RadioSessionChannel[] {

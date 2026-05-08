@@ -8,6 +8,7 @@ import {
   stopRadioSession,
   updateRadioSession,
 } from "@/lib/radio-session-client";
+import { appendApiToken } from "@/lib/api-client";
 import type {
   CreateRadioSessionRequest,
   RadioSessionEvent,
@@ -87,7 +88,7 @@ export function useRadioSession<M extends RadioSessionModule>(
     detach();
     sessionIdRef.current = sessionId;
 
-    const source = new EventSource(`/api/radio/sessions/${encodeURIComponent(sessionId)}/events`);
+    const source = new EventSource(appendApiToken(`/api/radio/sessions/${encodeURIComponent(sessionId)}/events`));
     eventSourceRef.current = source;
 
     source.addEventListener("snapshot", (event) => {

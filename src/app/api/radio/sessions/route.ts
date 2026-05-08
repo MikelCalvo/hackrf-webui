@@ -1,12 +1,16 @@
 import type { NextRequest } from "next/server";
 
-import type { CreateRadioSessionRequest } from "@/lib/radio-session";
 import { radioSupervisor } from "@/server/radio/supervisor";
+import { authorizeApiRequest } from "@/server/api/auth";
+import {
+  MAX_RADIO_SESSION_PAYLOAD_BYTES,
+  validateCreateRadioSessionRequest,
+} from "@/server/radio/validation";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
-function badRequest(message: string, status = 400): Response {
+function jsonMessage(message: string, status = 400): Response {
   return Response.json({ message }, {
     status,
     headers: {
@@ -15,7 +19,21 @@ function badRequest(message: string, status = 400): Response {
   });
 }
 
-export async function GET(): Promise<Response> {
+function payloadTooLarge(request: NextRequest): boolean {
+  const rawLength = request.headers.get("content-length");
+  if (!rawLength) {
+    return false;
+  }
+  const length = Number.parseInt(rawLength, 10);
+  return Number.isFinite(length) && length > MAX_RADIO_SESSION_PAYLOAD_BYTES;
+}
+
+export async function GET(request: NextRequest): Promise<Response> {
+  const authFailure = authorizeApiRequest(request, { sensitive: true });
+  if (authFailure) {
+    return authFailure;
+  }
+
   return Response.json(
     {
       sessions: radioSupervisor.listSessions(),
@@ -29,78 +47,29 @@ export async function GET(): Promise<Response> {
 }
 
 export async function POST(request: NextRequest): Promise<Response> {
-  let payload: CreateRadioSessionRequest;
+  const authFailure = authorizeApiRequest(request, { sensitive: true });
+  if (authFailure) {
+    return authFailure;
+  }
 
+  if (payloadTooLarge(request)) {
+    return jsonMessage(`Payload is limited to ${MAX_RADIO_SESSION_PAYLOAD_BYTES} bytes.`, 413);
+  }
+
+  let rawPayload: unknown;
   try {
-    payload = (await request.json()) as CreateRadioSessionRequest;
+    rawPayload = await request.json();
   } catch {
-    return badRequest("Invalid JSON payload.");
+    return jsonMessage("Invalid JSON payload.");
   }
 
-  if (
-    payload.kind === "fm"
-    && payload.module === "fm"
-  ) {
-    if (!payload.station || !Number.isFinite(payload.station.freqMhz)) {
-      return badRequest("A valid FM station is required.");
-    }
-
-    try {
-      const snapshot = await radioSupervisor.createSession(payload);
-      return Response.json(snapshot, {
-        status: 201,
-        headers: {
-          "Cache-Control": "no-store",
-        },
-      });
-    } catch (error) {
-      const message = error instanceof Error ? error.message : "Could not create radio session.";
-      return badRequest(message, 503);
-    }
+  const payload = validateCreateRadioSessionRequest(rawPayload);
+  if (!payload.ok) {
+    return jsonMessage(payload.message, payload.status ?? 400);
   }
 
-  if (
-    (payload.kind === "ais" && payload.module === "ais")
-    || (payload.kind === "adsb" && payload.module === "adsb")
-  ) {
-    try {
-      const snapshot = await radioSupervisor.createSession(payload);
-      return Response.json(snapshot, {
-        status: 201,
-        headers: {
-          "Cache-Control": "no-store",
-        },
-      });
-    } catch (error) {
-      const message = error instanceof Error ? error.message : "Could not create radio session.";
-      return badRequest(message, 503);
-    }
-  }
-
-  if (
-    payload.kind !== "narrowband"
-    || (payload.module !== "pmr" && payload.module !== "airband" && payload.module !== "maritime")
-  ) {
-    return badRequest("Unsupported radio session kind.");
-  }
-
-  if (payload.mode !== "manual" && payload.mode !== "scan") {
-    return badRequest("Invalid narrowband session mode.");
-  }
-
-  if (!Array.isArray(payload.channels) || payload.channels.length === 0) {
-    return badRequest("A non-empty channel deck is required.");
-  }
-
-  if (payload.scanMode && payload.scanMode !== "sequential" && payload.scanMode !== "random") {
-    return badRequest("Invalid narrowband scan mode.");
-  }
-
-  if (!payload.bandId || typeof payload.bandId !== "string") {
-    return badRequest("A bandId is required.");
-  }
   try {
-    const snapshot = await radioSupervisor.createSession(payload);
+    const snapshot = await radioSupervisor.createSession(payload.value);
     return Response.json(snapshot, {
       status: 201,
       headers: {
@@ -109,6 +78,6 @@ export async function POST(request: NextRequest): Promise<Response> {
     });
   } catch (error) {
     const message = error instanceof Error ? error.message : "Could not create radio session.";
-    return badRequest(message, 503);
+    return jsonMessage(message, 503);
   }
 }

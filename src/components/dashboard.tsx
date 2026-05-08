@@ -20,6 +20,7 @@ import {
   hydrateCountryShard,
   sortStations,
 } from "@/lib/catalog";
+import { apiFetch, appendApiToken } from "@/lib/api-client";
 import { LocationModal } from "@/components/location-modal";
 import { SpectrumDock } from "@/components/spectrum-dock";
 import {
@@ -166,7 +167,7 @@ function buildStreamUrl(
     t: String(Date.now()),
   });
 
-  return `/api/stream?${params.toString()}`;
+  return appendApiToken(`/api/stream?${params.toString()}`);
 }
 
 function buildRetuneUrl(station: FmStation): string {
@@ -175,7 +176,7 @@ function buildRetuneUrl(station: FmStation): string {
     label: station.name,
     freqMHz: String(station.freqMhz),
   });
-  return `/api/stream?${params.toString()}`;
+  return appendApiToken(`/api/stream?${params.toString()}`);
 }
 
 function normalizeStationLabel(value: string): string {
@@ -953,7 +954,7 @@ export function Dashboard({
     audio.removeAttribute("src");
     audio.load();
     setStartingStationId(null);
-    void fetch("/api/stream", {
+    void apiFetch(appendApiToken("/api/stream"), {
       method: "DELETE",
       keepalive: true,
       cache: "no-store",
@@ -1396,7 +1397,7 @@ export function Dashboard({
 
     if (canRetuneInPlace) {
       try {
-        const response = await fetch(buildRetuneUrl(station), { method: "PATCH" });
+        const response = await apiFetch(buildRetuneUrl(station), { method: "PATCH" });
         if (response.ok) {
           if (fmRequestSeqRef.current !== requestId) {
             return;

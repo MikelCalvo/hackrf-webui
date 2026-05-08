@@ -1,5 +1,6 @@
 import type { CreateFmSessionRequest, RadioSessionFmStation, UpdateFmSessionRequest } from "@/lib/radio-session";
 import { radioSupervisor } from "@/server/radio/supervisor";
+import { authorizeApiRequest } from "@/server/api/auth";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -99,6 +100,11 @@ async function ensureFmSession(
 }
 
 export async function PATCH(request: Request): Promise<Response> {
+  const authFailure = authorizeApiRequest(request, { sensitive: true, allowQueryToken: true });
+  if (authFailure) {
+    return authFailure;
+  }
+
   const { searchParams } = new URL(request.url);
   const station = parseStation(searchParams);
 
@@ -131,7 +137,12 @@ export async function PATCH(request: Request): Promise<Response> {
   }
 }
 
-export async function DELETE(): Promise<Response> {
+export async function DELETE(request: Request): Promise<Response> {
+  const authFailure = authorizeApiRequest(request, { sensitive: true, allowQueryToken: true });
+  if (authFailure) {
+    return authFailure;
+  }
+
   await radioSupervisor.stopSessionByModule("fm");
   return new Response(null, {
     status: 204,
@@ -142,6 +153,11 @@ export async function DELETE(): Promise<Response> {
 }
 
 export async function GET(request: Request): Promise<Response> {
+  const authFailure = authorizeApiRequest(request, { sensitive: true, allowQueryToken: true });
+  if (authFailure) {
+    return authFailure;
+  }
+
   const { searchParams } = new URL(request.url);
   const station = parseStation(searchParams);
   if (!station) {

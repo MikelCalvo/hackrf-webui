@@ -1,3 +1,4 @@
+import { apiFetch } from "@/lib/api-client";
 import type {
   AdsbTrackHistoryResponse,
   AisTrackHistoryResponse,
@@ -232,7 +233,7 @@ export async function updateSigintCaptureReview(
   captureSessionId: string,
   input: SigintReviewUpdateInput,
 ): Promise<SigintCaptureDetail> {
-  const response = await fetch(`/api/sigint/captures/${encodeURIComponent(captureSessionId)}`, {
+  const response = await apiFetch(`/api/sigint/captures/${encodeURIComponent(captureSessionId)}`, {
     method: "PATCH",
     headers: {
       "Content-Type": "application/json",

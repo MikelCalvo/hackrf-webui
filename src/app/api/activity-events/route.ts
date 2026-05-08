@@ -9,6 +9,7 @@ import {
   createActivityEvent,
   listActivityEvents,
 } from "@/server/activity-events";
+import { authorizeApiRequest } from "@/server/api/auth";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -47,6 +48,11 @@ export async function GET(request: NextRequest): Promise<Response> {
 }
 
 export async function POST(request: NextRequest): Promise<Response> {
+  const authFailure = authorizeApiRequest(request);
+  if (authFailure) {
+    return authFailure;
+  }
+
   let payload: CreateActivityEventInput;
 
   try {
@@ -69,6 +75,11 @@ export async function POST(request: NextRequest): Promise<Response> {
 }
 
 export async function DELETE(request: NextRequest): Promise<Response> {
+  const authFailure = authorizeApiRequest(request);
+  if (authFailure) {
+    return authFailure;
+  }
+
   const moduleId = parseModule(request.nextUrl.searchParams.get("module"));
   if (!moduleId) {
     return Response.json({ message: "Invalid or missing module." }, { status: 400 });

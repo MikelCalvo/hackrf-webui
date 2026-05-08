@@ -27,6 +27,7 @@ import type {
 import type { AudioControls } from "@/lib/radio";
 import { normalizeScannerPostHitHoldSeconds, SCANNER_HOLD_GRACE_MS, SCANNER_POST_HIT_HOLD_DEFAULT_SECONDS, SCANNER_POST_HIT_HOLD_MAX_SECONDS, SCANNER_STARTUP_MS } from "@/lib/signal-activity";
 import { buildChannelSpectrumRange } from "@/lib/spectrum";
+import { appendApiToken } from "@/lib/api-client";
 import type { ResolvedAppLocation } from "@/lib/types";
 
 type ScannerState = "idle" | "scanning" | "locked";
@@ -97,7 +98,7 @@ function describeBandName(bandId: string | null): string | null {
 }
 
 function formatSessionAudioUrl(sessionId: string): string {
-  return `/api/radio/sessions/${encodeURIComponent(sessionId)}/audio`;
+  return appendApiToken(`/api/radio/sessions/${encodeURIComponent(sessionId)}/audio`);
 }
 
 export function PmrModule(props: {

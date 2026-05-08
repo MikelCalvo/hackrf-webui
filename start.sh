@@ -69,6 +69,53 @@ fail() {
   exit 1
 }
 
+is_loopback_host() {
+  local host="${1,,}"
+  host="${host#[}"
+  host="${host%]}"
+
+  [[ "$host" == "localhost" ]] \
+    || [[ "$host" == *.localhost ]] \
+    || [[ "$host" == "127."* ]] \
+    || [[ "$host" == "::1" ]] \
+    || [[ "$host" == "0:0:0:0:0:0:0:1" ]]
+}
+
+api_token_configured() {
+  [[ -n "${HACKRF_WEBUI_TOKEN:-}" || -n "${NEXT_PUBLIC_HACKRF_WEBUI_TOKEN:-}" ]]
+}
+
+configure_api_security() {
+  if [[ -z "${HACKRF_WEBUI_TOKEN:-}" && -n "${NEXT_PUBLIC_HACKRF_WEBUI_TOKEN:-}" ]]; then
+    export HACKRF_WEBUI_TOKEN="$NEXT_PUBLIC_HACKRF_WEBUI_TOKEN"
+  fi
+
+  if [[ -n "${HACKRF_WEBUI_TOKEN:-}" && -z "${NEXT_PUBLIC_HACKRF_WEBUI_TOKEN:-}" ]]; then
+    export NEXT_PUBLIC_HACKRF_WEBUI_TOKEN="$HACKRF_WEBUI_TOKEN"
+  fi
+
+  if ! is_loopback_host "$HOST" && ! api_token_configured; then
+    fail "Binding to ${HOST} exposes hardware-control APIs; set HACKRF_WEBUI_TOKEN before using --host ${HOST}."
+  fi
+}
+
+api_auth_status() {
+  if api_token_configured; then
+    if is_loopback_host "$HOST"; then
+      printf '%s\n' "token enabled"
+    else
+      printf '%s\n' "token required for ${HOST}"
+    fi
+    return
+  fi
+
+  if is_loopback_host "$HOST"; then
+    printf '%s\n' "loopback-only without token"
+  else
+    printf '%s\n' "missing token for ${HOST}"
+  fi
+}
+
 usage() {
   cat <<'EOF'
 Usage: ./start.sh [options]
@@ -104,10 +151,13 @@ Environment overrides:
   SKIP_ADSB_RUNTIME, SKIP_AI, REBUILD,
   MAP_REINSTALL, MAP_GLOBAL_BUDGET, MAP_GLOBAL_MAX_ZOOM,
   MAP_COUNTRY, MAP_COUNTRY_MAX_ZOOM,
-  DUMP1090_FA_REF, DUMP1090_FA_REINSTALL, AI_REINSTALL,
-  HACKRF_WEBUI_AI_PYTHON, UV_INSTALL_SCRIPT_URL, DRY_RUN,
-  HACKRF_WEBUI_GPSD_HOST, HACKRF_WEBUI_GPSD_PORT
-  HACKRF_WEBUI_DB_PATH
+  DUMP1090_FA_REF, DUMP1090_FA_REINSTALL, DUMP1090_FA_SHA256,
+  DUMP1090_FA_ALLOW_UNPINNED_REF, AI_REINSTALL, AI_MODEL_SHA256,
+  AI_LABELS_SHA256, HACKRF_WEBUI_AI_PYTHON, UV_INSTALL_SCRIPT_URL,
+  UV_INSTALL_SCRIPT_SHA256, DRY_RUN,
+  HACKRF_WEBUI_GPSD_HOST, HACKRF_WEBUI_GPSD_PORT,
+  HACKRF_WEBUI_DB_PATH, HACKRF_WEBUI_TOKEN, NEXT_PUBLIC_HACKRF_WEBUI_TOKEN,
+  HACKRF_WEBUI_ALLOWED_ORIGINS
 
 Default map behavior:
   start.sh ensures a managed offline map stack based on the latest Protomaps
@@ -115,6 +165,11 @@ Default map behavior:
   If --map-country is provided, it also installs a high-detail overlay for that
   country on top of the shared global layer. In an interactive terminal, if no
   country overlay is installed yet, start.sh offers to configure one.
+
+Security:
+  Bind to 127.0.0.1 for local-only use. Binding to a non-loopback host requires
+  HACKRF_WEBUI_TOKEN; start.sh mirrors it to NEXT_PUBLIC_HACKRF_WEBUI_TOKEN so
+  the browser can authenticate API, SSE and audio-stream requests.
 EOF
 }
 
@@ -144,6 +199,37 @@ run_root() {
 
 have() {
   command -v "$1" >/dev/null 2>&1
+}
+
+sha256_file() {
+  local path="$1"
+  if have sha256sum; then
+    sha256sum "$path" | cut -d' ' -f1
+    return
+  fi
+
+  if have shasum; then
+    shasum -a 256 "$path" | cut -d' ' -f1
+    return
+  fi
+
+  fail "sha256sum or shasum is required to verify downloaded assets."
+}
+
+verify_file_sha256() {
+  local path="$1"
+  local expected="${2,,}"
+  local label="$3"
+  local actual
+
+  if [[ -z "$expected" ]]; then
+    return
+  fi
+
+  [[ "$expected" =~ ^[0-9a-f]{64}$ ]] || fail "${label} checksum must be a 64-character SHA-256 hex digest."
+  actual="$(sha256_file "$path")"
+  actual="${actual,,}"
+  [[ "$actual" == "$expected" ]] || fail "${label} checksum mismatch: expected ${expected}, got ${actual}."
 }
 
 command_path() {
@@ -775,6 +861,22 @@ gpsd_probe_status() {
 install_local_uv() {
   mkdir -p "$AI_TOOLS_DIR"
 
+  if [[ -n "${UV_INSTALL_SCRIPT_SHA256:-}" ]]; then
+    local installer_path="${AI_TOOLS_DIR}/uv-install.sh"
+    if [[ "$DRY_RUN" == "1" ]]; then
+      run curl -fsSL "$UV_INSTALL_SCRIPT_URL" -o "$installer_path"
+      run verify_file_sha256 "$installer_path" "$UV_INSTALL_SCRIPT_SHA256" "uv installer"
+      run env UV_UNMANAGED_INSTALL="$AI_TOOLS_DIR" sh "$installer_path"
+      return
+    fi
+
+    curl -fsSL "$UV_INSTALL_SCRIPT_URL" -o "$installer_path.tmp"
+    verify_file_sha256 "$installer_path.tmp" "$UV_INSTALL_SCRIPT_SHA256" "uv installer"
+    mv "$installer_path.tmp" "$installer_path"
+    env UV_UNMANAGED_INSTALL="$AI_TOOLS_DIR" sh "$installer_path"
+    return
+  fi
+
   if [[ "$DRY_RUN" == "1" ]]; then
     run env UV_UNMANAGED_INSTALL="$AI_TOOLS_DIR" sh -c "curl -fsSL \"$UV_INSTALL_SCRIPT_URL\" | sh"
     return
@@ -787,17 +889,20 @@ download_ai_asset() {
   local url="$1"
   local destination="$2"
   local label="$3"
+  local expected_sha256="${4:-}"
   local tmp="${destination}.tmp"
 
   mkdir -p "$(dirname "$destination")"
 
   if [[ "$DRY_RUN" == "1" ]]; then
     run curl -fsSL "$url" -o "$destination"
+    run verify_file_sha256 "$destination" "$expected_sha256" "$label"
     return
   fi
 
   log "Downloading ${label}."
   curl -fsSL "$url" -o "$tmp"
+  verify_file_sha256 "$tmp" "$expected_sha256" "$label"
   mv "$tmp" "$destination"
 }
 
@@ -809,11 +914,11 @@ ensure_ai_assets() {
   mkdir -p "$AI_ASSETS_DIR"
 
   if [[ "$AI_REINSTALL" == "1" || ! -f "$AI_MODEL_PATH" ]]; then
-    download_ai_asset "$AI_MODEL_URL" "$AI_MODEL_PATH" "YAMNet model"
+    download_ai_asset "$AI_MODEL_URL" "$AI_MODEL_PATH" "YAMNet model" "${AI_MODEL_SHA256:-}"
   fi
 
   if [[ "$AI_REINSTALL" == "1" || ! -f "$AI_LABELS_PATH" ]]; then
-    download_ai_asset "$AI_LABELS_URL" "$AI_LABELS_PATH" "YAMNet label map"
+    download_ai_asset "$AI_LABELS_URL" "$AI_LABELS_PATH" "YAMNet label map" "${AI_LABELS_SHA256:-}"
   fi
 }
 
@@ -914,6 +1019,7 @@ print_status_report() {
   report_line "pkg-config" "$(command_display pkg-config)"
   report_line "GPSD daemon" "$(gpsd_probe_status)"
   report_line "SQLite DB" "$(db_ready && printf '%s' "$DB_PATH" || printf '%s' 'not initialized yet')"
+  report_line "API auth" "$(api_auth_status)"
   report_line "Capture store" "$CAPTURES_DIR"
   report_line "AI assets" "$(ai_assets_ready && printf '%s' "$AI_MODEL_PATH" || printf '%s' 'missing')"
   report_line "AI Python" "$([[ -x "$(ai_python_path)" ]] && printf '%s' "$(ai_python_path)" || printf '%s' 'missing')"
@@ -1120,6 +1226,7 @@ print_start_summary() {
   report_line "ADS-B backend" "$(adsb_decoder_binary_path)"
   report_line "Prod bundle" ".next/BUILD_ID present"
   report_line "SQLite DB" "$DB_PATH"
+  report_line "API auth" "$(api_auth_status)"
   report_line "Capture store" "$CAPTURES_DIR"
   report_line "AI Python" "$([[ -x "$(ai_python_path)" ]] && printf '%s' "$(ai_python_path)" || printf '%s' 'missing')"
   report_line "AI runtime" "$(ai_runtime_ready && printf '%s' 'ready' || printf '%s' 'not initialized yet')"
@@ -1153,6 +1260,8 @@ start_app() {
   if [[ "$DRY_RUN" == "1" ]]; then
     run env \
       NEXT_TELEMETRY_DISABLED="$NEXT_TELEMETRY_DISABLED" \
+      HACKRF_WEBUI_TOKEN="${HACKRF_WEBUI_TOKEN:-}" \
+      NEXT_PUBLIC_HACKRF_WEBUI_TOKEN="${NEXT_PUBLIC_HACKRF_WEBUI_TOKEN:-}" \
       HACKRF_WEBUI_GPSD_HOST="$GPSD_HOST" \
       HACKRF_WEBUI_GPSD_PORT="$GPSD_PORT" \
       npm run start -- --hostname "$HOST" --port "$PORT"
@@ -1160,6 +1269,8 @@ start_app() {
   fi
   exec env \
     NEXT_TELEMETRY_DISABLED="$NEXT_TELEMETRY_DISABLED" \
+    HACKRF_WEBUI_TOKEN="${HACKRF_WEBUI_TOKEN:-}" \
+    NEXT_PUBLIC_HACKRF_WEBUI_TOKEN="${NEXT_PUBLIC_HACKRF_WEBUI_TOKEN:-}" \
     HACKRF_WEBUI_GPSD_HOST="$GPSD_HOST" \
     HACKRF_WEBUI_GPSD_PORT="$GPSD_PORT" \
     npm run start -- --hostname "$HOST" --port "$PORT"
@@ -1167,6 +1278,7 @@ start_app() {
 
 main() {
   parse_args "$@"
+  configure_api_security
   trap 'warn "Interrupted."; exit 130' INT TERM
 
   log "Preparing hackrf-webui."
