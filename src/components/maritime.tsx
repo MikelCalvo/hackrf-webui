@@ -29,11 +29,16 @@ import {
 import type {
   CreateRadioSessionRequest,
   NarrowbandScanMode,
-  RadioSessionChannel,
   UpdateNarrowbandSessionRequest,
 } from "@/lib/radio-session";
 import { radioSessionChannelDeckSignature } from "@/lib/radio-session";
-import { appendApiToken } from "@/lib/api-client";
+import {
+  deriveNarrowbandScannerState,
+  formatRadioSessionAudioUrl,
+  toRadioSessionChannels,
+  uniqueChannelsByFrequency,
+  uniqueChannelsByLabelFrequency,
+} from "@/lib/narrowband";
 import type { AudioControls } from "@/lib/radio";
 import type { ResolvedAppLocation } from "@/lib/types";
 import {
@@ -50,7 +55,6 @@ const MARITIME_CONFIG_KEY = "hackrf-webui.maritime-config.v1";
 const MARITIME_MIN_MHZ = 156.0;
 const MARITIME_MAX_MHZ = 162.55;
 const CONTACT_REFRESH_MS = 10_000;
-type ScannerState = "idle" | "scanning" | "locked";
 type ScanMode = NarrowbandScanMode;
 type AllScanScope = "smart" | "full";
 
@@ -185,37 +189,6 @@ function StepButton({
   );
 }
 
-function uniqueChannels(channels: MaritimeChannel[]): MaritimeChannel[] {
-  const byKey = new Map<string, MaritimeChannel>();
-
-  for (const channel of channels) {
-    const key = `${channel.freqMhz.toFixed(3)}:${channel.label}`;
-    if (!byKey.has(key)) {
-      byKey.set(key, channel);
-    }
-  }
-
-  return [...byKey.values()]
-    .sort((left, right) => left.freqMhz - right.freqMhz || left.label.localeCompare(right.label))
-    .map((channel, index) => ({
-      ...channel,
-      number: index + 1,
-    }));
-}
-
-function uniqueScanChannels(channels: MaritimeChannel[]): MaritimeChannel[] {
-  const byFrequency = new Map<string, MaritimeChannel>();
-
-  for (const channel of channels) {
-    const key = channel.freqMhz.toFixed(5);
-    if (!byFrequency.has(key)) {
-      byFrequency.set(key, channel);
-    }
-  }
-
-  return [...byFrequency.values()].sort((left, right) => left.freqMhz - right.freqMhz);
-}
-
 function buildExpandedScanChannels(): MaritimeChannel[] {
   return MARITIME_EXPANDED_SCAN_CHANNELS
     .slice()
@@ -312,31 +285,6 @@ function prioritizeScopedScanChannels(
   return [...cityMatches, ...countryMatches, ...globalMatches];
 }
 
-function deriveScannerState(
-  mode: "manual" | "scan" | null,
-  state: string | null,
-): ScannerState {
-  if (mode !== "scan" || !state || state === "error" || state === "stopped" || state === "stopping") {
-    return "idle";
-  }
-  return state === "locked" ? "locked" : "scanning";
-}
-
-function formatSessionAudioUrl(sessionId: string): string {
-  return appendApiToken(`/api/radio/sessions/${encodeURIComponent(sessionId)}/audio`);
-}
-
-function toSessionChannels(channels: MaritimeChannel[]): RadioSessionChannel[] {
-  return channels.map((channel) => ({
-    id: channel.id,
-    bandId: channel.bandId,
-    number: channel.number,
-    freqMhz: channel.freqMhz,
-    label: channel.label,
-    notes: channel.notes,
-  }));
-}
-
 export function MaritimeModule({
   location,
   controls,
@@ -408,7 +356,7 @@ export function MaritimeModule({
   }, [location]);
 
   const savedChannels = useMemo(
-    () => uniqueChannels(savedPresets.map(savedPresetToChannel)),
+    () => uniqueChannelsByLabelFrequency(savedPresets.map(savedPresetToChannel)),
     [savedPresets],
   );
   const selectedBand = useMemo(
@@ -416,7 +364,7 @@ export function MaritimeModule({
     [config.selectedBandId],
   );
   const allChannels = useMemo(
-    () => uniqueChannels([
+    () => uniqueChannelsByLabelFrequency([
       ...savedChannels,
       ...MARITIME_BANDS.filter((band) => band.id !== "all" && band.id !== "saved")
         .flatMap((band) => getMaritimeChannelsForBand(band.id)),
@@ -435,12 +383,12 @@ export function MaritimeModule({
   }, [allChannels, savedChannels, selectedBand.id]);
 
   const smartAllScanChannels = useMemo(
-    () => uniqueScanChannels(prioritizeScopedScanChannels(channels, savedScanLocation)),
+    () => uniqueChannelsByFrequency(prioritizeScopedScanChannels(channels, savedScanLocation)),
     [channels, savedScanLocation],
   );
 
   const smartExpandedScanChannels = useMemo(
-    () => uniqueScanChannels(prioritizeScopedScanChannels(FREE_SCAN_CHANNELS, savedScanLocation)),
+    () => uniqueChannelsByFrequency(prioritizeScopedScanChannels(FREE_SCAN_CHANNELS, savedScanLocation)),
     [savedScanLocation],
   );
 
@@ -448,11 +396,11 @@ export function MaritimeModule({
     () => {
       if (selectedBand.id === "all" && config.allScanScope === "smart") {
         return config.freeScan
-          ? uniqueScanChannels([...smartAllScanChannels, ...smartExpandedScanChannels])
+          ? uniqueChannelsByFrequency([...smartAllScanChannels, ...smartExpandedScanChannels])
           : smartAllScanChannels;
       }
 
-      return config.freeScan ? uniqueScanChannels([...channels, ...FREE_SCAN_CHANNELS]) : channels;
+      return config.freeScan ? uniqueChannelsByFrequency([...channels, ...FREE_SCAN_CHANNELS]) : channels;
     },
     [
       channels,
@@ -504,7 +452,7 @@ export function MaritimeModule({
     },
   });
 
-  const scannerState = deriveScannerState(session?.mode ?? null, session?.state ?? null);
+  const scannerState = deriveNarrowbandScannerState(session?.mode ?? null, session?.state ?? null);
   const currentScanChannel = session?.mode === "scan"
     ? (session.pendingChannel ?? session.activeChannel)
     : null;
@@ -531,7 +479,7 @@ export function MaritimeModule({
     [channels, currentScanChannelId, playingChannelId, selectedChannelId],
   );
   const scanDeckSignature = useMemo(
-    () => radioSessionChannelDeckSignature(toSessionChannels(scanChannels)),
+    () => radioSessionChannelDeckSignature(toRadioSessionChannels(scanChannels)),
     [scanChannels],
   );
   const selectedChannel =
@@ -661,7 +609,7 @@ export function MaritimeModule({
       hasChanges = true;
     }
     if (session.mode === "scan" && session.channelDeckSignature !== scanDeckSignature) {
-      patch.channels = toSessionChannels(scanChannels);
+      patch.channels = toRadioSessionChannels(scanChannels);
       hasChanges = true;
     }
 
@@ -691,7 +639,7 @@ export function MaritimeModule({
 
     if (audioSessionIdRef.current !== session.id) {
       audio.pause();
-      audio.src = formatSessionAudioUrl(session.id);
+      audio.src = formatRadioSessionAudioUrl(session.id);
       audio.load();
       audioSessionIdRef.current = session.id;
     }
@@ -728,7 +676,7 @@ export function MaritimeModule({
       mode,
       controls,
       bandId: config.selectedBandId,
-      channels: toSessionChannels(sessionChannels),
+      channels: toRadioSessionChannels(sessionChannels),
       scanMode: config.scanMode,
       manualChannelId: manual?.id ?? null,
       squelch: config.squelch,

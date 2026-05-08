@@ -39,9 +39,74 @@ export function buildActivityCaptureMeta(
   };
 }
 
+type RadioUrlChannel = Pick<RadioChannel, "label" | "freqMhz"> & Partial<Pick<RadioChannel, "id" | "bandId" | "number">>;
+
+function appendRadioActivityParams(
+  params: URLSearchParams,
+  channel: RadioUrlChannel,
+  activityCapture?: Partial<ActivityCaptureRequestMeta> | null,
+): void {
+  if (activityCapture?.module) {
+    params.set("module", activityCapture.module);
+  }
+  if (activityCapture?.mode) {
+    params.set("activityMode", activityCapture.mode);
+  }
+  if (activityCapture?.activityEventId) {
+    params.set("activityEventId", activityCapture.activityEventId);
+  }
+
+  const bandId = activityCapture?.bandId ?? channel.bandId ?? null;
+  const channelId = activityCapture?.channelId ?? channel.id ?? null;
+  const channelNumber = activityCapture?.channelNumber ?? channel.number ?? null;
+
+  if (bandId) {
+    params.set("bandId", bandId);
+  }
+  if (channelId) {
+    params.set("channelId", channelId);
+  }
+  if (Number.isFinite(channelNumber)) {
+    params.set("channelNumber", String(channelNumber));
+  }
+
+  const optionalStringParams: Array<[string, string | null | undefined]> = [
+    ["channelNotes", activityCapture?.channelNotes],
+    ["sourceMode", activityCapture?.sourceMode],
+    ["gpsdFallbackMode", activityCapture?.gpsdFallbackMode],
+    ["sourceStatus", activityCapture?.sourceStatus],
+    ["sourceDetail", activityCapture?.sourceDetail],
+    ["regionId", activityCapture?.regionId],
+    ["regionName", activityCapture?.regionName],
+    ["countryId", activityCapture?.countryId],
+    ["countryCode", activityCapture?.countryCode],
+    ["countryName", activityCapture?.countryName],
+    ["cityId", activityCapture?.cityId],
+    ["cityName", activityCapture?.cityName],
+  ];
+
+  for (const [name, value] of optionalStringParams) {
+    if (value) {
+      params.set(name, value);
+    }
+  }
+
+  const optionalNumberParams: Array<[string, number | null | undefined]> = [
+    ["squelch", activityCapture?.squelch],
+    ["resolvedLatitude", activityCapture?.resolvedLatitude],
+    ["resolvedLongitude", activityCapture?.resolvedLongitude],
+  ];
+
+  for (const [name, value] of optionalNumberParams) {
+    if (Number.isFinite(value)) {
+      params.set(name, String(value));
+    }
+  }
+}
+
 export function buildRadioStreamUrl(
   pathname: string,
-  channel: Pick<RadioChannel, "label" | "freqMhz"> & Partial<Pick<RadioChannel, "id" | "bandId" | "number">>,
+  channel: RadioUrlChannel,
   controls: AudioControls,
   activityCapture?: Partial<ActivityCaptureRequestMeta> | null,
 ): string {
@@ -54,81 +119,13 @@ export function buildRadioStreamUrl(
     t: String(Date.now()),
   });
 
-  if (activityCapture?.module) {
-    params.set("module", activityCapture.module);
-  }
-  if (activityCapture?.mode) {
-    params.set("activityMode", activityCapture.mode);
-  }
-  if (activityCapture?.activityEventId) {
-    params.set("activityEventId", activityCapture.activityEventId);
-  }
-
-  const bandId = activityCapture?.bandId ?? channel.bandId ?? null;
-  const channelId = activityCapture?.channelId ?? channel.id ?? null;
-  const channelNumber = activityCapture?.channelNumber ?? channel.number ?? null;
-
-  if (bandId) {
-    params.set("bandId", bandId);
-  }
-  if (channelId) {
-    params.set("channelId", channelId);
-  }
-  if (Number.isFinite(channelNumber)) {
-    params.set("channelNumber", String(channelNumber));
-  }
-  if (activityCapture?.channelNotes) {
-    params.set("channelNotes", activityCapture.channelNotes);
-  }
-  if (Number.isFinite(activityCapture?.squelch)) {
-    params.set("squelch", String(activityCapture?.squelch));
-  }
-  if (activityCapture?.sourceMode) {
-    params.set("sourceMode", activityCapture.sourceMode);
-  }
-  if (activityCapture?.gpsdFallbackMode) {
-    params.set("gpsdFallbackMode", activityCapture.gpsdFallbackMode);
-  }
-  if (activityCapture?.sourceStatus) {
-    params.set("sourceStatus", activityCapture.sourceStatus);
-  }
-  if (activityCapture?.sourceDetail) {
-    params.set("sourceDetail", activityCapture.sourceDetail);
-  }
-  if (activityCapture?.regionId) {
-    params.set("regionId", activityCapture.regionId);
-  }
-  if (activityCapture?.regionName) {
-    params.set("regionName", activityCapture.regionName);
-  }
-  if (activityCapture?.countryId) {
-    params.set("countryId", activityCapture.countryId);
-  }
-  if (activityCapture?.countryCode) {
-    params.set("countryCode", activityCapture.countryCode);
-  }
-  if (activityCapture?.countryName) {
-    params.set("countryName", activityCapture.countryName);
-  }
-  if (activityCapture?.cityId) {
-    params.set("cityId", activityCapture.cityId);
-  }
-  if (activityCapture?.cityName) {
-    params.set("cityName", activityCapture.cityName);
-  }
-  if (Number.isFinite(activityCapture?.resolvedLatitude)) {
-    params.set("resolvedLatitude", String(activityCapture?.resolvedLatitude));
-  }
-  if (Number.isFinite(activityCapture?.resolvedLongitude)) {
-    params.set("resolvedLongitude", String(activityCapture?.resolvedLongitude));
-  }
-
+  appendRadioActivityParams(params, channel, activityCapture);
   return `${pathname}?${params.toString()}`;
 }
 
 export function buildRadioRetuneUrl(
   pathname: string,
-  channel: Pick<RadioChannel, "label" | "freqMhz"> & Partial<Pick<RadioChannel, "id" | "bandId" | "number">>,
+  channel: RadioUrlChannel,
   activityCapture?: Partial<ActivityCaptureRequestMeta> | null,
   expectedStreamId: string | null = null,
 ): string {
@@ -140,75 +137,7 @@ export function buildRadioRetuneUrl(
   if (expectedStreamId) {
     params.set("streamId", expectedStreamId);
   }
-
-  if (activityCapture?.module) {
-    params.set("module", activityCapture.module);
-  }
-  if (activityCapture?.mode) {
-    params.set("activityMode", activityCapture.mode);
-  }
-  if (activityCapture?.activityEventId) {
-    params.set("activityEventId", activityCapture.activityEventId);
-  }
-
-  const bandId = activityCapture?.bandId ?? channel.bandId ?? null;
-  const channelId = activityCapture?.channelId ?? channel.id ?? null;
-  const channelNumber = activityCapture?.channelNumber ?? channel.number ?? null;
-
-  if (bandId) {
-    params.set("bandId", bandId);
-  }
-  if (channelId) {
-    params.set("channelId", channelId);
-  }
-  if (Number.isFinite(channelNumber)) {
-    params.set("channelNumber", String(channelNumber));
-  }
-  if (activityCapture?.channelNotes) {
-    params.set("channelNotes", activityCapture.channelNotes);
-  }
-  if (Number.isFinite(activityCapture?.squelch)) {
-    params.set("squelch", String(activityCapture?.squelch));
-  }
-  if (activityCapture?.sourceMode) {
-    params.set("sourceMode", activityCapture.sourceMode);
-  }
-  if (activityCapture?.gpsdFallbackMode) {
-    params.set("gpsdFallbackMode", activityCapture.gpsdFallbackMode);
-  }
-  if (activityCapture?.sourceStatus) {
-    params.set("sourceStatus", activityCapture.sourceStatus);
-  }
-  if (activityCapture?.sourceDetail) {
-    params.set("sourceDetail", activityCapture.sourceDetail);
-  }
-  if (activityCapture?.regionId) {
-    params.set("regionId", activityCapture.regionId);
-  }
-  if (activityCapture?.regionName) {
-    params.set("regionName", activityCapture.regionName);
-  }
-  if (activityCapture?.countryId) {
-    params.set("countryId", activityCapture.countryId);
-  }
-  if (activityCapture?.countryCode) {
-    params.set("countryCode", activityCapture.countryCode);
-  }
-  if (activityCapture?.countryName) {
-    params.set("countryName", activityCapture.countryName);
-  }
-  if (activityCapture?.cityId) {
-    params.set("cityId", activityCapture.cityId);
-  }
-  if (activityCapture?.cityName) {
-    params.set("cityName", activityCapture.cityName);
-  }
-  if (Number.isFinite(activityCapture?.resolvedLatitude)) {
-    params.set("resolvedLatitude", String(activityCapture?.resolvedLatitude));
-  }
-  if (Number.isFinite(activityCapture?.resolvedLongitude)) {
-    params.set("resolvedLongitude", String(activityCapture?.resolvedLongitude));
-  }
+  appendRadioActivityParams(params, channel, activityCapture);
 
   return `${pathname}?${params.toString()}`;
 }

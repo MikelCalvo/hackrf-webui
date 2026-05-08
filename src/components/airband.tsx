@@ -28,11 +28,16 @@ import {
 import type {
   CreateRadioSessionRequest,
   NarrowbandScanMode,
-  RadioSessionChannel,
   UpdateNarrowbandSessionRequest,
 } from "@/lib/radio-session";
 import { radioSessionChannelDeckSignature } from "@/lib/radio-session";
-import { appendApiToken } from "@/lib/api-client";
+import {
+  deriveNarrowbandScannerState,
+  formatRadioSessionAudioUrl,
+  toRadioSessionChannels,
+  uniqueChannelsByFrequency,
+  uniqueChannelsByLabelFrequency,
+} from "@/lib/narrowband";
 import type { AudioControls } from "@/lib/radio";
 import type { ResolvedAppLocation } from "@/lib/types";
 import {
@@ -51,7 +56,6 @@ const AIRBAND_MAX_MHZ = 137.0;
 const AIRBAND_SWEEP_MAX_MHZ = 136.975;
 const AIRBAND_SWEEP_STEP_MHZ = 0.025;
 const CONTACT_REFRESH_MS = 10_000;
-type ScannerState = "idle" | "scanning" | "locked";
 type ScanMode = NarrowbandScanMode;
 
 type PersistedConfig = {
@@ -175,37 +179,6 @@ function StepButton({
   );
 }
 
-function uniqueChannels(channels: AirbandChannel[]): AirbandChannel[] {
-  const byKey = new Map<string, AirbandChannel>();
-
-  for (const channel of channels) {
-    const key = `${channel.freqMhz.toFixed(3)}:${channel.label}`;
-    if (!byKey.has(key)) {
-      byKey.set(key, channel);
-    }
-  }
-
-  return [...byKey.values()]
-    .sort((left, right) => left.freqMhz - right.freqMhz || left.label.localeCompare(right.label))
-    .map((channel, index) => ({
-      ...channel,
-      number: index + 1,
-    }));
-}
-
-function uniqueScanChannels(channels: AirbandChannel[]): AirbandChannel[] {
-  const byFrequency = new Map<string, AirbandChannel>();
-
-  for (const channel of channels) {
-    const key = channel.freqMhz.toFixed(5);
-    if (!byFrequency.has(key)) {
-      byFrequency.set(key, channel);
-    }
-  }
-
-  return [...byFrequency.values()].sort((left, right) => left.freqMhz - right.freqMhz);
-}
-
 function buildSweepChannels(): AirbandChannel[] {
   const channels: AirbandChannel[] = [];
   let index = 0;
@@ -276,31 +249,6 @@ function buildAirbandSpectrumMarkers(
   return Array.from(unique.values()).sort((left, right) => left.freqHz - right.freqHz);
 }
 
-function deriveScannerState(
-  mode: "manual" | "scan" | null,
-  state: string | null,
-): ScannerState {
-  if (mode !== "scan" || !state || state === "error" || state === "stopped" || state === "stopping") {
-    return "idle";
-  }
-  return state === "locked" ? "locked" : "scanning";
-}
-
-function formatSessionAudioUrl(sessionId: string): string {
-  return appendApiToken(`/api/radio/sessions/${encodeURIComponent(sessionId)}/audio`);
-}
-
-function toSessionChannels(channels: AirbandChannel[]): RadioSessionChannel[] {
-  return channels.map((channel) => ({
-    id: channel.id,
-    bandId: channel.bandId,
-    number: channel.number,
-    freqMhz: channel.freqMhz,
-    label: channel.label,
-    notes: channel.notes,
-  }));
-}
-
 export function AirbandModule({
   location,
   controls,
@@ -358,7 +306,7 @@ export function AirbandModule({
   }, []);
 
   const savedChannels = useMemo(
-    () => uniqueChannels(savedPresets.map(savedPresetToChannel)),
+    () => uniqueChannelsByLabelFrequency(savedPresets.map(savedPresetToChannel)),
     [savedPresets],
   );
   const selectedBand = useMemo(
@@ -366,7 +314,7 @@ export function AirbandModule({
     [config.selectedBandId],
   );
   const allChannels = useMemo(
-    () => uniqueChannels([
+    () => uniqueChannelsByLabelFrequency([
       ...savedChannels,
       ...AIRBAND_BANDS.filter((band) => band.id !== "all" && band.id !== "saved")
         .flatMap((band) => getAirbandChannelsForBand(band.id)),
@@ -385,7 +333,7 @@ export function AirbandModule({
   }, [allChannels, savedChannels, selectedBand.id]);
 
   const scanChannels = useMemo(
-    () => (config.freeScan ? uniqueScanChannels([...channels, ...FREE_SCAN_CHANNELS]) : channels),
+    () => (config.freeScan ? uniqueChannelsByFrequency([...channels, ...FREE_SCAN_CHANNELS]) : channels),
     [channels, config.freeScan],
   );
 
@@ -395,7 +343,7 @@ export function AirbandModule({
     },
   });
 
-  const scannerState = deriveScannerState(session?.mode ?? null, session?.state ?? null);
+  const scannerState = deriveNarrowbandScannerState(session?.mode ?? null, session?.state ?? null);
   const currentScanChannel = session?.mode === "scan"
     ? (session.pendingChannel ?? session.activeChannel)
     : null;
@@ -422,7 +370,7 @@ export function AirbandModule({
     [channels, scanChannels, scannerState],
   );
   const scanDeckSignature = useMemo(
-    () => radioSessionChannelDeckSignature(toSessionChannels(scanChannels)),
+    () => radioSessionChannelDeckSignature(toRadioSessionChannels(scanChannels)),
     [scanChannels],
   );
 
@@ -554,7 +502,7 @@ export function AirbandModule({
       hasChanges = true;
     }
     if (session.mode === "scan" && session.channelDeckSignature !== scanDeckSignature) {
-      patch.channels = toSessionChannels(scanChannels);
+      patch.channels = toRadioSessionChannels(scanChannels);
       hasChanges = true;
     }
 
@@ -584,7 +532,7 @@ export function AirbandModule({
 
     if (audioSessionIdRef.current !== session.id) {
       audio.pause();
-      audio.src = formatSessionAudioUrl(session.id);
+      audio.src = formatRadioSessionAudioUrl(session.id);
       audio.load();
       audioSessionIdRef.current = session.id;
     }
@@ -621,7 +569,7 @@ export function AirbandModule({
       mode,
       controls,
       bandId: config.selectedBandId,
-      channels: toSessionChannels(sessionChannels),
+      channels: toRadioSessionChannels(sessionChannels),
       scanMode: config.scanMode,
       manualChannelId: manual?.id ?? null,
       squelch: config.squelch,

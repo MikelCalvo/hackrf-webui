@@ -27,10 +27,9 @@ import type {
 import type { AudioControls } from "@/lib/radio";
 import { normalizeScannerPostHitHoldSeconds, SCANNER_HOLD_GRACE_MS, SCANNER_POST_HIT_HOLD_DEFAULT_SECONDS, SCANNER_POST_HIT_HOLD_MAX_SECONDS, SCANNER_STARTUP_MS } from "@/lib/signal-activity";
 import { buildChannelSpectrumRange } from "@/lib/spectrum";
-import { appendApiToken } from "@/lib/api-client";
+import { deriveNarrowbandScannerState, formatRadioSessionAudioUrl, toRadioSessionChannels } from "@/lib/narrowband";
 import type { ResolvedAppLocation } from "@/lib/types";
 
-type ScannerState = "idle" | "scanning" | "locked";
 type ScanMode = NarrowbandScanMode;
 
 const STORAGE_KEY = "hackrf-webui.pmr-config.v1";
@@ -80,25 +79,11 @@ function buildPmrSpectrumMarkers(
   }));
 }
 
-function deriveScannerState(
-  mode: "manual" | "scan" | null,
-  state: string | null,
-): ScannerState {
-  if (mode !== "scan" || !state || state === "error" || state === "stopped" || state === "stopping") {
-    return "idle";
-  }
-  return state === "locked" ? "locked" : "scanning";
-}
-
 function describeBandName(bandId: string | null): string | null {
   if (!bandId) {
     return null;
   }
   return PMR_BANDS.find((entry) => entry.id === bandId)?.name ?? null;
-}
-
-function formatSessionAudioUrl(sessionId: string): string {
-  return appendApiToken(`/api/radio/sessions/${encodeURIComponent(sessionId)}/audio`);
 }
 
 export function PmrModule(props: {
@@ -137,7 +122,7 @@ export function PmrModule(props: {
     },
   });
 
-  const scannerState = deriveScannerState(session?.mode ?? null, session?.state ?? null);
+  const scannerState = deriveNarrowbandScannerState(session?.mode ?? null, session?.state ?? null);
   const currentScanChannel = session?.mode === "scan"
     ? (session.pendingChannel ?? session.activeChannel)
     : null;
@@ -310,7 +295,7 @@ export function PmrModule(props: {
 
     if (audioSessionIdRef.current !== session.id) {
       audio.pause();
-      audio.src = formatSessionAudioUrl(session.id);
+      audio.src = formatRadioSessionAudioUrl(session.id);
       audio.load();
       audioSessionIdRef.current = session.id;
     }
@@ -338,14 +323,7 @@ export function PmrModule(props: {
     mode,
     controls,
     bandId: selectedBandId,
-    channels: channels.map((channel) => ({
-      id: channel.id,
-      bandId: channel.bandId,
-      number: channel.number,
-      freqMhz: channel.freqMhz,
-      label: channel.label,
-      notes: channel.notes,
-    })),
+    channels: toRadioSessionChannels(channels),
     scanMode,
     manualChannelId,
     squelch,

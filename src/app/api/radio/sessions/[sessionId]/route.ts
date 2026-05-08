@@ -2,6 +2,7 @@ import type { NextRequest } from "next/server";
 
 import { radioSupervisor } from "@/server/radio/supervisor";
 import { authorizeApiRequest } from "@/server/api/auth";
+import { jsonMessage, jsonNoStore, readJsonPayload } from "@/server/api/response";
 import {
   MAX_RADIO_SESSION_PAYLOAD_BYTES,
   validateUpdateRadioSessionRequest,
@@ -10,26 +11,8 @@ import {
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
-function jsonMessage(message: string, status = 400): Response {
-  return Response.json({ message }, {
-    status,
-    headers: {
-      "Cache-Control": "no-store",
-    },
-  });
-}
-
 function notFound(message = "Radio session not found."): Response {
   return jsonMessage(message, 404);
-}
-
-function payloadTooLarge(request: NextRequest): boolean {
-  const rawLength = request.headers.get("content-length");
-  if (!rawLength) {
-    return false;
-  }
-  const length = Number.parseInt(rawLength, 10);
-  return Number.isFinite(length) && length > MAX_RADIO_SESSION_PAYLOAD_BYTES;
 }
 
 export async function GET(
@@ -47,11 +30,7 @@ export async function GET(
     return notFound();
   }
 
-  return Response.json(snapshot, {
-    headers: {
-      "Cache-Control": "no-store",
-    },
-  });
+  return jsonNoStore(snapshot);
 }
 
 export async function DELETE(
@@ -86,21 +65,15 @@ export async function PATCH(
     return authFailure;
   }
 
-  if (payloadTooLarge(request)) {
-    return jsonMessage(`Payload is limited to ${MAX_RADIO_SESSION_PAYLOAD_BYTES} bytes.`, 413);
-  }
-
   const { sessionId } = await context.params;
   const existing = radioSupervisor.getSession(sessionId);
   if (!existing) {
     return notFound();
   }
 
-  let rawPayload: unknown;
-  try {
-    rawPayload = await request.json();
-  } catch {
-    return jsonMessage("Invalid JSON payload.");
+  const rawPayload = await readJsonPayload(request, MAX_RADIO_SESSION_PAYLOAD_BYTES);
+  if (!rawPayload.ok) {
+    return rawPayload.response;
   }
 
   const sessionModule = existing.module;
@@ -108,7 +81,7 @@ export async function PATCH(
     return jsonMessage("Radio session does not support updates.", 409);
   }
 
-  const payload = validateUpdateRadioSessionRequest(rawPayload, {
+  const payload = validateUpdateRadioSessionRequest(rawPayload.value, {
     module: sessionModule,
   });
   if (!payload.ok) {
@@ -121,11 +94,7 @@ export async function PATCH(
       return notFound();
     }
 
-    return Response.json(snapshot, {
-      headers: {
-        "Cache-Control": "no-store",
-      },
-    });
+    return jsonNoStore(snapshot);
   } catch (error) {
     return jsonMessage(
       error instanceof Error ? error.message : "Could not update radio session.",
