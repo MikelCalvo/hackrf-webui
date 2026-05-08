@@ -62,7 +62,7 @@ If your distribution does not expose one of the required packages in its enabled
 
 ```bash
 ./start.sh --check
-./start.sh --host 0.0.0.0 --port 4000
+HACKRF_WEBUI_TOKEN="$(openssl rand -hex 32)" ./start.sh --host 0.0.0.0 --port 4000
 ./start.sh --skip-system-deps
 ./start.sh --skip-npm --skip-build
 ./start.sh --skip-ai
@@ -79,7 +79,7 @@ HACKRF_WEBUI_GPSD_HOST=127.0.0.1 HACKRF_WEBUI_GPSD_PORT=2947 ./start.sh
 What they do:
 
 - `--check` validates the local setup and prints a status report without changing the machine
-- `--host` and `--port` override the bind address
+- `--host` and `--port` override the bind address; non-loopback hosts require `HACKRF_WEBUI_TOKEN`
 - `--skip-system-deps` avoids package-manager changes
 - `--skip-npm` and `--skip-build` reuse existing local artifacts
 - `--skip-ai` leaves the local SIGINT AI runtime untouched or absent
@@ -97,7 +97,7 @@ What they do:
 Environment overrides also work:
 
 ```bash
-HOST=0.0.0.0 PORT=4000 ./start.sh
+HOST=0.0.0.0 PORT=4000 HACKRF_WEBUI_TOKEN="$(openssl rand -hex 32)" ./start.sh
 MAP_GLOBAL_BUDGET=4G ./start.sh
 MAP_GLOBAL_MAX_ZOOM=10 ./start.sh
 MAP_COUNTRY=ES MAP_COUNTRY_MAX_ZOOM=14 ./start.sh
@@ -105,6 +105,26 @@ DUMP1090_FA_REINSTALL=1 ./start.sh
 AI_REINSTALL=1 ./start.sh
 HACKRF_WEBUI_AI_PYTHON=3.13 ./start.sh
 HACKRF_WEBUI_GPSD_PORT=2947 ./start.sh
+```
+
+## API token and LAN mode
+
+`hackrf-webui` controls local radio hardware, starts streams and writes captures. The default host is `127.0.0.1`; this needs no token for normal local use.
+
+When you bind to a non-loopback host, `start.sh` requires `HACKRF_WEBUI_TOKEN`:
+
+```bash
+HACKRF_WEBUI_TOKEN="$(openssl rand -hex 32)" ./start.sh --host 0.0.0.0 --port 4000
+```
+
+The token is accepted through `Authorization: Bearer`, `X-HackRF-WebUI-Token`, or an `apiToken` query parameter for browser transports that cannot set headers. `start.sh` mirrors `HACKRF_WEBUI_TOKEN` into `NEXT_PUBLIC_HACKRF_WEBUI_TOKEN` so the browser UI can authenticate protected API, SSE and audio-stream requests.
+
+This is intended for trusted LAN protection. Anyone who can load the UI can read the browser token, so do not treat it as multi-user auth and do not expose the service directly to the internet. For remote use, prefer VPN / SSH tunnel / authenticated reverse proxy and HTTPS.
+
+If you embed the UI behind another origin, set an explicit unsafe-request allow-list:
+
+```bash
+HACKRF_WEBUI_ALLOWED_ORIGINS="https://radio.example.net" ./start.sh
 ```
 
 ## Runtime requirements

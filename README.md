@@ -70,7 +70,7 @@ The root route opens the last module used in the browser, or falls back to `/fm`
 
 ```bash
 ./start.sh --check
-./start.sh --host 0.0.0.0 --port 4000
+HACKRF_WEBUI_TOKEN="$(openssl rand -hex 32)" ./start.sh --host 0.0.0.0 --port 4000
 ./start.sh --map-country ES
 ./start.sh --skip-ai
 ./start.sh --skip-maps
@@ -81,12 +81,14 @@ The root route opens the last module used in the browser, or falls back to `/fm`
 Environment overrides work too:
 
 ```bash
-HOST=0.0.0.0 PORT=4000 ./start.sh
+HOST=0.0.0.0 PORT=4000 HACKRF_WEBUI_TOKEN="$(openssl rand -hex 32)" ./start.sh
 MAP_COUNTRY=ES ./start.sh
 HACKRF_WEBUI_GPSD_HOST=127.0.0.1 HACKRF_WEBUI_GPSD_PORT=2947 ./start.sh
 ```
 
 For the full runtime guide, see [`docs/runtime.md`](docs/runtime.md).
+
+LAN exposure is guarded: binding to a non-loopback host requires `HACKRF_WEBUI_TOKEN`. The token protects hardware-control APIs from accidental drive-by access on a trusted LAN; it is not a substitute for VPN or reverse-proxy authentication on the public internet.
 
 ## Requirements
 
@@ -129,8 +131,9 @@ Production-style local verification:
 
 ```bash
 npm ci
-npm run lint
+npm run check
 npm run build
+npm run check:bundle
 ```
 
 Developer notes, catalog rebuilds and data-source details live in [`docs/development.md`](docs/development.md).
@@ -139,6 +142,9 @@ Developer notes, catalog rebuilds and data-source details live in [`docs/develop
 
 - [`docs/runtime.md`](docs/runtime.md): install flow, runtime options, maps, storage and receiver notes.
 - [`docs/development.md`](docs/development.md): development commands, native binaries and catalog tooling.
+- [`docs/release.md`](docs/release.md): release checklist and verification flow.
+- [`SECURITY.md`](SECURITY.md): API token, LAN exposure and vulnerability reporting policy.
+- [`CONTRIBUTING.md`](CONTRIBUTING.md): local setup, verification and PR expectations.
 - [`docs/fm`](docs/fm): FM coverage planning and source notes.
 - [`docs/screenshots`](docs/screenshots): screenshots used by this README.
 

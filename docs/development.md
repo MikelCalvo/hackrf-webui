@@ -29,9 +29,12 @@ Before sending changes, run the normal project checks:
 
 ```bash
 npm ci
-npm run lint
+npm run check
 npm run build
+npm run check:bundle
 ```
+
+`npm run check` runs lint, a clean TypeScript check, the Node test suite, catalog validation, script syntax checks, both package audits and a package dry-run artifact check. `npm run build` still needs to run separately because it compiles native receivers and writes Next.js diagnostics for `npm run check:bundle`.
 
 The FM catalog tooling has its own package boundary:
 
@@ -64,6 +67,8 @@ Use this command if you only need to rebuild that backend manually:
 ```bash
 node ./scripts/install-dump1090-fa.mjs
 ```
+
+Release builds should use a full 40-character `DUMP1090_FA_REF`. If you have a published source-archive checksum, set `DUMP1090_FA_SHA256` so the installer verifies the archive before extraction.
 
 ## FM catalog
 
