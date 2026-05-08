@@ -1,0 +1,37 @@
+# Runtime and generated artifacts
+/.next/
+/out/
+/build/
+/bin/
+/coverage/
+/.cache/
+/.vercel/
+
+# Local package managers / debug logs
+/node_modules/
+/scripts/catalog/node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+
+# Local runtime state
+/db/*.sqlite
+/db/*.sqlite-shm
+/db/*.sqlite-wal
+/data/captures/
+/assets/ai/
+/runtime/ai-venv/
+/runtime/python/
+/runtime/tools/
+/runtime/uv-cache/
+/public/tiles/osm/
+
+# Local secrets and OS/editor noise
+.env*
+*.pem
+.DS_Store
+*.tsbuildinfo
+next-env.d.ts
+__pycache__/
+*.pyc

@@ -1,0 +1,75 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  quality:
+    name: lint, test, build
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Install system dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            build-essential \
+            ffmpeg \
+            hackrf \
+            libhackrf-dev \
+            libncurses-dev \
+            pkg-config \
+            python3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: |
+            package-lock.json
+            scripts/catalog/package-lock.json
+
+      - name: Install root dependencies
+        run: npm ci
+
+      - name: Install catalog dependencies
+        run: npm --prefix ./scripts/catalog ci
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Typecheck
+        run: npm run typecheck
+
+      - name: Unit tests
+        run: npm run test
+
+      - name: Catalog consistency
+        run: npm run check:catalog
+
+      - name: Script syntax checks
+        run: npm run check:scripts
+
+      - name: Dependency audit
+        run: npm run audit
+
+      - name: Package artifact check
+        run: npm run check:package
+
+      - name: Production build
+        env:
+          NEXT_TELEMETRY_DISABLED: "1"
+        run: npm run build
+
+      - name: Bundle budget
+        run: npm run check:bundle
