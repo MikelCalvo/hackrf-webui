@@ -116,6 +116,21 @@ api_auth_status() {
   fi
 }
 
+simulator_enabled() {
+  case "${HACKRF_WEBUI_SIMULATOR:-}" in
+    1|true|TRUE|yes|YES|y|Y|on|ON|sim|SIM|simulator|SIMULATOR) return 0 ;;
+    *) return 1 ;;
+  esac
+}
+
+simulator_status() {
+  if simulator_enabled; then
+    printf '%s\n' "enabled"
+  else
+    printf '%s\n' "disabled"
+  fi
+}
+
 usage() {
   cat <<'EOF'
 Usage: ./start.sh [options]
@@ -156,7 +171,8 @@ Environment overrides:
   AI_LABELS_SHA256, HACKRF_WEBUI_AI_PYTHON, UV_INSTALL_SCRIPT_URL,
   UV_INSTALL_SCRIPT_SHA256, DRY_RUN,
   HACKRF_WEBUI_GPSD_HOST, HACKRF_WEBUI_GPSD_PORT,
-  HACKRF_WEBUI_DB_PATH, HACKRF_WEBUI_TOKEN, NEXT_PUBLIC_HACKRF_WEBUI_TOKEN,
+  HACKRF_WEBUI_DB_PATH, HACKRF_WEBUI_SIMULATOR,
+  HACKRF_WEBUI_TOKEN, NEXT_PUBLIC_HACKRF_WEBUI_TOKEN,
   HACKRF_WEBUI_ALLOWED_ORIGINS
 
 Default map behavior:
@@ -170,6 +186,11 @@ Security:
   Bind to 127.0.0.1 for local-only use. Binding to a non-loopback host requires
   HACKRF_WEBUI_TOKEN; start.sh mirrors it to NEXT_PUBLIC_HACKRF_WEBUI_TOKEN so
   the browser can authenticate API, SSE and audio-stream requests.
+
+Simulator:
+  Set HACKRF_WEBUI_SIMULATOR=1 to run FM/PMR/AIRBAND/MARITIME flows without
+  a physical HackRF. The app reports a virtual HackRF and generates synthetic
+  telemetry, spectrum frames and browser audio for development smoke tests.
 EOF
 }
 
@@ -496,6 +517,20 @@ prompt_map_country_if_missing() {
 }
 
 needs_system_deps() {
+  if simulator_enabled; then
+    if [[ "$SKIP_ADSB_RUNTIME" == "1" ]]; then
+      ! node_ok
+      return
+    fi
+    if [[ "${DUMP1090_FA_REINSTALL:-0}" != "1" && -x "$(adsb_decoder_binary_path)" ]]; then
+      ! node_ok
+      return
+    fi
+
+    ! node_ok || ! have cc || ! have pkg-config || ! ncurses_build_ok
+    return
+  fi
+
   ! node_ok || ! have ffmpeg || ! have hackrf_info || ! have cc || ! have pkg-config || ! hackrf_pkgconfig_ok || ! ncurses_build_ok
 }
 
@@ -741,6 +776,16 @@ install_system_deps() {
 
 verify_runtime() {
   node_ok || fail "Node.js ${MIN_NODE_MAJOR}+ and npm are required."
+
+  if simulator_enabled; then
+    if [[ "$SKIP_ADSB_RUNTIME" != "1" && ( "${DUMP1090_FA_REINSTALL:-0}" == "1" || ! -x "$(adsb_decoder_binary_path)" ) ]]; then
+      have cc || fail "A C compiler (cc) is required to build the ADS-B backend. Use --skip-adsb-runtime for simulator-only development."
+      have pkg-config || fail "pkg-config is required to build the ADS-B backend. Use --skip-adsb-runtime for simulator-only development."
+      ncurses_build_ok || fail "ncurses development headers are required to build the ADS-B backend. Use --skip-adsb-runtime for simulator-only development."
+    fi
+    return
+  fi
+
   have ffmpeg || fail "ffmpeg is required."
   have hackrf_info || fail "hackrf_info is required."
   have cc || fail "A C compiler (cc) is required."
@@ -1018,6 +1063,7 @@ print_status_report() {
   report_line "cc" "$(command_display cc)"
   report_line "pkg-config" "$(command_display pkg-config)"
   report_line "GPSD daemon" "$(gpsd_probe_status)"
+  report_line "RF simulator" "$(simulator_status)"
   report_line "SQLite DB" "$(db_ready && printf '%s' "$DB_PATH" || printf '%s' 'not initialized yet')"
   report_line "API auth" "$(api_auth_status)"
   report_line "Capture store" "$CAPTURES_DIR"
@@ -1025,7 +1071,9 @@ print_status_report() {
   report_line "AI Python" "$([[ -x "$(ai_python_path)" ]] && printf '%s' "$(ai_python_path)" || printf '%s' 'missing')"
   report_line "AI runtime" "$(ai_runtime_ready && printf '%s' 'ready' || printf '%s' 'not initialized yet')"
 
-  if hackrf_pkgconfig_ok; then
+  if simulator_enabled; then
+    report_line "libhackrf" "not required in simulator mode"
+  elif hackrf_pkgconfig_ok; then
     report_line "libhackrf" "ok"
   else
     report_line "libhackrf" "missing"
@@ -1034,6 +1082,8 @@ print_status_report() {
 
   if native_binary_ready; then
     report_line "Native binary" "$(native_binary_path)"
+  elif simulator_enabled; then
+    report_line "Native binary" "not required in simulator mode"
   else
     report_line "Native binary" "missing"
   fi
@@ -1077,30 +1127,42 @@ print_status_report() {
   fi
   report_line "Port" "$port_status"
 
-  hackrf_status="$(hackrf_probe_status)"
-  case "$hackrf_status" in
-    device-detected)
-      report_line "HackRF device" "detected"
-      ;;
-    tool-ok-no-device)
-      report_line "HackRF device" "not detected right now"
-      ;;
-    tool-error)
-      report_line "HackRF device" "tool present but probe failed"
-      ;;
-    *)
-      report_line "HackRF device" "not checked"
-      ;;
-  esac
+  if simulator_enabled; then
+    report_line "HackRF device" "virtual simulator"
+  else
+    hackrf_status="$(hackrf_probe_status)"
+    case "$hackrf_status" in
+      device-detected)
+        report_line "HackRF device" "detected"
+        ;;
+      tool-ok-no-device)
+        report_line "HackRF device" "not detected right now"
+        ;;
+      tool-error)
+        report_line "HackRF device" "tool present but probe failed"
+        ;;
+      *)
+        report_line "HackRF device" "not checked"
+        ;;
+    esac
+  fi
 
   if ! node_ok; then
     issues=1
   fi
-  have ffmpeg || issues=1
-  have hackrf_info || issues=1
-  have cc || issues=1
-  have pkg-config || issues=1
-  ncurses_build_ok || issues=1
+  if simulator_enabled; then
+    if [[ "$SKIP_ADSB_RUNTIME" != "1" && ( "${DUMP1090_FA_REINSTALL:-0}" == "1" || ! -x "$(adsb_decoder_binary_path)" ) ]]; then
+      have cc || issues=1
+      have pkg-config || issues=1
+      ncurses_build_ok || issues=1
+    fi
+  else
+    have ffmpeg || issues=1
+    have hackrf_info || issues=1
+    have cc || issues=1
+    have pkg-config || issues=1
+    ncurses_build_ok || issues=1
+  fi
 
   return "$issues"
 }
@@ -1201,7 +1263,9 @@ build_app() {
   cd "$ROOT_DIR"
 
   if [[ "$SKIP_BUILD" == "1" ]]; then
-    native_binary_ready || fail "Native binary is missing and --skip-build was requested."
+    if ! simulator_enabled; then
+      native_binary_ready || fail "Native binary is missing and --skip-build was requested."
+    fi
     prod_bundle_ready || fail "Production build is missing and --skip-build was requested."
     log "Skipping build because --skip-build was requested."
     return
@@ -1210,6 +1274,12 @@ build_app() {
   if [[ "$FORCE_REBUILD" == "1" ]]; then
     log "Clearing previous Next.js build output."
     run npm run clean
+  fi
+
+  if simulator_enabled; then
+    log "Building production bundle for simulator mode; native HackRF binaries are not required."
+    run npm run build:web
+    return
   fi
 
   log "Building native binary and production bundle."
@@ -1222,11 +1292,16 @@ print_start_summary() {
   report_line "URL" "http://${HOST}:${PORT}"
   report_line "Node.js" "$(node_version)"
   report_line "npm" "$(npm_version)"
-  report_line "Native binary" "$(native_binary_path)"
+  if simulator_enabled && ! native_binary_ready; then
+    report_line "Native binary" "not required in simulator mode"
+  else
+    report_line "Native binary" "$(native_binary_path)"
+  fi
   report_line "ADS-B backend" "$(adsb_decoder_binary_path)"
   report_line "Prod bundle" ".next/BUILD_ID present"
   report_line "SQLite DB" "$DB_PATH"
   report_line "API auth" "$(api_auth_status)"
+  report_line "RF simulator" "$(simulator_status)"
   report_line "Capture store" "$CAPTURES_DIR"
   report_line "AI Python" "$([[ -x "$(ai_python_path)" ]] && printf '%s' "$(ai_python_path)" || printf '%s' 'missing')"
   report_line "AI runtime" "$(ai_runtime_ready && printf '%s' 'ready' || printf '%s' 'not initialized yet')"
@@ -1238,20 +1313,24 @@ print_start_summary() {
     report_line "Offline maps" "not installed"
   fi
 
-  case "$(hackrf_probe_status)" in
-    device-detected)
-      report_line "HackRF device" "detected"
-      ;;
-    tool-ok-no-device)
-      report_line "HackRF device" "not detected right now"
-      ;;
-    tool-error)
-      report_line "HackRF device" "tool present but probe failed"
-      ;;
-    *)
-      report_line "HackRF device" "not checked"
-      ;;
-  esac
+  if simulator_enabled; then
+    report_line "HackRF device" "virtual simulator"
+  else
+    case "$(hackrf_probe_status)" in
+      device-detected)
+        report_line "HackRF device" "detected"
+        ;;
+      tool-ok-no-device)
+        report_line "HackRF device" "not detected right now"
+        ;;
+      tool-error)
+        report_line "HackRF device" "tool present but probe failed"
+        ;;
+      *)
+        report_line "HackRF device" "not checked"
+        ;;
+    esac
+  fi
 }
 
 start_app() {
@@ -1262,6 +1341,8 @@ start_app() {
       NEXT_TELEMETRY_DISABLED="$NEXT_TELEMETRY_DISABLED" \
       HACKRF_WEBUI_TOKEN="${HACKRF_WEBUI_TOKEN:-}" \
       NEXT_PUBLIC_HACKRF_WEBUI_TOKEN="${NEXT_PUBLIC_HACKRF_WEBUI_TOKEN:-}" \
+      HACKRF_WEBUI_ALLOWED_ORIGINS="${HACKRF_WEBUI_ALLOWED_ORIGINS:-}" \
+      HACKRF_WEBUI_SIMULATOR="${HACKRF_WEBUI_SIMULATOR:-}" \
       HACKRF_WEBUI_GPSD_HOST="$GPSD_HOST" \
       HACKRF_WEBUI_GPSD_PORT="$GPSD_PORT" \
       npm run start -- --hostname "$HOST" --port "$PORT"
@@ -1271,6 +1352,8 @@ start_app() {
     NEXT_TELEMETRY_DISABLED="$NEXT_TELEMETRY_DISABLED" \
     HACKRF_WEBUI_TOKEN="${HACKRF_WEBUI_TOKEN:-}" \
     NEXT_PUBLIC_HACKRF_WEBUI_TOKEN="${NEXT_PUBLIC_HACKRF_WEBUI_TOKEN:-}" \
+    HACKRF_WEBUI_ALLOWED_ORIGINS="${HACKRF_WEBUI_ALLOWED_ORIGINS:-}" \
+    HACKRF_WEBUI_SIMULATOR="${HACKRF_WEBUI_SIMULATOR:-}" \
     HACKRF_WEBUI_GPSD_HOST="$GPSD_HOST" \
     HACKRF_WEBUI_GPSD_PORT="$GPSD_PORT" \
     npm run start -- --hostname "$HOST" --port "$PORT"

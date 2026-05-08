@@ -72,6 +72,7 @@ HACKRF_WEBUI_TOKEN="$(openssl rand -hex 32)" ./start.sh --host 0.0.0.0 --port 40
 ./start.sh --map-country ES --map-country-zoom 14
 ./start.sh --skip-adsb-runtime
 ./start.sh --reinstall-adsb-runtime
+HACKRF_WEBUI_SIMULATOR=1 ./start.sh --skip-system-deps --skip-maps --skip-adsb-runtime --skip-ai
 ./start.sh --rebuild
 HACKRF_WEBUI_GPSD_HOST=127.0.0.1 HACKRF_WEBUI_GPSD_PORT=2947 ./start.sh
 ```
@@ -90,6 +91,7 @@ What they do:
 - `--skip-maps` keeps AIS and ADS-B in live-tile mode
 - `--skip-adsb-runtime` keeps the existing ADS-B backend untouched or skips it entirely
 - `--reinstall-adsb-runtime` rebuilds the pinned local `dump1090-fa` backend
+- `HACKRF_WEBUI_SIMULATOR=1` enables a virtual HackRF for browser-audio module development without physical SDR hardware
 - `--reinstall-ai` rebuilds the local SIGINT AI runtime and Python packages
 - `--rebuild` forces a fresh `npm ci` and production rebuild
 - `HACKRF_WEBUI_GPSD_HOST` and `HACKRF_WEBUI_GPSD_PORT` point the app at a non-default GPSD listener when needed
@@ -103,9 +105,24 @@ MAP_GLOBAL_MAX_ZOOM=10 ./start.sh
 MAP_COUNTRY=ES MAP_COUNTRY_MAX_ZOOM=14 ./start.sh
 DUMP1090_FA_REINSTALL=1 ./start.sh
 AI_REINSTALL=1 ./start.sh
+HACKRF_WEBUI_SIMULATOR=1 ./start.sh
 HACKRF_WEBUI_AI_PYTHON=3.13 ./start.sh
 HACKRF_WEBUI_GPSD_PORT=2947 ./start.sh
 ```
+
+## Development without a physical HackRF
+
+Set `HACKRF_WEBUI_SIMULATOR=1` when you want to develop or smoke-test the web UI on a machine that does not have a HackRF attached:
+
+```bash
+HACKRF_WEBUI_SIMULATOR=1 ./start.sh --skip-system-deps --skip-maps --skip-adsb-runtime --skip-ai
+```
+
+Simulator mode affects the browser-audio modules: `FM`, `PMR`, `AIRBAND` and `MARITIME`. It reports a virtual connected HackRF, streams short MP3 audio chunks to the browser, and generates synthetic signal telemetry plus spectrum frames so tune, retune, scanner and status flows can be exercised without USB hardware. When launched through `start.sh`, simulator mode builds only the web bundle (`npm run build:web`) because the native HackRF binaries are not needed.
+
+Simulator mode intentionally does not fake live `AIS` or `ADS-B` RF decoding. Those modules still use their normal map/backend flows, so use `--skip-adsb-runtime` or live-tile map mode when you only need frontend development.
+
+The simulator is opt-in only. Leave `HACKRF_WEBUI_SIMULATOR` unset for real radio operation.
 
 ## API token and LAN mode
 

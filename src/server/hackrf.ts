@@ -21,6 +21,13 @@ import { aisRuntime } from "@/server/ais-runtime";
 import { projectBinPath } from "@/server/project-paths";
 import { parseSpectrumFrameLine } from "@/server/spectrum-telemetry";
 import { capturePrefixForSession } from "@/server/storage";
+import {
+  createSimulatedAudioStream,
+  createSimulatedHardwareStatus,
+  createSimulatedSpectrumFrame,
+  createSimulatedTelemetry,
+  isHackrfSimulatorEnabled,
+} from "@/server/hackrf-simulator";
 
 const LEVEL_RE = /LEVEL rms=([0-9.]+) peak=([0-9.]+) rf=([0-9.]+)/;
 const RECORDING_OPEN_WAV_RE = /^Recording activity WAV: (.+)$/;
@@ -92,17 +99,29 @@ type StreamCaptureContext = {
   pendingSegment: PendingActivityCapture | null;
 };
 
-type ActiveStream = {
+type ActiveStreamBase = {
   session: StreamSessionSnapshot;
   telemetry: SignalLevelTelemetry | null;
   spectrum: SpectrumFrame | null;
-  hackrf: ReturnType<typeof spawn>;
-  ffmpeg: ReturnType<typeof spawn>;
   retuneTimer: ReturnType<typeof setTimeout> | null;
   retuneDescriptorRollback: CaptureDescriptor | null;
   pendingRetuneDescriptor: CaptureDescriptor | null;
   captureContext: StreamCaptureContext | null;
 };
+
+type NativeActiveStream = ActiveStreamBase & {
+  source: "native";
+  hackrf: ReturnType<typeof spawn>;
+  ffmpeg: ReturnType<typeof spawn>;
+};
+
+type SimulatedActiveStream = ActiveStreamBase & {
+  source: "simulator";
+  telemetryTimer: ReturnType<typeof setInterval> | null;
+  closeAudio: () => void;
+};
+
+type ActiveStream = NativeActiveStream | SimulatedActiveStream;
 
 function audioRateForMode(mode: AudioDemodMode): string {
   switch (mode) {
@@ -401,6 +420,11 @@ class HackRFService {
 
   getStatus(): HardwareStatus {
     const binaryPath = nativeBinaryPath();
+    const activeStream = this.activeSnapshot();
+    if (isHackrfSimulatorEnabled()) {
+      return createSimulatedHardwareStatus(binaryPath, activeStream);
+    }
+
     const binaryAvailable = cachedBinaryAvailable();
     const ffmpegAvailable = cachedFfmpegAvailable();
     const aisStatus = aisRuntime.getStatus();
@@ -416,7 +440,6 @@ class HackRFService {
       ? { output: _hackrfInfoCache?.output ?? "", error: false }
       : getCachedHackrfInfo();
 
-    const activeStream = this.activeSnapshot();
     if (!binaryAvailable) {
       return {
         state: "binary-missing",
@@ -539,7 +562,8 @@ class HackRFService {
     }
     if (
       activityCapture?.module
-      && this.activeStream.captureContext?.descriptor.module !== activityCapture.module
+      && this.activeStream.captureContext
+      && this.activeStream.captureContext.descriptor.module !== activityCapture.module
     ) {
       return false;
     }
@@ -576,11 +600,14 @@ class HackRFService {
       return true;
     }
 
-    const { hackrf } = this.activeStream;
-    if (!hackrf.stdin?.writable) return false;
+    if (this.activeStream.source === "native") {
+      const { hackrf } = this.activeStream;
+      if (!hackrf.stdin?.writable) return false;
+      hackrf.stdin.write(`FREQ ${freqHz}\n`);
+    }
+
     this.activeStream.retuneDescriptorRollback = previousDescriptor;
     this.activeStream.pendingRetuneDescriptor = this.buildCaptureDescriptor(activityCapture, label, freqHz);
-    hackrf.stdin.write(`FREQ ${freqHz}\n`);
 
     if (this.activeStream.retuneTimer) {
       clearTimeout(this.activeStream.retuneTimer);
@@ -613,6 +640,10 @@ class HackRFService {
     // Wait for the previous hackrf process to exit and release the USB device before
     // spawning a new one — avoids the race where hackrf_open() fails on a busy device.
     await this.stopAndWait();
+
+    if (isHackrfSimulatorEnabled()) {
+      return this.startSimulatedStreamInternal(request, mode, signal);
+    }
 
     const binaryPath = nativeBinaryPath();
     if (!existsSync(binaryPath)) {
@@ -689,7 +720,8 @@ class HackRFService {
     ffmpeg.stderr.setEncoding("utf8");
     ffmpeg.stderr.on("data", () => {});
 
-    const activeStream: ActiveStream = {
+    const activeStream: NativeActiveStream = {
+      source: "native",
       session,
       telemetry: null,
       spectrum: null,
@@ -747,6 +779,88 @@ class HackRFService {
     return Readable.toWeb(ffmpeg.stdout) as ReadableStream<Uint8Array>;
   }
 
+  private startSimulatedStreamInternal(
+    request: StreamRequest,
+    mode: AudioDemodMode,
+    signal: AbortSignal,
+  ): ReadableStream<Uint8Array> {
+    if (signal.aborted) {
+      throw new Error("The simulated stream was cancelled before it could start.");
+    }
+
+    hackrfDeviceService.claim("audio", `Simulator: ${request.label}`);
+
+    const sessionId = `sim-stream-${Date.now()}`;
+    const nowIso = new Date().toISOString();
+    const session: StreamSessionSnapshot = {
+      id: sessionId,
+      label: request.label,
+      freqHz: request.freqHz,
+      demodMode: mode,
+      startedAt: nowIso,
+      phase: "running",
+      phaseSince: nowIso,
+      lna: request.lna,
+      vga: request.vga,
+      audioGain: request.audioGain,
+      pendingLabel: null,
+      pendingFreqHz: null,
+      telemetry: null,
+    };
+
+    const cleanup = () => {
+      const active = this.activeStream;
+      if (!active || active.session.id !== sessionId || active.source !== "simulator") {
+        return;
+      }
+      if (active.retuneTimer) {
+        clearTimeout(active.retuneTimer);
+        active.retuneTimer = null;
+      }
+      if (active.telemetryTimer) {
+        clearInterval(active.telemetryTimer);
+        active.telemetryTimer = null;
+      }
+      this.activeStream = null;
+      hackrfDeviceService.release("audio");
+    };
+
+    const simulatedAudio = createSimulatedAudioStream({
+      signal,
+      onClose: cleanup,
+    });
+
+    const updateTelemetry = () => {
+      const active = this.activeStream;
+      if (!active || active.session.id !== sessionId) {
+        return;
+      }
+      const now = Date.now();
+      const telemetry = createSimulatedTelemetry(active.session.freqHz, now);
+      active.telemetry = telemetry;
+      active.session.telemetry = telemetry;
+      active.spectrum = createSimulatedSpectrumFrame(active.session.freqHz, mode, now);
+    };
+
+    const activeStream: SimulatedActiveStream = {
+      source: "simulator",
+      session,
+      telemetry: null,
+      spectrum: null,
+      retuneTimer: null,
+      retuneDescriptorRollback: null,
+      pendingRetuneDescriptor: null,
+      captureContext: null,
+      telemetryTimer: null,
+      closeAudio: simulatedAudio.close,
+    };
+    this.activeStream = activeStream;
+    updateTelemetry();
+    activeStream.telemetryTimer = setInterval(updateTelemetry, TELEMETRY_REPORT_INTERVAL_MS);
+
+    return simulatedAudio.stream;
+  }
+
   private activeSnapshot(): StreamSessionSnapshot | null {
     if (!this.activeStream) {
       return null;
@@ -760,11 +874,16 @@ class HackRFService {
 
   getSpectrumFeed(): SpectrumFeedSnapshot {
     if (this.activeStream) {
+      const simulated = this.activeStream.source === "simulator";
       return {
         frame: this.activeStream.spectrum,
         message: this.activeStream.spectrum
-          ? "Live RF spectrum from the current HackRF audio stream."
-          : "The stream is running. Waiting for the first spectrum frame.",
+          ? simulated
+            ? "Simulated RF spectrum from the virtual HackRF audio stream."
+            : "Live RF spectrum from the current HackRF audio stream."
+          : simulated
+            ? "Simulator stream is running. Waiting for the first generated spectrum frame."
+            : "The stream is running. Waiting for the first spectrum frame.",
         owner: "audio",
         state: this.activeStream.spectrum ? "ready" : "waiting",
         stream: {
@@ -1124,6 +1243,22 @@ class HackRFService {
 
   private stopAndWait(): Promise<void> {
     if (!this.activeStream) return Promise.resolve();
+
+    if (this.activeStream.source === "simulator") {
+      const active = this.activeStream;
+      if (active.retuneTimer) {
+        clearTimeout(active.retuneTimer);
+        active.retuneTimer = null;
+      }
+      if (active.telemetryTimer) {
+        clearInterval(active.telemetryTimer);
+        active.telemetryTimer = null;
+      }
+      active.closeAudio();
+      this.activeStream = null;
+      hackrfDeviceService.release("audio");
+      return Promise.resolve();
+    }
 
     const { hackrf, ffmpeg, retuneTimer, captureContext } = this.activeStream;
     const sessionId = this.activeStream.session.id;

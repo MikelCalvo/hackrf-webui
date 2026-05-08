@@ -70,6 +70,7 @@ The root route opens the last module used in the browser, or falls back to `/fm`
 
 ```bash
 ./start.sh --check
+HACKRF_WEBUI_SIMULATOR=1 ./start.sh --skip-system-deps --skip-maps --skip-adsb-runtime --skip-ai
 HACKRF_WEBUI_TOKEN="$(openssl rand -hex 32)" ./start.sh --host 0.0.0.0 --port 4000
 ./start.sh --map-country ES
 ./start.sh --skip-ai
@@ -82,11 +83,14 @@ Environment overrides work too:
 
 ```bash
 HOST=0.0.0.0 PORT=4000 HACKRF_WEBUI_TOKEN="$(openssl rand -hex 32)" ./start.sh
+HACKRF_WEBUI_SIMULATOR=1 ./start.sh
 MAP_COUNTRY=ES ./start.sh
 HACKRF_WEBUI_GPSD_HOST=127.0.0.1 HACKRF_WEBUI_GPSD_PORT=2947 ./start.sh
 ```
 
 For the full runtime guide, see [`docs/runtime.md`](docs/runtime.md).
+
+No HackRF on this machine? Set `HACKRF_WEBUI_SIMULATOR=1` while developing. The simulator exposes a virtual connected HackRF for `FM`, `PMR`, `AIRBAND` and `MARITIME`, including synthetic telemetry, spectrum frames and browser audio; `AIS` and `ADS-B` still need their normal backends for live RF work.
 
 LAN exposure is guarded: binding to a non-loopback host requires `HACKRF_WEBUI_TOKEN`. The token protects hardware-control APIs from accidental drive-by access on a trusted LAN; it is not a substitute for VPN or reverse-proxy authentication on the public internet.
 
@@ -104,6 +108,8 @@ Optional:
 
 - `gpsd` and a compatible GPS receiver for live physical positioning
 - local PMTiles map packs for offline AIS / ADS-B maps
+
+For UI and API development without physical radio hardware, `HACKRF_WEBUI_SIMULATOR=1` removes the HackRF device requirement for the browser-audio modules and makes `start.sh` build only the web bundle.
 
 `start.sh` can install common system dependencies on Debian/Ubuntu, Fedora/RHEL-like systems, Arch-based systems and openSUSE.
 

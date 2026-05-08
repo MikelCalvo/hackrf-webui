@@ -11,6 +11,7 @@ All notable changes to `hackrf-webui` are tracked here.
 - Added catalog and bundle budget checks for release hygiene.
 - Added supply-chain guardrails for pinned ADS-B backend refs and optional SHA-256 checks for downloaded runtime assets.
 - Added release, contribution and security documentation.
+- Added an opt-in HackRF simulator for FM/PMR/AIRBAND/MARITIME development without physical SDR hardware.
 
 ## 1.0.0
 

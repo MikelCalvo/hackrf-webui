@@ -15,6 +15,7 @@
     "dev:turbo": "next dev --turbopack",
     "build": "npm run build:native && next build",
     "build:native": "bash ./scripts/build-hackrf.sh",
+    "build:web": "next build",
     "start": "next start",
     "lint": "eslint",
     "typecheck": "npm run clean && tsc --noEmit --pretty false",
