@@ -20,6 +20,8 @@
     "lint": "eslint",
     "typecheck": "npm run clean && tsc --noEmit --pretty false",
     "test": "node --import tsx --test tests/**/*.test.ts",
+    "test:e2e": "npm run build:web && playwright test",
+    "test:e2e:run": "playwright test",
     "audit": "npm audit --audit-level=high && npm --prefix ./scripts/catalog audit --audit-level=high",
     "check:catalog": "node ./scripts/check-catalog.mjs",
     "check:bundle": "node ./scripts/check-bundle.mjs",
@@ -45,6 +47,7 @@
     "react-dom": "19.2.5"
   },
   "devDependencies": {
+    "@playwright/test": "^1.59.1",
     "@tailwindcss/postcss": "^4.2.4",
     "@types/better-sqlite3": "^7.6.13",
     "@types/leaflet": "^1.9.21",

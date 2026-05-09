@@ -32,9 +32,16 @@ npm ci
 npm run check
 npm run build
 npm run check:bundle
+npm run test:e2e
 ```
 
-`npm run check` runs lint, a clean TypeScript check, the Node test suite, catalog validation, script syntax checks, both package audits and a package dry-run artifact check. `npm run build` still needs to run separately because it compiles native receivers and writes Next.js diagnostics for `npm run check:bundle`.
+`npm run check` runs lint, a clean TypeScript check, the Node test suite, catalog validation, script syntax checks, both package audits and a package dry-run artifact check. `npm run build` still needs to run separately because it compiles native receivers and writes Next.js diagnostics for `npm run check:bundle`. `npm run test:e2e` builds the web bundle and runs the Playwright simulator smoke test with `HACKRF_WEBUI_SIMULATOR=1`, so it does not need physical SDR hardware.
+
+Install the Playwright browser once on a fresh machine if `npm run test:e2e` reports a missing browser:
+
+```bash
+npx playwright install chromium
+```
 
 The FM catalog tooling has its own package boundary:
 

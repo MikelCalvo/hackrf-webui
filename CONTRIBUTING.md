@@ -19,6 +19,7 @@ Run the full local gate before sending changes:
 npm run check
 npm run build
 npm run check:bundle
+npm run test:e2e
 ./start.sh --check --skip-system-deps --skip-maps --skip-adsb-runtime --skip-ai
 ```
 
@@ -31,6 +32,7 @@ npm run check:bundle
 - shell/Python syntax checks
 - root and catalog package audits
 - package dry-run checks for generated runtime artifacts
+- Playwright simulator E2E smoke coverage (`npm run test:e2e`)
 
 `npm run build` still matters because it compiles the native HackRF receiver and creates Next.js route/bundle diagnostics used by `npm run check:bundle`.
 

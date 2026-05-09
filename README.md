@@ -70,6 +70,7 @@ The root route opens the last module used in the browser, or falls back to `/fm`
 
 ```bash
 ./start.sh --check
+npm run test:e2e
 HACKRF_WEBUI_SIMULATOR=1 ./start.sh --skip-system-deps --skip-maps --skip-adsb-runtime --skip-ai
 HACKRF_WEBUI_TOKEN="$(openssl rand -hex 32)" ./start.sh --host 0.0.0.0 --port 4000
 ./start.sh --map-country ES

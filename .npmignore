@@ -4,6 +4,8 @@
 /build/
 /bin/
 /coverage/
+/playwright-report/
+/test-results/
 /.cache/
 /.vercel/
 
