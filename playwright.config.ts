@@ -16,7 +16,7 @@ export default defineConfig({
     trace: "on-first-retry",
   },
   webServer: {
-    command: `HACKRF_WEBUI_SIMULATOR=1 NEXT_TELEMETRY_DISABLED=1 npm run start -- --hostname ${host} --port ${port}`,
+    command: `HACKRF_WEBUI_SIMULATOR=1 HACKRF_WEBUI_REPLAY=1 NEXT_TELEMETRY_DISABLED=1 npm run start -- --hostname ${host} --port ${port}`,
     url: baseURL,
     reuseExistingServer: !process.env.CI,
     timeout: 60_000,

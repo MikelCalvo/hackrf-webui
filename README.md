@@ -21,6 +21,7 @@ It runs on your machine. There is no cloud account, no hosted backend and no rem
 - Local-first HackRF dashboard built for real radio work, not a hosted demo.
 - Browser audio for `FM`, `PMR`, `AIRBAND` and marine VHF voice.
 - Live `AIS` and `ADS-B` maps with local history and offline-capable basemaps.
+- Hardware-free simulator/replay mode for browser audio, AIS / ADS-B maps, demos and CI smoke tests.
 - `SIGINT` workspace for reviewing captures, prioritizing evidence and replaying movement history.
 - Shared location model: catalog scope for regional data, exact position for maps and receivers.
 - Local `SQLite` storage for activity, captures, review state and decoded routes.
@@ -71,7 +72,7 @@ The root route opens the last module used in the browser, or falls back to `/fm`
 ```bash
 ./start.sh --check
 npm run test:e2e
-HACKRF_WEBUI_SIMULATOR=1 ./start.sh --skip-system-deps --skip-maps --skip-adsb-runtime --skip-ai
+HACKRF_WEBUI_SIMULATOR=1 HACKRF_WEBUI_REPLAY=1 ./start.sh --skip-system-deps --skip-maps --skip-adsb-runtime --skip-ai
 HACKRF_WEBUI_TOKEN="$(openssl rand -hex 32)" ./start.sh --host 0.0.0.0 --port 4000
 ./start.sh --map-country ES
 ./start.sh --skip-ai
@@ -85,13 +86,14 @@ Environment overrides work too:
 ```bash
 HOST=0.0.0.0 PORT=4000 HACKRF_WEBUI_TOKEN="$(openssl rand -hex 32)" ./start.sh
 HACKRF_WEBUI_SIMULATOR=1 ./start.sh
+HACKRF_WEBUI_REPLAY=1 ./start.sh
 MAP_COUNTRY=ES ./start.sh
 HACKRF_WEBUI_GPSD_HOST=127.0.0.1 HACKRF_WEBUI_GPSD_PORT=2947 ./start.sh
 ```
 
 For the full runtime guide, see [`docs/runtime.md`](docs/runtime.md).
 
-No HackRF on this machine? Set `HACKRF_WEBUI_SIMULATOR=1` while developing. The simulator exposes a virtual connected HackRF for `FM`, `PMR`, `AIRBAND` and `MARITIME`, including synthetic telemetry, spectrum frames and browser audio; `AIS` and `ADS-B` still need their normal backends for live RF work.
+No HackRF on this machine? Set `HACKRF_WEBUI_SIMULATOR=1` while developing browser-audio modules and add `HACKRF_WEBUI_REPLAY=1` when you need deterministic `AIS` / `ADS-B` map feeds. Together they provide a full offline demo path with virtual HackRF status, synthetic audio, spectrum frames, replay vessels, replay aircraft and local history endpoints.
 
 LAN exposure is guarded: binding to a non-loopback host requires `HACKRF_WEBUI_TOKEN`. The token protects hardware-control APIs from accidental drive-by access on a trusted LAN; it is not a substitute for VPN or reverse-proxy authentication on the public internet.
 
@@ -110,7 +112,7 @@ Optional:
 - `gpsd` and a compatible GPS receiver for live physical positioning
 - local PMTiles map packs for offline AIS / ADS-B maps
 
-For UI and API development without physical radio hardware, `HACKRF_WEBUI_SIMULATOR=1` removes the HackRF device requirement for the browser-audio modules and makes `start.sh` build only the web bundle.
+For UI and API development without physical radio hardware, `HACKRF_WEBUI_SIMULATOR=1` removes the HackRF device requirement for the browser-audio modules and makes `start.sh` build only the web bundle. `HACKRF_WEBUI_REPLAY=1` serves deterministic `AIS` / `ADS-B` vessel and aircraft fixtures through the same APIs as the live map modules.
 
 `start.sh` can install common system dependencies on Debian/Ubuntu, Fedora/RHEL-like systems, Arch-based systems and openSUSE.
 

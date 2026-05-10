@@ -32,7 +32,7 @@ npm run test:e2e
 - shell/Python syntax checks
 - root and catalog package audits
 - package dry-run checks for generated runtime artifacts
-- Playwright simulator E2E smoke coverage (`npm run test:e2e`)
+- Playwright simulator/replay E2E smoke coverage (`npm run test:e2e`) for browser audio, map feeds, release routes and diagnostics
 
 `npm run build` still matters because it compiles the native HackRF receiver and creates Next.js route/bundle diagnostics used by `npm run check:bundle`.
 

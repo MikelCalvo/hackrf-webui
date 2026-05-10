@@ -131,6 +131,21 @@ simulator_status() {
   fi
 }
 
+replay_enabled() {
+  case "${HACKRF_WEBUI_REPLAY:-}" in
+    1|true|TRUE|yes|YES|y|Y|on|ON|replay|REPLAY) return 0 ;;
+    *) return 1 ;;
+  esac
+}
+
+replay_status() {
+  if replay_enabled; then
+    printf '%s\n' "enabled"
+  else
+    printf '%s\n' "disabled"
+  fi
+}
+
 usage() {
   cat <<'EOF'
 Usage: ./start.sh [options]
@@ -171,7 +186,7 @@ Environment overrides:
   AI_LABELS_SHA256, HACKRF_WEBUI_AI_PYTHON, UV_INSTALL_SCRIPT_URL,
   UV_INSTALL_SCRIPT_SHA256, DRY_RUN,
   HACKRF_WEBUI_GPSD_HOST, HACKRF_WEBUI_GPSD_PORT,
-  HACKRF_WEBUI_DB_PATH, HACKRF_WEBUI_SIMULATOR,
+  HACKRF_WEBUI_DB_PATH, HACKRF_WEBUI_SIMULATOR, HACKRF_WEBUI_REPLAY,
   HACKRF_WEBUI_TOKEN, NEXT_PUBLIC_HACKRF_WEBUI_TOKEN,
   HACKRF_WEBUI_ALLOWED_ORIGINS
 
@@ -191,6 +206,10 @@ Simulator:
   Set HACKRF_WEBUI_SIMULATOR=1 to run FM/PMR/AIRBAND/MARITIME flows without
   a physical HackRF. The app reports a virtual HackRF and generates synthetic
   telemetry, spectrum frames and browser audio for development smoke tests.
+
+Replay:
+  Set HACKRF_WEBUI_REPLAY=1 to serve deterministic AIS and ADS-B map feeds
+  through the live APIs without starting live RF decoders.
 EOF
 }
 
@@ -1064,6 +1083,7 @@ print_status_report() {
   report_line "pkg-config" "$(command_display pkg-config)"
   report_line "GPSD daemon" "$(gpsd_probe_status)"
   report_line "RF simulator" "$(simulator_status)"
+  report_line "Replay feeds" "$(replay_status)"
   report_line "SQLite DB" "$(db_ready && printf '%s' "$DB_PATH" || printf '%s' 'not initialized yet')"
   report_line "API auth" "$(api_auth_status)"
   report_line "Capture store" "$CAPTURES_DIR"
@@ -1302,6 +1322,7 @@ print_start_summary() {
   report_line "SQLite DB" "$DB_PATH"
   report_line "API auth" "$(api_auth_status)"
   report_line "RF simulator" "$(simulator_status)"
+  report_line "Replay feeds" "$(replay_status)"
   report_line "Capture store" "$CAPTURES_DIR"
   report_line "AI Python" "$([[ -x "$(ai_python_path)" ]] && printf '%s' "$(ai_python_path)" || printf '%s' 'missing')"
   report_line "AI runtime" "$(ai_runtime_ready && printf '%s' 'ready' || printf '%s' 'not initialized yet')"

@@ -77,7 +77,7 @@ jobs:
       - name: Bundle budget
         run: npm run check:bundle
 
-      - name: Simulator E2E smoke
+      - name: Simulator/replay E2E smoke
         env:
           NEXT_TELEMETRY_DISABLED: "1"
         run: npm run test:e2e:run

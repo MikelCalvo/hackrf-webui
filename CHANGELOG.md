@@ -13,6 +13,9 @@ All notable changes to `hackrf-webui` are tracked here.
 - Added release, contribution and security documentation.
 - Added an opt-in HackRF simulator for FM/PMR/AIRBAND/MARITIME development without physical SDR hardware.
 - Added Playwright simulator smoke coverage for hardware status, FM audio, retune, spectrum and shutdown flows.
+- Added `HACKRF_WEBUI_REPLAY=1` deterministic AIS / ADS-B map feeds with local history fixtures for hardware-free demos and CI.
+- Added a redacted `/api/runtime/diagnostics` endpoint for release/support checks without leaking tokens, serials or external paths.
+- Added Playwright replay-map and release smoke coverage across main routes, APIs and browser console errors.
 
 ## 1.0.0
 

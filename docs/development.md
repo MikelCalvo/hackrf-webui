@@ -35,7 +35,7 @@ npm run check:bundle
 npm run test:e2e
 ```
 
-`npm run check` runs lint, a clean TypeScript check, the Node test suite, catalog validation, script syntax checks, both package audits and a package dry-run artifact check. `npm run build` still needs to run separately because it compiles native receivers and writes Next.js diagnostics for `npm run check:bundle`. `npm run test:e2e` builds the web bundle and runs the Playwright simulator smoke test with `HACKRF_WEBUI_SIMULATOR=1`, so it does not need physical SDR hardware.
+`npm run check` runs lint, a clean TypeScript check, the Node test suite, catalog validation, script syntax checks, both package audits and a package dry-run artifact check. `npm run build` still needs to run separately because it compiles native receivers and writes Next.js diagnostics for `npm run check:bundle`. `npm run test:e2e` builds the web bundle and runs the Playwright simulator/replay smoke suite with `HACKRF_WEBUI_SIMULATOR=1` and `HACKRF_WEBUI_REPLAY=1`, so it covers browser audio, AIS / ADS-B replay maps, release routes and runtime diagnostics without physical SDR hardware.
 
 Install the Playwright browser once on a fresh machine if `npm run test:e2e` reports a missing browser:
 

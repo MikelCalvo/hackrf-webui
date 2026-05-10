@@ -1,5 +1,6 @@
 import type { NextRequest } from "next/server";
 
+import { getReplayAdsbHistory, isReplayModeEnabled } from "@/server/replay-feed";
 import { listAdsbTrackHistory } from "@/server/track-store";
 
 export const runtime = "nodejs";
@@ -15,7 +16,7 @@ export async function GET(request: NextRequest): Promise<Response> {
   const limit = Number.isFinite(rawLimit) ? rawLimit : 2000;
 
   return Response.json(
-    listAdsbTrackHistory(hex, limit),
+    isReplayModeEnabled() ? getReplayAdsbHistory(hex, limit) : listAdsbTrackHistory(hex, limit),
     {
       headers: {
         "Cache-Control": "no-store",

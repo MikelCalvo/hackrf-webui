@@ -1,5 +1,6 @@
 import type { NextRequest } from "next/server";
 
+import { getReplayAisHistory, isReplayModeEnabled } from "@/server/replay-feed";
 import { listAisTrackHistory } from "@/server/track-store";
 
 export const runtime = "nodejs";
@@ -15,7 +16,7 @@ export async function GET(request: NextRequest): Promise<Response> {
   const limit = Number.isFinite(rawLimit) ? rawLimit : 2000;
 
   return Response.json(
-    listAisTrackHistory(mmsi, limit),
+    isReplayModeEnabled() ? getReplayAisHistory(mmsi, limit) : listAisTrackHistory(mmsi, limit),
     {
       headers: {
         "Cache-Control": "no-store",
