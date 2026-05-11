@@ -104,7 +104,7 @@ jobs:
             printf '%s\n' "$NOTES" > RELEASE_NOTES.md
           else
             {
-              printf '## hackrf-webui %s\n\n' "$VERSION"
+              printf '## %s\n\n' "$VERSION"
               printf 'See CHANGELOG.md for the release highlights.\n'
             } > RELEASE_NOTES.md
           fi
@@ -124,7 +124,7 @@ jobs:
           VERSION: ${{ inputs.version }}
           PRERELEASE: ${{ inputs.prerelease }}
         run: |
-          args=("$VERSION" --title "hackrf-webui $VERSION" --notes-file RELEASE_NOTES.md --target "$GITHUB_SHA")
+          args=("$VERSION" --title "$VERSION" --notes-file RELEASE_NOTES.md --target "$GITHUB_SHA")
           if [ "$PRERELEASE" = "true" ]; then
             args+=(--prerelease)
           fi
