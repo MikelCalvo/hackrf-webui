@@ -99,7 +99,7 @@ test("buildRuntimeDiagnostics reports modes, runtime health and redacted safe pa
       "bin/hackrf_audio_stream": { exists: true, writable: false },
       "data/captures": { exists: true, writable: true },
       "runtime": { exists: true, writable: true },
-      "public/tiles/manifest.json": { exists: false, writable: false },
+      "public/tiles/osm/manifest.json": { exists: false, writable: false },
       "assets/ai": { exists: true, writable: false },
     },
   });

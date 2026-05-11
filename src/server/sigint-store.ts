@@ -25,6 +25,7 @@ import {
   captureTags,
   captureTranscripts,
 } from "@/server/db/schema";
+import { captureAbsolutePath } from "@/server/storage";
 
 type JsonRecord = Record<string, unknown>;
 
@@ -226,7 +227,7 @@ function buildLocationSummary(
 }
 
 function buildCaptureFileSummary(row: typeof captureFiles.$inferSelect | null) {
-  if (!row) {
+  if (!row || !captureAbsolutePath(row.relativePath)) {
     return null;
   }
 

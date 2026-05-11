@@ -1,12 +1,13 @@
 import { defineConfig, devices } from "@playwright/test";
 
-const port = Number.parseInt(process.env.PLAYWRIGHT_PORT ?? "4012", 10);
+const port = Number.parseInt(process.env.PLAYWRIGHT_AUTH_PORT ?? "4013", 10);
 const host = "127.0.0.1";
 const baseURL = `http://${host}:${port}`;
+const apiToken = process.env.HACKRF_WEBUI_TOKEN || "playwright-token";
 
 export default defineConfig({
   testDir: "./tests/e2e",
-  testIgnore: /auth-token\.spec\.ts/,
+  testMatch: /auth-token\.spec\.ts/,
   fullyParallel: false,
   forbidOnly: Boolean(process.env.CI),
   retries: process.env.CI ? 1 : 0,
@@ -17,14 +18,14 @@ export default defineConfig({
     trace: "on-first-retry",
   },
   webServer: {
-    command: `HACKRF_WEBUI_SIMULATOR=1 HACKRF_WEBUI_REPLAY=1 NEXT_TELEMETRY_DISABLED=1 npm run start -- --hostname ${host} --port ${port}`,
+    command: `HACKRF_WEBUI_SIMULATOR=1 HACKRF_WEBUI_REPLAY=1 HACKRF_WEBUI_TOKEN=${apiToken} NEXT_PUBLIC_HACKRF_WEBUI_TOKEN=${apiToken} NEXT_TELEMETRY_DISABLED=1 npm run start -- --hostname ${host} --port ${port}`,
     url: baseURL,
     reuseExistingServer: !process.env.CI,
     timeout: 60_000,
   },
   projects: [
     {
-      name: "chromium",
+      name: "chromium-auth",
       use: { ...devices["Desktop Chrome"] },
     },
   ],

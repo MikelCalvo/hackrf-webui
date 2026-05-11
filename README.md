@@ -26,6 +26,7 @@ It runs on your machine. There is no cloud account, no hosted backend and no rem
 - Shared location model: catalog scope for regional data, exact position for maps and receivers.
 - Local `SQLite` storage for activity, captures, review state and decoded routes.
 - Setup script that can prepare system dependencies, native receivers, maps, AI assets and the ADS-B backend.
+- Redacted `/runtime` diagnostics panel for support-friendly health checks without exposing tokens or device serials.
 
 ## SIGINT workspace
 

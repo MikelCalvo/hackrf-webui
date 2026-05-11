@@ -21,6 +21,7 @@
     "typecheck": "npm run clean && tsc --noEmit --pretty false",
     "test": "node --import tsx --test tests/**/*.test.ts",
     "test:e2e": "npm run build:web && playwright test",
+    "test:e2e:auth": "HACKRF_WEBUI_TOKEN=playwright-token NEXT_PUBLIC_HACKRF_WEBUI_TOKEN=playwright-token npm run build:web && HACKRF_WEBUI_TOKEN=playwright-token NEXT_PUBLIC_HACKRF_WEBUI_TOKEN=playwright-token playwright test -c playwright.auth.config.ts",
     "test:e2e:run": "playwright test",
     "audit": "npm audit --audit-level=high && npm --prefix ./scripts/catalog audit --audit-level=high",
     "check:catalog": "node ./scripts/check-catalog.mjs",

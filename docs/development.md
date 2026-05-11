@@ -37,7 +37,9 @@ npm run check:bundle
 npm run test:e2e
 ```
 
-`npm run check` runs lint, a clean TypeScript check, the Node test suite, catalog validation, script syntax checks, both package audits and a package dry-run artifact check. `npm run build` still needs to run separately because it compiles native receivers and writes Next.js diagnostics for `npm run check:bundle`. `npm run test:e2e` builds the web bundle and runs the Playwright simulator/replay smoke suite with `HACKRF_WEBUI_SIMULATOR=1` and `HACKRF_WEBUI_REPLAY=1`, so it covers browser audio, AIS / ADS-B replay maps, release routes and runtime diagnostics without physical SDR hardware.
+`npm run check` runs lint, a clean TypeScript check, the Node test suite, catalog validation, script syntax checks, both package audits and a package dry-run artifact check. `npm run build` still needs to run separately because it compiles native receivers and writes Next.js diagnostics for `npm run check:bundle`. `npm run test:e2e` builds the web bundle and runs the Playwright simulator/replay smoke suite with `HACKRF_WEBUI_SIMULATOR=1` and `HACKRF_WEBUI_REPLAY=1`, so it covers browser audio, AIS / ADS-B replay maps, release routes and runtime diagnostics without physical SDR hardware. `npm run test:e2e:auth` repeats the browser smoke path with API token auth enabled to verify protected runtime APIs and token injection.
+
+The `/runtime` page shows the same redacted diagnostics returned by `/api/runtime/diagnostics` as a support-friendly health panel for paths, modes, service state and warnings.
 
 Install the Playwright browser once on a fresh machine if `npm run test:e2e` reports a missing browser:
 
@@ -169,6 +171,10 @@ The MARITIME module uses static starter packs defined in [`maritime-channels.ts`
 - keeping AIS / DSC digital traffic out of this voice-focused module
 - smart scan scoping for `All`, using the saved FM city / country when available
 - curated regional packs for Spanish ports, UK MSI and selected U.S. VTS / Coast Guard channels
+
+## Release workflow
+
+Maintainers can publish a verified GitHub Release from the manual `Release` workflow on `main`. The workflow validates the version tag, installs the Node 24 toolchain, runs the full check/build/E2E suite including token-auth smoke coverage, creates the annotated tag and publishes the release notes supplied in the workflow input.
 
 ## Documentation map
 

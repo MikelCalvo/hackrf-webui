@@ -203,6 +203,9 @@ Security:
   HACKRF_WEBUI_TOKEN; start.sh mirrors it to NEXT_PUBLIC_HACKRF_WEBUI_TOKEN so
   the browser can authenticate API, SSE and audio-stream requests.
 
+Runtime:
+  Requires Node.js 24+ and npm 11+.
+
 Simulator:
   Set HACKRF_WEBUI_SIMULATOR=1 to run FM/PMR/AIRBAND/MARITIME flows without
   a physical HackRF. The app reports a virtual HackRF and generates synthetic

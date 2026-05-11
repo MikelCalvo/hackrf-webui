@@ -249,7 +249,7 @@ export function buildRuntimeDiagnostics(options: BuildRuntimeDiagnosticsOptions)
     nativeBinary: buildPathProbe(cwd, nativeBinaryPath, options.pathChecks),
     captures: buildPathProbe(cwd, "data/captures", options.pathChecks),
     runtime: buildPathProbe(cwd, "runtime", options.pathChecks),
-    mapsManifest: buildPathProbe(cwd, "public/tiles/manifest.json", options.pathChecks),
+    mapsManifest: buildPathProbe(cwd, "public/tiles/osm/manifest.json", options.pathChecks),
     aiAssets: buildPathProbe(cwd, "assets/ai", options.pathChecks),
   };
 

@@ -157,8 +157,8 @@ export function mapManifestPath(): string {
   return MAP_MANIFEST_PATH;
 }
 
-export function buildOfflineMapSummary(warnings: string[]): OfflineMapSummary {
-  if (!existsSync(MAP_MANIFEST_PATH)) {
+export function buildOfflineMapSummary(warnings: string[], manifestPath = MAP_MANIFEST_PATH): OfflineMapSummary {
+  if (!existsSync(manifestPath)) {
     warnings.push(
       "Offline maps are not installed. The map will use live OpenStreetMap tiles until local layers are installed.",
     );
@@ -166,8 +166,7 @@ export function buildOfflineMapSummary(warnings: string[]): OfflineMapSummary {
   }
 
   try {
-    const manifest = JSON.parse(readFileSync(MAP_MANIFEST_PATH, "utf8")) as LocalMapManifest;
-    const manifestPath = MAP_MANIFEST_PATH;
+    const manifest = JSON.parse(readFileSync(manifestPath, "utf8")) as LocalMapManifest;
 
     if (manifest.version !== 1 || !Array.isArray(manifest.layers)) {
       warnings.push("The offline map manifest is present but has an unsupported format.");
@@ -233,6 +232,6 @@ export function buildOfflineMapSummary(warnings: string[]): OfflineMapSummary {
     };
   } catch {
     warnings.push("The offline map manifest is present but could not be parsed.");
-    return emptySummary(MAP_MANIFEST_PATH);
+    return emptySummary(manifestPath);
   }
 }

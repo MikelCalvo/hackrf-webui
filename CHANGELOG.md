@@ -17,6 +17,8 @@ All notable changes to `hackrf-webui` are tracked here.
 - Added a redacted `/api/runtime/diagnostics` endpoint for release/support checks without leaking tokens, serials or external paths.
 - Added Playwright replay-map and release smoke coverage across main routes, APIs and browser console errors.
 - Moved the repository and CI baseline to Node.js 24 LTS / npm 11 with Node 24 GitHub Actions.
+- Added token-auth Playwright smoke coverage, start script runtime-gate tests, idempotent DB migration tests, SIGINT capture path-traversal coverage and offline-map fallback tests.
+- Added a redacted `/runtime` diagnostics page and manual GitHub Actions release workflow.
 
 ## 1.0.0
 

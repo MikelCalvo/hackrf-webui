@@ -81,3 +81,8 @@ jobs:
         env:
           NEXT_TELEMETRY_DISABLED: "1"
         run: npm run test:e2e:run
+
+      - name: Token-protected E2E smoke
+        env:
+          NEXT_TELEMETRY_DISABLED: "1"
+        run: npm run test:e2e:auth
