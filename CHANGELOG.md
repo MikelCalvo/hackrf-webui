@@ -16,6 +16,7 @@ All notable changes to `hackrf-webui` are tracked here.
 - Added `HACKRF_WEBUI_REPLAY=1` deterministic AIS / ADS-B map feeds with local history fixtures for hardware-free demos and CI.
 - Added a redacted `/api/runtime/diagnostics` endpoint for release/support checks without leaking tokens, serials or external paths.
 - Added Playwright replay-map and release smoke coverage across main routes, APIs and browser console errors.
+- Moved the repository and CI baseline to Node.js 24 LTS / npm 11 with Node 24 GitHub Actions.
 
 ## 1.0.0
 

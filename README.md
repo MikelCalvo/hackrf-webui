@@ -103,8 +103,8 @@ For normal usage you need a Linux machine with:
 
 - `HackRF` userspace tools, including `hackrf_info`
 - `libhackrf` development headers
-- `Node.js` `20.19+`, `22.13+` or a supported `24+` runtime
-- `npm` `10+`
+- `Node.js` `24.x` LTS
+- `npm` `11+`
 - `ffmpeg`, `curl`, `cc`, `pkg-config` and `ncurses` development headers
 
 Optional:

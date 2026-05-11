@@ -4,6 +4,8 @@ This page collects contributor-facing details that used to make the README too h
 
 ## Local development
 
+Use Node.js 24.x LTS with npm 11+; `.nvmrc` and `.node-version` are pinned to that baseline.
+
 ```bash
 npm ci
 npm run dev

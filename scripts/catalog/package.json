@@ -5,8 +5,8 @@
   "license": "ISC",
   "type": "module",
   "engines": {
-    "node": "^20.19.0 || ^22.13.0 || >=24",
-    "npm": ">=10"
+    "node": "^24.0.0",
+    "npm": ">=11"
   },
   "scripts": {
     "build": "node ./build.mjs"

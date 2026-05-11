@@ -4,8 +4,8 @@
   "private": true,
   "license": "ISC",
   "engines": {
-    "node": "^20.19.0 || ^22.13.0 || >=24",
-    "npm": ">=10"
+    "node": "^24.0.0",
+    "npm": ">=11"
   },
   "scripts": {
     "catalog:build": "npm --prefix ./scripts/catalog run build",
@@ -51,7 +51,7 @@
     "@tailwindcss/postcss": "^4.2.4",
     "@types/better-sqlite3": "^7.6.13",
     "@types/leaflet": "^1.9.21",
-    "@types/node": "^20.19.39",
+    "@types/node": "^24.12.3",
     "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3",
     "eslint": "^9.39.4",

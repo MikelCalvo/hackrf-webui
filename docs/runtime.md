@@ -158,8 +158,8 @@ For normal usage, the app needs:
 - `cc`
 - `pkg-config`
 - `ncurses` development headers
-- `Node.js` `20.19+`, `22.13+` or any supported `24+` runtime
-- `npm` `10+`
+- `Node.js` `24.x` LTS
+- `npm` `11+`
 - `curl`
 
 Optional but supported:

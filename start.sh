@@ -4,7 +4,8 @@ set -euo pipefail
 ROOT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
 DEFAULT_HOST="127.0.0.1"
 DEFAULT_PORT=3000
-MIN_NODE_MAJOR=20
+MIN_NODE_MAJOR=24
+MIN_NPM_MAJOR=11
 GPSD_HOST="${HACKRF_WEBUI_GPSD_HOST:-127.0.0.1}"
 GPSD_PORT="${HACKRF_WEBUI_GPSD_PORT:-2947}"
 DB_DIR="${ROOT_DIR}/db"
@@ -314,8 +315,17 @@ npm_version() {
   npm -v
 }
 
+npm_major() {
+  if ! have npm; then
+    echo 0
+    return
+  fi
+
+  npm -v | cut -d. -f1 2>/dev/null || echo 0
+}
+
 node_ok() {
-  have node && have npm && [[ "$(node_major)" -ge "$MIN_NODE_MAJOR" ]]
+  have node && have npm && [[ "$(node_major)" -ge "$MIN_NODE_MAJOR" ]] && [[ "$(npm_major)" -ge "$MIN_NPM_MAJOR" ]]
 }
 
 hackrf_pkgconfig_ok() {
@@ -686,8 +696,8 @@ install_apt_deps() {
   fi
 
   if ! node_ok; then
-    log "Installing Node.js 22 from NodeSource for Debian/Ubuntu."
-    install_nodesource_setup "https://deb.nodesource.com/setup_22.x"
+    log "Installing Node.js 24 from NodeSource for Debian/Ubuntu."
+    install_nodesource_setup "https://deb.nodesource.com/setup_24.x"
     run_root apt-get install -y nodejs
   fi
 }
@@ -708,8 +718,8 @@ install_dnf_deps() {
   fi
 
   if ! node_ok; then
-    log "Installing Node.js 22 from NodeSource for RPM-based systems."
-    install_nodesource_setup "https://rpm.nodesource.com/setup_22.x"
+    log "Installing Node.js 24 from NodeSource for RPM-based systems."
+    install_nodesource_setup "https://rpm.nodesource.com/setup_24.x"
     run_root dnf install -y nodejs
   fi
 }
@@ -753,9 +763,9 @@ install_zypper_deps() {
   fi
 
   if ! node_ok; then
-    zypper_install_first_available "Node.js" nodejs22 nodejs20 nodejs
+    zypper_install_first_available "Node.js" nodejs24 nodejs
     if ! have npm; then
-      zypper_install_first_available "npm" npm22 npm20 npm
+      zypper_install_first_available "npm" npm24 npm
     fi
   fi
 }
@@ -790,11 +800,11 @@ install_system_deps() {
     return
   fi
 
-  fail "Unsupported package manager. Install Node.js 20+, npm, ffmpeg, HackRF tools, libhackrf headers, cc, and pkg-config manually."
+  fail "Unsupported package manager. Install Node.js 24+, npm 11+, ffmpeg, HackRF tools, libhackrf headers, cc, and pkg-config manually."
 }
 
 verify_runtime() {
-  node_ok || fail "Node.js ${MIN_NODE_MAJOR}+ and npm are required."
+  node_ok || fail "Node.js ${MIN_NODE_MAJOR}+ and npm ${MIN_NPM_MAJOR}+ are required."
 
   if simulator_enabled; then
     if [[ "$SKIP_ADSB_RUNTIME" != "1" && ( "${DUMP1090_FA_REINSTALL:-0}" == "1" || ! -x "$(adsb_decoder_binary_path)" ) ]]; then
