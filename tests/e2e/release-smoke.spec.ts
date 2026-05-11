@@ -8,7 +8,6 @@ const ROUTES = [
   { path: "/ais", label: "Maritime Picture" },
   { path: "/adsb", label: "Air Picture" },
   { path: "/sigint", label: "SIGINT" },
-  { path: "/runtime", label: "Runtime diagnostics" },
 ] as const;
 
 test.describe("Release smoke", () => {
