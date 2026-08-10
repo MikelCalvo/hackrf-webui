@@ -86,15 +86,33 @@ function allowedOrigins(): Set<string> {
   );
 }
 
+function sameLocalOrigin(origin: URL, requestUrl: URL): boolean {
+  return (
+    isLoopbackHostname(origin.hostname)
+    && isLoopbackHostname(requestUrl.hostname)
+    && origin.protocol === requestUrl.protocol
+    && origin.port === requestUrl.port
+  );
+}
+
 function validateOrigin(request: Request): Response | null {
   const origin = request.headers.get("origin");
   if (!origin) {
     return null;
   }
 
-  const requestOrigin = new URL(request.url).origin;
+  const requestUrl = new URL(request.url);
+  const requestOrigin = requestUrl.origin;
   if (origin === requestOrigin) {
     return null;
+  }
+
+  try {
+    if (sameLocalOrigin(new URL(origin), requestUrl)) {
+      return null;
+    }
+  } catch {
+    return jsonError("Origin is not allowed for this API request.", 403);
   }
 
   const allowlist = allowedOrigins();

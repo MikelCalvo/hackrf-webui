@@ -17,6 +17,7 @@ import { TELEMETRY_REPORT_INTERVAL_MS } from "@/lib/signal-activity";
 import { adsbRuntime } from "@/server/adsb-runtime";
 import { persistCapturedActivity } from "@/server/activity-events";
 import { hackrfDeviceService } from "@/server/hackrf-device";
+import { parseHackrfInfoOutput } from "@/server/hackrf-info";
 import { aisRuntime } from "@/server/ais-runtime";
 import { projectBinPath } from "@/server/project-paths";
 import { parseSpectrumFrameLine } from "@/server/spectrum-telemetry";
@@ -203,25 +204,6 @@ function shortenSerial(serial: string): string {
   }
 
   return `${compact.slice(0, 6)}..${compact.slice(-6)}`;
-}
-
-function parseHackrfInfoOutput(output: string): Record<string, string> {
-  const parsed: Record<string, string> = {};
-
-  for (const rawLine of output.split(/\r?\n/)) {
-    const line = rawLine.trim();
-    if (line.startsWith("Board ID Number:")) {
-      parsed.board = line.split(":", 2)[1]?.trim() || "";
-    } else if (line.startsWith("Firmware Version:")) {
-      parsed.firmware = line.split(":", 2)[1]?.trim() || "";
-    } else if (line.startsWith("Hardware Revision:")) {
-      parsed.hardware = line.split(":", 2)[1]?.trim() || "";
-    } else if (line.startsWith("Serial number:")) {
-      parsed.serial = line.split(":", 2)[1]?.trim() || "";
-    }
-  }
-
-  return parsed;
 }
 
 function readHackrfIdentity(): {
