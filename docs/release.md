@@ -36,7 +36,7 @@ The managed `dump1090-fa` backend is pinned by `DUMP1090_FA_REF`. Use a full 40-
 
 ```bash
 DUMP1090_FA_SHA256=<sha256> ./start.sh --reinstall-adsb-runtime
-AI_MODEL_SHA256=<sha256> AI_LABELS_SHA256=<sha256> ./start.sh --reinstall-ai
+./start.sh --reinstall-ai
 UV_INSTALL_SCRIPT_SHA256=<sha256> ./start.sh --reinstall-ai
 ```
 

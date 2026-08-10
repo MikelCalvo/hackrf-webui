@@ -14,7 +14,6 @@ export type SigintAnalysisStatus = "none" | "queued" | "running" | "completed" |
 export type SigintAnalysisFilter =
   | "all"
   | "speech"
-  | "music"
   | "noise"
   | "unknown"
   | "queued"
@@ -26,7 +25,7 @@ export type SigintAnalysisSummary = {
   engine: string | null;
   isCurrentEngine: boolean | null;
   model: string | null;
-  classification: "speech" | "music" | "noise" | "unknown" | null;
+  classification: "speech" | "noise" | "unknown" | null;
   subclass: string | null;
   confidence: number | null;
   errorText: string | null;
@@ -40,6 +39,10 @@ export type SigintAnalysisSummary = {
   voiceRatio: number | null;
   voiceSeconds: number | null;
   voiceDetector: string | null;
+  transcriptAccepted: boolean | null;
+  transcriptConfidence: number | null;
+  transcriptLanguage: string | null;
+  transcriptLanguageConfidence: number | null;
   explanation: string | null;
   topLabels: Array<{
     label: string;

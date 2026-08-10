@@ -26,7 +26,7 @@
     "audit": "npm audit --audit-level=high && npm --prefix ./scripts/catalog audit --audit-level=high",
     "check:catalog": "node ./scripts/check-catalog.mjs",
     "check:bundle": "node ./scripts/check-bundle.mjs",
-    "check:scripts": "bash -n ./start.sh ./scripts/build-hackrf.sh && python3 -m py_compile ./scripts/ai/audio_tagger.py",
+    "check:scripts": "bash -n ./start.sh ./scripts/build-hackrf.sh && python3 -m py_compile ./scripts/ai/audio_analyzer.py ./scripts/ai/download_model.py ./scripts/ai/benchmark_audio.py",
     "check": "npm run lint && npm run typecheck && npm run test && npm run check:catalog && npm run check:scripts && npm run audit && npm run check:package",
     "check:package": "node ./scripts/check-package.mjs"
   },

@@ -16,8 +16,9 @@ By default, `start.sh`:
 - installs `gpsd` packages when the distribution exposes them, so live GPS positioning is ready when needed
 - installs Node dependencies
 - prepares the local `SQLite` runtime storage under `db/` and runs pending migrations automatically
-- downloads the local AI model assets into `assets/ai/` if they are missing
-- installs a local AI runtime under `runtime/` using `uv`, a managed `Python 3.13`, `ai-edge-litert` and `webrtcvad-wheels`
+- verifies the bundled Silero VAD model under `assets/ai/`
+- installs a local SIGINT Audio v2 runtime under `runtime/` using `uv`, managed `Python 3.13`, ONNX Runtime and faster-whisper
+- prepares the multilingual `Systran/faster-whisper-base` model under `runtime/ai-models/`; normal analysis stays offline after this explicit setup step
 - ensures a managed offline map stack unless `--skip-maps` is used
 - installs a dark global basemap capped near `4 GB` by default
 - optionally adds one high-detail country overlay when `--map-country` is set
@@ -109,6 +110,9 @@ AI_REINSTALL=1 ./start.sh
 HACKRF_WEBUI_SIMULATOR=1 ./start.sh
 HACKRF_WEBUI_REPLAY=1 ./start.sh
 HACKRF_WEBUI_AI_PYTHON=3.13 ./start.sh
+HACKRF_WEBUI_AI_ASR_MODEL=Systran/faster-whisper-base ./start.sh
+HACKRF_WEBUI_AI_ASR_MODEL=<model-id> HACKRF_WEBUI_AI_ASR_REVISION=<commit-sha> ./start.sh
+HACKRF_WEBUI_AI_CPU_THREADS=4 HACKRF_WEBUI_AI_HOTWORDS="PMR, Bilbao, recibido, cambio" ./start.sh
 HACKRF_WEBUI_GPSD_PORT=2947 ./start.sh
 ```
 
@@ -182,13 +186,14 @@ Optional but supported:
   - keeps large binaries on disk while `SQLite` stores the linkage and metadata
 - `runtime/`
   - stores the local AI toolchain
-  - includes the managed `uv` bootstrap, the pinned `Python 3.13` install, the AI virtualenv and its cache
+  - includes the managed `uv` bootstrap, the pinned `Python 3.13` install, the AI virtualenv and the faster-whisper model cache
 
 What already persists today:
 
 - `PMR`, `AIRBAND`, `MARITIME` activity logs
 - `PMR`, `AIRBAND`, `MARITIME` activity-linked `WAV` and raw `IQ` captures
 - local AI queue state, classifications and tags for `PMR`, `AIRBAND` and `MARITIME` captures
+- local Silero voice regions and accepted faster-whisper transcriptions, with language and quality metadata
 - `AIS` vessel position history
 - `ADS-B` aircraft position history
 
@@ -278,12 +283,21 @@ export UV_UNMANAGED_INSTALL="$PWD/runtime/tools/uv"
 curl -fsSL https://astral.sh/uv/install.sh | sh
 runtime/tools/uv/uv python install --install-dir runtime/python 3.13
 runtime/tools/uv/uv venv --python 3.13 runtime/ai-venv
-runtime/tools/uv/uv pip install --python runtime/ai-venv/bin/python -r scripts/ai/requirements.txt
-mkdir -p assets/ai
-curl -fsSL https://storage.googleapis.com/mediapipe-models/audio_classifier/yamnet/float32/latest/yamnet.tflite -o assets/ai/yamnet.tflite
-curl -fsSL https://raw.githubusercontent.com/tensorflow/models/master/research/audioset/yamnet/yamnet_class_map.csv -o assets/ai/yamnet_class_map.csv
-runtime/ai-venv/bin/python scripts/ai/audio_tagger.py --check --model assets/ai/yamnet.tflite --labels assets/ai/yamnet_class_map.csv
+UV_CACHE_DIR=runtime/uv-cache runtime/tools/uv/uv pip sync --python runtime/ai-venv/bin/python scripts/ai/requirements.txt
+runtime/ai-venv/bin/python scripts/ai/audio_analyzer.py \
+  --prepare \
+  --vad-model assets/ai/silero_vad_v6.onnx \
+  --model-cache runtime/ai-models \
+  --asr-model Systran/faster-whisper-base \
+  --asr-revision ebe41f70d5b6dfa9166e2c581c45c9c0cfc57b66
+runtime/ai-venv/bin/python scripts/ai/audio_analyzer.py \
+  --check \
+  --vad-model assets/ai/silero_vad_v6.onnx \
+  --model-cache runtime/ai-models \
+  --asr-model Systran/faster-whisper-base
 ```
+
+SIGINT Audio v2 replaces the previous YAMNet/WebRTC pipeline. Silero identifies short radio voice regions and faster-whisper transcribes only those bounded regions. Accepted text is review assistance, not authoritative evidence; the original WAV remains the source of truth. Set `HACKRF_WEBUI_AI_ASR_MODEL` together with its immutable `HACKRF_WEBUI_AI_ASR_REVISION` commit SHA to benchmark another faster-whisper model, `HACKRF_WEBUI_AI_CPU_THREADS` to tune CPU use, and `HACKRF_WEBUI_AI_HOTWORDS` to supply optional local radio vocabulary. The default is `Systran/faster-whisper-base`; benchmark runs found it materially faster and smaller than `small` on the T14 while still producing useful radio transcripts.
 
 Optional offline maps can also be prepared manually:
 

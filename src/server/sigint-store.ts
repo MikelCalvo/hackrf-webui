@@ -96,6 +96,10 @@ function emptyAnalysisSummary(): SigintAnalysisSummary {
     voiceRatio: null,
     voiceSeconds: null,
     voiceDetector: null,
+    transcriptAccepted: null,
+    transcriptConfidence: null,
+    transcriptLanguage: null,
+    transcriptLanguageConfidence: null,
     explanation: null,
     topLabels: [],
   };
@@ -138,7 +142,7 @@ function parseAnalysisSummary(
   const broadClass = stringOrNull(classificationData?.class);
 
   summary.classification =
-    broadClass === "speech" || broadClass === "music" || broadClass === "noise" || broadClass === "unknown"
+    broadClass === "speech" || broadClass === "noise" || broadClass === "unknown"
       ? broadClass
       : null;
   summary.subclass = stringOrNull(classificationData?.subclass);
@@ -153,6 +157,10 @@ function parseAnalysisSummary(
   summary.voiceRatio = numberOrNull(classificationData?.voiceRatio);
   summary.voiceSeconds = numberOrNull(classificationData?.voiceSeconds);
   summary.voiceDetector = stringOrNull(classificationData?.voiceDetector);
+  summary.transcriptAccepted = booleanOrNull(classificationData?.transcriptAccepted);
+  summary.transcriptConfidence = numberOrNull(classificationData?.transcriptConfidence);
+  summary.transcriptLanguage = stringOrNull(classificationData?.transcriptLanguage);
+  summary.transcriptLanguageConfidence = numberOrNull(classificationData?.transcriptLanguageConfidence);
   summary.explanation = stringOrNull(classificationData?.explanation);
   summary.topLabels = findings
     .filter((row) => row.kind === "top_label")

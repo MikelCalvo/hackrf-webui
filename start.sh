@@ -18,13 +18,14 @@ AI_PYTHON_DIR="${RUNTIME_DIR}/python"
 AI_VENV_DIR="${RUNTIME_DIR}/ai-venv"
 AI_CACHE_DIR="${RUNTIME_DIR}/uv-cache"
 AI_PYTHON_VERSION="${HACKRF_WEBUI_AI_PYTHON:-3.13}"
-AI_SCRIPT_PATH="${ROOT_DIR}/scripts/ai/audio_tagger.py"
+AI_SCRIPT_PATH="${ROOT_DIR}/scripts/ai/audio_analyzer.py"
 AI_REQUIREMENTS_PATH="${ROOT_DIR}/scripts/ai/requirements.txt"
 AI_ASSETS_DIR="${ROOT_DIR}/assets/ai"
-AI_MODEL_PATH="${ROOT_DIR}/assets/ai/yamnet.tflite"
-AI_LABELS_PATH="${ROOT_DIR}/assets/ai/yamnet_class_map.csv"
-AI_MODEL_URL="${AI_MODEL_URL:-https://storage.googleapis.com/mediapipe-models/audio_classifier/yamnet/float32/latest/yamnet.tflite}"
-AI_LABELS_URL="${AI_LABELS_URL:-https://raw.githubusercontent.com/tensorflow/models/master/research/audioset/yamnet/yamnet_class_map.csv}"
+AI_VAD_MODEL_PATH="${ROOT_DIR}/assets/ai/silero_vad_v6.onnx"
+AI_VAD_SHA256_PATH="${ROOT_DIR}/assets/ai/silero_vad_v6.onnx.sha256"
+AI_MODEL_CACHE_DIR="${RUNTIME_DIR}/ai-models"
+AI_ASR_MODEL="${HACKRF_WEBUI_AI_ASR_MODEL:-Systran/faster-whisper-base}"
+AI_ASR_REVISION="${HACKRF_WEBUI_AI_ASR_REVISION:-ebe41f70d5b6dfa9166e2c581c45c9c0cfc57b66}"
 AI_REINSTALL="${AI_REINSTALL:-0}"
 SKIP_AI="${SKIP_AI:-0}"
 UV_INSTALL_SCRIPT_URL="${UV_INSTALL_SCRIPT_URL:-https://astral.sh/uv/install.sh}"
@@ -183,8 +184,8 @@ Environment overrides:
   MAP_REINSTALL, MAP_GLOBAL_BUDGET, MAP_GLOBAL_MAX_ZOOM,
   MAP_COUNTRY, MAP_COUNTRY_MAX_ZOOM,
   DUMP1090_FA_REF, DUMP1090_FA_REINSTALL, DUMP1090_FA_SHA256,
-  DUMP1090_FA_ALLOW_UNPINNED_REF, AI_REINSTALL, AI_MODEL_SHA256,
-  AI_LABELS_SHA256, HACKRF_WEBUI_AI_PYTHON, UV_INSTALL_SCRIPT_URL,
+  DUMP1090_FA_ALLOW_UNPINNED_REF, AI_REINSTALL, HACKRF_WEBUI_AI_ASR_MODEL, HACKRF_WEBUI_AI_ASR_REVISION,
+  HACKRF_WEBUI_AI_CPU_THREADS, HACKRF_WEBUI_AI_HOTWORDS, HACKRF_WEBUI_AI_PYTHON, UV_INSTALL_SCRIPT_URL,
   UV_INSTALL_SCRIPT_SHA256, DRY_RUN,
   HACKRF_WEBUI_GPSD_HOST, HACKRF_WEBUI_GPSD_PORT,
   HACKRF_WEBUI_DB_PATH, HACKRF_WEBUI_SIMULATOR, HACKRF_WEBUI_REPLAY,
@@ -389,7 +390,7 @@ ai_runtime_code_ready() {
 }
 
 ai_assets_ready() {
-  [[ -f "$AI_MODEL_PATH" && -f "$AI_LABELS_PATH" ]]
+  [[ -f "$AI_VAD_MODEL_PATH" && -f "$AI_VAD_SHA256_PATH" ]]
 }
 
 uv_ready() {
@@ -403,8 +404,10 @@ ai_runtime_ready() {
 
   env PYTHONNOUSERSITE=1 "$(ai_python_path)" "$AI_SCRIPT_PATH" \
     --check \
-    --model "$AI_MODEL_PATH" \
-    --labels "$AI_LABELS_PATH" >/dev/null 2>&1
+    --vad-model "$AI_VAD_MODEL_PATH" \
+    --model-cache "$AI_MODEL_CACHE_DIR" \
+    --asr-model "$AI_ASR_MODEL" \
+    --asr-revision "$AI_ASR_REVISION" >/dev/null 2>&1
 }
 
 maps_manifest_path() {
@@ -989,13 +992,11 @@ ensure_ai_assets() {
   fi
 
   mkdir -p "$AI_ASSETS_DIR"
-
-  if [[ "$AI_REINSTALL" == "1" || ! -f "$AI_MODEL_PATH" ]]; then
-    download_ai_asset "$AI_MODEL_URL" "$AI_MODEL_PATH" "YAMNet model" "${AI_MODEL_SHA256:-}"
-  fi
-
-  if [[ "$AI_REINSTALL" == "1" || ! -f "$AI_LABELS_PATH" ]]; then
-    download_ai_asset "$AI_LABELS_URL" "$AI_LABELS_PATH" "YAMNet label map" "${AI_LABELS_SHA256:-}"
+  [[ -f "$AI_VAD_MODEL_PATH" ]] || fail "The bundled Silero VAD model is missing: $AI_VAD_MODEL_PATH"
+  [[ -f "$AI_VAD_SHA256_PATH" ]] || fail "The Silero VAD checksum is missing: $AI_VAD_SHA256_PATH"
+  if [[ "$DRY_RUN" != "1" ]]; then
+    (cd "$AI_ASSETS_DIR" && sha256sum --check "$(basename "$AI_VAD_SHA256_PATH")" >/dev/null) \
+      || fail "The bundled Silero VAD model failed checksum verification."
   fi
 }
 
@@ -1027,12 +1028,13 @@ install_ai_runtime() {
   ai_runtime_code_ready || fail "The local AI scripts or requirements are missing from the repository."
   ensure_ai_assets
 
-  mkdir -p "$RUNTIME_DIR" "$AI_PYTHON_DIR" "$AI_CACHE_DIR"
+  mkdir -p "$RUNTIME_DIR" "$AI_PYTHON_DIR" "$AI_CACHE_DIR" "$AI_MODEL_CACHE_DIR"
   ensure_local_uv
 
   if [[ "$AI_REINSTALL" == "1" ]]; then
     log "Reinstalling the local SIGINT AI runtime."
-    run rm -rf "$AI_VENV_DIR"
+    run rm -rf "$AI_VENV_DIR" "$AI_CACHE_DIR"
+    run mkdir -p "$AI_CACHE_DIR"
   fi
 
   log "Ensuring local Python ${AI_PYTHON_VERSION} for the AI runtime."
@@ -1055,25 +1057,36 @@ install_ai_runtime() {
       "$AI_VENV_DIR"
   fi
 
-  if [[ "$AI_REINSTALL" == "1" ]] || ! ai_runtime_ready; then
-    log "Installing the local SIGINT AI packages."
-    run env \
-      UV_CACHE_DIR="$AI_CACHE_DIR" \
-      UV_LINK_MODE=copy \
-      UV_PYTHON_INSTALL_DIR="$AI_PYTHON_DIR" \
-      "$AI_UV_BIN" pip install \
-      --python "$(ai_python_path)" \
-      -r "$AI_REQUIREMENTS_PATH"
-  else
-    log "Local SIGINT AI runtime already looks ready."
-  fi
+  log "Synchronizing the pinned local SIGINT AI packages."
+  run env \
+    UV_CACHE_DIR="$AI_CACHE_DIR" \
+    UV_LINK_MODE=copy \
+    UV_PYTHON_INSTALL_DIR="$AI_PYTHON_DIR" \
+    "$AI_UV_BIN" pip sync \
+    --python "$(ai_python_path)" \
+    --require-hashes \
+    "$AI_REQUIREMENTS_PATH"
 
   if [[ "$DRY_RUN" == "1" ]]; then
     log "Dry run: local SIGINT AI runtime self-check skipped."
     return
   fi
 
+  if ! ai_runtime_ready; then
+    log "Preparing the local multilingual speech model (${AI_ASR_MODEL})."
+    env PYTHONNOUSERSITE=1 "$(ai_python_path)" "$AI_SCRIPT_PATH" \
+      --prepare \
+      --vad-model "$AI_VAD_MODEL_PATH" \
+      --model-cache "$AI_MODEL_CACHE_DIR" \
+      --asr-model "$AI_ASR_MODEL" \
+      --asr-revision "$AI_ASR_REVISION"
+  fi
+
   ai_runtime_ready || fail "Local SIGINT AI runtime failed its self-check."
+
+  log "Removing the temporary AI package cache."
+  rm -rf "$AI_CACHE_DIR"
+  mkdir -p "$AI_CACHE_DIR"
 }
 
 report_line() {
@@ -1100,7 +1113,7 @@ print_status_report() {
   report_line "SQLite DB" "$(db_ready && printf '%s' "$DB_PATH" || printf '%s' 'not initialized yet')"
   report_line "API auth" "$(api_auth_status)"
   report_line "Capture store" "$CAPTURES_DIR"
-  report_line "AI assets" "$(ai_assets_ready && printf '%s' "$AI_MODEL_PATH" || printf '%s' 'missing')"
+  report_line "AI assets" "$(ai_assets_ready && printf '%s' "$AI_VAD_MODEL_PATH" || printf '%s' 'missing')"
   report_line "AI Python" "$([[ -x "$(ai_python_path)" ]] && printf '%s' "$(ai_python_path)" || printf '%s' 'missing')"
   report_line "AI runtime" "$(ai_runtime_ready && printf '%s' 'ready' || printf '%s' 'not initialized yet')"
 

@@ -183,8 +183,6 @@ function analysisTone(status: SigintAnalysisStatus, classification: SigintCaptur
   switch (classification) {
     case "speech":
       return "border-emerald-300/25 bg-emerald-300/10 text-emerald-100";
-    case "music":
-      return "border-fuchsia-300/25 bg-fuchsia-300/10 text-fuchsia-100";
     case "noise":
       return "border-white/12 bg-white/[0.05] text-[var(--muted-strong)]";
     case "unknown":
@@ -250,9 +248,6 @@ function buildAnalysisHeadline(summary: SigintCaptureDetail["analysisSummary"]):
   }
   if (summary.voiceDetected) {
     return "Voice activity detected";
-  }
-  if (summary.classification === "music") {
-    return "Music-like audio detected";
   }
   if (summary.classification === "noise") {
     return "No clear voice detected";
@@ -1074,7 +1069,6 @@ export function SigintModule({ location }: SigintModuleProps) {
                 <option value="all">All AI states</option>
                 <option value="speech">Speech</option>
                 <option value="noise">Noise</option>
-                <option value="music">Music</option>
                 <option value="unknown">Unknown</option>
                 <option value="queued">Queued</option>
                 <option value="running">Running</option>
@@ -1391,6 +1385,22 @@ export function SigintModule({ location }: SigintModuleProps) {
                     {captureDetail.analysisSummary.errorText ? (
                       <p className="text-xs text-rose-200">{captureDetail.analysisSummary.errorText}</p>
                     ) : null}
+                    {captureDetail.transcripts.length > 0 ? (
+                      <div className="space-y-2 rounded border border-emerald-300/20 bg-emerald-300/[0.06] p-3">
+                        <div className="flex flex-wrap items-center gap-2">
+                          <p className="font-mono text-[9px] uppercase tracking-[0.18em] text-emerald-100">Local transcript</p>
+                          {captureDetail.transcripts[0].language ? (
+                            <span className="rounded border border-emerald-300/20 px-1.5 py-0.5 font-mono text-[8px] uppercase tracking-[0.14em] text-emerald-100">
+                              {captureDetail.transcripts[0].language}
+                            </span>
+                          ) : null}
+                        </div>
+                        <p className="text-sm leading-6 text-[var(--foreground)]">{captureDetail.transcripts[0].text}</p>
+                        <p className="font-mono text-[9px] text-[var(--muted)]">
+                          {captureDetail.transcripts[0].engine} · review against the original WAV
+                        </p>
+                      </div>
+                    ) : null}
                   </div>
                   <div className="divide-y divide-white/[0.05]">
                     {([
@@ -1401,8 +1411,10 @@ export function SigintModule({ location }: SigintModuleProps) {
                       ["Voice activity", captureDetail.analysisSummary.voiceDetected === null ? "—" : captureDetail.analysisSummary.voiceDetected ? "Detected" : "Not detected"],
                       ["Voice seconds", captureDetail.analysisSummary.voiceSeconds === null ? "—" : `${captureDetail.analysisSummary.voiceSeconds.toFixed(2)} s`],
                       ["Voice ratio", formatAnalysisPercent(captureDetail.analysisSummary.voiceRatio)],
-                      ["Scene", captureDetail.analysisSummary.sceneLabel ?? "—"],
-                      ["Scene conf.", formatAnalysisPercent(captureDetail.analysisSummary.sceneConfidence)],
+                      ["Transcript", captureDetail.analysisSummary.transcriptAccepted === null ? "—" : captureDetail.analysisSummary.transcriptAccepted ? "Accepted" : "Not accepted"],
+                      ["Transcript conf.", formatAnalysisPercent(captureDetail.analysisSummary.transcriptConfidence)],
+                      ["Language", captureDetail.analysisSummary.transcriptLanguage?.toUpperCase() ?? "—"],
+                      ["Language conf.", formatAnalysisPercent(captureDetail.analysisSummary.transcriptLanguageConfidence)],
                       ["Audio", captureDetail.analysisSummary.audioSeconds === null ? "—" : `${captureDetail.analysisSummary.audioSeconds.toFixed(2)} s`],
                     ] as [string, string][]).reduce<[string, string][][]>((acc, item, i) => {
                       if (i % 2 === 0) acc.push([item]);

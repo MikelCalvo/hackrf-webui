@@ -28,11 +28,14 @@
 /db/*.sqlite-wal
 /data/captures/*
 !/data/captures/.gitkeep
-/assets/ai/
+/assets/ai/*
+!/assets/ai/silero_vad_v6.onnx
+!/assets/ai/silero_vad_v6.onnx.sha256
 /runtime/ai-venv/
 /runtime/python/
 /runtime/tools/
 /runtime/uv-cache/
+/runtime/ai-models/
 __pycache__/
 *.pyc
 

@@ -12,7 +12,6 @@ const VALID_REVIEW_STATUS = new Set<SigintReviewStatus>(["pending", "kept", "dis
 const VALID_ANALYSIS_FILTERS = new Set<SigintAnalysisFilter>([
   "all",
   "speech",
-  "music",
   "noise",
   "unknown",
   "queued",
