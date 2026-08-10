@@ -1074,6 +1074,7 @@ export function SigintModule({ location }: SigintModuleProps) {
                     <button
                       key={option.id}
                       aria-label={option.label}
+                      aria-pressed={filters.reviewStatus === option.id}
                       className={cx(
                         "rounded-md border px-2.5 py-2 text-left transition",
                         filters.reviewStatus === option.id
@@ -1103,6 +1104,8 @@ export function SigintModule({ location }: SigintModuleProps) {
                   ].map((option) => (
                     <button
                       key={option.id}
+                      aria-label={`Signal source: ${option.id === "airband" ? "Airband" : option.id === "maritime" ? "Maritime" : option.label}`}
+                      aria-pressed={filters.module === option.id}
                       className={cx(
                         "rounded border px-1.5 py-1.5 font-mono text-[8px] uppercase tracking-[0.12em] transition",
                         filters.module === option.id
@@ -1127,7 +1130,8 @@ export function SigintModule({ location }: SigintModuleProps) {
                   {ANALYSIS_FILTER_OPTIONS.map((option) => (
                     <button
                       key={option.id}
-                      title={option.hint}
+                      aria-label={`AI evidence: ${option.label}. ${option.hint}`}
+                      aria-pressed={filters.analysis === option.id}
                       className={cx(
                         "rounded-full border px-2.5 py-1 font-mono text-[8px] uppercase tracking-[0.11em] transition",
                         filters.analysis === option.id
