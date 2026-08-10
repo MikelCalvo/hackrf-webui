@@ -1,7 +1,12 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 
-import { matchesSigintCaptureFilters, nextVisibleCaptureId } from "@/lib/sigint-filters";
+import {
+  hasActiveSigintCaptureFilters,
+  matchesSigintCaptureFilters,
+  nextVisibleCaptureId,
+  resetSigintCaptureFilters,
+} from "@/lib/sigint-filters";
 import type { SigintCaptureListFilters, SigintCaptureSummary } from "@/lib/sigint";
 
 function capture(overrides: Partial<SigintCaptureSummary> = {}): SigintCaptureSummary {
@@ -103,4 +108,28 @@ test("review queue advances to the next visible capture when an item leaves the 
   assert.equal(nextVisibleCaptureId(items, "a"), "b");
   assert.equal(nextVisibleCaptureId(items, "b"), "c");
   assert.equal(nextVisibleCaptureId(items, "c"), "b");
+});
+
+test("clear filters resets the complete capture filter set while preserving the result limit", () => {
+  const active: SigintCaptureListFilters = {
+    module: "maritime",
+    reviewStatus: "pending",
+    analysis: "voice",
+    hasAudio: true,
+    hasRawIq: true,
+    q: "bilbao",
+    limit: 75,
+  };
+
+  assert.equal(hasActiveSigintCaptureFilters(active), true);
+  assert.deepEqual(resetSigintCaptureFilters(active), {
+    module: "all",
+    reviewStatus: "all",
+    analysis: "all",
+    hasAudio: false,
+    hasRawIq: false,
+    q: "",
+    limit: 75,
+  });
+  assert.equal(hasActiveSigintCaptureFilters(resetSigintCaptureFilters(active)), false);
 });

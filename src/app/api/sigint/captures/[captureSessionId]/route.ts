@@ -1,6 +1,7 @@
 import type { NextRequest } from "next/server";
 
 import type { SigintReviewPriority, SigintReviewStatus, SigintReviewUpdateInput } from "@/lib/sigint";
+import { priorityForReviewStatus } from "@/lib/sigint-review";
 import { ensureCaptureAnalysisUpToDate, warmAnalysisBackfill } from "@/server/analysis-worker";
 import { authorizeApiRequest } from "@/server/api/auth";
 import { getSigintCaptureDetail, updateSigintCaptureReview } from "@/server/sigint-store";
@@ -63,7 +64,7 @@ export async function PATCH(
   const { captureSessionId } = await context.params;
   const detail = updateSigintCaptureReview(captureSessionId, {
     status,
-    priority,
+    priority: priorityForReviewStatus(status, priority),
     notes: typeof payload.notes === "string" ? payload.notes : "",
   });
 

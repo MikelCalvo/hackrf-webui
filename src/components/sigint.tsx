@@ -25,7 +25,13 @@ import type {
   OfflineMapSummary,
   ResolvedAppLocation,
 } from "@/lib/types";
-import { matchesSigintCaptureFilters, nextVisibleCaptureId } from "@/lib/sigint-filters";
+import {
+  hasActiveSigintCaptureFilters,
+  matchesSigintCaptureFilters,
+  nextVisibleCaptureId,
+  resetSigintCaptureFilters,
+} from "@/lib/sigint-filters";
+import { priorityForReviewStatus } from "@/lib/sigint-review";
 import {
   CLS_BTN_GHOST,
   CLS_BTN_PRIMARY,
@@ -144,8 +150,8 @@ function formatDuration(durationMs: number | null): string {
   return `${(durationMs / 1000).toFixed(durationMs >= 10_000 ? 1 : 2)} s`;
 }
 
-function formatFrequency(freqMhz: number | null): string {
-  return freqMhz === null ? "—" : `${freqMhz.toFixed(freqMhz < 200 ? 3 : 5)} MHz`;
+function formatFrequency(freqMhz: number | null | undefined): string {
+  return isFiniteNumber(freqMhz) ? `${freqMhz.toFixed(freqMhz < 200 ? 3 : 5)} MHz` : "—";
 }
 
 function isFiniteNumber(value: number | null | undefined): value is number {
@@ -691,6 +697,13 @@ export function SigintModule({ location }: SigintModuleProps) {
   const [replayPlaying, setReplayPlaying] = useState(false);
   const capturesRequestIdRef = useRef(0);
   const detailRequestIdRef = useRef(0);
+  const reviewDraftRef = useRef({
+    captureId: "",
+    status: "pending" as SigintReviewStatus,
+    priority: "normal" as SigintReviewPriority,
+    notes: "",
+    dirty: false,
+  });
 
   const trackKind = tab === "ais" ? "ais" : "adsb";
   const activeTrack = useMemo(
@@ -775,9 +788,19 @@ export function SigintModule({ location }: SigintModuleProps) {
   }, [loadCaptureDetail, selectedCaptureId]);
 
   useEffect(() => {
-    setReviewStatus(captureDetail?.reviewStatus ?? "pending");
-    setReviewPriority(captureDetail?.reviewPriority ?? "normal");
-    setReviewNotes(captureDetail?.reviewNotes ?? "");
+    const captureId = captureDetail?.id ?? "";
+    const draft = reviewDraftRef.current;
+    if (captureId && captureId === draft.captureId && draft.dirty) {
+      return;
+    }
+
+    const status = captureDetail?.reviewStatus ?? "pending";
+    const priority = captureDetail?.reviewPriority ?? "normal";
+    const notes = captureDetail?.reviewNotes ?? "";
+    setReviewStatus(status);
+    setReviewPriority(priority);
+    setReviewNotes(notes);
+    reviewDraftRef.current = { captureId, status, priority, notes, dirty: false };
   }, [captureDetail]);
 
   useEffect(() => {
@@ -947,18 +970,31 @@ export function SigintModule({ location }: SigintModuleProps) {
     return () => clearInterval(interval);
   }, [replayPlaying, replayPoints.length]);
 
-  async function handleSaveReview(): Promise<void> {
+  async function handleSaveReview(
+    status = reviewStatus,
+    priority = reviewPriority,
+  ): Promise<void> {
     if (!captureDetail) {
       return;
     }
 
     setSavingReview(true);
     try {
+      const notes = reviewDraftRef.current.captureId === captureDetail.id
+        ? reviewDraftRef.current.notes
+        : reviewNotes;
       const nextDetail = await updateSigintCaptureReview(captureDetail.id, {
-        status: reviewStatus,
-        priority: reviewPriority,
-        notes: reviewNotes,
+        status,
+        priority: priorityForReviewStatus(status, priority),
+        notes,
       });
+      reviewDraftRef.current = {
+        captureId: nextDetail.id,
+        status: nextDetail.reviewStatus,
+        priority: nextDetail.reviewPriority,
+        notes: nextDetail.reviewNotes,
+        dirty: false,
+      };
       const nextSummary = nextDetail as SigintCaptureSummary;
       const remainsVisible = matchesSigintCaptureFilters(nextSummary, filters);
       setCaptureDetail(remainsVisible ? nextDetail : null);
@@ -997,11 +1033,34 @@ export function SigintModule({ location }: SigintModuleProps) {
     [captureItems],
   );
 
-  const hasReviewChanges =
-    captureDetail
-    && (captureDetail.reviewStatus !== reviewStatus
-      || captureDetail.reviewPriority !== reviewPriority
-      || captureDetail.reviewNotes !== reviewNotes);
+  const hasActiveCaptureFilters = hasActiveSigintCaptureFilters(filters);
+
+  function selectReviewStatus(status: SigintReviewStatus): void {
+    setReviewStatus(status);
+    reviewDraftRef.current = {
+      captureId: captureDetail?.id ?? "",
+      status,
+      priority: status === "discarded" ? "normal" : reviewPriority,
+      notes: reviewNotes,
+      dirty: true,
+    };
+    if (status === "discarded") {
+      setReviewPriority("normal");
+      void handleSaveReview(status, "normal");
+    }
+  }
+
+  function selectReviewPriority(priority: SigintReviewPriority): void {
+    setReviewPriority(priority);
+    reviewDraftRef.current = {
+      captureId: captureDetail?.id ?? "",
+      status: reviewStatus,
+      priority,
+      notes: reviewNotes,
+      dirty: true,
+    };
+    void handleSaveReview(reviewStatus, priority);
+  }
 
   return (
     <div className="flex flex-1 overflow-hidden">
@@ -1064,11 +1123,19 @@ export function SigintModule({ location }: SigintModuleProps) {
 
               <div>
                 <div className="mb-1.5 flex items-center justify-between">
-                  <p className="font-mono text-[8px] uppercase tracking-[0.18em] text-[var(--muted)]">Review queue</p>
-                  {filters.reviewStatus !== "all" ? (
-                    <button className="font-mono text-[8px] uppercase tracking-[0.12em] text-cyan-300 hover:text-cyan-100" onClick={() => setFilters((current) => ({ ...current, reviewStatus: "all" }))} type="button">Clear</button>
+                  <p className="font-mono text-[8px] uppercase tracking-[0.18em] text-[var(--muted)]">Capture filters</p>
+                  {hasActiveCaptureFilters ? (
+                    <button
+                      aria-label="Clear all capture filters"
+                      className="font-mono text-[8px] uppercase tracking-[0.12em] text-cyan-300 hover:text-cyan-100"
+                      onClick={() => setFilters((current) => resetSigintCaptureFilters(current))}
+                      type="button"
+                    >
+                      Clear all
+                    </button>
                   ) : null}
                 </div>
+                <p className="mb-1.5 font-mono text-[8px] uppercase tracking-[0.18em] text-[var(--muted)]">Review status</p>
                 <div className="grid grid-cols-2 gap-1.5">
                   {REVIEW_FILTER_OPTIONS.map((option) => (
                     <button
@@ -1197,7 +1264,7 @@ export function SigintModule({ location }: SigintModuleProps) {
 
       <main className="flex min-w-0 flex-1 border-r border-white/8 bg-black/10">
         {tab === "captures" ? (
-          <div className="flex min-w-0 flex-1 flex-col">
+          <div className="relative flex min-w-0 flex-1 flex-col">
             <div className="flex items-center justify-between border-b border-white/[0.07] px-5 py-2.5">
               <div className="flex items-center gap-3">
                 <p className="font-mono text-[10px] uppercase tracking-[0.24em] text-[var(--muted)]">Queue</p>
@@ -1216,7 +1283,7 @@ export function SigintModule({ location }: SigintModuleProps) {
               </div>
             </div>
 
-            <div className="min-h-0 flex-1 overflow-y-auto">
+            <div className={cx("min-h-0 flex-1 overflow-y-auto", captureDetail && "pb-40")}>
               {capturesError ? (
                 <div className="p-5 text-sm text-rose-200">{capturesError}</div>
               ) : captureItems.length === 0 && !capturesLoading ? (
@@ -1288,6 +1355,69 @@ export function SigintModule({ location }: SigintModuleProps) {
                 })
               )}
             </div>
+
+            {captureDetail ? (
+              <div
+                className="pointer-events-none absolute inset-x-3 bottom-3 z-20"
+                data-testid="sigint-capture-queue-review-bar"
+              >
+                <div className="pointer-events-auto rounded-xl border border-cyan-300/20 bg-[rgba(5,11,19,0.96)] p-3 shadow-[0_18px_55px_rgba(0,0,0,0.62)] backdrop-blur-md">
+                  <div className="mb-2 flex items-center justify-between gap-3">
+                    <p className="font-mono text-[9px] uppercase tracking-[0.2em] text-cyan-100">Review decision</p>
+                    <p aria-live="polite" className="font-mono text-[8px] uppercase tracking-[0.12em] text-[var(--muted)]">
+                      {savingReview ? "Saving…" : "Choose a status"}
+                    </p>
+                  </div>
+                  <div className="grid grid-cols-4 gap-1.5">
+                    {(["pending", "kept", "flagged", "discarded"] as SigintReviewStatus[]).map((status) => (
+                      <button
+                        key={status}
+                        aria-label={`Review decision: ${status}`}
+                        aria-pressed={reviewStatus === status}
+                        className={cx(
+                          "rounded-md border px-1.5 py-2 font-mono text-[9px] uppercase tracking-[0.1em] transition",
+                          reviewStatus === status
+                            ? statusTone(status)
+                            : "border-white/10 bg-white/[0.03] text-[var(--muted-strong)] hover:border-white/18 hover:bg-white/[0.05]",
+                        )}
+                        disabled={savingReview}
+                        onClick={() => selectReviewStatus(status)}
+                        type="button"
+                      >
+                        {status}
+                      </button>
+                    ))}
+                  </div>
+                  {reviewStatus !== "discarded" ? (
+                    <div className="mt-2 flex items-center justify-between gap-3">
+                      <p className="font-mono text-[8px] uppercase tracking-[0.12em] text-[var(--muted)]">Choose priority to save</p>
+                      <div className="flex gap-1.5" role="group" aria-label="Review priority">
+                        {(["normal", "high"] as SigintReviewPriority[]).map((priority) => (
+                          <button
+                            key={priority}
+                            aria-label={`Review priority: ${priority}`}
+                            aria-pressed={reviewPriority === priority}
+                            className={cx(
+                              "rounded border px-2.5 py-1.5 font-mono text-[9px] uppercase tracking-[0.12em] transition",
+                              reviewPriority === priority
+                                ? "border-amber-300/25 bg-amber-300/10 text-amber-100"
+                                : "border-white/10 bg-white/[0.03] text-[var(--muted-strong)] hover:border-white/18 hover:bg-white/[0.05]",
+                            )}
+                            disabled={savingReview}
+                            onClick={() => selectReviewPriority(priority)}
+                            type="button"
+                          >
+                            {priority}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                  ) : (
+                    <p className="mt-2 font-mono text-[8px] uppercase tracking-[0.12em] text-[var(--muted)]">Discarded saves immediately with no priority</p>
+                  )}
+                </div>
+              </div>
+            ) : null}
           </div>
         ) : (
           <div className="flex min-w-0 flex-1 flex-col">
@@ -1341,7 +1471,7 @@ export function SigintModule({ location }: SigintModuleProps) {
         )}
       </main>
 
-      <aside className="flex w-[430px] shrink-0 flex-col bg-[rgba(6,12,20,0.78)]">
+      <aside className="flex w-[430px] shrink-0 flex-col bg-[rgba(6,12,20,0.78)]" data-testid="sigint-evidence-detail">
         {tab === "captures" ? (
           <>
             <div className="border-b border-white/[0.07] px-5 py-4">
@@ -1351,7 +1481,8 @@ export function SigintModule({ location }: SigintModuleProps) {
             </div>
 
             {captureDetail ? (
-              <div className="min-h-0 flex-1 overflow-y-auto">
+              <div className="flex min-h-0 flex-1 flex-col">
+                <div className="min-h-0 flex-1 overflow-y-auto">
                 {/* Header: module label, title, freq, status + capture buttons */}
                 <div className="border-b border-white/[0.07] px-5 py-4">
                   <div className="flex items-start justify-between gap-4">
@@ -1517,69 +1648,30 @@ export function SigintModule({ location }: SigintModuleProps) {
                   ) : null}
                 </div>
 
-                {/* Review */}
+                {/* Analyst notes */}
                 <div className="border-b border-white/[0.07]">
                   <div className="flex items-center justify-between border-b border-white/[0.05] px-5 py-2.5">
-                    <p className="font-mono text-[9px] uppercase tracking-[0.22em] text-[var(--muted)]">Review</p>
+                    <p className="font-mono text-[9px] uppercase tracking-[0.22em] text-[var(--muted)]">Analyst notes</p>
                     {savingReview ? <Spinner /> : null}
                   </div>
-                  <div className="space-y-3 px-5 py-3">
-                    <div className="grid grid-cols-2 gap-2">
-                      {(["pending", "kept", "flagged", "discarded"] as SigintReviewStatus[]).map((status) => (
-                        <button
-                          key={status}
-                          className={cx(
-                            "rounded border px-3 py-2 font-mono text-[10px] uppercase tracking-[0.16em] transition",
-                            reviewStatus === status
-                              ? statusTone(status)
-                              : "border-white/10 bg-white/[0.03] text-[var(--muted-strong)] hover:border-white/18 hover:bg-white/[0.05]",
-                          )}
-                          onClick={() => setReviewStatus(status)}
-                          type="button"
-                        >
-                          {status}
-                        </button>
-                      ))}
-                    </div>
-                    <div className="flex gap-2">
-                      {(["normal", "high"] as SigintReviewPriority[]).map((priority) => (
-                        <button
-                          key={priority}
-                          className={cx(
-                            "rounded border px-3 py-2 font-mono text-[10px] uppercase tracking-[0.16em] transition",
-                            reviewPriority === priority
-                              ? "border-amber-300/25 bg-amber-300/10 text-amber-100"
-                              : "border-white/10 bg-white/[0.03] text-[var(--muted-strong)] hover:border-white/18 hover:bg-white/[0.05]",
-                          )}
-                          onClick={() => setReviewPriority(priority)}
-                          type="button"
-                        >
-                          {priority}
-                        </button>
-                      ))}
-                    </div>
-                    <label className="block">
-                      <span className="mb-1.5 block font-mono text-[9px] uppercase tracking-[0.18em] text-[var(--muted)]">
-                        Analyst notes
-                      </span>
-                      <textarea
-                        className={cx(CLS_INPUT, "min-h-24 resize-y")}
-                        placeholder="Keep/discard rationale, callouts, routing notes..."
-                        value={reviewNotes}
-                        onChange={(event) => setReviewNotes(event.target.value)}
-                      />
-                    </label>
-                    <div className="flex justify-end">
-                      <button
-                        className={CLS_BTN_PRIMARY}
-                        disabled={!hasReviewChanges || savingReview}
-                        onClick={() => void handleSaveReview()}
-                        type="button"
-                      >
-                        {savingReview ? <Spinner /> : null}
-                        Save review
-                      </button>
-                    </div>
+                  <div className="px-5 py-3">
+                    <textarea
+                      className={cx(CLS_INPUT, "min-h-24 resize-y")}
+                      aria-label="Analyst notes"
+                      placeholder="Keep/discard rationale, callouts, routing notes..."
+                      value={reviewNotes}
+                      onChange={(event) => {
+                        const notes = event.target.value;
+                        setReviewNotes(notes);
+                        reviewDraftRef.current = {
+                          captureId: captureDetail.id,
+                          status: reviewStatus,
+                          priority: reviewPriority,
+                          notes,
+                          dirty: true,
+                        };
+                      }}
+                    />
                   </div>
                 </div>
 
@@ -1610,6 +1702,8 @@ export function SigintModule({ location }: SigintModuleProps) {
                     </p>
                   )}
                 </div>
+                </div>
+
               </div>
             ) : (
               <div className="flex flex-1 items-center justify-center p-6 text-sm text-[var(--muted)]">

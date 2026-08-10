@@ -3,6 +3,29 @@ import type {
   SigintCaptureSummary,
 } from "@/lib/sigint";
 
+export function hasActiveSigintCaptureFilters(filters: SigintCaptureListFilters): boolean {
+  return filters.module !== "all"
+    || filters.reviewStatus !== "all"
+    || filters.analysis !== "all"
+    || filters.hasAudio
+    || filters.hasRawIq
+    || filters.q.trim().length > 0;
+}
+
+export function resetSigintCaptureFilters(
+  filters: SigintCaptureListFilters,
+): SigintCaptureListFilters {
+  return {
+    module: "all",
+    reviewStatus: "all",
+    analysis: "all",
+    hasAudio: false,
+    hasRawIq: false,
+    q: "",
+    limit: filters.limit,
+  };
+}
+
 export function matchesSigintCaptureFilters(
   item: SigintCaptureSummary,
   filters: SigintCaptureListFilters,
