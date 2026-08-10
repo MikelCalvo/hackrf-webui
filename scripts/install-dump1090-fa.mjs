@@ -163,7 +163,7 @@ async function main() {
       cwd: SRC_DIR,
       env: {
         ...process.env,
-        CFLAGS: "-O3 -g -Wno-error=unterminated-string-initialization",
+        CFLAGS: "-O3 -g -Wno-error=unterminated-string-initialization -Wno-error=format-truncation",
       },
     },
   );
