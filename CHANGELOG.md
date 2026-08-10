@@ -4,6 +4,14 @@ All notable changes to `hackrf-webui` are tracked here.
 
 ## Unreleased
 
+## 1.0.2 - 2026-08-10
+
+- Updated the application and catalog dependency sets, including Next.js 16.3, React 19.2.8, Playwright 1.62, Tailwind CSS 4.3 and better-sqlite3 13.
+- Refreshed transitive security overrides and lockfiles; root and catalog dependency audits report zero vulnerabilities.
+- Updated GitHub Actions workflows to `actions/checkout@v7` and `actions/setup-node@v7`.
+- Kept the protected `/runtime` page out of the unauthenticated browser-console smoke suite while retaining dedicated token-auth E2E coverage.
+- Simplified GitHub Release titles to use the version tag directly.
+
 ## 1.0.1 - 2026-05-11
 
 - Moved the repository and CI baseline to Node.js 24 LTS / npm 11 with GitHub Actions using the pinned `.node-version`.
