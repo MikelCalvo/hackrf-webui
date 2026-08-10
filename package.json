@@ -31,34 +31,36 @@
     "check:package": "node ./scripts/check-package.mjs"
   },
   "overrides": {
-    "brace-expansion": "^1.1.13",
-    "postcss": "^8.5.10",
+    "@babel/core": "^7.29.7",
+    "brace-expansion": "^1.1.18",
+    "nanoid": "^3.3.18",
+    "postcss": "^8.5.26",
     "protocol-buffers-schema": "^3.6.1",
     "minimatch@10": {
-      "brace-expansion": "^5.0.5"
+      "brace-expansion": "^5.0.9"
     }
   },
   "dependencies": {
-    "better-sqlite3": "^12.9.0",
+    "better-sqlite3": "^13.0.3",
     "drizzle-orm": "^0.45.2",
     "leaflet": "^1.9.4",
-    "next": "16.2.4",
+    "next": "16.3.0",
     "protomaps-leaflet": "^5.1.0",
-    "react": "19.2.5",
-    "react-dom": "19.2.5"
+    "react": "19.2.8",
+    "react-dom": "19.2.8"
   },
   "devDependencies": {
-    "@playwright/test": "^1.59.1",
-    "@tailwindcss/postcss": "^4.2.4",
-    "@types/better-sqlite3": "^7.6.13",
-    "@types/leaflet": "^1.9.21",
-    "@types/node": "^24.12.3",
-    "@types/react": "^19.2.14",
-    "@types/react-dom": "^19.2.3",
-    "eslint": "^9.39.4",
-    "eslint-config-next": "16.2.4",
-    "tailwindcss": "^4.2.4",
-    "tsx": "^4.21.0",
+    "@playwright/test": "^1.62.1",
+    "@tailwindcss/postcss": "^4.3.3",
+    "@types/better-sqlite3": "^9.6.0",
+    "@types/leaflet": "^1.9.22",
+    "@types/node": "^24.13.3",
+    "@types/react": "^19.2.18",
+    "@types/react-dom": "^19.2.4",
+    "eslint": "^9.39.5",
+    "eslint-config-next": "16.3.0",
+    "tailwindcss": "^4.3.3",
+    "tsx": "^4.23.12",
     "typescript": "^6.0.3"
   }
 }
