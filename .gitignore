@@ -41,6 +41,7 @@ __pycache__/
 
 # misc
 .DS_Store
+*.sync-conflict-*
 *.pem
 /.cache/
 /public/tiles/osm/

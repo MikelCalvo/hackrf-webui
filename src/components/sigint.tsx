@@ -25,6 +25,7 @@ import type {
   OfflineMapSummary,
   ResolvedAppLocation,
 } from "@/lib/types";
+import { matchesSigintCaptureFilters, nextVisibleCaptureId } from "@/lib/sigint-filters";
 import {
   CLS_BTN_GHOST,
   CLS_BTN_PRIMARY,
@@ -52,6 +53,33 @@ const DEFAULT_CAPTURE_FILTERS: SigintCaptureListFilters = {
   q: "",
   limit: 200,
 };
+
+const REVIEW_FILTER_OPTIONS: Array<{
+  id: SigintCaptureListFilters["reviewStatus"];
+  label: string;
+  shortLabel: string;
+}> = [
+  { id: "all", label: "All review states", shortLabel: "All" },
+  { id: "pending", label: "Pending review", shortLabel: "Pending" },
+  { id: "kept", label: "Kept evidence", shortLabel: "Kept" },
+  { id: "flagged", label: "Flagged follow-up", shortLabel: "Flagged" },
+  { id: "discarded", label: "Discarded", shortLabel: "Discarded" },
+];
+
+const ANALYSIS_FILTER_OPTIONS: Array<{
+  id: SigintAnalysisFilter;
+  label: string;
+  hint: string;
+}> = [
+  { id: "all", label: "All AI", hint: "Any state" },
+  { id: "voice", label: "Voice", hint: "Silero VAD positive" },
+  { id: "speech", label: "Speech", hint: "Broad class only" },
+  { id: "unknown", label: "Unclear", hint: "Inconclusive result" },
+  { id: "noise", label: "Noise", hint: "No clear voice" },
+  { id: "queued", label: "Queued", hint: "Waiting for AI" },
+  { id: "running", label: "Running", hint: "Analyzing now" },
+  { id: "failed", label: "Failed", hint: "Needs attention" },
+];
 
 type SigintModuleProps = {
   location: ResolvedAppLocation | null;
@@ -931,9 +959,16 @@ export function SigintModule({ location }: SigintModuleProps) {
         priority: reviewPriority,
         notes: reviewNotes,
       });
-      setCaptureDetail(nextDetail);
+      const nextSummary = nextDetail as SigintCaptureSummary;
+      const remainsVisible = matchesSigintCaptureFilters(nextSummary, filters);
+      setCaptureDetail(remainsVisible ? nextDetail : null);
       setCaptureItems((current) => {
-        const nextItems = current.map((item) => (item.id === nextDetail.id ? nextDetail : item));
+        const nextItems = remainsVisible
+          ? current.map((item) => (item.id === nextDetail.id ? nextSummary : item))
+          : current.filter((item) => item.id !== nextDetail.id);
+        if (!remainsVisible) {
+          setSelectedCaptureId(nextVisibleCaptureId(current, nextDetail.id));
+        }
         setCaptureCounts({
           total: nextItems.length,
           pending: nextItems.filter((item) => item.reviewStatus === "pending").length,
@@ -945,6 +980,7 @@ export function SigintModule({ location }: SigintModuleProps) {
         });
         return nextItems;
       });
+      void loadCaptures(true);
     } catch (error) {
       setCaptureDetailError(error instanceof Error ? error.message : "Could not update the review.");
     } finally {
@@ -1002,8 +1038,8 @@ export function SigintModule({ location }: SigintModuleProps) {
         </div>
 
         {tab === "captures" ? (
-          <div className="flex-1 overflow-y-auto">
-            <div className="grid grid-cols-2 border-b border-white/[0.07]">
+          <div className="flex min-h-0 flex-1 flex-col">
+            <div className="grid shrink-0 grid-cols-2 border-b border-white/[0.07]">
               <div className="border-r border-white/[0.07] px-4 py-2.5">
                 <p className="font-mono text-[9px] uppercase tracking-[0.18em] text-[var(--muted)]">Pending</p>
                 <p className="mt-1 font-mono text-xl font-semibold tabular-nums text-[var(--foreground)]">{captureCounts.pending}</p>
@@ -1014,88 +1050,120 @@ export function SigintModule({ location }: SigintModuleProps) {
               </div>
             </div>
 
-            <div className="space-y-2 px-4 py-3">
-              <input
-                className={CLS_INPUT}
-                placeholder="Search captures…"
-                type="search"
-                value={filters.q}
-                onChange={(event) => setFilters((current) => ({ ...current, q: event.target.value }))}
-              />
-
-              <select
-                className={CLS_INPUT}
-                value={filters.module}
-                onChange={(event) =>
-                  setFilters((current) => ({
-                    ...current,
-                    module: event.target.value as SigintCaptureListFilters["module"],
-                  }))
-                }
-              >
-                <option value="all">All modules</option>
-                <option value="pmr">PMR</option>
-                <option value="airband">Airband</option>
-                <option value="maritime">Maritime</option>
-              </select>
-
-              <select
-                className={CLS_INPUT}
-                value={filters.reviewStatus}
-                onChange={(event) =>
-                  setFilters((current) => ({
-                    ...current,
-                    reviewStatus: event.target.value as SigintCaptureListFilters["reviewStatus"],
-                  }))
-                }
-              >
-                <option value="all">All review states</option>
-                <option value="pending">Pending</option>
-                <option value="kept">Kept</option>
-                <option value="flagged">Flagged</option>
-                <option value="discarded">Discarded</option>
-              </select>
-
-              <select
-                className={CLS_INPUT}
-                value={filters.analysis}
-                onChange={(event) =>
-                  setFilters((current) => ({
-                    ...current,
-                    analysis: event.target.value as SigintAnalysisFilter,
-                  }))
-                }
-              >
-                <option value="all">All AI states</option>
-                <option value="speech">Speech</option>
-                <option value="noise">Noise</option>
-                <option value="unknown">Unknown</option>
-                <option value="queued">Queued</option>
-                <option value="running">Running</option>
-                <option value="failed">Failed</option>
-              </select>
-
-              <label className="flex cursor-pointer items-center gap-2.5 rounded border border-white/[0.07] bg-white/[0.03] px-3 py-2 text-xs text-[var(--muted-strong)] transition hover:bg-white/[0.05]">
+            <div className="min-h-0 flex-1 space-y-2.5 overflow-y-auto px-4 py-3">
+              <div className="relative">
+                <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 font-mono text-[11px] text-cyan-300/70">⌕</span>
                 <input
-                  checked={filters.hasAudio}
-                  type="checkbox"
-                  onChange={(event) =>
-                    setFilters((current) => ({ ...current, hasAudio: event.target.checked }))
-                  }
+                  className={cx(CLS_INPUT, "pl-8")}
+                  placeholder="Frequency, place or label…"
+                  type="search"
+                  value={filters.q}
+                  onChange={(event) => setFilters((current) => ({ ...current, q: event.target.value }))}
                 />
-                WAV only
-              </label>
+              </div>
 
-              <label className="flex cursor-pointer items-center gap-2.5 rounded border border-white/[0.07] bg-white/[0.03] px-3 py-2 text-xs text-[var(--muted-strong)] transition hover:bg-white/[0.05]">
-                <input
-                  checked={filters.hasRawIq}
-                  type="checkbox"
-                  onChange={(event) =>
-                    setFilters((current) => ({ ...current, hasRawIq: event.target.checked }))
-                  }
-                />
-                IQ only
-              </label>
+              <div>
+                <div className="mb-1.5 flex items-center justify-between">
+                  <p className="font-mono text-[8px] uppercase tracking-[0.18em] text-[var(--muted)]">Review queue</p>
+                  {filters.reviewStatus !== "all" ? (
+                    <button className="font-mono text-[8px] uppercase tracking-[0.12em] text-cyan-300 hover:text-cyan-100" onClick={() => setFilters((current) => ({ ...current, reviewStatus: "all" }))} type="button">Clear</button>
+                  ) : null}
+                </div>
+                <div className="grid grid-cols-2 gap-1.5">
+                  {REVIEW_FILTER_OPTIONS.map((option) => (
+                    <button
+                      key={option.id}
+                      aria-label={option.label}
+                      className={cx(
+                        "rounded-md border px-2.5 py-2 text-left transition",
+                        filters.reviewStatus === option.id
+                          ? option.id === "all"
+                            ? "border-cyan-300/30 bg-cyan-300/10 text-cyan-100"
+                            : statusTone(option.id)
+                          : "border-white/[0.07] bg-white/[0.025] text-[var(--muted-strong)] hover:border-white/15 hover:bg-white/[0.05]",
+                        option.id === "all" && "col-span-2",
+                      )}
+                      onClick={() => setFilters((current) => ({ ...current, reviewStatus: option.id }))}
+                      type="button"
+                    >
+                      <span className="font-mono text-[9px] uppercase tracking-[0.12em]">{option.shortLabel}</span>
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              <div>
+                <p className="mb-1.5 font-mono text-[8px] uppercase tracking-[0.18em] text-[var(--muted)]">Signal source</p>
+                <div className="grid grid-cols-4 gap-1">
+                  {[
+                    { id: "all", label: "All" },
+                    { id: "pmr", label: "PMR" },
+                    { id: "airband", label: "Air" },
+                    { id: "maritime", label: "Sea" },
+                  ].map((option) => (
+                    <button
+                      key={option.id}
+                      className={cx(
+                        "rounded border px-1.5 py-1.5 font-mono text-[8px] uppercase tracking-[0.12em] transition",
+                        filters.module === option.id
+                          ? "border-cyan-300/35 bg-cyan-300/10 text-cyan-100"
+                          : "border-white/[0.07] bg-white/[0.025] text-[var(--muted)] hover:bg-white/[0.05]",
+                      )}
+                      onClick={() => setFilters((current) => ({ ...current, module: option.id as SigintCaptureListFilters["module"] }))}
+                      type="button"
+                    >
+                      {option.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              <div>
+                <div className="mb-1.5">
+                  <p className="font-mono text-[8px] uppercase tracking-[0.18em] text-[var(--muted)]">AI evidence</p>
+                  <p className="mt-1 text-[9px] leading-3.5 text-[var(--muted)]">Voice uses VAD and also finds unclear or untranscribed speech.</p>
+                </div>
+                <div className="flex flex-wrap gap-1.5">
+                  {ANALYSIS_FILTER_OPTIONS.map((option) => (
+                    <button
+                      key={option.id}
+                      title={option.hint}
+                      className={cx(
+                        "rounded-full border px-2.5 py-1 font-mono text-[8px] uppercase tracking-[0.11em] transition",
+                        filters.analysis === option.id
+                          ? option.id === "voice" || option.id === "speech"
+                            ? "border-emerald-300/35 bg-emerald-300/12 text-emerald-100"
+                            : "border-cyan-300/35 bg-cyan-300/10 text-cyan-100"
+                          : "border-white/[0.08] bg-white/[0.025] text-[var(--muted)] hover:border-white/16 hover:text-[var(--muted-strong)]",
+                      )}
+                      onClick={() => setFilters((current) => ({ ...current, analysis: option.id }))}
+                      type="button"
+                    >
+                      {option.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              <div className="grid grid-cols-2 gap-1.5">
+                <label className="flex cursor-pointer items-center gap-2 rounded border border-white/[0.07] bg-white/[0.03] px-2.5 py-2 text-[10px] text-[var(--muted-strong)] transition hover:bg-white/[0.05]">
+                  <input
+                    checked={filters.hasAudio}
+                    type="checkbox"
+                    onChange={(event) => setFilters((current) => ({ ...current, hasAudio: event.target.checked }))}
+                  />
+                  WAV
+                </label>
+
+                <label className="flex cursor-pointer items-center gap-2 rounded border border-white/[0.07] bg-white/[0.03] px-2.5 py-2 text-[10px] text-[var(--muted-strong)] transition hover:bg-white/[0.05]">
+                  <input
+                    checked={filters.hasRawIq}
+                    type="checkbox"
+                    onChange={(event) => setFilters((current) => ({ ...current, hasRawIq: event.target.checked }))}
+                  />
+                  Raw IQ
+                </label>
+              </div>
             </div>
           </div>
         ) : (

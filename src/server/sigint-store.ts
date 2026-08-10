@@ -12,6 +12,7 @@ import type {
   SigintTrackKind,
   SigintTrackSummaryResponse,
 } from "@/lib/sigint";
+import { matchesSigintCaptureFilters } from "@/lib/sigint-filters";
 import { AUDIO_ANALYSIS_ENGINE } from "@/server/analysis-worker";
 import { appDb, sqliteDb } from "@/server/db/client";
 import {
@@ -361,28 +362,7 @@ function buildCaptureSearchText(item: SigintCaptureSummary): string {
 }
 
 function matchesCaptureFilters(item: SigintCaptureSummary, filters: SigintCaptureListFilters): boolean {
-  if (filters.module !== "all" && item.module !== filters.module) {
-    return false;
-  }
-  if (filters.reviewStatus !== "all" && item.reviewStatus !== filters.reviewStatus) {
-    return false;
-  }
-  if (filters.analysis !== "all") {
-    if (filters.analysis === "queued" || filters.analysis === "running" || filters.analysis === "failed") {
-      if (item.analysisSummary.status !== filters.analysis) {
-        return false;
-      }
-    } else if (
-      item.analysisSummary.status !== "completed"
-      || item.analysisSummary.classification !== filters.analysis
-    ) {
-      return false;
-    }
-  }
-  if (filters.hasAudio && !item.audioCapture) {
-    return false;
-  }
-  if (filters.hasRawIq && !item.rawIqCapture) {
+  if (!matchesSigintCaptureFilters(item, filters)) {
     return false;
   }
   if (filters.q) {

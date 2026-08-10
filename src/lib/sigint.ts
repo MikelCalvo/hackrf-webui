@@ -13,6 +13,7 @@ export type SigintTrackKind = "adsb" | "ais";
 export type SigintAnalysisStatus = "none" | "queued" | "running" | "completed" | "failed";
 export type SigintAnalysisFilter =
   | "all"
+  | "voice"
   | "speech"
   | "noise"
   | "unknown"
