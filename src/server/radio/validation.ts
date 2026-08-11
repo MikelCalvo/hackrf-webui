@@ -2,8 +2,10 @@ import type {
   CreateAdsbSessionRequest,
   CreateAisSessionRequest,
   CreateFmSessionRequest,
+  CreateMorseSessionRequest,
   CreateNarrowbandSessionRequest,
   CreateRadioSessionRequest,
+  MorseFrontEnd,
   NarrowbandScanMode,
   RadioSessionChannel,
   RadioSessionFmStation,
@@ -33,12 +35,13 @@ const MODULE_FREQUENCY_LIMITS = {
   pmr: { min: 150, max: 480, label: "PMR" },
   airband: { min: 118, max: 137, label: "airband" },
   maritime: { min: 156, max: 162.55, label: "maritime" },
+  morse: { min: 1, max: 6000, label: "HackRF One" },
 } as const;
 
 type NarrowbandModule = Extract<RadioSessionModule, "pmr" | "airband" | "maritime">;
 
 type ValidationContext = {
-  module?: Extract<RadioSessionModule, "fm" | NarrowbandModule>;
+  module?: Extract<RadioSessionModule, "fm" | NarrowbandModule | "morse">;
 };
 
 function ok<T>(value: T): ValidationResult<T> {
@@ -210,10 +213,18 @@ function validateChannel(
   if (!notes.ok) {
     return notes;
   }
+  const expectedIdentifier = validateOptionalString(value.expectedIdentifier, `channels[${index}].expectedIdentifier`, 32);
+  if (!expectedIdentifier.ok) return expectedIdentifier;
+  const catalogSource = validateOptionalString(value.catalogSource, `channels[${index}].catalogSource`, MAX_NOTES_LENGTH);
+  if (!catalogSource.ok) return catalogSource;
+  const catalogRecordId = validateOptionalString(value.catalogRecordId, `channels[${index}].catalogRecordId`, MAX_ID_LENGTH);
+  if (!catalogRecordId.ok) return catalogRecordId;
+  const catalogVersion = validateOptionalString(value.catalogVersion, `channels[${index}].catalogVersion`, 64);
+  if (!catalogVersion.ok) return catalogVersion;
 
   const freqMhz = module
     ? validateFrequency(value.freqMhz, module, `channels[${index}].freqMhz`)
-    : validateFiniteNumber(value.freqMhz, `channels[${index}].freqMhz`, 64, 600);
+    : validateFiniteNumber(value.freqMhz, `channels[${index}].freqMhz`, 1, 6000);
   if (!freqMhz.ok) {
     return freqMhz;
   }
@@ -225,6 +236,10 @@ function validateChannel(
     freqMhz: freqMhz.value,
     label: label.value,
     ...(notes.value ? { notes: notes.value } : {}),
+    ...(expectedIdentifier.value ? { expectedIdentifier: expectedIdentifier.value.toUpperCase() } : {}),
+    ...(catalogSource.value ? { catalogSource: catalogSource.value } : {}),
+    ...(catalogRecordId.value ? { catalogRecordId: catalogRecordId.value } : {}),
+    ...(catalogVersion.value ? { catalogVersion: catalogVersion.value } : {}),
   });
 }
 
@@ -361,6 +376,64 @@ function validateNarrowbandCreate(
   });
 }
 
+function validateMorseFrontEnd(value: unknown): ValidationResult<MorseFrontEnd> {
+  if (value !== "cw_carrier" && value !== "am_tone") {
+    return invalid("Invalid MORSE front-end. Expected cw_carrier or am_tone.");
+  }
+  return ok(value);
+}
+
+function validateMorseCreate(payload: Record<string, unknown>): ValidationResult<CreateMorseSessionRequest> {
+  const mode = payload.mode === "manual" || payload.mode === "scan" ? payload.mode : null;
+  if (!mode) {
+    return invalid("Invalid MORSE session mode.");
+  }
+
+  const controls = validateControls(payload.controls);
+  if (!controls.ok) return controls;
+  const bandId = validateString(payload.bandId, "bandId", { maxLength: MAX_ID_LENGTH });
+  if (!bandId.ok) return bandId;
+  const channels = validateChannels(payload.channels);
+  if (!channels.ok) return channels;
+  for (let index = 0; index < channels.value.length; index += 1) {
+    const frequency = validateFrequency(channels.value[index].freqMhz, "morse", `channels[${index}].freqMhz`);
+    if (!frequency.ok) return frequency;
+  }
+  const frontEnd = validateMorseFrontEnd(payload.frontEnd);
+  if (!frontEnd.ok) return frontEnd;
+  const scanMode = validateScanMode(payload.scanMode);
+  if (!scanMode.ok) return scanMode;
+  const manualChannelId = validateOptionalString(payload.manualChannelId, "manualChannelId", MAX_ID_LENGTH);
+  if (!manualChannelId.ok) return manualChannelId;
+  if (manualChannelId.value && !channels.value.some((channel) => channel.id === manualChannelId.value)) {
+    return invalid("manualChannelId must reference a channel in the deck.");
+  }
+  const squelch = validateFiniteNumber(payload.squelch, "squelch", 0, 1);
+  if (!squelch.ok) return squelch;
+  const dwellTime = validateInteger(payload.dwellTime, "dwellTime", 1, 60);
+  if (!dwellTime.ok) return dwellTime;
+  const holdTime = validateInteger(payload.holdTime, "holdTime", 0, SCANNER_POST_HIT_HOLD_MAX_SECONDS);
+  if (!holdTime.ok) return holdTime;
+  const location = validateLocation(payload.location);
+  if (!location.ok) return location;
+
+  return ok({
+    kind: "morse",
+    module: "morse",
+    mode,
+    frontEnd: frontEnd.value,
+    controls: controls.value,
+    bandId: bandId.value,
+    channels: channels.value,
+    ...(scanMode.value ? { scanMode: scanMode.value } : {}),
+    ...(manualChannelId.value !== undefined ? { manualChannelId: manualChannelId.value } : {}),
+    squelch: squelch.value,
+    dwellTime: dwellTime.value,
+    holdTime: holdTime.value,
+    ...(location.value !== undefined ? { location: location.value } : {}),
+  });
+}
+
 export function validateCreateRadioSessionRequest(value: unknown): ValidationResult<CreateRadioSessionRequest> {
   if (!isRecord(value)) {
     return invalid("Request payload must be an object.");
@@ -397,6 +470,10 @@ export function validateCreateRadioSessionRequest(value: unknown): ValidationRes
     }
   }
 
+  if (value.kind === "morse" && value.module === "morse") {
+    return validateMorseCreate(value);
+  }
+
   return invalid("Unsupported radio session kind.");
 }
 
@@ -408,7 +485,7 @@ export function validateUpdateRadioSessionRequest(
     return invalid("Request payload must be an object.");
   }
 
-  const patch: Partial<UpdateFmSessionRequest & UpdateNarrowbandSessionRequest> = {};
+  const patch: Partial<UpdateFmSessionRequest & UpdateNarrowbandSessionRequest & { frontEnd: MorseFrontEnd }> = {};
   const sessionModule = context.module;
 
   if (value.controls !== undefined) {
@@ -452,6 +529,17 @@ export function validateUpdateRadioSessionRequest(
       return channels;
     }
     patch.channels = channels.value;
+  }
+
+  if (value.frontEnd !== undefined) {
+    if (sessionModule && sessionModule !== "morse") {
+      return invalid("frontEnd can only be updated on MORSE sessions.");
+    }
+    const frontEnd = validateMorseFrontEnd(value.frontEnd);
+    if (!frontEnd.ok) {
+      return frontEnd;
+    }
+    patch.frontEnd = frontEnd.value;
   }
 
   if (value.scanMode !== undefined) {

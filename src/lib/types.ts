@@ -181,8 +181,8 @@ export type SpectrumFeedSnapshot = {
     | null;
 };
 
-export type AudioDemodMode = "am" | "nfm" | "wfm";
-export type AudioCaptureModule = "pmr" | "airband" | "maritime";
+export type AudioDemodMode = "am" | "nfm" | "wfm" | "cw";
+export type AudioCaptureModule = "pmr" | "airband" | "maritime" | "morse";
 export type AudioCaptureMode = "manual" | "scan";
 
 export type ActivityCaptureRequestMeta = {
@@ -257,6 +257,8 @@ export type StreamRequest = {
   vga: number;
   audioGain: number;
   activityCapture?: ActivityCaptureRequestMeta | null;
+  onMorsePcm?: ((samples: Float32Array, sampleRate: number) => void) | null;
+  onCapturePersisted?: ((captureSessionId: string) => void) | null;
 };
 
 export type CustomStationDraft = {

@@ -651,18 +651,18 @@ export function createCaptureBoundActivityEvent(
   };
 }
 
-export function persistCapturedActivity(input: CaptureFinalizeInput): void {
+export function persistCapturedActivity(input: CaptureFinalizeInput): string | null {
   const audioRelativePath = input.audioAbsolutePath ? captureRelativePath(input.audioAbsolutePath) : null;
   const iqRelativePath = input.iqAbsolutePath ? captureRelativePath(input.iqAbsolutePath) : null;
 
   if (!audioRelativePath && !iqRelativePath) {
-    return;
+    return null;
   }
 
   const persistedAudio = findPersistedCaptureByPath(audioRelativePath);
   const persistedIq = findPersistedCaptureByPath(iqRelativePath);
   if (persistedAudio && persistedIq) {
-    return;
+    return persistedAudio.captureSessionId;
   }
 
   const event = findCandidateActivityEvent(input) ?? createFallbackActivityEvent(input);
@@ -757,6 +757,7 @@ export function persistCapturedActivity(input: CaptureFinalizeInput): void {
   if (filesToInsert.some((file) => file.kind === "audio")) {
     queueCaptureAnalysisJob(sessionId, burst.id);
   }
+  return sessionId;
 }
 
 export function clearActivityEvents(module: ActivityEventModule): void {

@@ -9,6 +9,7 @@ export const APP_MODULES = [
   { id: "maritime", label: "Maritime", band: "156-162", path: "/maritime", live: true },
   { id: "adsb", label: "ADS-B", band: "1090 MHz", path: "/adsb", live: true },
   { id: "ais", label: "AIS", band: "162 MHz", path: "/ais", live: true },
+  { id: "morse", label: "MORSE", band: "CW", path: "/morse", live: true },
 ] as const;
 
 export type AppModuleId = Extract<(typeof APP_MODULES)[number], { live: true }>["id"];

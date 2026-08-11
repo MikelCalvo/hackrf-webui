@@ -249,6 +249,8 @@ function moduleTone(moduleId: SigintCaptureSummary["module"]): string {
       return "text-emerald-200";
     case "maritime":
       return "text-amber-200";
+    case "morse":
+      return "text-violet-200";
     default:
       return "text-[var(--muted-strong)]";
   }
@@ -318,6 +320,25 @@ function formatAnalysisPercent(value: number | null): string {
   return value === null ? "—" : `${Math.round(Math.max(0, Math.min(1, value)) * 100)}%`;
 }
 
+function formatOptionalHz(value: number | null): string {
+  return value === null ? "—" : `${value.toLocaleString("en", { maximumFractionDigits: 1 })} Hz`;
+}
+
+function formatMorseFrontEnd(value: NonNullable<SigintCaptureDetail["morseSummary"]>["frontEnd"]): string {
+  if (value === "am_tone") return "AM identification tone";
+  if (value === "cw_carrier") return "CW carrier";
+  if (value === "audio_tone") return "Audio tone";
+  return "—";
+}
+
+function formatMorseTunedFrequency(value: number | null): string {
+  return value === null ? "—" : `${(value / 1_000_000).toFixed(value < 200_000_000 ? 3 : 5)} MHz`;
+}
+
+function identifierMatchLabel(value: boolean | null): string {
+  return value === true ? "Match" : value === false ? "Mismatch" : "Not assessed";
+}
+
 function buildAnalysisHeadline(summary: SigintCaptureDetail["analysisSummary"]): string {
   if (summary.isCurrentEngine === false) {
     return "Legacy AI result detected";
@@ -376,6 +397,8 @@ function compactModuleLabel(moduleId: SigintCaptureSummary["module"]): string {
       return "AIR";
     case "maritime":
       return "SEA";
+    case "morse":
+      return "CW";
   }
 }
 
@@ -1321,7 +1344,31 @@ export function SigintModule({ location }: SigintModuleProps) {
   }
 
   return (
-    <div className="relative flex min-w-0 flex-1 overflow-hidden">
+    <div className="relative flex min-w-0 flex-1 flex-col overflow-hidden">
+      {tab === "captures" ? (
+        <div className="relative z-40 shrink-0 border-b border-cyan-300/15 bg-[rgba(4,9,17,0.98)] px-3 py-2.5 sm:px-5" data-testid="sigint-global-search">
+          <span className="pointer-events-none absolute left-6 top-1/2 -translate-y-1/2 font-mono text-sm text-cyan-300/75 sm:left-8">⌕</span>
+          <input
+            aria-label="Search all SIGINT evidence text"
+            className={cx(CLS_INPUT, "h-10 w-full pl-9 pr-10 font-mono text-[12px]")}
+            placeholder="Search transcripts, decoded MORSE, raw symbols, identifiers, labels or places…"
+            type="search"
+            value={filters.q}
+            onChange={(event) => setFilters((current) => ({ ...current, q: event.target.value }))}
+          />
+          {filters.q ? (
+            <button
+              aria-label="Clear SIGINT evidence search"
+              className="absolute right-6 top-1/2 -translate-y-1/2 font-mono text-sm text-[var(--muted)] transition hover:text-white sm:right-8"
+              onClick={() => setFilters((current) => ({ ...current, q: "" }))}
+              type="button"
+            >
+              ×
+            </button>
+          ) : null}
+        </div>
+      ) : null}
+      <div className="relative flex min-h-0 min-w-0 flex-1 overflow-hidden">
       {narrowLayout ? (
         <div className="absolute inset-x-0 top-0 z-30 flex items-center gap-2 border-b border-white/[0.07] bg-[rgba(5,11,19,0.97)] px-3 py-2">
           <button aria-label="Open filters" className={CLS_BTN_GHOST} onClick={() => setLayout((current) => ({ ...current, filtersCollapsed: false }))} type="button">
@@ -1407,18 +1454,6 @@ export function SigintModule({ location }: SigintModuleProps) {
             </div>
 
             <div className="min-h-0 flex-1 space-y-2.5 overflow-y-auto px-4 py-3">
-              <div className="relative">
-                <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 font-mono text-[11px] text-cyan-300/70">⌕</span>
-                <input
-                  aria-label="Search SIGINT captures"
-                  className={cx(CLS_INPUT, "pl-8")}
-                  placeholder="Frequency, place or label…"
-                  type="search"
-                  value={filters.q}
-                  onChange={(event) => setFilters((current) => ({ ...current, q: event.target.value }))}
-                />
-              </div>
-
               <div>
                 <div className="mb-2 flex items-center justify-between">
                   <p className="font-mono text-[10px] uppercase tracking-[0.16em] text-[var(--muted)]">Filters</p>
@@ -1704,7 +1739,11 @@ export function SigintModule({ location }: SigintModuleProps) {
                             IQ
                           </span>
                         ) : null}
-                        {item.analysisSummary.status !== "none" ? (
+                        {item.morseSummary ? (
+                          <span className="rounded border border-violet-300/25 bg-violet-300/10 px-1.5 py-0.5 font-mono text-[9px] uppercase tracking-[0.14em] text-violet-100">
+                            MORSE · {formatAnalysisPercent(item.morseSummary.confidence)}
+                          </span>
+                        ) : item.analysisSummary.status !== "none" ? (
                           <span className={cx("rounded border px-1.5 py-0.5 font-mono text-[9px] uppercase tracking-[0.14em]", analysisSummaryTone(item.analysisSummary))}>
                             {isAnalysisBusy(item.analysisSummary) ? <>{analysisLabel(item.analysisSummary)}</> : `AI · ${analysisLabel(item.analysisSummary)}`}
                           </span>
@@ -1715,6 +1754,16 @@ export function SigintModule({ location }: SigintModuleProps) {
                           </span>
                         ) : null}
                       </div>
+                      {item.transcriptPreview ? (
+                        <div className="rounded border border-white/[0.06] bg-black/15 px-2.5 py-2">
+                          <p className="font-mono text-[8px] uppercase tracking-[0.16em] text-[var(--muted)]">
+                            {item.transcriptPreview.language === "morse" ? "Decoded MORSE" : "Transcript"}
+                          </p>
+                          <p className="mt-1 line-clamp-2 font-mono text-[11px] leading-5 text-[var(--foreground)]">
+                            {item.transcriptPreview.text}
+                          </p>
+                        </div>
+                      ) : null}
                     </button>
                   );
                 })
@@ -1948,8 +1997,93 @@ export function SigintModule({ location }: SigintModuleProps) {
 
                 <div className="border-b border-white/[0.07]">
                   <div className="border-b border-white/[0.05] px-5 py-2.5">
-                    <p className="font-mono text-[9px] uppercase tracking-[0.22em] text-[var(--muted)]">AI summary</p>
+                    <p className="font-mono text-[9px] uppercase tracking-[0.22em] text-[var(--muted)]">
+                      {captureDetail.morseSummary ? "MORSE decode" : "AI summary"}
+                    </p>
                   </div>
+                  {captureDetail.morseSummary ? (
+                    <div>
+                      <div className="space-y-3 px-5 py-4">
+                        <div className="flex flex-wrap items-center gap-2">
+                          <span className="rounded border border-violet-300/30 bg-violet-300/10 px-2 py-1 font-mono text-[9px] uppercase tracking-[0.16em] text-violet-100">
+                            {captureDetail.morseSummary.status}
+                          </span>
+                          <span className="rounded border border-cyan-300/25 bg-cyan-300/10 px-2 py-1 font-mono text-[9px] uppercase tracking-[0.16em] text-cyan-100">
+                            Confidence · {formatAnalysisPercent(captureDetail.morseSummary.confidence)}
+                          </span>
+                          <span className={cx(
+                            "rounded border px-2 py-1 font-mono text-[9px] uppercase tracking-[0.16em]",
+                            captureDetail.morseSummary.identifierMatch === true
+                              ? "border-emerald-300/25 bg-emerald-300/10 text-emerald-100"
+                              : captureDetail.morseSummary.identifierMatch === false
+                                ? "border-rose-300/25 bg-rose-300/10 text-rose-100"
+                                : "border-white/10 bg-white/[0.04] text-[var(--muted-strong)]",
+                          )}>
+                            Identifier · {identifierMatchLabel(captureDetail.morseSummary.identifierMatch)}
+                          </span>
+                        </div>
+                        <div className="rounded border border-violet-300/20 bg-violet-300/[0.06] p-3">
+                          <p className="font-mono text-[9px] uppercase tracking-[0.18em] text-violet-100">Decoded text</p>
+                          <p className="mt-2 break-words font-mono text-lg font-semibold tracking-[0.08em] text-[var(--foreground)]">
+                            {captureDetail.morseSummary.decodedText || "No decoded text"}
+                          </p>
+                        </div>
+                        <div className="rounded border border-white/10 bg-black/20 p-3">
+                          <p className="font-mono text-[9px] uppercase tracking-[0.18em] text-[var(--muted)]">Raw MORSE</p>
+                          <p className="mt-2 break-words font-mono text-sm leading-6 text-cyan-100">
+                            {captureDetail.morseSummary.rawMorse || "No keyed symbols recovered"}
+                          </p>
+                        </div>
+                        <p className="text-xs leading-5 text-[var(--muted-strong)]">
+                          Review against the original WAV and IQ evidence. Decoder output is an analytical aid and does not replace the preserved capture.
+                        </p>
+                      </div>
+                      <div className="divide-y divide-white/[0.05]">
+                        {([
+                          ["Engine", captureDetail.morseSummary.engine],
+                          ["Front end", formatMorseFrontEnd(captureDetail.morseSummary.frontEnd)],
+                          ["Expected identifier", captureDetail.morseSummary.expectedIdentifier ?? "—"],
+                          ["Identifier result", identifierMatchLabel(captureDetail.morseSummary.identifierMatch)],
+                          ["WPM", captureDetail.morseSummary.wordsPerMinute === null ? "—" : captureDetail.morseSummary.wordsPerMinute.toFixed(1)],
+                          ["Dot length", captureDetail.morseSummary.dotMs === null ? "—" : `${captureDetail.morseSummary.dotMs.toFixed(1)} ms`],
+                          ["Tone", formatOptionalHz(captureDetail.morseSummary.toneHz)],
+                          ["Frequency offset", formatOptionalHz(captureDetail.morseSummary.frequencyOffsetHz)],
+                          ["Tuned frequency", formatMorseTunedFrequency(captureDetail.morseSummary.tunedFrequencyHz)],
+                          ["Detected frequency", formatMorseTunedFrequency(captureDetail.morseSummary.detectedFrequencyHz)],
+                          ["SNR", captureDetail.morseSummary.snrDb === null ? "—" : `${captureDetail.morseSummary.snrDb.toFixed(1)} dB`],
+                          ["Noise floor", captureDetail.morseSummary.noiseFloorDb === null ? "—" : `${captureDetail.morseSummary.noiseFloorDb.toFixed(1)} dB`],
+                          ["Unresolved", String(captureDetail.morseSummary.unresolvedCount)],
+                          ["Updated", formatTimestamp(captureDetail.morseSummary.updatedAt)],
+                        ] as [string, string][]).reduce<[string, string][][]>((acc, item, i) => {
+                          if (i % 2 === 0) acc.push([item]);
+                          else acc[acc.length - 1].push(item);
+                          return acc;
+                        }, []).map((row) => (
+                          <div key={row[0][0]} className="grid grid-cols-2 divide-x divide-white/[0.05]">
+                            {row.map(([label, value]) => (
+                              <div key={label} className="px-4 py-2.5">
+                                <p className="font-mono text-[9px] uppercase tracking-[0.16em] text-[var(--muted)]">{label}</p>
+                                <p className="mt-0.5 break-words font-mono text-[11px] text-[var(--foreground)]">{value}</p>
+                              </div>
+                            ))}
+                          </div>
+                        ))}
+                      </div>
+                      <div className="border-t border-white/[0.05] px-5 py-3">
+                        <p className="font-mono text-[9px] uppercase tracking-[0.18em] text-[var(--muted)]">Catalog provenance</p>
+                        {captureDetail.morseSummary.catalog ? (
+                          <p className="mt-1 break-words font-mono text-[11px] leading-5 text-[var(--foreground)]">
+                            {captureDetail.morseSummary.catalog.source}
+                            {captureDetail.morseSummary.catalog.recordId ? ` · ${captureDetail.morseSummary.catalog.recordId}` : ""}
+                            {captureDetail.morseSummary.catalog.version ? ` · ${captureDetail.morseSummary.catalog.version}` : ""}
+                          </p>
+                        ) : (
+                          <p className="mt-1 text-xs text-[var(--muted)]">No catalog record was bound to this observation.</p>
+                        )}
+                      </div>
+                    </div>
+                  ) : (
+                  <>
                   <div className="space-y-3 px-5 py-3">
                     <div className="flex flex-wrap items-center gap-2">
                       <span className={cx("rounded border px-2 py-1 font-mono text-[9px] uppercase tracking-[0.16em]", analysisSummaryTone(captureDetail.analysisSummary))}>
@@ -2040,6 +2174,8 @@ export function SigintModule({ location }: SigintModuleProps) {
                       </div>
                     </div>
                   ) : null}
+                  </>
+                  )}
                 </div>
 
                 {/* Analyst notes */}
@@ -2263,6 +2399,7 @@ export function SigintModule({ location }: SigintModuleProps) {
         ) : null}
       </aside>
       ) : null}
+      </div>
     </div>
   );
 }

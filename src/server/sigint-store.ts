@@ -6,9 +6,11 @@ import type {
   SigintCaptureListFilters,
   SigintCaptureListResponse,
   SigintCaptureSummary,
+  SigintMorseSummary,
   SigintReviewPriority,
   SigintReviewStatus,
   SigintReviewUpdateInput,
+  SigintTranscriptPreview,
   SigintTrackKind,
   SigintTrackSummaryResponse,
 } from "@/lib/sigint";
@@ -63,6 +65,77 @@ function booleanOrNull(value: unknown): boolean | null {
   return typeof value === "boolean" ? value : null;
 }
 
+function integerOrZero(value: unknown): number {
+  return typeof value === "number" && Number.isInteger(value) && value >= 0 ? value : 0;
+}
+
+function nestedRecord(record: JsonRecord | null, key: string): JsonRecord | null {
+  const value = record?.[key];
+  return value && typeof value === "object" && !Array.isArray(value) ? value as JsonRecord : null;
+}
+
+function parseTranscriptPreview(row: typeof captureTranscripts.$inferSelect | null): SigintTranscriptPreview | null {
+  if (!row) return null;
+  const segments = parseJsonRecord(row.segmentsJson);
+  return {
+    engine: row.engine,
+    language: row.language,
+    text: row.text,
+    rawMorse: stringOrNull(segments?.rawMorse),
+    confidence: numberOrNull(segments?.confidence),
+  };
+}
+
+function parseMorseSummary(
+  jobs: Array<typeof analysisJobs.$inferSelect>,
+  findingsByJobId: Map<string, Array<typeof analysisFindings.$inferSelect>>,
+): SigintMorseSummary | null {
+  const candidates = jobs.flatMap((job) =>
+    (findingsByJobId.get(job.id) ?? [])
+      .filter((finding) => finding.kind === "morse_decode")
+      .map((finding) => ({ job, finding })),
+  ).sort((left, right) => right.job.createdAtMs - left.job.createdAtMs);
+  const active = candidates[0];
+  if (!active) return null;
+
+  const data = parseJsonRecord(active.finding.dataJson);
+  const frequency = nestedRecord(data, "frequency");
+  const timing = nestedRecord(data, "timing");
+  const signal = nestedRecord(data, "signal");
+  const confidence = nestedRecord(data, "confidence");
+  const identifier = nestedRecord(data, "identifier");
+  const catalogData = nestedRecord(data, "catalog");
+  const frontEnd = stringOrNull(data?.frontEnd);
+
+  return {
+    engine: active.job.engine,
+    status: active.job.status,
+    decodedText: stringOrNull(data?.decodedText) ?? "",
+    rawMorse: typeof data?.rawMorse === "string" ? data.rawMorse : "",
+    confidence: active.finding.score ?? numberOrNull(confidence?.overall),
+    unresolvedCount: integerOrZero(confidence?.unresolvedCount),
+    frontEnd: frontEnd === "cw_carrier" || frontEnd === "am_tone" || frontEnd === "audio_tone"
+      ? frontEnd
+      : null,
+    toneHz: numberOrNull(data?.toneHz),
+    wordsPerMinute: numberOrNull(timing?.wordsPerMinute),
+    dotMs: numberOrNull(timing?.dotMs),
+    snrDb: numberOrNull(signal?.snrDb),
+    noiseFloorDb: numberOrNull(signal?.noiseFloorDb),
+    tunedFrequencyHz: numberOrNull(frequency?.tunedHz),
+    detectedFrequencyHz: numberOrNull(frequency?.detectedHz),
+    frequencyOffsetHz: numberOrNull(frequency?.offsetHz),
+    expectedIdentifier: stringOrNull(identifier?.expected),
+    identifierMatch: booleanOrNull(identifier?.match),
+    catalog: catalogData ? {
+      source: stringOrNull(catalogData.source) ?? "unknown",
+      recordId: stringOrNull(catalogData.recordId),
+      version: stringOrNull(catalogData.version),
+    } : null,
+    updatedAt: toIso(active.job.endedAtMs ?? active.job.startedAtMs ?? active.job.createdAtMs),
+  };
+}
+
 function normalizeReviewStatus(value: string | null | undefined): SigintReviewStatus {
   return value === "kept" || value === "discarded" || value === "flagged" ? value : "pending";
 }
@@ -110,11 +183,14 @@ function parseAnalysisSummary(
   jobs: Array<typeof analysisJobs.$inferSelect>,
   findingsByJobId: Map<string, Array<typeof analysisFindings.$inferSelect>>,
 ): SigintAnalysisSummary {
-  if (jobs.length === 0) {
+  const audioJobs = jobs.filter((row) =>
+    row.engine === AUDIO_ANALYSIS_ENGINE || row.engine === "yamnet-litert" || row.engine === "yamnet-vad",
+  );
+  if (audioJobs.length === 0) {
     return emptyAnalysisSummary();
   }
 
-  const latestJob = [...jobs].sort((left, right) => right.createdAtMs - left.createdAtMs)[0];
+  const latestJob = [...audioJobs].sort((left, right) => right.createdAtMs - left.createdAtMs)[0];
   const summary: SigintAnalysisSummary = {
     ...emptyAnalysisSummary(),
     status: "none",
@@ -122,7 +198,7 @@ function parseAnalysisSummary(
     isCurrentEngine: null,
   };
 
-  const preferredJob = [...jobs]
+  const preferredJob = [...audioJobs]
     .filter((row) => row.engine === AUDIO_ANALYSIS_ENGINE)
     .sort((left, right) => right.createdAtMs - left.createdAtMs)[0];
   const activeJob = preferredJob ?? latestJob;
@@ -261,6 +337,8 @@ function buildCaptureSummary(
     transcriptCount: number;
     analysisJobCount: number;
     analysisSummary: SigintAnalysisSummary;
+    transcriptPreview: SigintTranscriptPreview | null;
+    morseSummary: SigintMorseSummary | null;
   },
 ): SigintCaptureSummary {
   const sessionMetadata = parseJsonRecord(session.metadataJson);
@@ -340,6 +418,8 @@ function buildCaptureSummary(
     transcriptCount: options.transcriptCount,
     analysisJobCount: options.analysisJobCount,
     analysisSummary: options.analysisSummary,
+    transcriptPreview: options.transcriptPreview,
+    morseSummary: options.morseSummary,
   };
 }
 
@@ -355,6 +435,15 @@ function buildCaptureSearchText(item: SigintCaptureSummary): string {
     item.deviceLabel,
     item.deviceSerial,
     item.freqMhz === null ? null : item.freqMhz.toFixed(5),
+    item.transcriptPreview?.text,
+    item.transcriptPreview?.rawMorse,
+    item.transcriptPreview?.engine,
+    item.morseSummary?.decodedText,
+    item.morseSummary?.rawMorse,
+    item.morseSummary?.expectedIdentifier,
+    item.morseSummary?.catalog?.source,
+    item.morseSummary?.catalog?.recordId,
+    item.morseSummary?.catalog?.version,
   ]
     .filter(Boolean)
     .join(" ")
@@ -385,8 +474,10 @@ function loadCaptureContext(
   rawIqBySessionId: Map<string, typeof captureFiles.$inferSelect>;
   tagCountBySessionId: Map<string, number>;
   transcriptCountBySessionId: Map<string, number>;
+  transcriptPreviewBySessionId: Map<string, SigintTranscriptPreview>;
   analysisJobCountBySessionId: Map<string, number>;
   analysisSummaryBySessionId: Map<string, SigintAnalysisSummary>;
+  morseSummaryBySessionId: Map<string, SigintMorseSummary>;
 } {
   if (sessions.length === 0) {
     return {
@@ -397,8 +488,10 @@ function loadCaptureContext(
       rawIqBySessionId: new Map(),
       tagCountBySessionId: new Map(),
       transcriptCountBySessionId: new Map(),
+      transcriptPreviewBySessionId: new Map(),
       analysisJobCountBySessionId: new Map(),
       analysisSummaryBySessionId: new Map(),
+      morseSummaryBySessionId: new Map(),
     };
   }
 
@@ -469,11 +562,16 @@ function loadCaptureContext(
   }
 
   const transcriptCountBySessionId = new Map<string, number>();
+  const transcriptPreviewBySessionId = new Map<string, SigintTranscriptPreview>();
   for (const transcript of transcripts) {
     transcriptCountBySessionId.set(
       transcript.captureSessionId,
       (transcriptCountBySessionId.get(transcript.captureSessionId) ?? 0) + 1,
     );
+    if (!transcriptPreviewBySessionId.has(transcript.captureSessionId)) {
+      const preview = parseTranscriptPreview(transcript);
+      if (preview) transcriptPreviewBySessionId.set(transcript.captureSessionId, preview);
+    }
   }
 
   const analysisJobCountBySessionId = new Map<string, number>();
@@ -496,8 +594,11 @@ function loadCaptureContext(
   }
 
   const analysisSummaryBySessionId = new Map<string, SigintAnalysisSummary>();
+  const morseSummaryBySessionId = new Map<string, SigintMorseSummary>();
   for (const [sessionId, sessionJobs] of jobsBySessionId) {
     analysisSummaryBySessionId.set(sessionId, parseAnalysisSummary(sessionJobs, findingsByJobId));
+    const morseSummary = parseMorseSummary(sessionJobs, findingsByJobId);
+    if (morseSummary) morseSummaryBySessionId.set(sessionId, morseSummary);
   }
 
   return {
@@ -508,8 +609,10 @@ function loadCaptureContext(
     rawIqBySessionId,
     tagCountBySessionId,
     transcriptCountBySessionId,
+    transcriptPreviewBySessionId,
     analysisJobCountBySessionId,
     analysisSummaryBySessionId,
+    morseSummaryBySessionId,
   };
 }
 
@@ -536,6 +639,8 @@ export function listSigintCaptureSummaries(
         transcriptCount: context.transcriptCountBySessionId.get(session.id) ?? 0,
         analysisJobCount: context.analysisJobCountBySessionId.get(session.id) ?? 0,
         analysisSummary: context.analysisSummaryBySessionId.get(session.id) ?? emptyAnalysisSummary(),
+        transcriptPreview: context.transcriptPreviewBySessionId.get(session.id) ?? null,
+        morseSummary: context.morseSummaryBySessionId.get(session.id) ?? null,
       }),
     )
     .filter((item) => matchesCaptureFilters(item, filters))
@@ -579,6 +684,8 @@ export function getSigintCaptureDetail(captureSessionId: string): SigintCaptureD
     transcriptCount: context.transcriptCountBySessionId.get(session.id) ?? 0,
     analysisJobCount: context.analysisJobCountBySessionId.get(session.id) ?? 0,
     analysisSummary: context.analysisSummaryBySessionId.get(session.id) ?? emptyAnalysisSummary(),
+    transcriptPreview: context.transcriptPreviewBySessionId.get(session.id) ?? null,
+    morseSummary: context.morseSummaryBySessionId.get(session.id) ?? null,
   });
 
   const tags = appDb
@@ -601,13 +708,19 @@ export function getSigintCaptureDetail(captureSessionId: string): SigintCaptureD
     .where(eq(captureTranscripts.captureSessionId, session.id))
     .orderBy(desc(captureTranscripts.createdAtMs))
     .all()
-    .map((row) => ({
-      id: row.id,
-      engine: row.engine,
-      language: row.language,
-      text: row.text,
-      createdAt: new Date(row.createdAtMs).toISOString(),
-    }));
+    .map((row) => {
+      const segments = parseJsonRecord(row.segmentsJson);
+      return {
+        id: row.id,
+        engine: row.engine,
+        language: row.language,
+        text: row.text,
+        rawMorse: stringOrNull(segments?.rawMorse),
+        confidence: numberOrNull(segments?.confidence),
+        unresolvedCount: numberOrNull(segments?.unresolvedCount),
+        createdAt: new Date(row.createdAtMs).toISOString(),
+      };
+    });
 
   const jobs = appDb
     .select()

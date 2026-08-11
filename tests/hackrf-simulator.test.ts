@@ -46,6 +46,27 @@ test("simulated telemetry and spectrum are bounded and tune-aware", () => {
   assert.ok(spectrum.peakIndex >= 0 && spectrum.peakIndex < spectrum.bins.length);
 });
 
+test("simulator emits deterministic MORSE PCM sidecar frames when requested", async () => {
+  const frames: Float32Array[] = [];
+  const abortController = new AbortController();
+  const simulated = createSimulatedAudioStream({
+    signal: abortController.signal,
+    chunkIntervalMs: 5,
+    mode: "cw",
+    onMorsePcm: (samples, sampleRate) => {
+      assert.equal(sampleRate, 10_000);
+      frames.push(samples);
+    },
+  });
+
+  const reader = simulated.stream.getReader();
+  for (let index = 0; index < 220; index += 1) await reader.read();
+  abortController.abort();
+  await reader.cancel();
+  assert.ok(frames.length >= 4);
+  assert.ok(frames.some((frame) => frame.some((sample) => Math.abs(sample) > 0.1)));
+});
+
 test("createSimulatedAudioStream yields cancellable audio bytes", async () => {
   const abortController = new AbortController();
   let closed = false;

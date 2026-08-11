@@ -14,7 +14,7 @@ import { authorizeApiRequest } from "@/server/api/auth";
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
-const VALID_MODULES = new Set<ActivityEventModule>(["pmr", "airband", "maritime"]);
+const VALID_MODULES = new Set<ActivityEventModule>(["pmr", "airband", "maritime", "morse"]);
 
 function parseModule(value: string | null): ActivityEventModule | null {
   if (!value) {

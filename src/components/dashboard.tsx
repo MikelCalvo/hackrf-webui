@@ -139,6 +139,14 @@ const SigintModule = dynamic(
   },
 );
 
+const MorseModule = dynamic(
+  () => import("@/components/morse").then((mod) => mod.MorseModule),
+  {
+    ssr: false,
+    loading: () => <ModulePanelLoading label="MORSE" />,
+  },
+);
+
 function formatCount(value: number): string {
   return numberFormatter.format(value);
 }
@@ -633,6 +641,17 @@ function ModuleIcon({ id }: { id: string }) {
         <path d="M8 12V14.5" />
         <path d="M1.5 8H4" />
         <path d="M12 8H14.5" />
+      </svg>
+    );
+  }
+  if (id === "morse") {
+    return (
+      <svg aria-hidden="true" className="h-4 w-4" fill="none" stroke="currentColor" strokeLinecap="round" strokeWidth="1.6" viewBox="0 0 16 16">
+        <circle cx="3" cy="8" fill="currentColor" r="1.2" stroke="none" />
+        <circle cx="7" cy="8" fill="currentColor" r="1.2" stroke="none" />
+        <path d="M10.5 8h3" />
+        <path d="M10.5 5.5h3" opacity=".55" />
+        <path d="M10.5 10.5h3" opacity=".55" />
       </svg>
     );
   }
@@ -1895,6 +1914,10 @@ export function Dashboard({
 
         {activeModule === "sigint" ? (
           <SigintModule location={resolvedLocation} />
+        ) : null}
+
+        {activeModule === "morse" ? (
+          <MorseModule location={resolvedLocation} />
         ) : null}
 
         {activeModule === "pmr" ? (

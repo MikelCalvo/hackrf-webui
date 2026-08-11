@@ -54,6 +54,8 @@ function capture(overrides: Partial<SigintCaptureSummary> = {}): SigintCaptureSu
     tagCount: 0,
     transcriptCount: 0,
     analysisJobCount: 1,
+    transcriptPreview: null,
+    morseSummary: null,
     analysisSummary: {
       status: "completed",
       engine: "sigint-audio-v2",

@@ -1,7 +1,8 @@
 import { spawn, spawnSync } from "node:child_process";
-import { existsSync } from "node:fs";
+import { createReadStream, existsSync, mkdtempSync, rmSync } from "node:fs";
 import { Readable } from "node:stream";
 import path from "node:path";
+import os from "node:os";
 
 import type {
   ActivityCaptureRequestMeta,
@@ -97,6 +98,7 @@ type StreamCaptureContext = {
     vga: number;
     audioGain: number;
   };
+  onCapturePersisted: StreamRequest["onCapturePersisted"];
   pendingSegment: PendingActivityCapture | null;
 };
 
@@ -114,6 +116,8 @@ type NativeActiveStream = ActiveStreamBase & {
   source: "native";
   hackrf: ReturnType<typeof spawn>;
   ffmpeg: ReturnType<typeof spawn>;
+  morsePcmDir: string | null;
+  morsePcmReader: ReturnType<typeof createReadStream> | null;
 };
 
 type SimulatedActiveStream = ActiveStreamBase & {
@@ -126,6 +130,8 @@ type ActiveStream = NativeActiveStream | SimulatedActiveStream;
 
 function audioRateForMode(mode: AudioDemodMode): string {
   switch (mode) {
+    case "cw":
+      return "10000";
     case "am":
     case "nfm":
     case "wfm":
@@ -524,6 +530,10 @@ class HackRFService {
     return this.startStreamInternal(request, "am", signal);
   }
 
+  startCwStream(request: StreamRequest, signal: AbortSignal): Promise<ReadableStream<Uint8Array>> {
+    return this.startStreamInternal(request, "cw", signal);
+  }
+
   /**
    * Retune the active audio stream to a new frequency without restarting any process.
    * Returns true if the command was sent, false if there is no compatible active stream.
@@ -638,6 +648,8 @@ class HackRFService {
 
     const sessionId = `stream-${Date.now()}`;
     const captureContext = this.buildCaptureContext(sessionId, request, mode);
+    const morsePcmDir = request.onMorsePcm ? mkdtempSync(path.join(os.tmpdir(), "hackrf-morse-")) : null;
+    const morsePcmPath = morsePcmDir ? path.join(morsePcmDir, "demod.pcm") : null;
     const session: StreamSessionSnapshot = {
       id: sessionId,
       label: request.label,
@@ -661,6 +673,8 @@ class HackRFService {
         String(request.freqHz),
         "-m",
         mode,
+        "-a",
+        audioRateForMode(mode),
         "-l",
         String(request.lna),
         "-g",
@@ -670,6 +684,7 @@ class HackRFService {
         "-R",
         String(TELEMETRY_REPORT_INTERVAL_MS),
         ...(captureContext ? ["-P", captureContext.capturePrefix] : []),
+        ...(morsePcmPath ? ["-X", morsePcmPath] : []),
       ],
       { stdio: ["pipe", "pipe", "pipe"] },
     );
@@ -709,12 +724,39 @@ class HackRFService {
       spectrum: null,
       hackrf,
       ffmpeg,
+      morsePcmDir,
+      morsePcmReader: null,
       retuneTimer: null,
       retuneDescriptorRollback: null,
       pendingRetuneDescriptor: null,
       captureContext,
     };
     this.activeStream = activeStream;
+
+    if (morsePcmPath && request.onMorsePcm) {
+      const consumePcm = () => {
+        if (!existsSync(morsePcmPath) || this.activeStream?.session.id !== sessionId) {
+          if (this.activeStream?.session.id === sessionId) setTimeout(consumePcm, 10);
+          return;
+        }
+        const reader = createReadStream(morsePcmPath);
+        activeStream.morsePcmReader = reader;
+        let carry: Uint8Array = new Uint8Array(0);
+        reader.on("data", (chunk) => {
+          if (typeof chunk === "string") return;
+          const data = carry.length > 0 ? Buffer.concat([carry, chunk]) : Buffer.from(chunk);
+          const bytes = data.length - (data.length % 2);
+          carry = bytes < data.length ? data.subarray(bytes) : Buffer.alloc(0);
+          if (bytes === 0) return;
+          const samples = new Float32Array(bytes / 2);
+          for (let index = 0; index < samples.length; index += 1) {
+            samples[index] = data.readInt16LE(index * 2) / 32768;
+          }
+          request.onMorsePcm?.(samples, Number(audioRateForMode(mode)));
+        });
+      };
+      consumePcm();
+    }
 
     const finalize = () => {
       if (this.activeStream?.session.id !== sessionId) return;
@@ -727,6 +769,8 @@ class HackRFService {
       try { ffmpeg.stdin?.end(); } catch { /* already gone */ }
       this.killProcess(hackrf);
       this.killProcess(ffmpeg);
+      activeStream.morsePcmReader?.destroy();
+      if (activeStream.morsePcmDir) rmSync(activeStream.morsePcmDir, { recursive: true, force: true });
       this.activeStream = null;
       hackrfDeviceService.release("audio");
       invalidateHackrfIdentityCache();
@@ -809,6 +853,8 @@ class HackRFService {
 
     const simulatedAudio = createSimulatedAudioStream({
       signal,
+      mode,
+      onMorsePcm: request.onMorsePcm,
       onClose: cleanup,
     });
 
@@ -966,6 +1012,7 @@ class HackRFService {
         vga: request.vga,
         audioGain: request.audioGain,
       },
+      onCapturePersisted: request.onCapturePersisted,
       pendingSegment: null,
     };
   }
@@ -1146,7 +1193,7 @@ class HackRFService {
       return;
     }
 
-    persistCapturedActivity({
+    const captureSessionId = persistCapturedActivity({
       module: pending.descriptor.module,
       mode: pending.descriptor.mode,
       activityEventId: pending.descriptor.activityEventId,
@@ -1221,6 +1268,9 @@ class HackRFService {
         },
       },
     });
+    if (captureSessionId && pending.descriptor.module === "morse") {
+      this.activeStream?.captureContext?.onCapturePersisted?.(captureSessionId);
+    }
   }
 
   private stopAndWait(): Promise<void> {
@@ -1242,8 +1292,9 @@ class HackRFService {
       return Promise.resolve();
     }
 
-    const { hackrf, ffmpeg, retuneTimer, captureContext } = this.activeStream;
-    const sessionId = this.activeStream.session.id;
+    const activeNative = this.activeStream;
+    const { hackrf, ffmpeg, retuneTimer, captureContext } = activeNative;
+    const sessionId = activeNative.session.id;
 
     if (retuneTimer) {
       clearTimeout(retuneTimer);
@@ -1269,6 +1320,8 @@ class HackRFService {
       clearTimeout(captureContext.pendingSegment.finalizeTimer);
       captureContext.pendingSegment.finalizeTimer = null;
     }
+    activeNative.morsePcmReader?.destroy();
+    if (activeNative.morsePcmDir) rmSync(activeNative.morsePcmDir, { recursive: true, force: true });
     this.killProcess(hackrf);
     this.killProcess(ffmpeg);
 

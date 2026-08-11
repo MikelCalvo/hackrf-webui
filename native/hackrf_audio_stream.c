@@ -22,11 +22,15 @@
 
 #define SPECTRUM_WINDOW_SIZE 128
 #define SPECTRUM_FLOOR_DB 72.0
+/* CW keeps a 500 Hz complex RF passband and synthesizes a 700 Hz sidetone. */
+#define CW_BFO_HZ 700.0
+#define CW_CARRIER_THRESHOLD 4.0
 
 typedef enum {
     DEMOD_AM = 0,
     DEMOD_NFM = 1,
     DEMOD_WFM = 2,
+    DEMOD_CW = 3,
 } demod_mode_t;
 
 typedef struct {
@@ -75,6 +79,8 @@ typedef struct {
     char* record_iq_path;
     FILE* record_iq_fp;
     uint64_t recorded_iq_bytes;
+    char* morse_pcm_path;
+    FILE* morse_pcm_fp;
     char* record_activity_prefix;
     double record_activity_threshold;
     double record_activity_release_threshold;
@@ -119,6 +125,9 @@ typedef struct {
     double deemph_y;
     double deemph_alpha;
     double agc_level;
+    double cw_envelope;
+    double cw_phase;
+    double cw_step;
     uint64_t emitted_audio_samples;
 } stream_state_t;
 
@@ -133,7 +142,7 @@ static void on_signal(int signum)
 static void usage(const char* argv0)
 {
     fprintf(stderr,
-        "Usage: %s -f <freq_hz> [-m am|nfm|wfm] [-l lna] [-g vga] [-G gain] [-r sample_rate] [-a audio_rate] [-t seconds] [-R report_ms] [-o wav_path] [-q iq_path] [-P activity_prefix] [-Q]\n",
+        "Usage: %s -f <freq_hz> [-m am|nfm|wfm|cw] [-l lna] [-g vga] [-G gain] [-r sample_rate] [-a audio_rate] [-t seconds] [-R report_ms] [-o wav_path] [-q iq_path] [-P activity_prefix] [-X morse_pcm_path] [-Q]\n",
         argv0);
 }
 
@@ -146,6 +155,8 @@ static const char* mode_name(demod_mode_t mode)
         return "nfm";
     case DEMOD_WFM:
         return "wfm";
+    case DEMOD_CW:
+        return "cw";
     }
     return "unknown";
 }
@@ -159,6 +170,8 @@ static double default_activity_threshold(demod_mode_t mode)
         return 0.004;
     case DEMOD_WFM:
         return 0.020;
+    case DEMOD_CW:
+        return 0.006;
     }
     return 0.010;
 }
@@ -175,6 +188,7 @@ static uint32_t default_activity_open_windows(demod_mode_t mode)
         return 3U;
     case DEMOD_AM:
     case DEMOD_NFM:
+    case DEMOD_CW:
     default:
         return 2U;
     }
@@ -192,6 +206,10 @@ static int parse_mode(const char* text, demod_mode_t* out_mode)
     }
     if (strcasecmp(text, "wfm") == 0) {
         *out_mode = DEMOD_WFM;
+        return 0;
+    }
+    if (strcasecmp(text, "cw") == 0) {
+        *out_mode = DEMOD_CW;
         return 0;
     }
     return -1;
@@ -880,6 +898,10 @@ static int emit_audio_sample(stream_state_t* state, double sample)
         }
         state->recorded_audio_samples++;
     }
+    /* Raw demodulated PCM sidecar for deterministic MORSE timing/decoder evidence. */
+    if (state->morse_pcm_fp && write_pcm16le(state->morse_pcm_fp, pcm) != 0) {
+        return -1;
+    }
 
     state->emitted_audio_samples++;
     if (state->finite_duration && state->emitted_audio_samples >= state->duration_samples) {
@@ -893,6 +915,23 @@ static void process_demod_audio(stream_state_t* state, double value)
 {
     double audio_sample = 0.0;
     if (process_real_fir_decimator(&state->audio_decimator, value, &audio_sample)) {
+        if (state->mode == DEMOD_CW) {
+            double target = audio_sample > CW_CARRIER_THRESHOLD
+                ? audio_sample - CW_CARRIER_THRESHOLD
+                : 0.0;
+            double envelope_alpha = target > state->cw_envelope ? 0.08 : 0.004;
+
+            /* Smooth carrier power into keyed tone amplitude; no carrier means silence. */
+            state->cw_envelope += envelope_alpha * (target - state->cw_envelope);
+            if (state->cw_envelope < 1e-3) {
+                state->cw_envelope = 0.0;
+            }
+            audio_sample = state->cw_envelope * cos(state->cw_phase);
+            state->cw_phase += state->cw_step;
+            if (state->cw_phase >= 2.0 * M_PI) {
+                state->cw_phase -= 2.0 * M_PI;
+            }
+        }
         if (emit_audio_sample(state, audio_sample) != 0) {
             state->stop_requested = true;
         }
@@ -948,6 +987,13 @@ static void process_iq_sample(stream_state_t* state, int8_t raw_i, int8_t raw_q)
     }
 
     if (state->mode == DEMOD_AM) {
+        demod = hypot(filtered_i, filtered_q);
+        process_demod_audio(state, demod);
+        return;
+    }
+
+    if (state->mode == DEMOD_CW) {
+        /* Coherent RF energy keys the BFO; unlike AM this is not envelope audio. */
         demod = hypot(filtered_i, filtered_q);
         process_demod_audio(state, demod);
         return;
@@ -1011,6 +1057,12 @@ static int rx_callback(hackrf_transfer* transfer)
 static void cleanup_state(stream_state_t* state)
 {
     close_activity_recordings(state, true);
+    if (state->morse_pcm_fp) {
+        fclose(state->morse_pcm_fp);
+        state->morse_pcm_fp = NULL;
+    }
+    free(state->morse_pcm_path);
+    state->morse_pcm_path = NULL;
     free(state->record_activity_prefix);
     state->record_activity_prefix = NULL;
     free_complex_fir_decimator(&state->spectrum_decimator);
@@ -1059,6 +1111,18 @@ static int configure_mode(stream_state_t* state)
         state->spectrum_cutoff_hz = 110000;
         rf_taps = 129;
         spectrum_taps = 97;
+        break;
+    case DEMOD_CW:
+        /* 500 Hz complex passband rejects adjacent CW before a 700 Hz BFO. */
+        state->rf_rate = 100000;
+        state->tune_offset_hz = 25000;
+        state->rf_cutoff_hz = 500;
+        state->audio_cutoff_hz = 2000;
+        state->spectrum_rate = 250000;
+        state->spectrum_cutoff_hz = 110000;
+        rf_taps = 129;
+        spectrum_taps = 97;
+        state->cw_step = 2.0 * M_PI * CW_BFO_HZ / (double) state->audio_rate;
         break;
     case DEMOD_AM:
     default:
@@ -1184,7 +1248,7 @@ int main(int argc, char** argv)
     state.audio_gain = 1.0;
     state.agc_level = 1.0;
 
-    while ((opt = getopt(argc, argv, "f:m:l:g:G:r:a:t:R:o:q:P:Qh")) != -1) {
+    while ((opt = getopt(argc, argv, "f:m:l:g:G:r:a:t:R:o:q:P:X:Qh")) != -1) {
         switch (opt) {
         case 'f':
             if (parse_u64(optarg, &state.freq_hz) != 0) {
@@ -1266,6 +1330,14 @@ int main(int argc, char** argv)
                 return 1;
             }
             break;
+        case 'X':
+            free(state.morse_pcm_path);
+            state.morse_pcm_path = strdup(optarg);
+            if (!state.morse_pcm_path || !*state.morse_pcm_path) {
+                fprintf(stderr, "Invalid MORSE PCM sidecar path: %s\n", optarg);
+                return 1;
+            }
+            break;
         case 'Q':
             state.mute_audio = true;
             break;
@@ -1298,6 +1370,17 @@ int main(int argc, char** argv)
         if (state.report_interval_samples == 0) {
             state.report_interval_samples = 1;
         }
+    }
+
+    if (state.morse_pcm_path) {
+        state.morse_pcm_fp = fopen(state.morse_pcm_path, "wb");
+        if (!state.morse_pcm_fp) {
+            fprintf(stderr, "Failed to open MORSE PCM sidecar %s: %s\n", state.morse_pcm_path, strerror(errno));
+            cleanup_state(&state);
+            return 1;
+        }
+        setvbuf(state.morse_pcm_fp, NULL, _IONBF, 0);
+        fprintf(stderr, "MORSE_PCM path=%s rate=%u\n", state.morse_pcm_path, state.audio_rate);
     }
 
     signal(SIGINT, on_signal);

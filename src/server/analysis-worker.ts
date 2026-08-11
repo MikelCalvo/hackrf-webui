@@ -500,12 +500,28 @@ export function ensureAnalysisWorkerStarted(): void {
   scheduleWorker(500);
 }
 
+function captureSupportsAudioAnalysis(captureSessionId: string): boolean {
+  const capture = appDb
+    .select({ module: captureSessions.module })
+    .from(captureSessions)
+    .where(eq(captureSessions.id, captureSessionId))
+    .limit(1)
+    .get();
+  return Boolean(capture && ["pmr", "airband", "maritime"].includes(capture.module));
+}
+
 export function queueCaptureAnalysisJob(captureSessionId: string, burstEventId: string | null = null): void {
+  if (!captureSupportsAudioAnalysis(captureSessionId)) {
+    return;
+  }
   queueQueuedJob(captureSessionId, burstEventId);
   ensureAnalysisWorkerStarted();
 }
 
 export function ensureCaptureAnalysisUpToDate(captureSessionId: string): void {
+  if (!captureSupportsAudioAnalysis(captureSessionId)) {
+    return;
+  }
   if (captureHasPreferredAnalysisJob(captureSessionId)) {
     ensureAnalysisWorkerStarted();
     return;

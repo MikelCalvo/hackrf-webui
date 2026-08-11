@@ -1,0 +1,127 @@
+import type { MorseCatalogEntry, MorseSourceProvenance } from "@/lib/morse-catalog";
+
+/**
+ * Intentionally small starter catalog, not a statement of complete coverage.
+ * Frequencies are exact integer Hz; legal status describes the cited source,
+ * not permission to transmit.
+ */
+const IARU_R1: MorseSourceProvenance = {
+  authority: "International Amateur Radio Union Region 1",
+  url: "https://www.iaru-r1.org/wp-content/uploads/2024/10/2024-IARU-R1-Bandplan.pdf",
+  publishedOrEffectiveDate: "2024-10-01",
+  verifiedDate: "2026-08-11",
+  format: "PDF",
+  classification: "voluntary",
+};
+
+const NCDXF_IBP: MorseSourceProvenance = {
+  authority: "Northern California DX Foundation / International Beacon Project",
+  url: "https://www.ncdxf.org/beacon/",
+  publishedOrEffectiveDate: "2024-01-01",
+  verifiedDate: "2026-08-11",
+  format: "HTML",
+  classification: "voluntary",
+};
+
+const ENAIRE_ENR_41: MorseSourceProvenance = {
+  authority: "ENAIRE Aeronautical Information Service",
+  url: "https://aip.enaire.es/AIP/contenido_AIP/ENR/ENR_4_1_en.pdf",
+  publishedOrEffectiveDate: "2026-08-07",
+  verifiedDate: "2026-08-11",
+  format: "AIP",
+  classification: "legal",
+};
+
+export const INITIAL_MORSE_CATALOG: MorseCatalogEntry[] = [
+  {
+    id: "iaru-r1-80m-cw",
+    kind: "amateur-cw-segment",
+    sourceClass: "amateur-band-plan",
+    name: "IARU Region 1 80 m CW (3.500–3.560 MHz)",
+    frontEnd: "cw_carrier",
+    applicability: "iaru-region",
+    frequencyHz: null,
+    frequencyRangeHz: { minHz: 3_500_000, maxHz: 3_560_000 },
+    iaruRegions: ["1"],
+    countryCodes: [],
+    provenance: IARU_R1,
+  },
+  {
+    id: "iaru-r1-40m-cw",
+    kind: "amateur-cw-segment",
+    sourceClass: "amateur-band-plan",
+    name: "IARU Region 1 40 m CW (7.000–7.040 MHz)",
+    frontEnd: "cw_carrier",
+    applicability: "iaru-region",
+    frequencyHz: null,
+    frequencyRangeHz: { minHz: 7_000_000, maxHz: 7_040_000 },
+    iaruRegions: ["1"],
+    countryCodes: [],
+    provenance: IARU_R1,
+  },
+  {
+    id: "iaru-r1-20m-cw-centre",
+    kind: "amateur-cw-segment",
+    sourceClass: "amateur-band-plan",
+    name: "IARU Region 1 20 m CW centre of activity (14.055 MHz)",
+    frontEnd: "cw_carrier",
+    applicability: "iaru-region",
+    frequencyHz: 14_055_000,
+    iaruRegions: ["1"],
+    countryCodes: [],
+    provenance: IARU_R1,
+  },
+  {
+    id: "iaru-r1-30m-cw-centre",
+    kind: "amateur-cw-segment",
+    sourceClass: "amateur-band-plan",
+    name: "IARU Region 1 30 m CW centre of activity (10.116 MHz)",
+    frontEnd: "cw_carrier",
+    applicability: "iaru-region",
+    frequencyHz: 10_116_000,
+    iaruRegions: ["1"],
+    countryCodes: [],
+    provenance: IARU_R1,
+  },
+  ...[14_100_000, 18_110_000, 21_150_000, 24_930_000, 28_200_000].map((frequencyHz) => ({
+    id: `ncdxf-ibp-${frequencyHz}`,
+    kind: "beacon" as const,
+    sourceClass: "beacon" as const,
+    name: `NCDXF/IARU International Beacon Project ${(frequencyHz / 1_000_000).toFixed(3)} MHz`,
+    frontEnd: "cw_carrier" as const,
+    applicability: "global" as const,
+    frequencyHz,
+    iaruRegions: [],
+    countryCodes: [],
+    schedule: "18-beacon network; each beacon transmits every three minutes in 10-second slots on all five frequencies.",
+    provenance: NCDXF_IBP,
+  })),
+  {
+    id: "enaire-bcn-vor",
+    kind: "navigation-aid",
+    sourceClass: "aeronautical-information",
+    name: "BCN Barcelona DVOR/DME (116.70 MHz)",
+    identifier: "BCN",
+    frontEnd: "am_tone",
+    applicability: "countries",
+    frequencyHz: 116_700_000,
+    iaruRegions: ["1"],
+    countryCodes: ["ES"],
+    location: { latitude: 41.307139, longitude: 2.107806 },
+    provenance: ENAIRE_ENR_41,
+  },
+  {
+    id: "enaire-svl-vor",
+    kind: "navigation-aid",
+    sourceClass: "aeronautical-information",
+    name: "SVL Sevilla DVOR/DME (113.70 MHz)",
+    identifier: "SVL",
+    frontEnd: "am_tone",
+    applicability: "countries",
+    frequencyHz: 113_700_000,
+    iaruRegions: ["1"],
+    countryCodes: ["ES"],
+    location: { latitude: 37.427611, longitude: -5.762222 },
+    provenance: ENAIRE_ENR_41,
+  },
+];

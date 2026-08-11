@@ -27,7 +27,7 @@ test("interactive radio controls expose accessible names", async () => {
   const source = files.join("\n");
 
   for (const label of [
-    "Search SIGINT captures",
+    "Search all SIGINT evidence text",
     "Search loaded stations",
     "FM region",
     "FM country",

@@ -10,6 +10,7 @@ import { AisSession } from "@/server/radio/ais-session";
 import { RadioEventBus } from "@/server/radio/event-bus";
 import { FmSession } from "@/server/radio/fm-session";
 import { NarrowbandSession } from "@/server/radio/narrowband-session";
+import { MorseSession } from "@/server/radio/morse-session";
 import { RadioScheduler } from "@/server/radio/scheduler";
 import { RadioSessionStore } from "@/server/radio/session-store";
 
@@ -46,11 +47,13 @@ class RadioSupervisor {
         ? new FmSession(request, this.store, this.events)
         : request.kind === "narrowband"
         ? new NarrowbandSession(request, this.store, this.events)
-        : request.kind === "ais"
-          ? new AisSession(this.store, this.events)
-          : request.kind === "adsb"
-            ? new AdsbSession(this.store, this.events)
-            : null;
+        : request.kind === "morse"
+          ? new MorseSession(request, this.store, this.events)
+          : request.kind === "ais"
+            ? new AisSession(this.store, this.events)
+            : request.kind === "adsb"
+              ? new AdsbSession(this.store, this.events)
+              : null;
     if (!session) {
       throw new Error("Unsupported radio session kind.");
     }

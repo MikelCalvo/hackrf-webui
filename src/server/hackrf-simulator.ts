@@ -24,6 +24,8 @@ export type SimulatedAudioStreamOptions = {
   signal?: AbortSignal;
   chunkIntervalMs?: number;
   onClose?: () => void;
+  mode?: AudioDemodMode;
+  onMorsePcm?: ((samples: Float32Array, sampleRate: number) => void) | null;
 };
 
 export function isHackrfSimulatorEnabled(env: HackrfSimulatorEnv = process.env): boolean {
@@ -75,7 +77,7 @@ export function createSimulatedSpectrumFrame(
   mode: AudioDemodMode,
   now = Date.now(),
 ): SpectrumFrame {
-  const spanHz = mode === "wfm" ? 2_400_000 : mode === "am" ? 600_000 : 200_000;
+  const spanHz = mode === "wfm" ? 2_400_000 : mode === "am" ? 600_000 : mode === "cw" ? 25_000 : 200_000;
   const seed = (Math.abs(Math.round(freqHz / 1000)) % 251) / 251;
   const sweep = (Math.sin(now / 850 + seed * Math.PI * 2) + 1) / 2;
   const peakIndex = Math.max(0, Math.min(SPECTRUM_BINS - 1, Math.round((0.4 + sweep * 0.2) * (SPECTRUM_BINS - 1))));
@@ -98,6 +100,8 @@ export function createSimulatedSpectrumFrame(
 
 export function createSimulatedAudioStream(options: SimulatedAudioStreamOptions = {}): SimulatedAudioStream {
   const chunkIntervalMs = Math.max(5, Math.min(1000, options.chunkIntervalMs ?? 100));
+  const morseSampleRate = 10_000;
+  let morseOffset = 0;
   let controller: ReadableStreamDefaultController<Uint8Array> | null = null;
   let timer: ReturnType<typeof setInterval> | null = null;
   let closed = false;
@@ -126,6 +130,35 @@ export function createSimulatedAudioStream(options: SimulatedAudioStreamOptions 
     }
     try {
       controller.enqueue(SILENT_MP3_CHUNK.slice());
+      if (options.onMorsePcm) {
+        const sampleCount = Math.max(1, Math.round((morseSampleRate * chunkIntervalMs) / 1000));
+        const samples = new Float32Array(sampleCount);
+        const unitSamples = Math.round(morseSampleRate * 0.08);
+        // Leading/trailing quiet time gives each deterministic SOS burst a clean reset.
+        const pattern = [
+          [0, 10],
+          [1, 1], [0, 1], [1, 1], [0, 1], [1, 1], [0, 3],
+          [1, 3], [0, 1], [1, 3], [0, 1], [1, 3], [0, 3],
+          [1, 1], [0, 1], [1, 1], [0, 1], [1, 1], [0, 14],
+        ] as const;
+        const cycleSamples = pattern.reduce((total, [, units]) => total + units * unitSamples, 0);
+        for (let index = 0; index < sampleCount; index += 1) {
+          const absoluteSample = morseOffset + index;
+          let position = absoluteSample % cycleSamples;
+          let keyed = false;
+          for (const [state, units] of pattern) {
+            const length = units * unitSamples;
+            if (position < length) {
+              keyed = state === 1;
+              break;
+            }
+            position -= length;
+          }
+          if (keyed) samples[index] = 0.7 * Math.sin((2 * Math.PI * 700 * absoluteSample) / morseSampleRate);
+        }
+        morseOffset += sampleCount;
+        options.onMorsePcm(samples, morseSampleRate);
+      }
     } catch {
       close();
     }

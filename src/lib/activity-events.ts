@@ -1,7 +1,7 @@
 import { apiFetch } from "@/lib/api-client";
 import type { AudioDemodMode, ResolvedAppLocation } from "@/lib/types";
 
-export type ActivityEventModule = "pmr" | "airband" | "maritime";
+export type ActivityEventModule = "pmr" | "airband" | "maritime" | "morse";
 export type ActivityEventMode = "manual" | "scan";
 export const ACTIVITY_EVENTS_DEFAULT_LIMIT = 100;
 

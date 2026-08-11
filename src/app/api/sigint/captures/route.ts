@@ -7,7 +7,7 @@ import { warmAnalysisBackfill } from "@/server/analysis-worker";
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
-const VALID_MODULES = new Set(["pmr", "airband", "maritime"]);
+const VALID_MODULES = new Set(["pmr", "airband", "maritime", "morse"]);
 const VALID_REVIEW_STATUS = new Set<SigintReviewStatus>(["pending", "kept", "discarded", "flagged"]);
 const VALID_ANALYSIS_FILTERS = new Set<SigintAnalysisFilter>([
   "all",

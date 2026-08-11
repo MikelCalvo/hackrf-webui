@@ -59,6 +59,40 @@ export type SigintCaptureFile = {
   url: string;
 };
 
+export type SigintTranscriptPreview = {
+  engine: string;
+  language: string | null;
+  text: string;
+  rawMorse: string | null;
+  confidence: number | null;
+};
+
+export type SigintMorseSummary = {
+  engine: string;
+  status: string;
+  decodedText: string;
+  rawMorse: string;
+  confidence: number | null;
+  unresolvedCount: number;
+  frontEnd: "cw_carrier" | "am_tone" | "audio_tone" | null;
+  toneHz: number | null;
+  wordsPerMinute: number | null;
+  dotMs: number | null;
+  snrDb: number | null;
+  noiseFloorDb: number | null;
+  tunedFrequencyHz: number | null;
+  detectedFrequencyHz: number | null;
+  frequencyOffsetHz: number | null;
+  expectedIdentifier: string | null;
+  identifierMatch: boolean | null;
+  catalog: {
+    source: string;
+    recordId: string | null;
+    version: string | null;
+  } | null;
+  updatedAt: string | null;
+};
+
 export type SigintCaptureSummary = {
   id: string;
   activityEventId: string | null;
@@ -99,6 +133,8 @@ export type SigintCaptureSummary = {
   transcriptCount: number;
   analysisJobCount: number;
   analysisSummary: SigintAnalysisSummary;
+  transcriptPreview: SigintTranscriptPreview | null;
+  morseSummary: SigintMorseSummary | null;
 };
 
 export type SigintCaptureDetail = SigintCaptureSummary & {
@@ -116,6 +152,9 @@ export type SigintCaptureDetail = SigintCaptureSummary & {
     engine: string;
     language: string | null;
     text: string;
+    rawMorse: string | null;
+    confidence: number | null;
+    unresolvedCount: number | null;
     createdAt: string;
   }>;
   analysisJobs: Array<{

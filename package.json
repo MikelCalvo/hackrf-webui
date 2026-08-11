@@ -9,6 +9,7 @@
   },
   "scripts": {
     "catalog:build": "npm --prefix ./scripts/catalog run build",
+    "morse:catalog:build": "node ./scripts/build-morse-catalog.mjs",
     "clean": "node -e \"require('fs').rmSync('.next', { recursive: true, force: true })\"",
     "db:migrate": "node ./scripts/db/migrate.mjs",
     "dev": "next dev --webpack",

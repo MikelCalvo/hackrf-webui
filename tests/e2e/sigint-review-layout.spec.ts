@@ -59,6 +59,8 @@ const captureSummary = {
   rawIqCapture: null,
   audioCapture: null,
   analysisJobCount: 0,
+  transcriptPreview: null,
+  morseSummary: null,
   analysisSummary: {
     status: "none",
     engine: null,

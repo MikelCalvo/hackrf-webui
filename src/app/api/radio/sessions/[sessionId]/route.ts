@@ -77,7 +77,7 @@ export async function PATCH(
   }
 
   const sessionModule = existing.module;
-  if (sessionModule !== "fm" && sessionModule !== "pmr" && sessionModule !== "airband" && sessionModule !== "maritime") {
+  if (sessionModule !== "fm" && sessionModule !== "pmr" && sessionModule !== "airband" && sessionModule !== "maritime" && sessionModule !== "morse") {
     return jsonMessage("Radio session does not support updates.", 409);
   }
 
