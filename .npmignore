@@ -24,6 +24,7 @@ yarn-error.log*
 /data/captures/
 /assets/ai/
 /runtime/ai-venv/
+/runtime/ai-models/
 /runtime/python/
 /runtime/tools/
 /runtime/uv-cache/

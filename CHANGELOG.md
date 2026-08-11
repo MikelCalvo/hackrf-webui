@@ -4,6 +4,19 @@ All notable changes to `hackrf-webui` are tracked here.
 
 ## Unreleased
 
+## 1.1.0 - 2026-08-11
+
+- Replaced the previous YAMNet/WebRTC audio-analysis pipeline with local SIGINT Audio v2: Silero VAD v6 detects bounded radio-voice regions and `Systran/faster-whisper-base` transcribes only those regions, with pinned model assets and revisions, benchmark tooling and the original WAV retained as the source of truth.
+- Expanded the SIGINT review workspace with reusable saved views, richer filters and counts, active-filter chips, queue-aware review progression, persisted resizable panels, note autosave and race-safe review updates.
+- Added persistent AIS and ADS-B contact views with search, live/history scope, operational filters and sorting, plus clearer runtime diagnostics and tracking summaries.
+- Made AIS and ADS-B reception explicitly operator-controlled: opening either workspace no longer starts a decoder or claims the HackRF until `START SCANNING` is selected.
+- Improved narrow-screen SIGINT usability with filter and evidence drawers instead of clipped fixed-width panels.
+- Added byte-range streaming for stored WAV captures, including `Content-Length`, `Accept-Ranges`, `206 Partial Content` and `416 Range Not Satisfiable`, restoring reliable duration and seeking for recordings.
+- Added accessible names and state semantics to SIGINT search, FM catalog filters and AIRBAND/MARITIME manual tuning and scan-mode controls.
+- Hardened local browser hardware controls, API origin handling, runtime setup diagnostics, HackRF detection and GCC 16 ADS-B builds.
+- Added focused unit and Playwright coverage for the AI pipeline, review workflows, filters, responsive layout, explicit decoder startup, accessible controls and WAV range responses.
+- Kept downloaded faster-whisper model weights out of release package contents while preserving the small pinned Silero VAD asset required by the application.
+
 ## 1.0.2 - 2026-08-10
 
 - Updated the application and catalog dependency sets, including Next.js 16.3, React 19.2.8, Playwright 1.62, Tailwind CSS 4.3 and better-sqlite3 13.
