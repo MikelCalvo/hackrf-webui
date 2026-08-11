@@ -189,3 +189,45 @@ test("SIGINT review decisions float over the recording queue without a submit bu
   await reviewBar.getByLabel("Review decision: discarded").click();
   expect((await discardedRequest).postDataJSON()).toMatchObject({ status: "discarded", priority: "normal" });
 });
+
+test("SIGINT uses drawers instead of clipping the queue on narrow screens", async ({ page }) => {
+  await page.addInitScript((location) => {
+    window.localStorage.setItem("hackrf-webui.location.v2", JSON.stringify(location));
+    window.localStorage.removeItem("hackrf-webui.sigint-layout.v1");
+  }, configuredLocation);
+  await page.route("**/api/sigint/captures?**", async (route) => {
+    await route.fulfill({
+      json: {
+        items: [{ captureSessionId: captureSummary.id, ...captureSummary }],
+        counts: { total: 1, pending: 1, kept: 0, discarded: 0, flagged: 0, withAudio: 0, withRawIq: 0 },
+      },
+    });
+  });
+  await page.route("**/api/sigint/captures/review-layout-capture", async (route) => {
+    await route.fulfill({ json: { ...captureSummary, metadata: null, location: null, tags: [], transcripts: [], analysisJobs: [] } });
+  });
+
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto("/sigint");
+
+  const queue = page.getByTestId("sigint-capture-queue");
+  await expect(queue).toBeVisible();
+  const queueBox = await queue.boundingBox();
+  expect(queueBox).not.toBeNull();
+  expect(queueBox!.x).toBeLessThan(120);
+  expect(queueBox!.width).toBeGreaterThan(240);
+  await expect(page.getByTestId("sigint-filter-panel")).toBeHidden();
+  await expect(page.getByTestId("sigint-evidence-detail")).toBeHidden();
+
+  await page.getByLabel("Open filters").click();
+  await expect(page.getByTestId("sigint-filter-panel")).toBeVisible();
+  await page.getByLabel("Close filters").click();
+  await expect(page.getByTestId("sigint-filter-panel")).toBeHidden();
+
+  await page.getByLabel("Open evidence detail").click();
+  await expect(page.getByTestId("sigint-evidence-detail")).toBeVisible();
+  const detailBox = await page.getByTestId("sigint-evidence-detail").boundingBox();
+  expect(detailBox).not.toBeNull();
+  expect(detailBox!.x).toBeGreaterThanOrEqual(0);
+  expect(detailBox!.x + detailBox!.width).toBeLessThanOrEqual(390);
+});

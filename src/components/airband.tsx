@@ -795,6 +795,7 @@ export function AirbandModule({
           </div>
           <div className="space-y-2 px-4 py-3">
             <input
+              aria-label="Airband manual frequency"
               className={CLS_INPUT}
               inputMode="decimal"
               onChange={(event) => setConfig((current) => ({ ...current, manualFreqMhz: event.target.value }))}
@@ -802,12 +803,14 @@ export function AirbandModule({
               value={config.manualFreqMhz}
             />
             <input
+              aria-label="Airband preset label"
               className={CLS_INPUT}
               onChange={(event) => setConfig((current) => ({ ...current, manualLabel: event.target.value }))}
               placeholder="Label"
               value={config.manualLabel}
             />
             <textarea
+              aria-label="Airband preset notes"
               className={cx(CLS_INPUT, "min-h-16 resize-none")}
               onChange={(event) => setConfig((current) => ({ ...current, manualNotes: event.target.value }))}
               placeholder="Notes..."
@@ -1155,6 +1158,8 @@ export function AirbandModule({
             <p className="mb-2 font-mono text-[11px] uppercase tracking-[0.18em] text-[var(--muted-strong)]">Mode</p>
             <div className="flex gap-2">
               <button
+                aria-label="Airband sequential scan mode"
+                aria-pressed={config.scanMode === "sequential"}
                 className={cx(
                   "flex flex-1 items-center justify-center rounded border py-1.5 transition",
                   config.scanMode === "sequential"
@@ -1170,6 +1175,8 @@ export function AirbandModule({
                 </svg>
               </button>
               <button
+                aria-label="Airband random scan mode"
+                aria-pressed={config.scanMode === "random"}
                 className={cx(
                   "flex flex-1 items-center justify-center rounded border py-1.5 transition",
                   config.scanMode === "random"

@@ -1,10 +1,10 @@
-import { createReadStream, existsSync } from "node:fs";
+import { existsSync } from "node:fs";
 import path from "node:path";
-import { Readable } from "node:stream";
 
 import { eq } from "drizzle-orm";
 
 import { appDb } from "@/server/db/client";
+import { buildCaptureFileStreamResponse } from "@/server/capture-file-response";
 import { captureFiles } from "@/server/db/schema";
 import { captureAbsolutePath } from "@/server/storage";
 
@@ -23,7 +23,7 @@ function contentTypeForFile(format: string): string {
 }
 
 export async function GET(
-  _request: Request,
+  request: Request,
   context: { params: Promise<{ fileId: string }> },
 ): Promise<Response> {
   const { fileId } = await context.params;
@@ -49,13 +49,10 @@ export async function GET(
   }
 
   const fileName = path.basename(absolutePath);
-  return new Response(Readable.toWeb(createReadStream(absolutePath)) as ReadableStream<Uint8Array>, {
-    headers: {
-      "Cache-Control": "no-store",
-      "Content-Type": contentTypeForFile(file.format),
-      "Content-Disposition": file.kind === "audio"
-        ? `inline; filename="${fileName}"`
-        : `attachment; filename="${fileName}"`,
-    },
+  return buildCaptureFileStreamResponse(request, absolutePath, {
+    contentType: contentTypeForFile(file.format),
+    disposition: file.kind === "audio"
+      ? `inline; filename="${fileName}"`
+      : `attachment; filename="${fileName}"`,
   });
 }

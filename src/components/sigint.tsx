@@ -747,6 +747,7 @@ export function SigintModule({ location }: SigintModuleProps) {
     detailWidth: DEFAULT_DETAIL_WIDTH,
   });
   const [layoutReady, setLayoutReady] = useState(false);
+  const [narrowLayout, setNarrowLayout] = useState(false);
 
   const [maps, setMaps] = useState<OfflineMapSummary | null>(null);
   const [mapsError, setMapsError] = useState("");
@@ -794,9 +795,24 @@ export function SigintModule({ location }: SigintModuleProps) {
   }, []);
 
   useEffect(() => {
-    if (!layoutReady) return;
+    const query = window.matchMedia("(max-width: 899px)");
+    const sync = () => {
+      setNarrowLayout(query.matches);
+      if (query.matches) {
+        setLayout((current) => ({ ...current, filtersCollapsed: true, detailCollapsed: true }));
+      } else {
+        setLayout(loadSigintLayoutPrefs());
+      }
+    };
+    sync();
+    query.addEventListener("change", sync);
+    return () => query.removeEventListener("change", sync);
+  }, []);
+
+  useEffect(() => {
+    if (!layoutReady || narrowLayout) return;
     window.localStorage.setItem(SIGINT_LAYOUT_STORAGE_KEY, JSON.stringify(layout));
-  }, [layout, layoutReady]);
+  }, [layout, layoutReady, narrowLayout]);
 
   function saveCurrentFilterView(): void {
     const name = savedViewName.trim();
@@ -1297,9 +1313,29 @@ export function SigintModule({ location }: SigintModuleProps) {
     void handleSaveReview(reviewStatus, priority);
   }
 
+  function selectCapture(captureId: string): void {
+    setSelectedCaptureId(captureId);
+    if (narrowLayout) {
+      setLayout((current) => ({ ...current, detailCollapsed: false }));
+    }
+  }
+
   return (
-    <div className="flex flex-1 overflow-hidden">
-      {layout.filtersCollapsed ? (
+    <div className="relative flex min-w-0 flex-1 overflow-hidden">
+      {narrowLayout ? (
+        <div className="absolute inset-x-0 top-0 z-30 flex items-center gap-2 border-b border-white/[0.07] bg-[rgba(5,11,19,0.97)] px-3 py-2">
+          <button aria-label="Open filters" className={CLS_BTN_GHOST} onClick={() => setLayout((current) => ({ ...current, filtersCollapsed: false }))} type="button">
+            Filters
+          </button>
+          <p className="min-w-0 flex-1 truncate font-mono text-[10px] uppercase tracking-[0.18em] text-[var(--muted)]">
+            SIGINT · {captureCounts.total.toLocaleString("en")}
+          </p>
+          <button aria-label="Open evidence detail" className={CLS_BTN_GHOST} disabled={!selectedCaptureId} onClick={() => setLayout((current) => ({ ...current, detailCollapsed: false }))} type="button">
+            Detail
+          </button>
+        </div>
+      ) : null}
+      {!narrowLayout && layout.filtersCollapsed ? (
         <button
           aria-label="Expand filters"
           className="flex w-10 shrink-0 items-start justify-center border-r border-white/8 bg-[rgba(4,8,16,0.76)] pt-4 font-mono text-xs text-cyan-200 transition hover:bg-white/[0.04]"
@@ -1309,19 +1345,23 @@ export function SigintModule({ location }: SigintModuleProps) {
         >
           ›
         </button>
-      ) : (
+      ) : !narrowLayout || !layout.filtersCollapsed ? (
       <aside
-        className="relative flex shrink-0 flex-col border-r border-white/8 bg-[rgba(4,8,16,0.76)]"
-        style={{ width: layout.filterWidth }}
+        className={cx(
+          "flex shrink-0 flex-col border-r border-white/8 bg-[rgba(4,8,16,0.96)]",
+          narrowLayout ? "absolute inset-y-0 left-0 z-50 w-[min(22rem,calc(100vw-2rem))] shadow-2xl" : "relative",
+        )}
+        data-testid="sigint-filter-panel"
+        style={narrowLayout ? undefined : { width: layout.filterWidth }}
       >
         <div className="border-b border-white/[0.07] px-4 py-3">
           <div className="flex items-center justify-between gap-2">
             <p className="font-mono text-[11px] uppercase tracking-[0.22em] text-cyan-200">SIGINT</p>
             <button
-              aria-label="Collapse filters"
+              aria-label={narrowLayout ? "Close filters" : "Collapse filters"}
               className="rounded border border-white/10 px-2 py-1 font-mono text-xs text-[var(--muted-strong)] transition hover:bg-white/[0.05] hover:text-white"
               onClick={() => setLayout((current) => ({ ...current, filtersCollapsed: true }))}
-              title="Collapse filters"
+              title={narrowLayout ? "Close filters" : "Collapse filters"}
               type="button"
             >
               ‹
@@ -1370,6 +1410,7 @@ export function SigintModule({ location }: SigintModuleProps) {
               <div className="relative">
                 <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 font-mono text-[11px] text-cyan-300/70">⌕</span>
                 <input
+                  aria-label="Search SIGINT captures"
                   className={cx(CLS_INPUT, "pl-8")}
                   placeholder="Frequency, place or label…"
                   type="search"
@@ -1576,17 +1617,19 @@ export function SigintModule({ location }: SigintModuleProps) {
             </div>
           </div>
         )}
-        <div
-          aria-hidden="true"
-          className="absolute inset-y-0 right-0 z-30 w-1.5 cursor-col-resize bg-transparent transition hover:bg-cyan-300/20"
-          onMouseDown={(event) => beginPanelResize("filters", event)}
-        />
+        {!narrowLayout ? (
+          <div
+            aria-hidden="true"
+            className="absolute inset-y-0 right-0 z-30 w-1.5 cursor-col-resize bg-transparent transition hover:bg-cyan-300/20"
+            onMouseDown={(event) => beginPanelResize("filters", event)}
+          />
+        ) : null}
       </aside>
-      )}
+      ) : null}
 
-      <main className="flex min-w-0 flex-1 border-r border-white/8 bg-black/10">
+      <main className={cx("flex min-w-0 flex-1 border-r border-white/8 bg-black/10", narrowLayout && "pt-11")}>
         {tab === "captures" ? (
-          <div className="relative flex min-w-0 flex-1 flex-col">
+          <div className="relative flex min-w-0 flex-1 flex-col" data-testid="sigint-capture-queue">
             <div className="flex items-center justify-between border-b border-white/[0.07] px-5 py-2.5">
               <div className="flex items-center gap-3">
                 <p className="font-mono text-[10px] uppercase tracking-[0.24em] text-[var(--muted)]">Queue</p>
@@ -1620,7 +1663,7 @@ export function SigintModule({ location }: SigintModuleProps) {
                         "flex w-full flex-col gap-2 border-b border-white/[0.05] px-5 py-3 text-left transition",
                         isActive ? "border-l-accent bg-[var(--accent)]/[0.07]" : "border-l-clear hover:bg-white/[0.03]",
                       )}
-                      onClick={() => setSelectedCaptureId(item.id)}
+                      onClick={() => selectCapture(item.id)}
                       type="button"
                     >
                       <div className="flex items-start justify-between gap-4">
@@ -1793,7 +1836,7 @@ export function SigintModule({ location }: SigintModuleProps) {
         )}
       </main>
 
-      {layout.detailCollapsed ? (
+      {!narrowLayout && layout.detailCollapsed ? (
         <button
           aria-label="Expand evidence detail"
           className="flex w-10 shrink-0 items-start justify-center bg-[rgba(6,12,20,0.78)] pt-4 font-mono text-xs text-cyan-200 transition hover:bg-white/[0.04]"
@@ -1803,11 +1846,14 @@ export function SigintModule({ location }: SigintModuleProps) {
         >
           ‹
         </button>
-      ) : (
+      ) : !narrowLayout || !layout.detailCollapsed ? (
       <aside
-        className="relative flex shrink-0 flex-col bg-[rgba(6,12,20,0.78)]"
+        className={cx(
+          "flex shrink-0 flex-col bg-[rgba(6,12,20,0.97)]",
+          narrowLayout ? "absolute inset-y-0 right-0 z-50 w-full max-w-[34rem] shadow-2xl" : "relative",
+        )}
         data-testid="sigint-evidence-detail"
-        style={{ width: layout.detailWidth }}
+        style={narrowLayout ? undefined : { width: layout.detailWidth }}
       >
         {tab === "captures" ? (
           <>
@@ -1815,10 +1861,10 @@ export function SigintModule({ location }: SigintModuleProps) {
               <div className="flex items-center justify-between gap-3">
                 <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-[var(--muted)]">Evidence detail</p>
                 <button
-                  aria-label="Collapse evidence detail"
+                  aria-label={narrowLayout ? "Close evidence detail" : "Collapse evidence detail"}
                   className="rounded border border-white/10 px-2 py-1 font-mono text-xs text-[var(--muted-strong)] transition hover:bg-white/[0.05] hover:text-white"
                   onClick={() => setLayout((current) => ({ ...current, detailCollapsed: true }))}
-                  title="Collapse evidence detail"
+                  title={narrowLayout ? "Close evidence detail" : "Collapse evidence detail"}
                   type="button"
                 >
                   ›
@@ -2208,13 +2254,15 @@ export function SigintModule({ location }: SigintModuleProps) {
             </div>
           </>
         )}
-        <div
-          aria-hidden="true"
-          className="absolute inset-y-0 left-0 z-30 w-1.5 cursor-col-resize bg-transparent transition hover:bg-cyan-300/20"
-          onMouseDown={(event) => beginPanelResize("detail", event)}
-        />
+        {!narrowLayout ? (
+          <div
+            aria-hidden="true"
+            className="absolute inset-y-0 left-0 z-30 w-1.5 cursor-col-resize bg-transparent transition hover:bg-cyan-300/20"
+            onMouseDown={(event) => beginPanelResize("detail", event)}
+          />
+        ) : null}
       </aside>
-      )}
+      ) : null}
     </div>
   );
 }

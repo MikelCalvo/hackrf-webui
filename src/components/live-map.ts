@@ -312,27 +312,9 @@ export function useManagedRuntimeFeed<TSnapshot>({
     let cancelled = false;
 
     const boot = async () => {
-      setRuntimeBusy(true);
-
-      try {
-        await startRuntimeRef.current();
-        if (!cancelled) {
-          setError("");
-        }
-      } catch (runtimeError) {
-        if (!cancelled) {
-          setError(
-            runtimeError instanceof Error ? runtimeError.message : messagesRef.current.start,
-          );
-        }
-      } finally {
-        if (!cancelled) {
-          setRuntimeBusy(false);
-        }
-        await refreshHardwareRef.current();
-        if (!cancelled) {
-          await refreshSnapshotRef.current();
-        }
+      await refreshHardwareRef.current();
+      if (!cancelled) {
+        await refreshSnapshotRef.current();
       }
     };
 
@@ -340,8 +322,6 @@ export function useManagedRuntimeFeed<TSnapshot>({
 
     return () => {
       cancelled = true;
-      void stopRuntimeRef.current().catch(() => undefined);
-      void refreshHardwareRef.current();
     };
   }, []);
 

@@ -337,7 +337,7 @@ class AisRuntimeService {
     if (this.runtime.state === "error") {
       warnings.push(this.runtime.message);
     } else if (this.runtime.state === "stopped") {
-      warnings.push("AIS decoder is stopped. Open the AIS panel to start live reception.");
+      warnings.push("AIS decoder is stopped. Select START SCANNING to begin live reception.");
     }
 
     const vessels = [...this.vessels.values()]

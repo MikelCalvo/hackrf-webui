@@ -319,7 +319,7 @@ class AdsbRuntimeService {
     if (this.runtime.state === "error") {
       warnings.push(this.runtime.message);
     } else if (this.runtime.state === "stopped") {
-      warnings.push("ADS-B decoder is stopped. Open the ADS-B panel to start live reception.");
+      warnings.push("ADS-B decoder is stopped. Select START SCANNING to begin live reception.");
     }
 
     if ((this.runtime.state === "running" || this.runtime.state === "starting") && !aircraftData) {

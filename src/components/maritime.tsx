@@ -902,6 +902,7 @@ export function MaritimeModule({
           </div>
           <div className="space-y-2 px-4 py-3">
             <input
+              aria-label="Maritime manual frequency"
               className={CLS_INPUT}
               inputMode="decimal"
               onChange={(event) => setConfig((current) => ({ ...current, manualFreqMhz: event.target.value }))}
@@ -909,12 +910,14 @@ export function MaritimeModule({
               value={config.manualFreqMhz}
             />
             <input
+              aria-label="Maritime preset label"
               className={CLS_INPUT}
               onChange={(event) => setConfig((current) => ({ ...current, manualLabel: event.target.value }))}
               placeholder="Label"
               value={config.manualLabel}
             />
             <textarea
+              aria-label="Maritime preset notes"
               className={cx(CLS_INPUT, "min-h-16 resize-none")}
               onChange={(event) => setConfig((current) => ({ ...current, manualNotes: event.target.value }))}
               placeholder="Notes..."
@@ -1270,6 +1273,8 @@ export function MaritimeModule({
             <p className="mb-2 font-mono text-[11px] uppercase tracking-[0.18em] text-[var(--muted-strong)]">Mode</p>
             <div className="flex gap-2">
               <button
+                aria-label="Maritime sequential scan mode"
+                aria-pressed={config.scanMode === "sequential"}
                 className={cx(
                   "flex flex-1 items-center justify-center rounded border py-1.5 transition",
                   config.scanMode === "sequential"
@@ -1285,6 +1290,8 @@ export function MaritimeModule({
                 </svg>
               </button>
               <button
+                aria-label="Maritime random scan mode"
+                aria-pressed={config.scanMode === "random"}
                 className={cx(
                   "flex flex-1 items-center justify-center rounded border py-1.5 transition",
                   config.scanMode === "random"

@@ -1967,6 +1967,7 @@ export function Dashboard({
 
                 <div className="space-y-2">
                   <input
+                    aria-label="Search loaded stations"
                     className={CLS_INPUT}
                     placeholder={
                       activeCountry === "all" ? "Select a country first..." : "Search loaded stations..."
@@ -1976,6 +1977,7 @@ export function Dashboard({
                   />
 
                   <select
+                    aria-label="FM region"
                     className={CLS_INPUT}
                     value={activeRegion}
                     onChange={(event) => handleRegionChange(event.target.value)}
@@ -1989,6 +1991,7 @@ export function Dashboard({
                   </select>
 
                   <select
+                    aria-label="FM country"
                     className={CLS_INPUT}
                     value={activeCountry}
                     onChange={(event) => handleCountryChange(event.target.value)}
@@ -2002,6 +2005,7 @@ export function Dashboard({
                   </select>
 
                   <select
+                    aria-label="FM city"
                     className={CLS_INPUT}
                     disabled={activeCountry === "all"}
                     value={activeCity}
