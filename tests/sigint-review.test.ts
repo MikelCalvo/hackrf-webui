@@ -26,3 +26,10 @@ test("review decisions render over the capture queue and do not expose a save bu
   assert.match(source, /Choose priority to save/);
   assert.match(source, /Discarded saves immediately with no priority/);
 });
+
+test("capture filters do not duplicate the app module navigation", async () => {
+  const source = await readFile(new URL("../src/components/sigint.tsx", import.meta.url), "utf8");
+
+  assert.doesNotMatch(source, />Signal source</);
+  assert.doesNotMatch(source, /Signal source:/);
+});

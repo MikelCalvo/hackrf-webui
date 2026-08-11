@@ -30,10 +30,13 @@ import {
   BUILTIN_SIGINT_FILTER_VIEWS,
   buildSigintFilterChips,
   countSigintFilterOptions,
+  deserializeSigintSavedViews,
   hasActiveSigintCaptureFilters,
   matchesSigintCaptureFilters,
   nextVisibleCaptureId,
   resetSigintCaptureFilters,
+  serializeSigintSavedViews,
+  type SigintSavedFilterView,
 } from "@/lib/sigint-filters";
 import { priorityForReviewStatus } from "@/lib/sigint-review";
 import {
@@ -64,6 +67,7 @@ const DEFAULT_CAPTURE_FILTERS: SigintCaptureListFilters = {
   limit: 200,
 };
 const SIGINT_LAYOUT_STORAGE_KEY = "hackrf-webui.sigint-layout.v1";
+const SIGINT_SAVED_VIEWS_STORAGE_KEY = "hackrf-webui.sigint-saved-views.v1";
 const DEFAULT_FILTER_WIDTH = 280;
 const DEFAULT_DETAIL_WIDTH = 430;
 const MIN_FILTER_WIDTH = 240;
@@ -712,6 +716,9 @@ export function SigintModule({ location }: SigintModuleProps) {
   const [filters, setFilters] = useState<SigintCaptureListFilters>(DEFAULT_CAPTURE_FILTERS);
   const [captureItems, setCaptureItems] = useState<SigintCaptureSummary[]>([]);
   const [captureUniverse, setCaptureUniverse] = useState<SigintCaptureSummary[]>([]);
+  const [savedFilterViews, setSavedFilterViews] = useState<SigintSavedFilterView[]>([]);
+  const [savedViewName, setSavedViewName] = useState("");
+  const [savedViewEditorOpen, setSavedViewEditorOpen] = useState(false);
   const [captureCounts, setCaptureCounts] = useState({
     total: 0,
     pending: 0,
@@ -781,6 +788,7 @@ export function SigintModule({ location }: SigintModuleProps) {
 
   useEffect(() => {
     setLayout(loadSigintLayoutPrefs());
+    setSavedFilterViews(deserializeSigintSavedViews(window.localStorage.getItem(SIGINT_SAVED_VIEWS_STORAGE_KEY)));
     setLayoutReady(true);
     return () => resizeCleanupRef.current?.();
   }, []);
@@ -789,6 +797,30 @@ export function SigintModule({ location }: SigintModuleProps) {
     if (!layoutReady) return;
     window.localStorage.setItem(SIGINT_LAYOUT_STORAGE_KEY, JSON.stringify(layout));
   }, [layout, layoutReady]);
+
+  function saveCurrentFilterView(): void {
+    const name = savedViewName.trim();
+    if (!name) return;
+    setSavedFilterViews((current) => {
+      const next = [...current, {
+        id: `${Date.now()}-${Math.random().toString(36).slice(2, 7)}`,
+        name: name.slice(0, 48),
+        filters: { ...filters },
+      }];
+      window.localStorage.setItem(SIGINT_SAVED_VIEWS_STORAGE_KEY, serializeSigintSavedViews(next));
+      return next;
+    });
+    setSavedViewName("");
+    setSavedViewEditorOpen(false);
+  }
+
+  function removeSavedFilterView(id: string): void {
+    setSavedFilterViews((current) => {
+      const next = current.filter((view) => view.id !== id);
+      window.localStorage.setItem(SIGINT_SAVED_VIEWS_STORAGE_KEY, serializeSigintSavedViews(next));
+      return next;
+    });
+  }
 
   const loadCaptureUniverse = useCallback(async () => {
     try {
@@ -1362,7 +1394,38 @@ export function SigintModule({ location }: SigintModuleProps) {
                 </div>
 
                 <div className="mb-3">
-                  <p className="mb-1.5 font-mono text-[10px] uppercase tracking-[0.14em] text-[var(--muted)]">Saved views</p>
+                  <div className="mb-1.5 flex items-center justify-between gap-2">
+                    <p className="font-mono text-[10px] uppercase tracking-[0.14em] text-[var(--muted)]">Saved views</p>
+                    <button
+                      className="font-mono text-[10px] text-cyan-300 transition hover:text-cyan-100 disabled:opacity-40"
+                      disabled={!hasActiveCaptureFilters}
+                      onClick={() => {
+                        setSavedViewName(activeFilterChips.map((chip) => chip.label).join(" + ") || "Current filters");
+                        setSavedViewEditorOpen(true);
+                      }}
+                      type="button"
+                    >
+                      Save current
+                    </button>
+                  </div>
+                  {savedViewEditorOpen ? (
+                    <div className="mb-2 flex gap-1.5">
+                      <input
+                        aria-label="Saved view name"
+                        autoFocus
+                        className={cx(CLS_INPUT, "min-w-0 flex-1 py-1.5 text-[11px]")}
+                        maxLength={48}
+                        onChange={(event) => setSavedViewName(event.target.value)}
+                        onKeyDown={(event) => {
+                          if (event.key === "Enter") saveCurrentFilterView();
+                          if (event.key === "Escape") setSavedViewEditorOpen(false);
+                        }}
+                        value={savedViewName}
+                      />
+                      <button className={CLS_BTN_PRIMARY} disabled={!savedViewName.trim()} onClick={saveCurrentFilterView} type="button">Save</button>
+                      <button className={CLS_BTN_GHOST} onClick={() => setSavedViewEditorOpen(false)} type="button">Cancel</button>
+                    </div>
+                  ) : null}
                   <div className="flex flex-wrap gap-1.5">
                     {BUILTIN_SIGINT_FILTER_VIEWS.map((view) => (
                       <button
@@ -1374,6 +1437,26 @@ export function SigintModule({ location }: SigintModuleProps) {
                       >
                         {view.label}
                       </button>
+                    ))}
+                    {savedFilterViews.map((view) => (
+                      <span key={view.id} className="inline-flex overflow-hidden rounded-full border border-cyan-300/25 bg-cyan-300/[0.06]">
+                        <button
+                          className="px-2.5 py-1.5 font-mono text-[10px] text-cyan-100 transition hover:bg-cyan-300/[0.1]"
+                          onClick={() => setFilters({ ...view.filters })}
+                          type="button"
+                        >
+                          {view.name}
+                        </button>
+                        <button
+                          aria-label={`Delete saved view: ${view.name}`}
+                          className="border-l border-cyan-300/20 px-2 font-mono text-[10px] text-cyan-200/70 transition hover:bg-rose-300/10 hover:text-rose-100"
+                          onClick={() => removeSavedFilterView(view.id)}
+                          title="Delete saved view"
+                          type="button"
+                        >
+                          ×
+                        </button>
+                      </span>
                     ))}
                   </div>
                 </div>
@@ -1417,34 +1500,6 @@ export function SigintModule({ location }: SigintModuleProps) {
                         <span>{option.shortLabel}</span>
                         <span className="tabular-nums text-[var(--muted)]">{filterOptionCounts.reviewStatus[option.id]}</span>
                       </span>
-                    </button>
-                  ))}
-                </div>
-              </div>
-
-              <div>
-                <p className="mb-1.5 font-mono text-[10px] uppercase tracking-[0.14em] text-[var(--muted)]">Signal source</p>
-                <div className="grid grid-cols-4 gap-1">
-                  {[
-                    { id: "all", label: "All" },
-                    { id: "pmr", label: "PMR" },
-                    { id: "airband", label: "Air" },
-                    { id: "maritime", label: "Sea" },
-                  ].map((option) => (
-                    <button
-                      key={option.id}
-                      aria-label={`Signal source: ${option.id === "airband" ? "Airband" : option.id === "maritime" ? "Maritime" : option.label}`}
-                      aria-pressed={filters.module === option.id}
-                      className={cx(
-                        "rounded border px-1.5 py-1.5 font-mono text-[10px] uppercase tracking-[0.1em] transition",
-                        filters.module === option.id
-                          ? "border-cyan-300/35 bg-cyan-300/10 text-cyan-100"
-                          : "border-white/[0.07] bg-white/[0.025] text-[var(--muted)] hover:bg-white/[0.05]",
-                      )}
-                      onClick={() => setFilters((current) => ({ ...current, module: option.id as SigintCaptureListFilters["module"] }))}
-                      type="button"
-                    >
-                      {option.label} <span className="opacity-60">{filterOptionCounts.module[option.id as SigintCaptureListFilters["module"]]}</span>
                     </button>
                   ))}
                 </div>

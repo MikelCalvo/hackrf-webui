@@ -5,10 +5,12 @@ import {
   applySigintFilterView,
   buildSigintFilterChips,
   countSigintFilterOptions,
+  deserializeSigintSavedViews,
   hasActiveSigintCaptureFilters,
   matchesSigintCaptureFilters,
   nextVisibleCaptureId,
   resetSigintCaptureFilters,
+  serializeSigintSavedViews,
 } from "@/lib/sigint-filters";
 import type { SigintCaptureListFilters, SigintCaptureSummary } from "@/lib/sigint";
 
@@ -115,7 +117,7 @@ test("review queue advances to the next visible capture when an item leaves the 
 
 test("clear filters resets the complete capture filter set while preserving the result limit", () => {
   const active: SigintCaptureListFilters = {
-    module: "maritime",
+    module: "all",
     reviewStatus: "pending",
     analysis: "voice",
     hasAudio: true,
@@ -159,7 +161,7 @@ test("saved filter views replace active filters without changing the result limi
 
 test("active filter chips describe every removable filter", () => {
   const active: SigintCaptureListFilters = {
-    module: "airband",
+    module: "all",
     reviewStatus: "flagged",
     analysis: "voice",
     hasAudio: true,
@@ -170,7 +172,6 @@ test("active filter chips describe every removable filter", () => {
   assert.deepEqual(buildSigintFilterChips(active).map((chip) => chip.id), [
     "query",
     "reviewStatus",
-    "module",
     "analysis",
     "hasAudio",
     "hasRawIq",
@@ -190,9 +191,28 @@ test("filter option counts are calculated independently of the option being coun
   const counts = countSigintFilterOptions(items, active);
   assert.equal(counts.reviewStatus.pending, 1);
   assert.equal(counts.reviewStatus.kept, 1);
-  assert.equal(counts.module.pmr, 1);
-  assert.equal(counts.module.airband, 0);
   assert.equal(counts.analysis.voice, 1);
   assert.equal(counts.analysis.failed, 0);
   assert.equal(counts.media.audio, 1);
+});
+
+test("custom saved views serialize only reusable filters and preserve safe limits", () => {
+  const saved = [{
+    id: "custom-1",
+    name: "Bilbao voice",
+    filters: { ...filters, reviewStatus: "pending" as const, analysis: "voice" as const, q: "bilbao", limit: 75 },
+  }];
+  const serialized = serializeSigintSavedViews(saved);
+  assert.deepEqual(deserializeSigintSavedViews(serialized), saved);
+  assert.deepEqual(deserializeSigintSavedViews("not-json"), []);
+});
+
+test("legacy saved views discard the removed signal-source filter", () => {
+  const serialized = serializeSigintSavedViews([{
+    id: "legacy-source-view",
+    name: "Airband voice",
+    filters: { ...filters, module: "airband", analysis: "voice" },
+  }]);
+
+  assert.equal(deserializeSigintSavedViews(serialized)[0]?.filters.module, "all");
 });

@@ -145,18 +145,6 @@ test("SIGINT review decisions float over the recording queue without a submit bu
   await page.waitForRequest((request) => request.method() === "PATCH" && request.url().endsWith("/review-layout-capture") && request.postDataJSON().notes === "Confirmed voice traffic");
   await expect(page.getByText("Notes saved")).toBeVisible();
 
-  await expect(page.getByLabel("Collapse filters")).toBeVisible();
-  await page.getByLabel("Collapse filters").click();
-  await expect(page.getByLabel("Expand filters")).toBeVisible();
-  await page.getByLabel("Expand filters").click();
-  await expect(page.getByRole("button", { name: /unreviewed voice/i })).toBeVisible();
-  await expect(page.getByRole("button", { name: "Pending review" })).toContainText("1");
-
-  await page.getByLabel("Collapse evidence detail").click();
-  await expect(page.getByLabel("Expand evidence detail")).toBeVisible();
-  await page.getByLabel("Expand evidence detail").click();
-  await expect(page.getByLabel("Analyst notes")).toHaveValue("Confirmed voice traffic");
-
   delayFirstPatch = true;
   patchPayloads.length = 0;
   await notes.fill("Race-safe note");
@@ -171,6 +159,25 @@ test("SIGINT review decisions float over the recording queue without a submit bu
   await expect.poll(() => patchPayloads.at(-1)).toMatchObject({ status: "flagged", priority: "high", notes: "Race-safe note" });
   await expect(page.getByLabel("Analyst notes")).toHaveValue("Race-safe note");
   delayFirstPatch = false;
+
+  await expect(page.getByLabel("Collapse filters")).toBeVisible();
+  await page.getByLabel("Collapse filters").click();
+  await expect(page.getByLabel("Expand filters")).toBeVisible();
+  await page.getByLabel("Expand filters").click();
+  await expect(page.getByRole("button", { name: /unreviewed voice/i })).toBeVisible();
+  await page.getByRole("button", { name: /unreviewed voice/i }).click();
+  await page.getByRole("button", { name: "Save current" }).click();
+  await page.getByLabel("Saved view name").fill("Pending PMR");
+  await page.getByRole("button", { name: "Save", exact: true }).click();
+  await expect(page.getByRole("button", { name: "Pending PMR", exact: true })).toBeVisible();
+  await page.getByRole("button", { name: "Pending PMR", exact: true }).click();
+  await expect(page.getByRole("button", { name: "Pending review" })).toHaveAttribute("aria-pressed", "true");
+  await page.getByRole("button", { name: /All AI/ }).click();
+
+  await page.getByLabel("Collapse evidence detail").click();
+  await expect(page.getByLabel("Expand evidence detail")).toBeVisible();
+  await page.getByLabel("Expand evidence detail").click();
+  await expect(page.getByLabel("Analyst notes")).toHaveValue("Race-safe note");
 
   const keptRequest = page.waitForRequest((request) => request.method() === "PATCH" && request.url().endsWith("/review-layout-capture"));
   await reviewBar.getByLabel("Review decision: kept").click();

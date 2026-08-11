@@ -12,20 +12,62 @@ export type SigintFilterViewId =
   | "raw-iq";
 
 export type SigintFilterChip = {
-  id: "query" | "reviewStatus" | "module" | "analysis" | "hasAudio" | "hasRawIq";
+  id: "query" | "reviewStatus" | "analysis" | "hasAudio" | "hasRawIq";
   label: string;
   clear: (filters: SigintCaptureListFilters) => SigintCaptureListFilters;
 };
 
 export type SigintFilterOptionCounts = {
   reviewStatus: Record<SigintCaptureListFilters["reviewStatus"], number>;
-  module: Record<SigintCaptureListFilters["module"], number>;
   analysis: Record<SigintAnalysisFilter, number>;
   media: {
     audio: number;
     rawIq: number;
   };
 };
+
+export type SigintSavedFilterView = {
+  id: string;
+  name: string;
+  filters: SigintCaptureListFilters;
+};
+
+export function serializeSigintSavedViews(views: SigintSavedFilterView[]): string {
+  return JSON.stringify(views);
+}
+
+export function deserializeSigintSavedViews(raw: string | null): SigintSavedFilterView[] {
+  if (!raw) return [];
+  try {
+    const parsed = JSON.parse(raw) as unknown;
+    if (!Array.isArray(parsed)) return [];
+    return parsed.flatMap((item) => {
+      if (!item || typeof item !== "object") return [];
+      const candidate = item as Partial<SigintSavedFilterView>;
+      const filters = candidate.filters as Partial<SigintCaptureListFilters> | undefined;
+      if (!candidate.id || typeof candidate.id !== "string" || !candidate.name || typeof candidate.name !== "string" || !filters) return [];
+      const reviewStatus = filters.reviewStatus;
+      const analysis = filters.analysis;
+      if (!(["all", "pending", "kept", "flagged", "discarded"] as unknown[]).includes(reviewStatus)
+        || !(["all", "voice", "speech", "unknown", "noise", "queued", "running", "failed"] as unknown[]).includes(analysis)) return [];
+      return [{
+        id: candidate.id,
+        name: candidate.name.slice(0, 48),
+        filters: {
+          module: "all",
+          reviewStatus: reviewStatus as SigintCaptureListFilters["reviewStatus"],
+          analysis: analysis as SigintAnalysisFilter,
+          hasAudio: filters.hasAudio === true,
+          hasRawIq: filters.hasRawIq === true,
+          q: typeof filters.q === "string" ? filters.q.slice(0, 120) : "",
+          limit: typeof filters.limit === "number" && filters.limit >= 1 && filters.limit <= 1_000 ? filters.limit : 200,
+        },
+      }];
+    });
+  } catch {
+    return [];
+  }
+}
 
 export const BUILTIN_SIGINT_FILTER_VIEWS: Array<{
   id: SigintFilterViewId;
@@ -40,8 +82,7 @@ export const BUILTIN_SIGINT_FILTER_VIEWS: Array<{
 ];
 
 export function hasActiveSigintCaptureFilters(filters: SigintCaptureListFilters): boolean {
-  return filters.module !== "all"
-    || filters.reviewStatus !== "all"
+  return filters.reviewStatus !== "all"
     || filters.analysis !== "all"
     || filters.hasAudio
     || filters.hasRawIq
@@ -97,13 +138,7 @@ export function buildSigintFilterChips(filters: SigintCaptureListFilters): Sigin
       clear: (current) => ({ ...current, reviewStatus: "all" }),
     });
   }
-  if (filters.module !== "all") {
-    chips.push({
-      id: "module",
-      label: filters.module === "airband" ? "Airband" : filters.module === "maritime" ? "Maritime" : "PMR",
-      clear: (current) => ({ ...current, module: "all" }),
-    });
-  }
+
   if (filters.analysis !== "all") {
     chips.push({
       id: "analysis",
@@ -175,12 +210,10 @@ export function countSigintFilterOptions(
   filters: SigintCaptureListFilters,
 ): SigintFilterOptionCounts {
   const reviewBase = { ...filters, reviewStatus: "all" as const };
-  const moduleBase = { ...filters, module: "all" as const };
   const analysisBase = { ...filters, analysis: "all" as const };
   const audioBase = { ...filters, hasAudio: false };
   const rawIqBase = { ...filters, hasRawIq: false };
   const reviewStatuses: SigintCaptureListFilters["reviewStatus"][] = ["all", "pending", "kept", "flagged", "discarded"];
-  const modules: SigintCaptureListFilters["module"][] = ["all", "pmr", "airband", "maritime"];
   const analyses: SigintAnalysisFilter[] = ["all", "voice", "speech", "unknown", "noise", "queued", "running", "failed"];
 
   return {
@@ -188,10 +221,6 @@ export function countSigintFilterOptions(
       value,
       countMatching(items, { ...reviewBase, reviewStatus: value }),
     ])) as SigintFilterOptionCounts["reviewStatus"],
-    module: Object.fromEntries(modules.map((value) => [
-      value,
-      countMatching(items, { ...moduleBase, module: value }),
-    ])) as SigintFilterOptionCounts["module"],
     analysis: Object.fromEntries(analyses.map((value) => [
       value,
       countMatching(items, { ...analysisBase, analysis: value }),
