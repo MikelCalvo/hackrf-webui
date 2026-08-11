@@ -10,6 +10,7 @@ import type {
   HardwareStatus,
   ResolvedAppLocation,
 } from "@/lib/types";
+import { filterAisContacts, type AisContactFilters } from "@/lib/tracking-contacts";
 import { MapOverlayCard } from "@/components/map-overlay-card";
 import { SpectrumDock } from "@/components/spectrum-dock";
 import { useRadioSession } from "@/components/use-radio-session";
@@ -196,6 +197,10 @@ export function AisModule({ hardware, location, onRefreshHardware }: AisModulePr
   const lastSavedCityViewKeyRef = useRef("");
   const [selectedMmsi, setSelectedMmsi] = useState("");
   const [followSelected, setFollowSelected] = useState(false);
+  const [contactsOpen, setContactsOpen] = useState(true);
+  const [contactFilters, setContactFilters] = useState<AisContactFilters>({
+    query: "", scope: "all", motion: "all", sort: "recent",
+  });
   const basemapSignatureRef = useRef("");
   const { session: runtimeSession, error: sessionError, createSession, stopSession, refresh: refreshRuntimeSession } = useRadioSession("ais");
   const runtimeSessionRef = useRef(runtimeSession);
@@ -257,6 +262,23 @@ export function AisModule({ hardware, location, onRefreshHardware }: AisModulePr
     () => new Set((snapshot?.vessels ?? []).map((vessel) => vessel.mmsi)),
     [snapshot?.vessels],
   );
+  const visibleContacts = useMemo(
+    () => filterAisContacts(contactList, liveMmsiSet, contactFilters),
+    [contactFilters, contactList, liveMmsiSet],
+  );
+
+  const fitVisibleContacts = useCallback((): void => {
+    const map = mapRef.current;
+    if (!map || visibleContacts.length === 0) return;
+    const points = visibleContacts.map((vessel) => [vessel.latitude, vessel.longitude] as [number, number]);
+    if (points.length === 1) map.flyTo(points[0], Math.max(map.getZoom(), 12.5), { animate: true, duration: 0.85 });
+    else map.fitBounds(points, { padding: [36, 36], animate: true });
+  }, [visibleContacts]);
+
+  const focusHome = useCallback((): void => {
+    const map = mapRef.current;
+    if (map && savedCityView) map.flyTo([savedCityView.latitude, savedCityView.longitude], Math.max(map.getZoom(), DEFAULT_CITY_ZOOM), { animate: true, duration: 0.85 });
+  }, [savedCityView]);
 
   const focusVessel = useCallback((vessel: AisVesselContact, reason: "select" | "follow" = "select"): void => {
     const map = mapRef.current;
@@ -695,17 +717,20 @@ export function AisModule({ hardware, location, onRefreshHardware }: AisModulePr
               latest contact {formatTimestamp(snapshot?.latestPositionAt ?? null)}
             </p>
           </div>
-          <span className="font-mono text-[10px] text-[var(--muted)]">
-            {runtimeRunning
-              ? "live HackRF decoder"
-              : runtimeStarting
-                ? "starting decoder"
-                : snapshot?.maps.available
-                  ? snapshot.maps.kind === "pmtiles"
-                    ? "offline dark basemap"
-                    : "offline raster layers"
-                  : "live OpenStreetMap"}
-          </span>
+          <div className="flex items-center gap-2">
+            <button className="rounded border border-white/10 px-2 py-1.5 font-mono text-[10px] text-[var(--muted-strong)] hover:bg-white/[0.06]" onClick={() => setContactsOpen((open) => !open)} type="button">{contactsOpen ? "Hide contacts" : "Show contacts"}</button>
+            <span className="font-mono text-[10px] text-[var(--muted)]">
+              {runtimeRunning
+                ? "live HackRF decoder"
+                : runtimeStarting
+                  ? "starting decoder"
+                  : snapshot?.maps.available
+                    ? snapshot.maps.kind === "pmtiles"
+                      ? "offline dark basemap"
+                      : "offline raster layers"
+                    : "live OpenStreetMap"}
+            </span>
+          </div>
         </div>
 
         <div className="relative isolate flex-1 overflow-hidden">
@@ -716,6 +741,10 @@ export function AisModule({ hardware, location, onRefreshHardware }: AisModulePr
             )}
             ref={mapHostRef}
           />
+          <div className="absolute right-3 top-3 z-[1200] flex gap-2">
+            <button className="rounded border border-white/10 bg-[rgba(4,8,15,0.82)] px-2.5 py-1.5 font-mono text-[10px] text-[var(--muted-strong)] hover:bg-white/[0.1] disabled:opacity-40" disabled={visibleContacts.length === 0} onClick={fitVisibleContacts} type="button">Fit contacts</button>
+            {savedCityView ? <button className="rounded border border-white/10 bg-[rgba(4,8,15,0.82)] px-2.5 py-1.5 font-mono text-[10px] text-[var(--muted-strong)] hover:bg-white/[0.1]" onClick={focusHome} type="button">Home</button> : null}
+          </div>
 
           {selected ? (
             <MapOverlayCard
@@ -863,7 +892,7 @@ export function AisModule({ hardware, location, onRefreshHardware }: AisModulePr
         />
       </main>
 
-      <aside className="flex w-80 shrink-0 flex-col overflow-hidden border-l border-white/8 bg-black/15">
+      {contactsOpen ? <aside className="flex w-80 shrink-0 flex-col overflow-hidden border-l border-white/8 bg-black/15">
         <div className="border-b border-white/[0.07] px-5 py-3">
           {selected ? (
             <div className="min-w-0">
@@ -877,11 +906,16 @@ export function AisModule({ hardware, location, onRefreshHardware }: AisModulePr
 
         <div className="flex items-center justify-between border-b border-white/[0.07] px-5 py-2.5">
           <span className="font-mono text-[10px] uppercase tracking-[0.22em] text-[var(--muted)]">Contacts</span>
-          <span className="font-mono text-[10px] text-[var(--muted)]">{contactList.length}</span>
+          <span className="font-mono text-[10px] text-[var(--muted)]">{visibleContacts.length}/{contactList.length}</span>
+        </div>
+        <div className="space-y-2 border-b border-white/[0.07] px-3 py-3">
+          <input aria-label="Search AIS contacts" className="w-full rounded border border-white/10 bg-black/20 px-2 py-1.5 text-xs text-[var(--foreground)]" onChange={(event) => setContactFilters((filters) => ({ ...filters, query: event.target.value }))} placeholder="Search vessel, MMSI, destination" value={contactFilters.query} />
+          <div className="grid grid-cols-3 gap-1">{(["all", "live", "history"] as const).map((scope) => <button className={cx("rounded px-1 py-1.5 font-mono text-[10px] capitalize", contactFilters.scope === scope ? "bg-white/10 text-[var(--foreground)]" : "text-[var(--muted)]")} key={scope} onClick={() => setContactFilters((filters) => ({ ...filters, scope }))} type="button">{scope}</button>)}</div>
+          <div className="flex gap-1"><select aria-label="AIS motion filter" className="min-w-0 flex-1 rounded border border-white/10 bg-black/20 px-1 py-1.5 font-mono text-[10px]" onChange={(event) => setContactFilters((filters) => ({ ...filters, motion: event.target.value as AisContactFilters["motion"] }))} value={contactFilters.motion}><option value="all">All motion</option><option value="moving">Moving</option><option value="still">Still</option></select><select aria-label="AIS contact sort" className="min-w-0 flex-1 rounded border border-white/10 bg-black/20 px-1 py-1.5 font-mono text-[10px]" onChange={(event) => setContactFilters((filters) => ({ ...filters, sort: event.target.value as AisContactFilters["sort"] }))} value={contactFilters.sort}><option value="recent">Recent</option><option value="name">Name</option><option value="speed">Speed</option></select></div>
         </div>
 
         <div className="flex-1 overflow-y-auto">
-          {contactList.map((vessel) => {
+          {visibleContacts.map((vessel) => {
             const isSelected = vessel.mmsi === selected?.mmsi;
             const isLive = liveMmsiSet.has(vessel.mmsi);
             return (
@@ -925,7 +959,7 @@ export function AisModule({ hardware, location, onRefreshHardware }: AisModulePr
             );
           })}
         </div>
-      </aside>
+      </aside> : null}
     </div>
   );
 }

@@ -4,6 +4,7 @@ import os from "node:os";
 
 import packageJson from "../../package.json";
 import type { AdsbRuntimeStatus, AisRuntimeStatus, HardwareStatus } from "@/lib/types";
+import type { RuntimeDiagnostics } from "@/lib/runtime-diagnostics";
 import { isHackrfSimulatorEnabled } from "@/server/hackrf-simulator";
 import { isReplayModeEnabled } from "@/server/replay-feed";
 
@@ -55,46 +56,6 @@ type PublicPathProbe = PathProbe & {
   path: string;
 };
 
-export type RuntimeDiagnostics = {
-  generatedAt: string;
-  app: PackageInfo;
-  system: {
-    node: string;
-    platform: NodeJS.Platform;
-    arch: string;
-    cpus: number;
-  };
-  modes: {
-    simulator: boolean;
-    replay: boolean;
-    authTokenConfigured: boolean;
-    publicTokenConfigured: boolean;
-    allowedOriginsConfigured: boolean;
-  };
-  env: Record<string, "configured" | "enabled" | "disabled" | "unset">;
-  paths: {
-    projectRoot: PublicPathProbe;
-    nativeBinary: PublicPathProbe;
-    captures: PublicPathProbe;
-    runtime: PublicPathProbe;
-    mapsManifest: PublicPathProbe;
-    aiAssets: PublicPathProbe;
-  };
-  hardware: Omit<HardwareStatus, "serial" | "binaryPath"> & {
-    serial: string;
-    binaryPath: string;
-  };
-  services: {
-    ais: AisRuntimeStatus;
-    adsb: AdsbRuntimeStatus;
-    radio: {
-      stats: SupervisorSnapshot["stats"];
-      liveSessionCount: number;
-      listenerCount: number;
-    };
-  };
-  warnings: string[];
-};
 
 const ENV_KEYS = [
   "HACKRF_WEBUI_SIMULATOR",

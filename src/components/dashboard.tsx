@@ -21,6 +21,7 @@ import {
   sortStations,
 } from "@/lib/catalog";
 import { apiFetch, appendApiToken } from "@/lib/api-client";
+import { deriveRuntimeSummary, type RuntimeDiagnostics, type RuntimeSummary } from "@/lib/runtime-diagnostics";
 import { LocationModal } from "@/components/location-modal";
 import { SpectrumDock } from "@/components/spectrum-dock";
 import {
@@ -507,6 +508,14 @@ async function fetchGpsdStatus(): Promise<GpsdSnapshot> {
   return (await res.json()) as GpsdSnapshot;
 }
 
+async function fetchRuntimeDiagnostics(signal?: AbortSignal): Promise<RuntimeDiagnostics> {
+  const response = await apiFetch("/api/runtime/diagnostics", { cache: "no-store", signal });
+  if (!response.ok) {
+    throw new Error(`HTTP ${response.status}`);
+  }
+  return (await response.json()) as RuntimeDiagnostics;
+}
+
 function SpeakerIcon({ volume }: { volume: number }) {
   if (volume === 0) {
     return (
@@ -756,6 +765,8 @@ export function Dashboard({
   const [pendingScrollId, setPendingScrollId] = useState<string | null>(null);
   const [hardware, setHardware] = useState<HardwareStatus | null>(null);
   const [hardwareError, setHardwareError] = useState("");
+  const [runtimeSummary, setRuntimeSummary] = useState<RuntimeSummary | null>(null);
+  const [runtimeSummaryError, setRuntimeSummaryError] = useState(false);
   const [catalogError, setCatalogError] = useState("");
   const [streamError, setStreamError] = useState("");
   const [draft, setDraft] = useState<CustomStationDraft>(DEFAULT_DRAFT);
@@ -771,6 +782,26 @@ export function Dashboard({
   useEffect(() => {
     activeModuleRef.current = activeModule;
   }, [activeModule]);
+
+  useEffect(() => {
+    let cancelled = false;
+    const refresh = async () => {
+      try {
+        const diagnostics = await fetchRuntimeDiagnostics();
+        if (cancelled) return;
+        setRuntimeSummary(deriveRuntimeSummary(diagnostics));
+        setRuntimeSummaryError(false);
+      } catch {
+        if (!cancelled) setRuntimeSummaryError(true);
+      }
+    };
+    void refresh();
+    const timer = window.setInterval(() => void refresh(), 30_000);
+    return () => {
+      cancelled = true;
+      window.clearInterval(timer);
+    };
+  }, []);
 
   const countriesById = useMemo(
     () => new Map(manifest.countries.map((country) => [country.id, country])),
@@ -1676,6 +1707,36 @@ export function Dashboard({
             fw&nbsp;{hardware.firmware}
           </span>
         ) : null}
+
+        <Link
+          aria-label={`Runtime status: ${runtimeSummaryError ? "unavailable" : runtimeSummary?.label ?? "loading"}`}
+          className={cx(
+            "flex shrink-0 items-center gap-1.5 rounded-full border px-2.5 py-1 font-mono text-[10px] font-semibold transition hover:brightness-125",
+            runtimeSummaryError
+              ? "border-rose-300/25 bg-rose-300/10 text-rose-100"
+              : runtimeSummary?.tone === "error"
+                ? "border-rose-300/25 bg-rose-300/10 text-rose-100"
+                : runtimeSummary?.tone === "warnings"
+                  ? "border-amber-300/25 bg-amber-300/10 text-amber-100"
+                  : runtimeSummary?.tone === "healthy"
+                    ? "border-emerald-300/25 bg-emerald-300/10 text-emerald-100"
+                    : "border-white/10 bg-white/[0.03] text-[var(--muted)]",
+          )}
+          href="/runtime"
+          title="Open runtime diagnostics"
+        >
+          <span className={cx(
+            "h-1.5 w-1.5 rounded-full",
+            runtimeSummaryError || runtimeSummary?.tone === "error"
+              ? "bg-rose-300"
+              : runtimeSummary?.tone === "warnings"
+                ? "bg-amber-300"
+                : runtimeSummary?.tone === "healthy"
+                  ? "bg-emerald-300"
+                  : "animate-pulse bg-white/35",
+          )} />
+          Runtime · {runtimeSummaryError ? "Unavailable" : runtimeSummary?.label ?? "Checking"}
+        </Link>
 
         <div className="flex-1" />
 

@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 
 import { apiFetch } from "@/lib/api-client";
+import type { RuntimeDiagnostics } from "@/lib/runtime-diagnostics";
 import { CLS_BTN_GHOST, Spinner, cx } from "@/components/module-ui";
 
 type Probe = {
@@ -11,31 +12,9 @@ type Probe = {
   writable: boolean;
 };
 
-type DiagnosticsPayload = {
-  generatedAt: string;
-  app: { name: string; version: string };
-  system: { node: string; platform: string; arch: string; cpus: number };
-  modes: {
-    simulator: boolean;
-    replay: boolean;
-    authTokenConfigured: boolean;
-    publicTokenConfigured: boolean;
-    allowedOriginsConfigured: boolean;
-  };
-  env: Record<string, "configured" | "enabled" | "disabled" | "unset">;
-  paths: Record<string, Probe>;
-  hardware: { state: string; label: string; message: string; serial: string; binaryPath: string };
-  services: {
-    ais: { state: string; message: string; updatedAt: string | null };
-    adsb: { state: string; message: string; updatedAt: string | null };
-    radio: { liveSessionCount: number; listenerCount: number; stats: Record<string, number> };
-  };
-  warnings: string[];
-};
-
 type LoadState =
   | { status: "loading"; data: null; error: null }
-  | { status: "ready"; data: DiagnosticsPayload; error: null }
+  | { status: "ready"; data: RuntimeDiagnostics; error: null }
   | { status: "error"; data: null; error: string };
 
 function BoolBadge({ active, label }: { active: boolean; label: string }) {
@@ -86,7 +65,7 @@ export function RuntimeDiagnosticsPanel() {
         const body = await response.json().catch(() => ({ message: response.statusText }));
         throw new Error(typeof body.message === "string" ? body.message : `Diagnostics failed with ${response.status}`);
       }
-      const data = await response.json() as DiagnosticsPayload;
+      const data = await response.json() as RuntimeDiagnostics;
       setState({ status: "ready", data, error: null });
     } catch (error) {
       if ((error as DOMException).name === "AbortError") {
@@ -117,9 +96,7 @@ export function RuntimeDiagnosticsPanel() {
             <div>
               <p className="text-xs font-semibold uppercase tracking-[0.3em] text-cyan-200/80">Runtime</p>
               <h1 className="mt-2 text-3xl font-bold tracking-tight">Runtime diagnostics</h1>
-              <p className="mt-3 max-w-3xl text-sm leading-6 text-[var(--muted)]">
-                Redacted support view for the local HackRF WebUI runtime: modes, paths, services and warnings without exposing tokens or device serials.
-              </p>
+              <p className="mt-3 max-w-3xl text-sm leading-6 text-[var(--muted)]">Modes, paths, services and warnings. Secrets and device identifiers stay redacted.</p>
             </div>
             <button type="button" className={CLS_BTN_GHOST} onClick={() => void loadDiagnostics()}>
               Refresh diagnostics
@@ -189,7 +166,7 @@ export function RuntimeDiagnosticsPanel() {
             <section className="grid gap-4 lg:grid-cols-3">
               <div className="rounded-3xl border border-white/10 bg-white/[0.03] p-5">
                 <h2 className="text-lg font-semibold">Hardware</h2>
-                <div className="mt-3 flex items-center gap-2"><StatusBadge value={state.data.hardware.state} /><span className="text-sm text-[var(--muted)]">{state.data.hardware.label}</span></div>
+                <div className="mt-3 flex items-center gap-2"><StatusBadge value={state.data.hardware.state} /><span className="text-sm text-[var(--muted)]">{state.data.hardware.product || "HackRF"}</span></div>
                 <p className="mt-3 text-sm text-[var(--muted)]">{state.data.hardware.message}</p>
               </div>
               <div className="rounded-3xl border border-white/10 bg-white/[0.03] p-5">

@@ -10,6 +10,7 @@ import type {
   HardwareStatus,
   ResolvedAppLocation,
 } from "@/lib/types";
+import { filterAdsbContacts, type AdsbContactFilters } from "@/lib/tracking-contacts";
 import { MapOverlayCard } from "@/components/map-overlay-card";
 import { useRadioSession } from "@/components/use-radio-session";
 import {
@@ -205,6 +206,10 @@ export function AdsbModule({ hardware, location, onRefreshHardware }: AdsbModule
   const lastSavedCityViewKeyRef = useRef("");
   const [selectedHex, setSelectedHex] = useState("");
   const [followSelected, setFollowSelected] = useState(false);
+  const [contactsOpen, setContactsOpen] = useState(true);
+  const [contactFilters, setContactFilters] = useState<AdsbContactFilters>({
+    query: "", scope: "all", state: "all", positionedOnly: false, sort: "recent",
+  });
   const basemapSignatureRef = useRef("");
   const { session: runtimeSession, error: sessionError, createSession, stopSession, refresh: refreshRuntimeSession } = useRadioSession("adsb");
   const runtimeSessionRef = useRef(runtimeSession);
@@ -266,6 +271,23 @@ export function AdsbModule({ hardware, location, onRefreshHardware }: AdsbModule
     () => new Set((snapshot?.aircraft ?? []).map((aircraft) => aircraft.hex)),
     [snapshot?.aircraft],
   );
+  const visibleContacts = useMemo(
+    () => filterAdsbContacts(contactList, liveHexSet, contactFilters),
+    [contactFilters, contactList, liveHexSet],
+  );
+  const fitVisibleContacts = useCallback((): void => {
+    const map = mapRef.current;
+    const points = visibleContacts.filter((entry) => entry.latitude !== null && entry.longitude !== null).map((entry) => [entry.latitude!, entry.longitude!] as [number, number]);
+    if (!map || points.length === 0) return;
+    if (points.length === 1) map.flyTo(points[0], Math.max(map.getZoom(), 10.5), { animate: true, duration: 0.85 });
+    else map.fitBounds(points, { padding: [36, 36], animate: true });
+  }, [visibleContacts]);
+  const focusReceiverOrHome = useCallback((): void => {
+    const map = mapRef.current;
+    const receiver = snapshot?.receiver;
+    const point = receiver?.latitude !== null && receiver?.longitude !== null ? receiver : savedCityView;
+    if (map && point) map.flyTo([point.latitude!, point.longitude!], Math.max(map.getZoom(), 10.5), { animate: true, duration: 0.85 });
+  }, [savedCityView, snapshot?.receiver]);
 
   const focusAircraft = useCallback((aircraft: AdsbAircraftContact, reason: "select" | "follow" = "select"): void => {
     const map = mapRef.current;
@@ -731,17 +753,9 @@ export function AdsbModule({ hardware, location, onRefreshHardware }: AdsbModule
               last contact {formatTimestamp(snapshot?.latestMessageAt ?? null)}
             </p>
           </div>
-          <span className="font-mono text-[10px] text-[var(--muted)]">
-            {runtimeRunning
-              ? "live dump1090-fa decoder"
-              : runtimeStarting
-                ? "starting decoder"
-                : snapshot?.maps.available
-                  ? snapshot.maps.kind === "pmtiles"
-                    ? "offline dark basemap"
-                    : "offline raster layers"
-                  : "live OpenStreetMap"}
-          </span>
+          <div className="flex items-center gap-2"><button className="rounded border border-white/10 px-2 py-1.5 font-mono text-[10px] text-[var(--muted-strong)] hover:bg-white/[0.06]" onClick={() => setContactsOpen((open) => !open)} type="button">{contactsOpen ? "Hide contacts" : "Show contacts"}</button><span className="font-mono text-[10px] text-[var(--muted)]">
+            {runtimeRunning ? "live dump1090-fa decoder" : runtimeStarting ? "starting decoder" : snapshot?.maps.available ? snapshot.maps.kind === "pmtiles" ? "offline dark basemap" : "offline raster layers" : "live OpenStreetMap"}
+          </span></div>
         </div>
 
         <div className="relative isolate flex-1 overflow-hidden">
@@ -752,6 +766,7 @@ export function AdsbModule({ hardware, location, onRefreshHardware }: AdsbModule
             )}
             ref={mapHostRef}
           />
+          <div className="absolute right-3 top-3 z-[1200] flex gap-2"><button className="rounded border border-white/10 bg-[rgba(4,8,15,0.82)] px-2.5 py-1.5 font-mono text-[10px] text-[var(--muted-strong)] hover:bg-white/[0.1]" disabled={!visibleContacts.some((entry) => entry.latitude !== null && entry.longitude !== null)} onClick={fitVisibleContacts} type="button">Fit contacts</button>{(snapshot?.receiver?.latitude !== null && snapshot?.receiver?.longitude !== null) || savedCityView ? <button className="rounded border border-white/10 bg-[rgba(4,8,15,0.82)] px-2.5 py-1.5 font-mono text-[10px] text-[var(--muted-strong)] hover:bg-white/[0.1]" onClick={focusReceiverOrHome} type="button">{snapshot?.receiver?.latitude !== null && snapshot?.receiver?.longitude !== null ? "Receiver" : "Home"}</button> : null}</div>
 
           {selected ? (
             <MapOverlayCard
@@ -894,7 +909,7 @@ export function AdsbModule({ hardware, location, onRefreshHardware }: AdsbModule
         </div>
       </main>
 
-      <aside className="flex w-80 shrink-0 flex-col overflow-hidden border-l border-white/8 bg-black/15">
+      {contactsOpen ? <aside className="flex w-80 shrink-0 flex-col overflow-hidden border-l border-white/8 bg-black/15">
         <div className="border-b border-white/[0.07] px-5 py-3">
           {selected ? (
             <div className="min-w-0">
@@ -908,11 +923,12 @@ export function AdsbModule({ hardware, location, onRefreshHardware }: AdsbModule
 
         <div className="flex items-center justify-between border-b border-white/[0.07] px-5 py-2.5">
           <span className="font-mono text-[10px] uppercase tracking-[0.22em] text-[var(--muted)]">Contacts</span>
-          <span className="font-mono text-[10px] text-[var(--muted)]">{contactList.length}</span>
+          <span className="font-mono text-[10px] text-[var(--muted)]">{visibleContacts.length}/{contactList.length}</span>
         </div>
+        <div className="space-y-2 border-b border-white/[0.07] px-3 py-3"><input aria-label="Search ADS-B contacts" className="w-full rounded border border-white/10 bg-black/20 px-2 py-1.5 text-xs text-[var(--foreground)]" onChange={(event) => setContactFilters((filters) => ({ ...filters, query: event.target.value }))} placeholder="Search flight, hex, type" value={contactFilters.query} /><div className="grid grid-cols-3 gap-1">{(["all", "live", "history"] as const).map((scope) => <button className={cx("rounded px-1 py-1.5 font-mono text-[10px] capitalize", contactFilters.scope === scope ? "bg-white/10 text-[var(--foreground)]" : "text-[var(--muted)]")} key={scope} onClick={() => setContactFilters((filters) => ({ ...filters, scope }))} type="button">{scope}</button>)}</div><div className="flex gap-1"><select aria-label="ADS-B state filter" className="min-w-0 flex-1 rounded border border-white/10 bg-black/20 px-1 py-1.5 font-mono text-[10px]" onChange={(event) => setContactFilters((filters) => ({ ...filters, state: event.target.value as AdsbContactFilters["state"] }))} value={contactFilters.state}><option value="all">All states</option><option value="airborne">Airborne</option><option value="ground">Ground</option><option value="emergency">Emergency</option></select><select aria-label="ADS-B contact sort" className="min-w-0 flex-1 rounded border border-white/10 bg-black/20 px-1 py-1.5 font-mono text-[10px]" onChange={(event) => setContactFilters((filters) => ({ ...filters, sort: event.target.value as AdsbContactFilters["sort"] }))} value={contactFilters.sort}><option value="recent">Recent</option><option value="name">Name</option><option value="altitude">Altitude</option></select></div><label className="flex items-center gap-2 font-mono text-[10px] text-[var(--muted-strong)]"><input checked={contactFilters.positionedOnly} onChange={(event) => setContactFilters((filters) => ({ ...filters, positionedOnly: event.target.checked }))} type="checkbox" />Positioned only</label></div>
 
         <div className="flex-1 overflow-y-auto">
-          {contactList.map((aircraft) => {
+          {visibleContacts.map((aircraft) => {
             const active = aircraft.hex === selected?.hex;
             const isLive = liveHexSet.has(aircraft.hex);
             return (
@@ -957,7 +973,7 @@ export function AdsbModule({ hardware, location, onRefreshHardware }: AdsbModule
             );
           })}
         </div>
-      </aside>
+      </aside> : null}
     </div>
   );
 }

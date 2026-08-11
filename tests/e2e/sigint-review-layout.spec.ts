@@ -92,6 +92,9 @@ const captureSummary = {
 };
 
 test("SIGINT review decisions float over the recording queue without a submit button", async ({ page }) => {
+  const patchPayloads: Array<{ status: string; priority: string; notes: string }> = [];
+  let delayFirstPatch = false;
+  let releaseFirstPatch: (() => void) | null = null;
   await page.addInitScript((location) => {
     window.localStorage.setItem("hackrf-webui.location.v2", JSON.stringify(location));
   }, configuredLocation);
@@ -106,6 +109,12 @@ test("SIGINT review decisions float over the recording queue without a submit bu
   await page.route("**/api/sigint/captures/review-layout-capture", async (route) => {
     if (route.request().method() === "PATCH") {
       const update = route.request().postDataJSON() as { status: string; priority: string; notes: string };
+      patchPayloads.push(update);
+      if (delayFirstPatch && patchPayloads.length === 1) {
+        await new Promise<void>((resolve) => {
+          releaseFirstPatch = resolve;
+        });
+      }
       await route.fulfill({ json: {
         ...captureSummary,
         reviewStatus: update.status,
@@ -129,6 +138,39 @@ test("SIGINT review decisions float over the recording queue without a submit bu
   await expect(reviewBar.getByLabel("Review decision: pending")).toBeVisible();
   await expect(reviewBar.getByRole("button", { name: /save review/i })).toHaveCount(0);
   await expect(page.getByTestId("sigint-evidence-detail").getByLabel("Review decision: pending")).toHaveCount(0);
+
+  const notes = page.getByLabel("Analyst notes");
+  await notes.fill("Confirmed voice traffic");
+  await expect(page.getByText("Unsaved changes")).toBeVisible();
+  await page.waitForRequest((request) => request.method() === "PATCH" && request.url().endsWith("/review-layout-capture") && request.postDataJSON().notes === "Confirmed voice traffic");
+  await expect(page.getByText("Notes saved")).toBeVisible();
+
+  await expect(page.getByLabel("Collapse filters")).toBeVisible();
+  await page.getByLabel("Collapse filters").click();
+  await expect(page.getByLabel("Expand filters")).toBeVisible();
+  await page.getByLabel("Expand filters").click();
+  await expect(page.getByRole("button", { name: /unreviewed voice/i })).toBeVisible();
+  await expect(page.getByRole("button", { name: "Pending review" })).toContainText("1");
+
+  await page.getByLabel("Collapse evidence detail").click();
+  await expect(page.getByLabel("Expand evidence detail")).toBeVisible();
+  await page.getByLabel("Expand evidence detail").click();
+  await expect(page.getByLabel("Analyst notes")).toHaveValue("Confirmed voice traffic");
+
+  delayFirstPatch = true;
+  patchPayloads.length = 0;
+  await notes.fill("Race-safe note");
+  await page.waitForRequest((request) => request.method() === "PATCH" && request.url().endsWith("/review-layout-capture") && request.postDataJSON().notes === "Race-safe note");
+  await reviewBar.getByLabel("Review decision: flagged").click();
+  await expect(reviewBar.getByText("Choose priority to save")).toBeVisible();
+  const priorityClick = reviewBar.getByLabel("Review priority: high").click();
+  const release = releaseFirstPatch as (() => void) | null;
+  if (!release) throw new Error("Expected delayed note request.");
+  release();
+  await priorityClick;
+  await expect.poll(() => patchPayloads.at(-1)).toMatchObject({ status: "flagged", priority: "high", notes: "Race-safe note" });
+  await expect(page.getByLabel("Analyst notes")).toHaveValue("Race-safe note");
+  delayFirstPatch = false;
 
   const keptRequest = page.waitForRequest((request) => request.method() === "PATCH" && request.url().endsWith("/review-layout-capture"));
   await reviewBar.getByLabel("Review decision: kept").click();

@@ -1,7 +1,7 @@
 "use client";
 
 import type { Layer, LayerGroup, Map as LeafletMap } from "leaflet";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState, type MouseEvent as ReactMouseEvent } from "react";
 
 import {
   fetchSigintCaptureDetail,
@@ -26,6 +26,10 @@ import type {
   ResolvedAppLocation,
 } from "@/lib/types";
 import {
+  applySigintFilterView,
+  BUILTIN_SIGINT_FILTER_VIEWS,
+  buildSigintFilterChips,
+  countSigintFilterOptions,
   hasActiveSigintCaptureFilters,
   matchesSigintCaptureFilters,
   nextVisibleCaptureId,
@@ -59,6 +63,49 @@ const DEFAULT_CAPTURE_FILTERS: SigintCaptureListFilters = {
   q: "",
   limit: 200,
 };
+const SIGINT_LAYOUT_STORAGE_KEY = "hackrf-webui.sigint-layout.v1";
+const DEFAULT_FILTER_WIDTH = 280;
+const DEFAULT_DETAIL_WIDTH = 430;
+const MIN_FILTER_WIDTH = 240;
+const MAX_FILTER_WIDTH = 420;
+const MIN_DETAIL_WIDTH = 340;
+const MAX_DETAIL_WIDTH = 620;
+const NOTE_AUTOSAVE_MS = 700;
+
+type SigintLayoutPrefs = {
+  filtersCollapsed: boolean;
+  detailCollapsed: boolean;
+  filterWidth: number;
+  detailWidth: number;
+};
+
+type NoteSaveState = "idle" | "dirty" | "saving" | "saved" | "error";
+
+function clampPanelWidth(value: number, min: number, max: number): number {
+  return Math.max(min, Math.min(max, Math.round(value)));
+}
+
+function loadSigintLayoutPrefs(): SigintLayoutPrefs {
+  const defaults: SigintLayoutPrefs = {
+    filtersCollapsed: false,
+    detailCollapsed: false,
+    filterWidth: DEFAULT_FILTER_WIDTH,
+    detailWidth: DEFAULT_DETAIL_WIDTH,
+  };
+  try {
+    const raw = window.localStorage.getItem(SIGINT_LAYOUT_STORAGE_KEY);
+    if (!raw) return defaults;
+    const parsed = JSON.parse(raw) as Partial<SigintLayoutPrefs>;
+    return {
+      filtersCollapsed: parsed.filtersCollapsed === true,
+      detailCollapsed: parsed.detailCollapsed === true,
+      filterWidth: clampPanelWidth(Number(parsed.filterWidth) || DEFAULT_FILTER_WIDTH, MIN_FILTER_WIDTH, MAX_FILTER_WIDTH),
+      detailWidth: clampPanelWidth(Number(parsed.detailWidth) || DEFAULT_DETAIL_WIDTH, MIN_DETAIL_WIDTH, MAX_DETAIL_WIDTH),
+    };
+  } catch {
+    return defaults;
+  }
+}
 
 const REVIEW_FILTER_OPTIONS: Array<{
   id: SigintCaptureListFilters["reviewStatus"];
@@ -664,6 +711,7 @@ export function SigintModule({ location }: SigintModuleProps) {
   const [tab, setTab] = useState<SigintCaptureTab>("captures");
   const [filters, setFilters] = useState<SigintCaptureListFilters>(DEFAULT_CAPTURE_FILTERS);
   const [captureItems, setCaptureItems] = useState<SigintCaptureSummary[]>([]);
+  const [captureUniverse, setCaptureUniverse] = useState<SigintCaptureSummary[]>([]);
   const [captureCounts, setCaptureCounts] = useState({
     total: 0,
     pending: 0,
@@ -683,6 +731,15 @@ export function SigintModule({ location }: SigintModuleProps) {
   const [reviewPriority, setReviewPriority] = useState<SigintReviewPriority>("normal");
   const [reviewNotes, setReviewNotes] = useState("");
   const [savingReview, setSavingReview] = useState(false);
+  const [noteSaveState, setNoteSaveState] = useState<NoteSaveState>("idle");
+  const [noteSaveError, setNoteSaveError] = useState("");
+  const [layout, setLayout] = useState<SigintLayoutPrefs>({
+    filtersCollapsed: false,
+    detailCollapsed: false,
+    filterWidth: DEFAULT_FILTER_WIDTH,
+    detailWidth: DEFAULT_DETAIL_WIDTH,
+  });
+  const [layoutReady, setLayoutReady] = useState(false);
 
   const [maps, setMaps] = useState<OfflineMapSummary | null>(null);
   const [mapsError, setMapsError] = useState("");
@@ -697,6 +754,11 @@ export function SigintModule({ location }: SigintModuleProps) {
   const [replayPlaying, setReplayPlaying] = useState(false);
   const capturesRequestIdRef = useRef(0);
   const detailRequestIdRef = useRef(0);
+  const noteSaveRequestIdRef = useRef(0);
+  const noteSaveInFlightRef = useRef<Promise<void> | null>(null);
+  const reviewSaveInFlightRef = useRef(false);
+  const lastSavedNoteCaptureIdRef = useRef("");
+  const resizeCleanupRef = useRef<(() => void) | null>(null);
   const reviewDraftRef = useRef({
     captureId: "",
     status: "pending" as SigintReviewStatus,
@@ -711,6 +773,32 @@ export function SigintModule({ location }: SigintModuleProps) {
     [selectedTrackKey, trackItems],
   );
   const replayPoints = useMemo(() => buildReplayPoints(tab, trackHistory), [tab, trackHistory]);
+  const activeFilterChips = useMemo(() => buildSigintFilterChips(filters), [filters]);
+  const filterOptionCounts = useMemo(
+    () => countSigintFilterOptions(captureUniverse, filters),
+    [captureUniverse, filters],
+  );
+
+  useEffect(() => {
+    setLayout(loadSigintLayoutPrefs());
+    setLayoutReady(true);
+    return () => resizeCleanupRef.current?.();
+  }, []);
+
+  useEffect(() => {
+    if (!layoutReady) return;
+    window.localStorage.setItem(SIGINT_LAYOUT_STORAGE_KEY, JSON.stringify(layout));
+  }, [layout, layoutReady]);
+
+  const loadCaptureUniverse = useCallback(async () => {
+    try {
+      const payload = await fetchSigintCaptures({ ...DEFAULT_CAPTURE_FILTERS, limit: 1_000 });
+      setCaptureUniverse(payload.items);
+    } catch {
+      // Filter counts are supplementary. Keep the current queue usable if this request fails.
+    }
+  }, []);
+
   const loadCaptures = useCallback(
     async (background = false) => {
       const requestId = capturesRequestIdRef.current + 1;
@@ -774,6 +862,10 @@ export function SigintModule({ location }: SigintModuleProps) {
   }, [loadCaptures]);
 
   useEffect(() => {
+    void loadCaptureUniverse();
+  }, [loadCaptureUniverse]);
+
+  useEffect(() => {
     if (!captureItems.some((item) => item.id === selectedCaptureId)) {
       setSelectedCaptureId(captureItems[0]?.id ?? "");
     }
@@ -790,6 +882,10 @@ export function SigintModule({ location }: SigintModuleProps) {
   useEffect(() => {
     const captureId = captureDetail?.id ?? "";
     const draft = reviewDraftRef.current;
+    if (captureId && captureId === lastSavedNoteCaptureIdRef.current) {
+      lastSavedNoteCaptureIdRef.current = "";
+      return;
+    }
     if (captureId && captureId === draft.captureId && draft.dirty) {
       return;
     }
@@ -800,6 +896,8 @@ export function SigintModule({ location }: SigintModuleProps) {
     setReviewStatus(status);
     setReviewPriority(priority);
     setReviewNotes(notes);
+    setNoteSaveState("idle");
+    setNoteSaveError("");
     reviewDraftRef.current = { captureId, status, priority, notes, dirty: false };
   }, [captureDetail]);
 
@@ -978,8 +1076,10 @@ export function SigintModule({ location }: SigintModuleProps) {
       return;
     }
 
+    reviewSaveInFlightRef.current = true;
     setSavingReview(true);
     try {
+      await noteSaveInFlightRef.current;
       const notes = reviewDraftRef.current.captureId === captureDetail.id
         ? reviewDraftRef.current.notes
         : reviewNotes;
@@ -996,6 +1096,9 @@ export function SigintModule({ location }: SigintModuleProps) {
         dirty: false,
       };
       const nextSummary = nextDetail as SigintCaptureSummary;
+      setCaptureUniverse((current) =>
+        current.map((item) => (item.id === nextDetail.id ? nextSummary : item)),
+      );
       const remainsVisible = matchesSigintCaptureFilters(nextSummary, filters);
       setCaptureDetail(remainsVisible ? nextDetail : null);
       setCaptureItems((current) => {
@@ -1020,8 +1123,108 @@ export function SigintModule({ location }: SigintModuleProps) {
     } catch (error) {
       setCaptureDetailError(error instanceof Error ? error.message : "Could not update the review.");
     } finally {
+      reviewSaveInFlightRef.current = false;
       setSavingReview(false);
     }
+  }
+
+  const saveNotes = useCallback((): Promise<void> => {
+    if (reviewSaveInFlightRef.current) return Promise.resolve();
+    if (noteSaveInFlightRef.current) return noteSaveInFlightRef.current;
+    const detail = captureDetail;
+    const draft = reviewDraftRef.current;
+    if (!detail || draft.captureId !== detail.id || !draft.dirty) return Promise.resolve();
+
+    const task = (async () => {
+      while (true) {
+        const currentDraft = reviewDraftRef.current;
+        if (currentDraft.captureId !== detail.id || !currentDraft.dirty) return;
+        const notes = currentDraft.notes;
+        const requestId = noteSaveRequestIdRef.current + 1;
+        noteSaveRequestIdRef.current = requestId;
+        setNoteSaveState("saving");
+        setNoteSaveError("");
+        try {
+          const nextDetail = await updateSigintCaptureReview(detail.id, {
+            status: detail.reviewStatus,
+            priority: detail.reviewPriority,
+            notes,
+          });
+          if (noteSaveRequestIdRef.current !== requestId) return;
+          const latestDraft = reviewDraftRef.current;
+          if (latestDraft.captureId !== nextDetail.id) return;
+          if (latestDraft.notes !== nextDetail.reviewNotes) {
+            setNoteSaveState("dirty");
+            continue;
+          }
+          reviewDraftRef.current = { ...latestDraft, notes: nextDetail.reviewNotes, dirty: false };
+          setCaptureDetail((current) => current?.id === nextDetail.id
+            ? { ...nextDetail, reviewStatus: current.reviewStatus, reviewPriority: current.reviewPriority }
+            : current);
+          setCaptureItems((current) => current.map((item) => item.id === nextDetail.id
+            ? { ...nextDetail, reviewStatus: item.reviewStatus, reviewPriority: item.reviewPriority }
+            : item));
+          setCaptureUniverse((current) => current.map((item) => item.id === nextDetail.id
+            ? { ...nextDetail, reviewStatus: item.reviewStatus, reviewPriority: item.reviewPriority }
+            : item));
+          lastSavedNoteCaptureIdRef.current = nextDetail.id;
+          setReviewNotes(nextDetail.reviewNotes);
+          setNoteSaveState("saved");
+          return;
+        } catch (error) {
+          if (noteSaveRequestIdRef.current !== requestId) return;
+          setNoteSaveState("error");
+          setNoteSaveError(error instanceof Error ? error.message : "Could not save notes.");
+          return;
+        }
+      }
+    })();
+    noteSaveInFlightRef.current = task;
+    void task.finally(() => {
+      if (noteSaveInFlightRef.current === task) noteSaveInFlightRef.current = null;
+    });
+    return task;
+  }, [captureDetail]);
+
+  useEffect(() => {
+    if (noteSaveState !== "dirty" || savingReview) return;
+    const timeout = window.setTimeout(() => {
+      void saveNotes();
+    }, NOTE_AUTOSAVE_MS);
+    return () => window.clearTimeout(timeout);
+  }, [noteSaveState, reviewNotes, saveNotes, savingReview]);
+
+  useEffect(() => {
+    const warnAboutUnsavedNotes = (event: BeforeUnloadEvent) => {
+      if (!reviewDraftRef.current.dirty) return;
+      event.preventDefault();
+    };
+    window.addEventListener("beforeunload", warnAboutUnsavedNotes);
+    return () => window.removeEventListener("beforeunload", warnAboutUnsavedNotes);
+  }, []);
+
+  function beginPanelResize(panel: "filters" | "detail", event: ReactMouseEvent<HTMLDivElement>): void {
+    event.preventDefault();
+    resizeCleanupRef.current?.();
+    const startX = event.clientX;
+    const startWidth = panel === "filters" ? layout.filterWidth : layout.detailWidth;
+    const onMove = (moveEvent: MouseEvent) => {
+      const delta = moveEvent.clientX - startX;
+      setLayout((current) => ({
+        ...current,
+        [panel === "filters" ? "filterWidth" : "detailWidth"]: panel === "filters"
+          ? clampPanelWidth(startWidth + delta, MIN_FILTER_WIDTH, MAX_FILTER_WIDTH)
+          : clampPanelWidth(startWidth - delta, MIN_DETAIL_WIDTH, MAX_DETAIL_WIDTH),
+      }));
+    };
+    const cleanup = () => {
+      window.removeEventListener("mousemove", onMove);
+      window.removeEventListener("mouseup", cleanup);
+      resizeCleanupRef.current = null;
+    };
+    resizeCleanupRef.current = cleanup;
+    window.addEventListener("mousemove", onMove);
+    window.addEventListener("mouseup", cleanup);
   }
 
   const activeReplayPoint =
@@ -1064,11 +1267,33 @@ export function SigintModule({ location }: SigintModuleProps) {
 
   return (
     <div className="flex flex-1 overflow-hidden">
-      <aside className="flex w-[280px] shrink-0 flex-col border-r border-white/8 bg-[rgba(4,8,16,0.76)]">
+      {layout.filtersCollapsed ? (
+        <button
+          aria-label="Expand filters"
+          className="flex w-10 shrink-0 items-start justify-center border-r border-white/8 bg-[rgba(4,8,16,0.76)] pt-4 font-mono text-xs text-cyan-200 transition hover:bg-white/[0.04]"
+          onClick={() => setLayout((current) => ({ ...current, filtersCollapsed: false }))}
+          title="Expand filters"
+          type="button"
+        >
+          ›
+        </button>
+      ) : (
+      <aside
+        className="relative flex shrink-0 flex-col border-r border-white/8 bg-[rgba(4,8,16,0.76)]"
+        style={{ width: layout.filterWidth }}
+      >
         <div className="border-b border-white/[0.07] px-4 py-3">
-          <div className="flex items-center justify-between">
-            <p className="font-mono text-[10px] uppercase tracking-[0.26em] text-cyan-200">SIGINT</p>
-            <p className="font-mono text-[9px] uppercase tracking-[0.14em] text-[var(--muted)]">Capture Intelligence</p>
+          <div className="flex items-center justify-between gap-2">
+            <p className="font-mono text-[11px] uppercase tracking-[0.22em] text-cyan-200">SIGINT</p>
+            <button
+              aria-label="Collapse filters"
+              className="rounded border border-white/10 px-2 py-1 font-mono text-xs text-[var(--muted-strong)] transition hover:bg-white/[0.05] hover:text-white"
+              onClick={() => setLayout((current) => ({ ...current, filtersCollapsed: true }))}
+              title="Collapse filters"
+              type="button"
+            >
+              ‹
+            </button>
           </div>
         </div>
 
@@ -1122,12 +1347,12 @@ export function SigintModule({ location }: SigintModuleProps) {
               </div>
 
               <div>
-                <div className="mb-1.5 flex items-center justify-between">
-                  <p className="font-mono text-[8px] uppercase tracking-[0.18em] text-[var(--muted)]">Capture filters</p>
+                <div className="mb-2 flex items-center justify-between">
+                  <p className="font-mono text-[10px] uppercase tracking-[0.16em] text-[var(--muted)]">Filters</p>
                   {hasActiveCaptureFilters ? (
                     <button
                       aria-label="Clear all capture filters"
-                      className="font-mono text-[8px] uppercase tracking-[0.12em] text-cyan-300 hover:text-cyan-100"
+                      className="font-mono text-[10px] uppercase tracking-[0.1em] text-cyan-300 hover:text-cyan-100"
                       onClick={() => setFilters((current) => resetSigintCaptureFilters(current))}
                       type="button"
                     >
@@ -1135,7 +1360,41 @@ export function SigintModule({ location }: SigintModuleProps) {
                     </button>
                   ) : null}
                 </div>
-                <p className="mb-1.5 font-mono text-[8px] uppercase tracking-[0.18em] text-[var(--muted)]">Review status</p>
+
+                <div className="mb-3">
+                  <p className="mb-1.5 font-mono text-[10px] uppercase tracking-[0.14em] text-[var(--muted)]">Saved views</p>
+                  <div className="flex flex-wrap gap-1.5">
+                    {BUILTIN_SIGINT_FILTER_VIEWS.map((view) => (
+                      <button
+                        key={view.id}
+                        className="rounded-full border border-white/10 bg-white/[0.03] px-2.5 py-1.5 font-mono text-[10px] text-[var(--muted-strong)] transition hover:border-cyan-300/30 hover:bg-cyan-300/[0.07] hover:text-cyan-100"
+                        onClick={() => setFilters((current) => applySigintFilterView(current, view.id))}
+                        title={view.description}
+                        type="button"
+                      >
+                        {view.label}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {activeFilterChips.length > 0 ? (
+                  <div className="mb-3 flex flex-wrap gap-1.5" aria-label="Active filters">
+                    {activeFilterChips.map((chip) => (
+                      <button
+                        key={chip.id}
+                        className="rounded border border-cyan-300/25 bg-cyan-300/[0.08] px-2 py-1 font-mono text-[10px] text-cyan-100 transition hover:bg-cyan-300/[0.14]"
+                        onClick={() => setFilters((current) => chip.clear(current))}
+                        title={`Remove ${chip.label}`}
+                        type="button"
+                      >
+                        {chip.label} ×
+                      </button>
+                    ))}
+                  </div>
+                ) : null}
+
+                <p className="mb-1.5 font-mono text-[10px] uppercase tracking-[0.14em] text-[var(--muted)]">Review status</p>
                 <div className="grid grid-cols-2 gap-1.5">
                   {REVIEW_FILTER_OPTIONS.map((option) => (
                     <button
@@ -1154,14 +1413,17 @@ export function SigintModule({ location }: SigintModuleProps) {
                       onClick={() => setFilters((current) => ({ ...current, reviewStatus: option.id }))}
                       type="button"
                     >
-                      <span className="font-mono text-[9px] uppercase tracking-[0.12em]">{option.shortLabel}</span>
+                      <span className="flex items-center justify-between gap-2 font-mono text-[10px] uppercase tracking-[0.1em]">
+                        <span>{option.shortLabel}</span>
+                        <span className="tabular-nums text-[var(--muted)]">{filterOptionCounts.reviewStatus[option.id]}</span>
+                      </span>
                     </button>
                   ))}
                 </div>
               </div>
 
               <div>
-                <p className="mb-1.5 font-mono text-[8px] uppercase tracking-[0.18em] text-[var(--muted)]">Signal source</p>
+                <p className="mb-1.5 font-mono text-[10px] uppercase tracking-[0.14em] text-[var(--muted)]">Signal source</p>
                 <div className="grid grid-cols-4 gap-1">
                   {[
                     { id: "all", label: "All" },
@@ -1174,7 +1436,7 @@ export function SigintModule({ location }: SigintModuleProps) {
                       aria-label={`Signal source: ${option.id === "airband" ? "Airband" : option.id === "maritime" ? "Maritime" : option.label}`}
                       aria-pressed={filters.module === option.id}
                       className={cx(
-                        "rounded border px-1.5 py-1.5 font-mono text-[8px] uppercase tracking-[0.12em] transition",
+                        "rounded border px-1.5 py-1.5 font-mono text-[10px] uppercase tracking-[0.1em] transition",
                         filters.module === option.id
                           ? "border-cyan-300/35 bg-cyan-300/10 text-cyan-100"
                           : "border-white/[0.07] bg-white/[0.025] text-[var(--muted)] hover:bg-white/[0.05]",
@@ -1182,7 +1444,7 @@ export function SigintModule({ location }: SigintModuleProps) {
                       onClick={() => setFilters((current) => ({ ...current, module: option.id as SigintCaptureListFilters["module"] }))}
                       type="button"
                     >
-                      {option.label}
+                      {option.label} <span className="opacity-60">{filterOptionCounts.module[option.id as SigintCaptureListFilters["module"]]}</span>
                     </button>
                   ))}
                 </div>
@@ -1190,8 +1452,7 @@ export function SigintModule({ location }: SigintModuleProps) {
 
               <div>
                 <div className="mb-1.5">
-                  <p className="font-mono text-[8px] uppercase tracking-[0.18em] text-[var(--muted)]">AI evidence</p>
-                  <p className="mt-1 text-[9px] leading-3.5 text-[var(--muted)]">Voice uses VAD and also finds unclear or untranscribed speech.</p>
+                  <p className="font-mono text-[10px] uppercase tracking-[0.14em] text-[var(--muted)]">AI evidence</p>
                 </div>
                 <div className="flex flex-wrap gap-1.5">
                   {ANALYSIS_FILTER_OPTIONS.map((option) => (
@@ -1200,7 +1461,7 @@ export function SigintModule({ location }: SigintModuleProps) {
                       aria-label={`AI evidence: ${option.label}. ${option.hint}`}
                       aria-pressed={filters.analysis === option.id}
                       className={cx(
-                        "rounded-full border px-2.5 py-1 font-mono text-[8px] uppercase tracking-[0.11em] transition",
+                        "rounded-full border px-2.5 py-1.5 font-mono text-[10px] transition",
                         filters.analysis === option.id
                           ? option.id === "voice" || option.id === "speech"
                             ? "border-emerald-300/35 bg-emerald-300/12 text-emerald-100"
@@ -1210,7 +1471,7 @@ export function SigintModule({ location }: SigintModuleProps) {
                       onClick={() => setFilters((current) => ({ ...current, analysis: option.id }))}
                       type="button"
                     >
-                      {option.label}
+                      {option.label} <span className="opacity-60">{filterOptionCounts.analysis[option.id]}</span>
                     </button>
                   ))}
                 </div>
@@ -1223,7 +1484,7 @@ export function SigintModule({ location }: SigintModuleProps) {
                     type="checkbox"
                     onChange={(event) => setFilters((current) => ({ ...current, hasAudio: event.target.checked }))}
                   />
-                  WAV
+                  WAV <span className="ml-auto font-mono text-[10px] text-[var(--muted)]">{filterOptionCounts.media.audio}</span>
                 </label>
 
                 <label className="flex cursor-pointer items-center gap-2 rounded border border-white/[0.07] bg-white/[0.03] px-2.5 py-2 text-[10px] text-[var(--muted-strong)] transition hover:bg-white/[0.05]">
@@ -1232,7 +1493,7 @@ export function SigintModule({ location }: SigintModuleProps) {
                     type="checkbox"
                     onChange={(event) => setFilters((current) => ({ ...current, hasRawIq: event.target.checked }))}
                   />
-                  Raw IQ
+                  Raw IQ <span className="ml-auto font-mono text-[10px] text-[var(--muted)]">{filterOptionCounts.media.rawIq}</span>
                 </label>
               </div>
             </div>
@@ -1260,7 +1521,13 @@ export function SigintModule({ location }: SigintModuleProps) {
             </div>
           </div>
         )}
+        <div
+          aria-hidden="true"
+          className="absolute inset-y-0 right-0 z-30 w-1.5 cursor-col-resize bg-transparent transition hover:bg-cyan-300/20"
+          onMouseDown={(event) => beginPanelResize("filters", event)}
+        />
       </aside>
+      )}
 
       <main className="flex min-w-0 flex-1 border-r border-white/8 bg-black/10">
         {tab === "captures" ? (
@@ -1471,11 +1738,37 @@ export function SigintModule({ location }: SigintModuleProps) {
         )}
       </main>
 
-      <aside className="flex w-[430px] shrink-0 flex-col bg-[rgba(6,12,20,0.78)]" data-testid="sigint-evidence-detail">
+      {layout.detailCollapsed ? (
+        <button
+          aria-label="Expand evidence detail"
+          className="flex w-10 shrink-0 items-start justify-center bg-[rgba(6,12,20,0.78)] pt-4 font-mono text-xs text-cyan-200 transition hover:bg-white/[0.04]"
+          onClick={() => setLayout((current) => ({ ...current, detailCollapsed: false }))}
+          title="Expand evidence detail"
+          type="button"
+        >
+          ‹
+        </button>
+      ) : (
+      <aside
+        className="relative flex shrink-0 flex-col bg-[rgba(6,12,20,0.78)]"
+        data-testid="sigint-evidence-detail"
+        style={{ width: layout.detailWidth }}
+      >
         {tab === "captures" ? (
           <>
             <div className="border-b border-white/[0.07] px-5 py-4">
-              <p className="font-mono text-[10px] uppercase tracking-[0.24em] text-[var(--muted)]">Evidence detail</p>
+              <div className="flex items-center justify-between gap-3">
+                <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-[var(--muted)]">Evidence detail</p>
+                <button
+                  aria-label="Collapse evidence detail"
+                  className="rounded border border-white/10 px-2 py-1 font-mono text-xs text-[var(--muted-strong)] transition hover:bg-white/[0.05] hover:text-white"
+                  onClick={() => setLayout((current) => ({ ...current, detailCollapsed: true }))}
+                  title="Collapse evidence detail"
+                  type="button"
+                >
+                  ›
+                </button>
+              </div>
               {captureDetailLoading ? <p className="mt-3 text-sm text-[var(--muted)]">Loading capture...</p> : null}
               {captureDetailError ? <p className="mt-3 text-sm text-rose-200">{captureDetailError}</p> : null}
             </div>
@@ -1650,19 +1943,56 @@ export function SigintModule({ location }: SigintModuleProps) {
 
                 {/* Analyst notes */}
                 <div className="border-b border-white/[0.07]">
-                  <div className="flex items-center justify-between border-b border-white/[0.05] px-5 py-2.5">
-                    <p className="font-mono text-[9px] uppercase tracking-[0.22em] text-[var(--muted)]">Analyst notes</p>
-                    {savingReview ? <Spinner /> : null}
+                  <div className="flex items-center justify-between gap-3 border-b border-white/[0.05] px-5 py-2.5">
+                    <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-[var(--muted)]">Analyst notes</p>
+                    <div aria-live="polite" className="flex items-center gap-2">
+                      {noteSaveState === "saving" ? <Spinner /> : null}
+                      <span className={cx(
+                        "font-mono text-[10px]",
+                        noteSaveState === "error"
+                          ? "text-rose-200"
+                          : noteSaveState === "saved"
+                            ? "text-emerald-200"
+                            : noteSaveState === "dirty"
+                              ? "text-amber-200"
+                              : "text-[var(--muted)]",
+                      )}>
+                        {noteSaveState === "saving"
+                          ? "Saving notes…"
+                          : noteSaveState === "saved"
+                            ? "Notes saved"
+                            : noteSaveState === "dirty"
+                              ? "Unsaved changes"
+                              : noteSaveState === "error"
+                                ? "Save failed"
+                                : "Autosave on"}
+                      </span>
+                      {noteSaveState === "error" ? (
+                        <button
+                          className="rounded border border-rose-300/25 bg-rose-300/10 px-2 py-1 font-mono text-[10px] text-rose-100 transition hover:bg-rose-300/15"
+                          onClick={() => void saveNotes()}
+                          title={noteSaveError}
+                          type="button"
+                        >
+                          Retry
+                        </button>
+                      ) : null}
+                    </div>
                   </div>
                   <div className="px-5 py-3">
                     <textarea
                       className={cx(CLS_INPUT, "min-h-24 resize-y")}
                       aria-label="Analyst notes"
-                      placeholder="Keep/discard rationale, callouts, routing notes..."
+                      placeholder="Add review notes…"
                       value={reviewNotes}
+                      onBlur={() => {
+                        if (reviewDraftRef.current.dirty) void saveNotes();
+                      }}
                       onChange={(event) => {
                         const notes = event.target.value;
                         setReviewNotes(notes);
+                        setNoteSaveState("dirty");
+                        setNoteSaveError("");
                         reviewDraftRef.current = {
                           captureId: captureDetail.id,
                           status: reviewStatus,
@@ -1672,6 +2002,9 @@ export function SigintModule({ location }: SigintModuleProps) {
                         };
                       }}
                     />
+                    {noteSaveState === "error" && noteSaveError ? (
+                      <p className="mt-2 text-xs text-rose-200">{noteSaveError}</p>
+                    ) : null}
                   </div>
                 </div>
 
@@ -1820,7 +2153,13 @@ export function SigintModule({ location }: SigintModuleProps) {
             </div>
           </>
         )}
+        <div
+          aria-hidden="true"
+          className="absolute inset-y-0 left-0 z-30 w-1.5 cursor-col-resize bg-transparent transition hover:bg-cyan-300/20"
+          onMouseDown={(event) => beginPanelResize("detail", event)}
+        />
       </aside>
+      )}
     </div>
   );
 }
