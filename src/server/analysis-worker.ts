@@ -8,10 +8,20 @@ import { promisify } from "node:util";
 
 import { and, eq, inArray } from "drizzle-orm";
 
+import type { AiSettings } from "@/lib/settings";
+import { resolveEffectiveAiSettings, resolveSavedAiSettings, runtimeAiDisableReason, type AnalysisWorkerStatus } from "@/lib/settings-runtime";
 import { appDb, sqliteDb } from "@/server/db/client";
 import { analysisFindings, analysisJobs, captureSessions, captureTags, captureTranscripts } from "@/server/db/schema";
 import { normalizeSigintAudioPayload, type SigintAudioPayload } from "@/server/sigint-audio-payload";
 import { projectAssetPath, projectRuntimePath, projectScriptPath } from "@/server/project-paths";
+import {
+  claimNextEligibleAnalysisJob,
+  countAnalysisJobs,
+  queueAnalysisJobIfEnabled,
+  queueHistoricalAnalysisJobs,
+  writeAiQueuePolicy,
+} from "@/server/settings-policy";
+import { createSettingsStore } from "@/server/settings-store";
 import { captureAbsolutePath } from "@/server/storage";
 
 const execFileAsync = promisify(execFile);
@@ -25,10 +35,9 @@ const AI_PYTHON_PATH = projectRuntimePath("ai-venv", "bin", "python");
 const AI_SCRIPT_PATH = projectScriptPath("ai", "audio_analyzer.py");
 const AI_VAD_MODEL_PATH = projectAssetPath("ai", "silero_vad_v6.onnx");
 const AI_MODEL_CACHE_PATH = projectRuntimePath("ai-models");
-
 const WORKER_IDLE_MS = 2_500;
-const BACKFILL_INTERVAL_MS = 30_000;
 const RUNTIME_CHECK_INTERVAL_MS = 30_000;
+const settingsStore = createSettingsStore(sqliteDb);
 
 function configuredAsrModel(): string {
   return process.env.HACKRF_WEBUI_AI_ASR_MODEL?.trim() || DEFAULT_ASR_MODEL;
@@ -36,15 +45,6 @@ function configuredAsrModel(): string {
 
 function configuredAsrRevision(): string {
   return process.env.HACKRF_WEBUI_AI_ASR_REVISION?.trim() || DEFAULT_ASR_REVISION;
-}
-
-function configuredCpuThreads(): string {
-  const parsed = Number.parseInt(process.env.HACKRF_WEBUI_AI_CPU_THREADS ?? "4", 10);
-  return String(Number.isFinite(parsed) ? Math.max(1, Math.min(8, parsed)) : 4);
-}
-
-function configuredHotwords(): string {
-  return process.env.HACKRF_WEBUI_AI_HOTWORDS?.trim() || "";
 }
 
 type RuntimeCheckState = {
@@ -63,8 +63,9 @@ type AnalysisWorkerState = {
   running: boolean;
   timer: NodeJS.Timeout | null;
   processing: boolean;
-  lastBackfillAtMs: number;
   runtimeCheck: RuntimeCheckState | null;
+  currentJob: { id: string; captureSessionId: string } | null;
+  lastResult: { status: "completed" | "failed"; endedAtMs: number; errorText: string | null } | null;
 };
 
 declare global {
@@ -75,13 +76,21 @@ const workerState: AnalysisWorkerState = global.__hackrfWebUiAnalysisWorker ?? {
   running: false,
   timer: null,
   processing: false,
-  lastBackfillAtMs: 0,
   runtimeCheck: null,
+  currentJob: null,
+  lastResult: null,
 };
 
 if (process.env.NODE_ENV !== "production") {
   global.__hackrfWebUiAnalysisWorker = workerState;
 }
+
+function readAiSettings(): AiSettings {
+  const snapshot = settingsStore.getSnapshot();
+  const saved = resolveSavedAiSettings(snapshot.values.ai, snapshot.sections.ai.source, process.env);
+  return resolveEffectiveAiSettings(saved, process.env);
+}
+
 
 function parseAnalyzerPayloadText(raw: string): SigintAudioPayload | null {
   const lines = raw
@@ -118,7 +127,7 @@ function parseGenericPayloadText(raw: string): Record<string, unknown> | null {
   }
 }
 
-function analyzerArguments(): string[] {
+function analyzerArguments(aiSettings: AiSettings): string[] {
   return [
     "--vad-model",
     AI_VAD_MODEL_PATH,
@@ -129,7 +138,7 @@ function analyzerArguments(): string[] {
     "--asr-revision",
     configuredAsrRevision(),
     "--cpu-threads",
-    configuredCpuThreads(),
+    String(aiSettings.cpuThreads),
   ];
 }
 
@@ -137,7 +146,7 @@ function analysisRuntimePathsReady(): boolean {
   return existsSync(AI_PYTHON_PATH) && existsSync(AI_SCRIPT_PATH) && existsSync(AI_VAD_MODEL_PATH);
 }
 
-async function checkAnalysisRuntime(force = false): Promise<RuntimeCheckState> {
+async function checkAnalysisRuntime(aiSettings: AiSettings, force = false): Promise<RuntimeCheckState> {
   if (!analysisRuntimePathsReady()) {
     return {
       ok: false,
@@ -152,7 +161,7 @@ async function checkAnalysisRuntime(force = false): Promise<RuntimeCheckState> {
   try {
     const result = await execFileAsync(
       AI_PYTHON_PATH,
-      [AI_SCRIPT_PATH, "--check", ...analyzerArguments()],
+      [AI_SCRIPT_PATH, "--check", ...analyzerArguments(aiSettings)],
       {
         timeout: 20_000,
         maxBuffer: 1024 * 1024,
@@ -200,48 +209,24 @@ function lookupBurstEventId(captureSessionId: string): string | null {
   return row?.burstEventId ?? null;
 }
 
-function queueQueuedJob(captureSessionId: string, burstEventIdHint: string | null = null): void {
-  const nowMs = Date.now();
+function queueQueuedJob(
+  captureSessionId: string,
+  burstEventIdHint: string | null = null,
+  aiSettings: AiSettings = readAiSettings(),
+): void {
   const burstEventId = burstEventIdHint ?? lookupBurstEventId(captureSessionId);
-  const existing = appDb
-    .select({ id: analysisJobs.id, status: analysisJobs.status, burstEventId: analysisJobs.burstEventId })
-    .from(analysisJobs)
-    .where(and(eq(analysisJobs.captureSessionId, captureSessionId), eq(analysisJobs.engine, AUDIO_ANALYSIS_ENGINE)))
-    .limit(1)
-    .get();
-
-  if (existing) {
-    if (existing.status === "failed") {
-      appDb.update(analysisJobs).set({
-        status: "queued",
-        burstEventId,
-        errorText: null,
-        startedAtMs: null,
-        endedAtMs: null,
-      }).where(eq(analysisJobs.id, existing.id)).run();
-    } else if (existing.burstEventId !== burstEventId) {
-      appDb.update(analysisJobs).set({ burstEventId }).where(eq(analysisJobs.id, existing.id)).run();
-    }
-    return;
-  }
-
-  appDb.insert(analysisJobs).values({
-    id: randomUUID(),
+  queueAnalysisJobIfEnabled(sqliteDb, {
     captureSessionId,
     burstEventId,
     engine: AUDIO_ANALYSIS_ENGINE,
-    status: "queued",
     paramsJson: JSON.stringify({
       vadModel: path.basename(AI_VAD_MODEL_PATH),
       asrModel: configuredAsrModel(),
       asrRevision: configuredAsrRevision(),
-      cpuThreads: Number(configuredCpuThreads()),
+      cpuThreads: aiSettings.cpuThreads,
+      hotwordsConfigured: aiSettings.hotwords.length > 0,
     }),
-    errorText: null,
-    startedAtMs: null,
-    endedAtMs: null,
-    createdAtMs: nowMs,
-  }).run();
+  });
 }
 
 function captureHasPreferredAnalysisJob(captureSessionId: string): boolean {
@@ -254,49 +239,18 @@ function captureHasPreferredAnalysisJob(captureSessionId: string): boolean {
   return Boolean(row && row.status !== "failed");
 }
 
-function backfillQueuedJobs(limit = 48): number {
-  const rows = sqliteDb.prepare(`
-    SELECT cs.id AS captureSessionId
-    FROM capture_sessions cs
-    INNER JOIN capture_files cf ON cf.capture_session_id = cs.id AND cf.kind = 'audio'
-    LEFT JOIN analysis_jobs aj ON aj.capture_session_id = cs.id AND aj.engine = ?
-    WHERE cs.module IN ('pmr', 'airband', 'maritime')
-      AND (aj.id IS NULL OR aj.status = 'failed')
-    ORDER BY cs.started_at_ms DESC
-    LIMIT ?
-  `).all(AUDIO_ANALYSIS_ENGINE, limit) as Array<{ captureSessionId: string }>;
-  for (const row of rows) {
-    queueQueuedJob(row.captureSessionId);
-  }
-  return rows.length;
+function backfillQueuedJobs(aiSettings: AiSettings, limit = 48): number {
+  void aiSettings;
+  return queueHistoricalAnalysisJobs(sqliteDb, AUDIO_ANALYSIS_ENGINE, limit);
 }
 
 function claimNextJob(): PendingJobRow | null {
-  const claim = sqliteDb.transaction(() => {
-    const row = sqliteDb.prepare(`
-      SELECT aj.id AS id, aj.capture_session_id AS captureSessionId, cf.relative_path AS audioRelativePath
-      FROM analysis_jobs aj
-      INNER JOIN capture_files cf ON cf.capture_session_id = aj.capture_session_id AND cf.kind = 'audio'
-      WHERE aj.engine = ? AND aj.status = 'queued'
-      ORDER BY aj.created_at_ms ASC
-      LIMIT 1
-    `).get(AUDIO_ANALYSIS_ENGINE) as PendingJobRow | undefined;
-    if (!row) {
-      return null;
-    }
-    const update = sqliteDb.prepare(`
-      UPDATE analysis_jobs
-      SET status = 'running', started_at_ms = ?, ended_at_ms = NULL, error_text = NULL
-      WHERE id = ? AND status = 'queued'
-    `).run(Date.now(), row.id);
-    return update.changes === 1 ? row : null;
-  }).immediate;
-  return claim();
+  return claimNextEligibleAnalysisJob(sqliteDb, AUDIO_ANALYSIS_ENGINE);
 }
 
-async function runAudioAnalyzer(audioPath: string): Promise<SigintAudioPayload> {
-  const args = [AI_SCRIPT_PATH, "--wav", audioPath, ...analyzerArguments()];
-  const hotwords = configuredHotwords();
+async function runAudioAnalyzer(audioPath: string, aiSettings: AiSettings): Promise<SigintAudioPayload> {
+  const args = [AI_SCRIPT_PATH, "--wav", audioPath, ...analyzerArguments(aiSettings)];
+  const hotwords = aiSettings.hotwords;
   if (hotwords) {
     args.push("--hotwords", hotwords);
   }
@@ -454,44 +408,60 @@ async function processWorkerTick(): Promise<void> {
   if (!workerState.running || workerState.processing) {
     return;
   }
+  const aiSettings = readAiSettings();
+  if (!aiSettings.enabled) {
+    return;
+  }
   workerState.processing = true;
   try {
-    if (Date.now() - workerState.lastBackfillAtMs >= BACKFILL_INTERVAL_MS) {
-      backfillQueuedJobs();
-      workerState.lastBackfillAtMs = Date.now();
-    }
-    const runtime = await checkAnalysisRuntime();
+    const runtime = await checkAnalysisRuntime(aiSettings);
     if (!runtime.ok) {
+      return;
+    }
+    // Re-read after the asynchronous runtime check so a live disable cannot race into a claim.
+    if (!readAiSettings().enabled) {
       return;
     }
     const job = claimNextJob();
     if (!job) {
       return;
     }
+    workerState.currentJob = { id: job.id, captureSessionId: job.captureSessionId };
     const audioAbsolutePath = captureAbsolutePath(job.audioRelativePath);
     if (!audioAbsolutePath || !existsSync(audioAbsolutePath)) {
-      writeFailedJob(job.id, "audio capture missing");
+      const errorText = "audio capture missing";
+      writeFailedJob(job.id, errorText);
+      workerState.lastResult = { status: "failed", endedAtMs: Date.now(), errorText };
       return;
     }
     try {
-      const payload = await runAudioAnalyzer(audioAbsolutePath);
+      const payload = await runAudioAnalyzer(audioAbsolutePath, aiSettings);
       if (payload.status === "completed") {
         writeSuccessfulJob(job, payload);
+        workerState.lastResult = { status: "completed", endedAtMs: Date.now(), errorText: null };
       } else {
-        writeFailedJob(job.id, payload.error || "analysis failed");
+        const errorText = payload.error || "analysis failed";
+        writeFailedJob(job.id, errorText);
+        workerState.lastResult = { status: "failed", endedAtMs: Date.now(), errorText };
       }
     } catch (error) {
-      writeFailedJob(job.id, error instanceof Error ? error.message : "analysis failed");
+      const errorText = error instanceof Error ? error.message : "analysis failed";
+      writeFailedJob(job.id, errorText);
+      workerState.lastResult = { status: "failed", endedAtMs: Date.now(), errorText };
     }
   } catch (error) {
     console.error("[analysis-worker] Worker tick error:", error);
   } finally {
+    workerState.currentJob = null;
     workerState.processing = false;
     scheduleWorker();
   }
 }
 
 export function ensureAnalysisWorkerStarted(): void {
+  if (!readAiSettings().enabled) {
+    return;
+  }
   if (workerState.running) {
     scheduleWorker(150);
     return;
@@ -500,37 +470,90 @@ export function ensureAnalysisWorkerStarted(): void {
   scheduleWorker(500);
 }
 
-function captureSupportsAudioAnalysis(captureSessionId: string): boolean {
+function captureSupportsAudioAnalysis(captureSessionId: string, aiSettings: AiSettings): boolean {
   const capture = appDb
     .select({ module: captureSessions.module })
     .from(captureSessions)
     .where(eq(captureSessions.id, captureSessionId))
     .limit(1)
     .get();
-  return Boolean(capture && ["pmr", "airband", "maritime"].includes(capture.module));
+  return Boolean(capture && aiSettings.modules.includes(capture.module as AiSettings["modules"][number]));
 }
 
 export function queueCaptureAnalysisJob(captureSessionId: string, burstEventId: string | null = null): void {
-  if (!captureSupportsAudioAnalysis(captureSessionId)) {
+  const aiSettings = readAiSettings();
+  if (!aiSettings.enabled || !captureSupportsAudioAnalysis(captureSessionId, aiSettings)) {
     return;
   }
-  queueQueuedJob(captureSessionId, burstEventId);
+  queueQueuedJob(captureSessionId, burstEventId, aiSettings);
   ensureAnalysisWorkerStarted();
 }
 
 export function ensureCaptureAnalysisUpToDate(captureSessionId: string): void {
-  if (!captureSupportsAudioAnalysis(captureSessionId)) {
+  const aiSettings = readAiSettings();
+  if (!aiSettings.enabled || !captureSupportsAudioAnalysis(captureSessionId, aiSettings)) {
     return;
   }
   if (captureHasPreferredAnalysisJob(captureSessionId)) {
     ensureAnalysisWorkerStarted();
     return;
   }
-  queueQueuedJob(captureSessionId);
+  queueQueuedJob(captureSessionId, null, aiSettings);
   ensureAnalysisWorkerStarted();
 }
 
 export function warmAnalysisBackfill(): void {
-  backfillQueuedJobs();
   ensureAnalysisWorkerStarted();
+}
+
+export function notifyAiSettingsChanged(previousEnabled: boolean, nextEnabled: boolean): void {
+  if (!previousEnabled && nextEnabled) {
+    writeAiQueuePolicy(sqliteDb, { version: 1, claimQueuedAfterMs: Date.now() });
+  }
+  if (nextEnabled) {
+    ensureAnalysisWorkerStarted();
+  }
+}
+
+export async function requestAnalysisBackfill(limit = 48): Promise<{ queued: number; enabled: boolean }> {
+  const aiSettings = readAiSettings();
+  if (!aiSettings.enabled) {
+    return { queued: 0, enabled: false };
+  }
+  writeAiQueuePolicy(sqliteDb, { version: 1, claimQueuedAfterMs: 0 });
+  const queued = backfillQueuedJobs(aiSettings, Math.max(1, Math.min(500, Math.trunc(limit))));
+  ensureAnalysisWorkerStarted();
+  return { queued, enabled: true };
+}
+
+export async function getAnalysisWorkerStatus(forceRuntimeCheck = false): Promise<AnalysisWorkerStatus> {
+  const savedSnapshot = settingsStore.getSnapshot();
+  const savedAiSettings = resolveSavedAiSettings(
+    savedSnapshot.values.ai,
+    savedSnapshot.sections.ai.source,
+    process.env,
+  );
+  const aiSettings = readAiSettings();
+  const policyReason = runtimeAiDisableReason(process.env);
+  const counts = countAnalysisJobs(sqliteDb, AUDIO_ANALYSIS_ENGINE);
+  const runtimeInstalled = analysisRuntimePathsReady();
+  const runtime = runtimeInstalled && aiSettings.enabled
+    ? await checkAnalysisRuntime(aiSettings, forceRuntimeCheck)
+    : workerState.runtimeCheck;
+  return {
+    enabled: aiSettings.enabled,
+    savedEnabled: savedAiSettings.enabled,
+    lockedByRuntime: policyReason !== null,
+    runtimePolicyReason: policyReason,
+    runtimeInstalled,
+    runtimeHealthy: runtimeInstalled ? runtime?.ok ?? null : false,
+    runtimeError: runtimeInstalled ? runtime?.errorText ?? "" : "Local SIGINT Audio v2 runtime is not installed yet.",
+    workerRunning: workerState.running,
+    processing: workerState.processing,
+    queuedJobs: counts.queuedJobs ?? 0,
+    heldQueuedJobs: counts.heldQueuedJobs ?? 0,
+    runningJobs: counts.runningJobs ?? 0,
+    currentJob: workerState.currentJob ? { ...workerState.currentJob } : null,
+    lastResult: workerState.lastResult ? { ...workerState.lastResult } : null,
+  };
 }

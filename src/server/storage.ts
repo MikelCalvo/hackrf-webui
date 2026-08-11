@@ -6,7 +6,9 @@ import path from "node:path";
 import type { AudioCaptureModule } from "@/lib/types";
 
 const DATA_DIR = path.join(/*turbopackIgnore: true*/ process.cwd(), "data");
-const CAPTURES_DIR = path.join(DATA_DIR, "captures");
+const CAPTURES_DIR = process.env.HACKRF_WEBUI_CAPTURE_ROOT?.trim()
+  ? path.resolve(process.env.HACKRF_WEBUI_CAPTURE_ROOT.trim())
+  : path.join(DATA_DIR, "captures");
 
 function ensureDir(dirPath: string): string {
   mkdirSync(dirPath, { recursive: true });
@@ -55,5 +57,5 @@ export function captureAbsolutePath(relativePath: string): string | null {
 
 export function capturePathExists(relativePath: string): boolean {
   const absolutePath = captureAbsolutePath(relativePath);
-  return absolutePath ? existsSync(absolutePath) : false;
+  return absolutePath ? existsSync(/*turbopackIgnore: true*/ absolutePath) : false;
 }

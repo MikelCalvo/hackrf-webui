@@ -1,5 +1,6 @@
 import assert from "node:assert/strict";
 import { execFile } from "node:child_process";
+import { readFile } from "node:fs/promises";
 import { promisify } from "node:util";
 import test from "node:test";
 
@@ -73,4 +74,10 @@ test("start.sh refuses non-loopback bind without an API token", async () => {
 
   assert.notEqual(result.status, 0);
   assert.match(result.stderr, /set HACKRF_WEBUI_TOKEN/);
+});
+
+test("start.sh propagates AI disable policy into the application runtime", async () => {
+  const source = await readFile(START_SH, "utf8");
+  assert.match(source, /HACKRF_WEBUI_SKIP_AI="\$\{HACKRF_WEBUI_SKIP_AI:-\$SKIP_AI\}"/);
+  assert.match(source, /SKIP_AI="\$SKIP_AI"/);
 });

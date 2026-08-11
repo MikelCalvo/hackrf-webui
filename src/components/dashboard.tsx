@@ -24,6 +24,7 @@ import { apiFetch, appendApiToken } from "@/lib/api-client";
 import { deriveRuntimeSummary, type RuntimeDiagnostics, type RuntimeSummary } from "@/lib/runtime-diagnostics";
 import { LocationModal } from "@/components/location-modal";
 import { SpectrumDock } from "@/components/spectrum-dock";
+import { SettingsModule } from "@/components/settings";
 import {
   CLS_BTN_GHOST,
   CLS_BTN_PRIMARY,
@@ -43,9 +44,12 @@ import {
 import {
   APP_MODULES,
   getCookieHeaderForModule,
+  isAppModuleId,
   LAST_MODULE_STORAGE_KEY,
   type AppModuleId,
+  type AppViewId,
 } from "@/lib/modules";
+import { DEFAULT_APP_SETTINGS, type AppSettings } from "@/lib/settings";
 import type {
   CatalogCountryShard,
   CatalogData,
@@ -728,7 +732,7 @@ export function Dashboard({
   activeModule,
   manifest,
 }: {
-  activeModule: AppModuleId;
+  activeModule: AppViewId;
   manifest: CatalogManifest;
 }) {
   const audioRef = useRef<HTMLAudioElement>(null);
@@ -772,7 +776,7 @@ export function Dashboard({
   const [gpsdError, setGpsdError] = useState("");
   const gpsdRequestInFlightRef = useRef<Promise<GpsdSnapshot | null> | null>(null);
   const hardwareRequestInFlightRef = useRef<Promise<HardwareStatus | null> | null>(null);
-  const activeModuleRef = useRef(activeModule);
+  const activeModuleRef = useRef<AppModuleId>(isAppModuleId(activeModule) ? activeModule : "fm");
   const fmRequestSeqRef = useRef(0);
   const [query, setQuery] = useState("");
   const deferredQuery = useDeferredValue(query.trim().toLowerCase());
@@ -796,11 +800,24 @@ export function Dashboard({
   const [loadingCountryId, setLoadingCountryId] = useState<string | null>(null);
   const [listHeight, setListHeight] = useState(0);
   const [scrollTop, setScrollTop] = useState(0);
+  const [receiverSettings, setReceiverSettings] = useState<AppSettings>(DEFAULT_APP_SETTINGS);
+  const sidebarSettings = receiverSettings.sidebar;
   const isFmModule = activeModule === "fm";
 
   useEffect(() => {
-    activeModuleRef.current = activeModule;
+    if (isAppModuleId(activeModule)) activeModuleRef.current = activeModule;
   }, [activeModule]);
+
+  useEffect(() => {
+    let cancelled = false;
+    apiFetch("/api/settings", { cache: "no-store" })
+      .then(async (response) => response.ok ? await response.json() as { snapshot: { values: AppSettings } } : null)
+      .then((payload) => {
+        if (!cancelled && payload) setReceiverSettings(payload.snapshot.values);
+      })
+      .catch(() => undefined);
+    return () => { cancelled = true; };
+  }, []);
 
   useEffect(() => {
     let cancelled = false;
@@ -847,6 +864,7 @@ export function Dashboard({
   }
 
   useEffect(() => {
+    if (!isAppModuleId(activeModule)) return;
     try {
       window.localStorage.setItem(LAST_MODULE_STORAGE_KEY, activeModule);
     } catch {
@@ -1832,8 +1850,8 @@ export function Dashboard({
       </header>
 
       <div className="flex flex-1 overflow-hidden">
-        <nav className="flex w-[70px] shrink-0 flex-col border-r border-white/8 bg-black/20 py-2">
-          {APP_MODULES.filter((module) => module.id === "sigint").map((module) => {
+        <nav className={cx("flex shrink-0 flex-col border-r border-white/8 bg-black/20 py-2", sidebarSettings.compact ? "w-[54px]" : "w-[70px]")}>
+          {APP_MODULES.filter((module) => module.id === "sigint" && sidebarSettings.visibleModules.includes(module.id)).map((module) => {
             const isActive = module.live && activeModule === module.id;
 
             return (
@@ -1852,14 +1870,16 @@ export function Dashboard({
                 <span className="font-mono text-[11px] font-bold uppercase tracking-[0.1em]">
                   {module.label}
                 </span>
-                <span className="font-mono text-[8px] leading-none text-current opacity-70">
-                  {module.band}
-                </span>
+                {!sidebarSettings.compact ? (
+                  <span className="font-mono text-[8px] leading-none text-current opacity-70">
+                    {module.band}
+                  </span>
+                ) : null}
               </Link>
             );
           })}
 
-          {APP_MODULES.filter((module) => module.id !== "sigint").map((module) => {
+          {APP_MODULES.filter((module) => module.id !== "sigint" && sidebarSettings.visibleModules.includes(module.id)).map((module) => {
             const isActive = module.live && activeModule === module.id;
 
             if (!module.live) {
@@ -1904,13 +1924,37 @@ export function Dashboard({
                 <span className="font-mono text-[11px] font-bold uppercase tracking-[0.1em]">
                   {module.label}
                 </span>
-                <span className="font-mono text-[8px] leading-none text-current opacity-70">
-                  {module.band}
-                </span>
+                {!sidebarSettings.compact ? (
+                  <span className="font-mono text-[8px] leading-none text-current opacity-70">
+                    {module.band}
+                  </span>
+                ) : null}
               </Link>
             );
           })}
+          <div className="flex-1" />
+          <Link
+            aria-current={activeModule === "settings" ? "page" : undefined}
+            className={cx(
+              "mx-1 mt-2 flex flex-col items-center gap-1 rounded-xl border px-1 py-2.5 text-center transition-colors",
+              activeModule === "settings"
+                ? "border-cyan-300/28 bg-cyan-300/10 text-cyan-100"
+                : "border-white/8 text-[var(--muted-strong)] hover:border-white/14 hover:bg-white/[0.03] hover:text-[var(--foreground)]",
+            )}
+            href="/settings"
+            title="Settings · persistent receiver preferences"
+          >
+            <svg aria-hidden="true" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="1.4" viewBox="0 0 16 16">
+              <circle cx="8" cy="8" r="2.25" />
+              <path d="M8 1.75v1.5M8 12.75v1.5M1.75 8h1.5M12.75 8h1.5M3.58 3.58l1.06 1.06M11.36 11.36l1.06 1.06M12.42 3.58l-1.06 1.06M4.64 11.36l-1.06 1.06" />
+            </svg>
+            <span className="font-mono text-[9px] font-bold uppercase tracking-[0.08em]">Settings</span>
+          </Link>
         </nav>
+
+        {activeModule === "settings" ? (
+          <SettingsModule onSettingsChanged={setReceiverSettings} />
+        ) : null}
 
         {activeModule === "sigint" ? (
           <SigintModule location={resolvedLocation} />

@@ -13,6 +13,7 @@ export const APP_MODULES = [
 ] as const;
 
 export type AppModuleId = Extract<(typeof APP_MODULES)[number], { live: true }>["id"];
+export type AppViewId = AppModuleId | "settings";
 
 export const DEFAULT_APP_MODULE: AppModuleId = "fm";
 
