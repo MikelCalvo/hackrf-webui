@@ -3,6 +3,7 @@ import type { NextRequest } from "next/server";
 import { listSigintCaptureSummaries } from "@/server/sigint-store";
 import type { SigintAnalysisFilter, SigintCaptureListFilters, SigintReviewStatus } from "@/lib/sigint";
 import { warmAnalysisBackfill } from "@/server/analysis-worker";
+import { authorizeApiRequest } from "@/server/api/auth";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -21,6 +22,11 @@ const VALID_ANALYSIS_FILTERS = new Set<SigintAnalysisFilter>([
 ]);
 
 export async function GET(request: NextRequest): Promise<Response> {
+  const authFailure = authorizeApiRequest(request, { sensitive: true });
+  if (authFailure) {
+    return authFailure;
+  }
+
   warmAnalysisBackfill();
   const moduleId = request.nextUrl.searchParams.get("module")?.trim() ?? "all";
   const reviewStatus = request.nextUrl.searchParams.get("reviewStatus")?.trim() ?? "all";

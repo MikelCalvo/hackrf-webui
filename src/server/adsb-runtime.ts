@@ -17,6 +17,7 @@ import {
 } from "@/server/adsb-protocol";
 import { hackrfDeviceService } from "@/server/hackrf-device";
 import { pickHackrfRuntimeErrorMessage } from "@/server/hackrf-runtime-errors";
+import { terminateChildProcess } from "@/server/process-lifecycle";
 import { buildOfflineMapSummary } from "@/server/maps";
 import { projectBinPath, projectPath } from "@/server/project-paths";
 import { listRecentAdsbContacts, persistAdsbTrackPoints } from "@/server/track-store";
@@ -267,16 +268,7 @@ class AdsbRuntimeService {
     const proc = this.process;
     this.expectedExit = true;
 
-    await new Promise<void>((resolve) => {
-      const finalize = () => resolve();
-      proc.once("close", finalize);
-      proc.kill("SIGTERM");
-      setTimeout(() => {
-        if (proc.exitCode === null && !proc.killed) {
-          proc.kill("SIGKILL");
-        }
-      }, 250);
-    });
+    await terminateChildProcess(proc, 250);
   }
 
   getStatus(): AdsbRuntimeStatus {

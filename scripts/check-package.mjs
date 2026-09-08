@@ -3,6 +3,7 @@ import { spawnSync } from "node:child_process";
 
 const FORBIDDEN_PACKAGE_PATHS = [
   /^\.next\//,
+  /^\.hermes\//,
   /^assets\/ai\//,
   /^bin\//,
   /^data\/captures\//,

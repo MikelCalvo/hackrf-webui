@@ -13,6 +13,7 @@ import type {
 } from "@/lib/types";
 import { hackrfDeviceService } from "@/server/hackrf-device";
 import { pickHackrfRuntimeErrorMessage } from "@/server/hackrf-runtime-errors";
+import { terminateChildProcess } from "@/server/process-lifecycle";
 import { parseAisFrameLine, type DecodedAisMessage } from "@/server/ais-protocol";
 import { buildOfflineMapSummary } from "@/server/maps";
 import { projectBinPath } from "@/server/project-paths";
@@ -306,16 +307,7 @@ class AisRuntimeService {
     const proc = this.process;
     this.expectedExit = true;
 
-    await new Promise<void>((resolve) => {
-      const finalize = () => resolve();
-      proc.once("close", finalize);
-      proc.kill("SIGTERM");
-      setTimeout(() => {
-        if (proc.exitCode === null && !proc.killed) {
-          proc.kill("SIGKILL");
-        }
-      }, 250);
-    });
+    await terminateChildProcess(proc, 250);
   }
 
   getStatus(): AisRuntimeStatus {

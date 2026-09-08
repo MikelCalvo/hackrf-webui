@@ -1,11 +1,17 @@
 import type { NextRequest } from "next/server";
 
+import { authorizeApiRequest } from "@/server/api/auth";
 import { listSigintTrackSummaries } from "@/server/sigint-store";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
 export async function GET(request: NextRequest): Promise<Response> {
+  const authFailure = authorizeApiRequest(request, { sensitive: true });
+  if (authFailure) {
+    return authFailure;
+  }
+
   const kind = request.nextUrl.searchParams.get("kind")?.trim() ?? "";
   if (kind !== "adsb" && kind !== "ais") {
     return Response.json({ message: "Invalid SIGINT route kind." }, { status: 400 });

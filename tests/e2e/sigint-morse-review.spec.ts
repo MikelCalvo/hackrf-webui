@@ -178,8 +178,8 @@ test("SIGINT searches and reviews complete MORSE evidence", async ({ page }) => 
   await expect(page.getByText(/Expected identifier/)).toBeVisible();
   await expect(page.getByText(/Catalog provenance/)).toBeVisible();
   await expect(page.getByText(/ourairports · ES-BLV/)).toBeVisible();
-  await expect(page.getByRole("link", { name: "Open WAV" })).toBeVisible();
-  await expect(page.getByRole("link", { name: "Download IQ" })).toBeVisible();
+  await expect(page.getByRole("button", { name: "Download WAV" })).toBeVisible();
+  await expect(page.getByRole("button", { name: "Download IQ" })).toBeVisible();
   await expect(page.getByText("AI summary", { exact: true })).toHaveCount(0);
 
   const reviewBar = page.getByTestId("sigint-capture-queue-review-bar");

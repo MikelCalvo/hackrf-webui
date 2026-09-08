@@ -3,6 +3,7 @@
 import { memo, useEffect, useMemo, useRef, useState } from "react";
 
 import { cx } from "@/components/module-ui";
+import { apiFetch } from "@/lib/api-client";
 import type { AudioDemodMode, SpectrumFeedSnapshot, SpectrumFrame, SpectrumOwner } from "@/lib/types";
 
 const STORAGE_PREFIX = "hackrf-webui.spectrum-dock.v1";
@@ -183,7 +184,7 @@ function markerColor(
 }
 
 async function fetchSpectrumFeed(): Promise<SpectrumFeedSnapshot> {
-  const response = await fetch("/api/spectrum", {
+  const response = await apiFetch("/api/spectrum", {
     cache: "no-store",
   });
   if (!response.ok) {

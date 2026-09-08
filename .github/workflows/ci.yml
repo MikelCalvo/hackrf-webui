@@ -85,4 +85,6 @@ jobs:
       - name: Token-protected E2E smoke
         env:
           NEXT_TELEMETRY_DISABLED: "1"
-        run: npm run test:e2e:auth
+        run: |
+          E2E_TOKEN="$(openssl rand -hex 32)"
+          HACKRF_WEBUI_E2E_TOKEN="$E2E_TOKEN" npm run test:e2e:auth

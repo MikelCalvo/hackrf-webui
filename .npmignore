@@ -1,5 +1,6 @@
 # Runtime and generated artifacts
 /.next/
+/.hermes/
 /out/
 /build/
 /bin/

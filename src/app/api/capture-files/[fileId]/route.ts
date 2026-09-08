@@ -7,6 +7,7 @@ import { appDb } from "@/server/db/client";
 import { buildCaptureFileStreamResponse } from "@/server/capture-file-response";
 import { captureFiles } from "@/server/db/schema";
 import { captureAbsolutePath } from "@/server/storage";
+import { authorizeApiRequest } from "@/server/api/auth";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -26,6 +27,11 @@ export async function GET(
   request: Request,
   context: { params: Promise<{ fileId: string }> },
 ): Promise<Response> {
+  const authFailure = authorizeApiRequest(request, { sensitive: true });
+  if (authFailure) {
+    return authFailure;
+  }
+
   const { fileId } = await context.params;
   const trimmedId = fileId.trim();
   if (!trimmedId) {

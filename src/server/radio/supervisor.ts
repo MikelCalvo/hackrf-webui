@@ -5,6 +5,7 @@ import type {
   RadioSessionSnapshot,
   UpdateRadioSessionRequest,
 } from "@/lib/radio-session";
+import { AsyncSerial } from "@/server/async-serial";
 import { AdsbSession } from "@/server/radio/adsb-session";
 import { AisSession } from "@/server/radio/ais-session";
 import { RadioEventBus } from "@/server/radio/event-bus";
@@ -32,6 +33,8 @@ class RadioSupervisor {
 
   private readonly scheduler = new RadioScheduler();
 
+  private readonly serial = new AsyncSerial();
+
   private createdCount = 0;
 
   private stoppedCount = 0;
@@ -40,8 +43,12 @@ class RadioSupervisor {
 
   private failedStopCount = 0;
 
-  async createSession(request: CreateRadioSessionRequest): Promise<RadioSessionSnapshot> {
-    await this.stopAllSessions();
+  createSession(request: CreateRadioSessionRequest): Promise<RadioSessionSnapshot> {
+    return this.serial.run(() => this.createSessionInternal(request));
+  }
+
+  private async createSessionInternal(request: CreateRadioSessionRequest): Promise<RadioSessionSnapshot> {
+    await this.stopAllSessionsInternal();
     const session =
       request.kind === "fm"
         ? new FmSession(request, this.store, this.events)
@@ -97,26 +104,31 @@ class RadioSupervisor {
     return snapshot ? this.getManagedSession(snapshot.id) : null;
   }
 
-  async updateSession(sessionId: string, patch: UpdateRadioSessionRequest): Promise<RadioSessionSnapshot | null> {
-    const session = this.sessions.get(sessionId);
-    if (!session) {
-      return null;
-    }
-    return session.update(patch);
+  updateSession(sessionId: string, patch: UpdateRadioSessionRequest): Promise<RadioSessionSnapshot | null> {
+    return this.serial.run(async () => {
+      const session = this.sessions.get(sessionId);
+      if (!session) {
+        return null;
+      }
+      return session.update(patch);
+    });
   }
 
   subscribe(sessionId: string, listener: (event: RadioSessionEvent) => void): () => void {
     return this.events.subscribe(sessionId, listener);
   }
 
-  async stopSession(sessionId: string): Promise<boolean> {
+  stopSession(sessionId: string): Promise<boolean> {
+    return this.serial.run(() => this.stopSessionInternal(sessionId));
+  }
+
+  private async stopSessionInternal(sessionId: string): Promise<boolean> {
     const session = this.sessions.get(sessionId);
     if (!session) {
       return false;
     }
 
     this.sessions.delete(sessionId);
-    this.scheduler.release(sessionId);
     try {
       await session.stop();
       this.stoppedCount += 1;
@@ -124,23 +136,30 @@ class RadioSupervisor {
       this.failedStopCount += 1;
       throw error;
     } finally {
+      this.scheduler.release(sessionId);
       this.store.delete(sessionId);
     }
     return true;
   }
 
-  async stopSessionByModule(module: RadioSessionModule): Promise<boolean> {
-    const snapshot = this.findSessionByModule(module);
-    if (!snapshot) {
-      return false;
-    }
-    return this.stopSession(snapshot.id);
+  stopSessionByModule(module: RadioSessionModule): Promise<boolean> {
+    return this.serial.run(async () => {
+      const snapshot = this.findSessionByModule(module);
+      if (!snapshot) {
+        return false;
+      }
+      return this.stopSessionInternal(snapshot.id);
+    });
   }
 
-  async stopAllSessions(): Promise<void> {
+  stopAllSessions(): Promise<void> {
+    return this.serial.run(() => this.stopAllSessionsInternal());
+  }
+
+  private async stopAllSessionsInternal(): Promise<void> {
     const sessionIds = [...this.sessions.keys()];
     for (const sessionId of sessionIds) {
-      await this.stopSession(sessionId);
+      await this.stopSessionInternal(sessionId);
     }
   }
 

@@ -1,5 +1,6 @@
 import type { NextRequest } from "next/server";
 
+import { authorizeApiRequest } from "@/server/api/auth";
 import { getReplayAisHistory, isReplayModeEnabled } from "@/server/replay-feed";
 import { listAisTrackHistory } from "@/server/track-store";
 
@@ -7,6 +8,11 @@ export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
 export async function GET(request: NextRequest): Promise<Response> {
+  const authFailure = authorizeApiRequest(request, { sensitive: true });
+  if (authFailure) {
+    return authFailure;
+  }
+
   const mmsi = request.nextUrl.searchParams.get("mmsi")?.trim() ?? "";
   if (!mmsi) {
     return Response.json({ message: "Missing AIS MMSI identifier." }, { status: 400 });

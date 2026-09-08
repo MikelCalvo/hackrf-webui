@@ -259,14 +259,14 @@ export async function fetchSigintCaptures(
     params.set("limit", String(filters.limit));
   }
 
-  const response = await fetch(`/api/sigint/captures?${params.toString()}`, {
+  const response = await apiFetch(`/api/sigint/captures?${params.toString()}`, {
     cache: "no-store",
   });
   return ensureOk(response).then((res) => res.json()) as Promise<SigintCaptureListResponse>;
 }
 
 export async function fetchSigintCaptureDetail(captureSessionId: string): Promise<SigintCaptureDetail> {
-  const response = await fetch(`/api/sigint/captures/${encodeURIComponent(captureSessionId)}`, {
+  const response = await apiFetch(`/api/sigint/captures/${encodeURIComponent(captureSessionId)}`, {
     cache: "no-store",
   });
   return ensureOk(response).then((res) => res.json()) as Promise<SigintCaptureDetail>;
@@ -290,7 +290,7 @@ export async function fetchSigintTrackSummaries(
   kind: SigintTrackKind,
   limit = 100,
 ): Promise<SigintTrackSummaryResponse> {
-  const response = await fetch(
+  const response = await apiFetch(
     `/api/sigint/routes?kind=${encodeURIComponent(kind)}&limit=${encodeURIComponent(String(limit))}`,
     { cache: "no-store" },
   );
@@ -306,7 +306,7 @@ export async function fetchSigintTrackHistory(
       ? `hex=${encodeURIComponent(key)}`
       : `mmsi=${encodeURIComponent(key)}`;
   const endpoint = kind === "adsb" ? "/api/adsb/history" : "/api/ais/history";
-  const response = await fetch(`${endpoint}?${params}`, { cache: "no-store" });
+  const response = await apiFetch(`${endpoint}?${params}`, { cache: "no-store" });
   return ensureOk(response).then((res) => res.json()) as Promise<
     AdsbTrackHistoryResponse | AisTrackHistoryResponse
   >;

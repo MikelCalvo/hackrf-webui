@@ -20,9 +20,14 @@ function parsePriority(value: unknown): SigintReviewPriority | null {
 }
 
 export async function GET(
-  _request: NextRequest,
+  request: NextRequest,
   context: { params: Promise<{ captureSessionId: string }> },
 ): Promise<Response> {
+  const authFailure = authorizeApiRequest(request, { sensitive: true });
+  if (authFailure) {
+    return authFailure;
+  }
+
   warmAnalysisBackfill();
   const { captureSessionId } = await context.params;
   ensureCaptureAnalysisUpToDate(captureSessionId);

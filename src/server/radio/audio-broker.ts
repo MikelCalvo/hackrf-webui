@@ -35,6 +35,10 @@ export class AudioBroker {
     }
 
     for (const controller of [...this.subscribers]) {
+      if (controller.desiredSize !== null && controller.desiredSize <= 0) {
+        continue;
+      }
+
       try {
         controller.enqueue(chunk.slice());
       } catch {

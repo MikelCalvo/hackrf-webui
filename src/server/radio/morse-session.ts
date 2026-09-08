@@ -111,6 +111,7 @@ export class MorseSession {
     this.readerSeq += 1;
     this.abortController?.abort();
     this.abortController = null;
+    await hackrfService.stopStream();
     this.audioBroker.close();
     this.state = "stopped";
     this.streamId = null;

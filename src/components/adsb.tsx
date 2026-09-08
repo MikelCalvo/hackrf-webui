@@ -10,6 +10,7 @@ import type {
   HardwareStatus,
   ResolvedAppLocation,
 } from "@/lib/types";
+import { apiFetch } from "@/lib/api-client";
 import { filterAdsbContacts, type AdsbContactFilters } from "@/lib/tracking-contacts";
 import { MapOverlayCard } from "@/components/map-overlay-card";
 import { useRadioSession } from "@/components/use-radio-session";
@@ -150,7 +151,7 @@ function runtimeTextColor(state: AdsbRuntimeState | null): string {
 }
 
 async function fetchAdsbFeed(): Promise<AdsbFeedSnapshot> {
-  const response = await fetch("/api/adsb", { cache: "no-store" });
+  const response = await apiFetch("/api/adsb", { cache: "no-store" });
   if (!response.ok) {
     throw new Error(`HTTP ${response.status}`);
   }

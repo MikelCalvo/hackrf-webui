@@ -38,7 +38,7 @@ export function isLoopbackHostname(hostname: string): boolean {
 }
 
 function configuredServerToken(): string {
-  return (process.env.HACKRF_WEBUI_TOKEN || process.env.NEXT_PUBLIC_HACKRF_WEBUI_TOKEN || "").trim();
+  return (process.env.NEXT_PUBLIC_HACKRF_WEBUI_TOKEN || process.env.HACKRF_WEBUI_TOKEN || "").trim();
 }
 
 export function maybeExposeClientToken(): string {

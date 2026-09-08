@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 
+import { AuthenticatedCaptureAudio, CaptureFileButton } from "@/components/authenticated-capture-media";
 import type { ActivityLogEntry } from "@/lib/activity-events";
 
 export function cx(...args: Array<string | false | null | undefined>): string {
@@ -125,32 +126,27 @@ export function ActivityCaptureActions({ entry }: { entry: ActivityLogEntry }) {
           </button>
         ) : null}
         {entry.audioCapture ? (
-          <a
+          <CaptureFileButton
             className="inline-flex items-center rounded border border-[var(--accent)]/30 bg-[var(--accent)]/10 px-2 py-1 font-mono text-[10px] uppercase tracking-[0.14em] text-[var(--accent)] transition hover:border-[var(--accent)]/55 hover:bg-[var(--accent)]/16"
-            href={entry.audioCapture.url}
-            rel="noreferrer"
-            target="_blank"
+            file={entry.audioCapture}
           >
-            Open WAV
-          </a>
+            Download WAV
+          </CaptureFileButton>
         ) : null}
         {entry.rawIqCapture ? (
-          <a
+          <CaptureFileButton
             className="inline-flex items-center rounded border border-white/12 bg-white/[0.04] px-2 py-1 font-mono text-[10px] uppercase tracking-[0.14em] text-[var(--muted-strong)] transition hover:border-white/20 hover:bg-white/[0.07] hover:text-[var(--foreground)]"
-            href={entry.rawIqCapture.url}
-            rel="noreferrer"
-            target="_blank"
+            file={entry.rawIqCapture}
           >
             Download IQ
-          </a>
+          </CaptureFileButton>
         ) : null}
       </div>
       {entry.audioCapture && previewOpen ? (
-        <audio
+        <AuthenticatedCaptureAudio
           className="h-9 w-full max-w-full"
-          controls
+          file={entry.audioCapture}
           preload="none"
-          src={entry.audioCapture.url}
         />
       ) : null}
     </div>

@@ -17,6 +17,8 @@
 /test-results
 /.hermes/e2e/
 /.hermes/e2e-auth/
+/.hermes/next-e2e/
+/.hermes/next-e2e-auth/
 
 # next.js
 /.next/

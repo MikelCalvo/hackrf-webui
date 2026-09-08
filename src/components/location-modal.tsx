@@ -9,6 +9,7 @@ import {
   syncLeafletBasemap,
 } from "@/components/live-map";
 import { CLS_BTN_GHOST, CLS_BTN_PRIMARY, CLS_INPUT, Spinner, cx } from "@/components/module-ui";
+import { apiFetch } from "@/lib/api-client";
 import {
   buildCatalogCentroid,
   buildCatalogScopeCaption,
@@ -569,7 +570,7 @@ export function LocationModal({
     const loadMaps = async () => {
       setMapsLoading(true);
       try {
-        const response = await fetch("/api/location/maps", {
+        const response = await apiFetch("/api/location/maps", {
           cache: "no-store",
         });
         if (!response.ok) {

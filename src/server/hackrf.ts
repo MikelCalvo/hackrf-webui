@@ -19,6 +19,7 @@ import { adsbRuntime } from "@/server/adsb-runtime";
 import { persistCapturedActivity } from "@/server/activity-events";
 import { hackrfDeviceService } from "@/server/hackrf-device";
 import { parseHackrfInfoOutput } from "@/server/hackrf-info";
+import { terminateChildProcess } from "@/server/process-lifecycle";
 import { aisRuntime } from "@/server/ais-runtime";
 import { projectBinPath } from "@/server/project-paths";
 import { parseSpectrumFrameLine } from "@/server/spectrum-telemetry";
@@ -532,6 +533,10 @@ class HackRFService {
 
   startCwStream(request: StreamRequest, signal: AbortSignal): Promise<ReadableStream<Uint8Array>> {
     return this.startStreamInternal(request, "cw", signal);
+  }
+
+  stopStream(): Promise<void> {
+    return this.stopAndWait();
   }
 
   /**
@@ -1300,45 +1305,31 @@ class HackRFService {
       clearTimeout(retuneTimer);
     }
 
-    // Register the wait listener before sending SIGTERM so we cannot miss the close event
-    const released =
-      hackrf.exitCode !== null || hackrf.killed
-        ? Promise.resolve().then(() => {
-          if (this.activeStream?.session.id === sessionId) {
-            this.flushPendingCapture(sessionId);
-            this.activeStream = null;
-            hackrfDeviceService.release("audio");
-            invalidateHackrfIdentityCache();
-            if (_hackrfInfoCache) {
-              _hackrfInfoCache.at = 0;
-            }
-          }
-        })
-        : new Promise<void>(resolve => hackrf.once("close", resolve));
-
     if (captureContext?.pendingSegment?.finalizeTimer) {
       clearTimeout(captureContext.pendingSegment.finalizeTimer);
       captureContext.pendingSegment.finalizeTimer = null;
     }
     activeNative.morsePcmReader?.destroy();
     if (activeNative.morsePcmDir) rmSync(activeNative.morsePcmDir, { recursive: true, force: true });
-    this.killProcess(hackrf);
-    this.killProcess(ffmpeg);
 
-    return released;
+    return Promise.all([
+      terminateChildProcess(hackrf, 150),
+      terminateChildProcess(ffmpeg, 150),
+    ]).then(() => {
+      if (this.activeStream?.session.id === sessionId) {
+        this.flushPendingCapture(sessionId);
+        this.activeStream = null;
+        hackrfDeviceService.release("audio");
+        invalidateHackrfIdentityCache();
+        if (_hackrfInfoCache) {
+          _hackrfInfoCache.at = 0;
+        }
+      }
+    });
   }
 
   private killProcess(processRef: ReturnType<typeof spawn>): void {
-    if (processRef.killed || processRef.exitCode !== null) {
-      return;
-    }
-
-    processRef.kill("SIGTERM");
-    setTimeout(() => {
-      if (!processRef.killed && processRef.exitCode === null) {
-        processRef.kill("SIGKILL");
-      }
-    }, 150);
+    void terminateChildProcess(processRef, 150);
   }
 }
 

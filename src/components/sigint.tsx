@@ -3,6 +3,8 @@
 import type { Layer, LayerGroup, Map as LeafletMap } from "leaflet";
 import { useCallback, useEffect, useMemo, useRef, useState, type MouseEvent as ReactMouseEvent } from "react";
 
+import { AuthenticatedCaptureAudio, CaptureFileButton } from "@/components/authenticated-capture-media";
+import { apiFetch } from "@/lib/api-client";
 import {
   fetchSigintCaptureDetail,
   fetchSigintCaptures,
@@ -403,7 +405,7 @@ function compactModuleLabel(moduleId: SigintCaptureSummary["module"]): string {
 }
 
 async function fetchMaps(): Promise<MapsPayload> {
-  const response = await fetch("/api/location/maps", { cache: "no-store" });
+  const response = await apiFetch("/api/location/maps", { cache: "no-store" });
   if (!response.ok) {
     throw new Error(`HTTP ${response.status}`);
   }
@@ -1945,19 +1947,19 @@ export function SigintModule({ location }: SigintModuleProps) {
                   {(captureDetail.audioCapture || captureDetail.rawIqCapture) ? (
                     <div className="mt-3 flex flex-wrap gap-2">
                       {captureDetail.audioCapture ? (
-                        <a className={CLS_BTN_PRIMARY} href={captureDetail.audioCapture.url} rel="noreferrer" target="_blank">
-                          Open WAV
-                        </a>
+                        <CaptureFileButton className={CLS_BTN_PRIMARY} file={captureDetail.audioCapture}>
+                          Download WAV
+                        </CaptureFileButton>
                       ) : null}
                       {captureDetail.rawIqCapture ? (
-                        <a className={CLS_BTN_GHOST} href={captureDetail.rawIqCapture.url} rel="noreferrer" target="_blank">
+                        <CaptureFileButton className={CLS_BTN_GHOST} file={captureDetail.rawIqCapture}>
                           Download IQ
-                        </a>
+                        </CaptureFileButton>
                       ) : null}
                     </div>
                   ) : null}
                   {captureDetail.audioCapture ? (
-                    <audio className="mt-3 h-9 w-full" controls preload="metadata" src={captureDetail.audioCapture.url} />
+                    <AuthenticatedCaptureAudio className="mt-3 h-9 w-full" file={captureDetail.audioCapture} />
                   ) : null}
                 </div>
 

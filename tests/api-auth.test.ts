@@ -103,3 +103,15 @@ test("maybeExposeClientToken mirrors the server token only when a public token i
     },
   );
 });
+
+test("server authentication accepts the same public token emitted by browser clients", () => {
+  withEnv(
+    { HACKRF_WEBUI_TOKEN: "server-token", NEXT_PUBLIC_HACKRF_WEBUI_TOKEN: "browser-token" },
+    () => {
+      const request = new Request("http://192.168.1.20:3000/api/hardware", {
+        headers: { Authorization: "Bearer browser-token" },
+      });
+      assert.equal(authorizeApiRequest(request, { sensitive: true }), null);
+    },
+  );
+});

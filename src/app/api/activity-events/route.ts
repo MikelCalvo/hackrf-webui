@@ -27,6 +27,11 @@ function parseModule(value: string | null): ActivityEventModule | null {
 }
 
 export async function GET(request: NextRequest): Promise<Response> {
+  const authFailure = authorizeApiRequest(request, { sensitive: true });
+  if (authFailure) {
+    return authFailure;
+  }
+
   const moduleId = parseModule(request.nextUrl.searchParams.get("module"));
   if (!moduleId) {
     return Response.json({ message: "Invalid or missing module." }, { status: 400 });

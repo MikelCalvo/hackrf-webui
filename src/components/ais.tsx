@@ -10,6 +10,7 @@ import type {
   HardwareStatus,
   ResolvedAppLocation,
 } from "@/lib/types";
+import { apiFetch } from "@/lib/api-client";
 import { filterAisContacts, type AisContactFilters } from "@/lib/tracking-contacts";
 import { MapOverlayCard } from "@/components/map-overlay-card";
 import { SpectrumDock } from "@/components/spectrum-dock";
@@ -149,7 +150,7 @@ function runtimeTextColor(state: AisRuntimeState | null): string {
 }
 
 async function fetchAisFeed(): Promise<AisFeedSnapshot> {
-  const response = await fetch("/api/ais", { cache: "no-store" });
+  const response = await apiFetch("/api/ais", { cache: "no-store" });
   if (!response.ok) {
     throw new Error(`HTTP ${response.status}`);
   }

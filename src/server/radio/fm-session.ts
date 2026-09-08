@@ -159,6 +159,7 @@ export class FmSession {
       this.abortController.abort();
       this.abortController = null;
     }
+    await hackrfService.stopStream();
 
     this.audioBroker.close();
     this.state = "stopped";

@@ -503,7 +503,7 @@ function matchesStationSearch(station: FmStation, query: string): boolean {
 }
 
 async function fetchHardwareStatus(): Promise<HardwareStatus> {
-  const res = await fetch("/api/hardware", { cache: "no-store" });
+  const res = await apiFetch("/api/hardware", { cache: "no-store" });
   if (!res.ok) {
     throw new Error(`HTTP ${res.status}`);
   }
@@ -512,7 +512,7 @@ async function fetchHardwareStatus(): Promise<HardwareStatus> {
 }
 
 async function fetchGpsdStatus(): Promise<GpsdSnapshot> {
-  const res = await fetch("/api/location/gpsd", { cache: "no-store" });
+  const res = await apiFetch("/api/location/gpsd", { cache: "no-store" });
   if (!res.ok) {
     throw new Error(`HTTP ${res.status}`);
   }
